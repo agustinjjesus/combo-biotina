@@ -1433,7 +1433,12 @@
       if (e.target === document.getElementById(id)) closeLegal(tipo);
     }
 
-    document.querySelector('.qty-option.popular').click();
+    // Seleccionar "2 combos" por defecto sin hacer scroll
+    selectQty(document.querySelector('.qty-option.popular'), '$62.000', 2);
+
+    // Asegurar que la página arranque desde arriba
+    history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
   </script>
 
 </body>
