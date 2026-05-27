@@ -479,6 +479,84 @@
 
     .trust-badge svg { color: var(--gray); opacity: 0.7; }
 
+    /* ─── QUÉ INCLUYE ─── */
+    .includes-section {
+      background: var(--white);
+      padding: 80px 48px;
+      text-align: center;
+    }
+    .includes-section h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.6rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .includes-grid {
+      max-width: 1060px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .include-card {
+      background: var(--cream);
+      border-radius: 16px;
+      padding: 28px 22px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+    }
+    .include-card--featured {
+      background: #fdf5f2;
+      border: 2px solid var(--coral-light);
+    }
+    .include-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: var(--dark);
+      color: white;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: 8px;
+    }
+    .include-icon { font-size: 1.6rem; }
+    .include-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.2;
+    }
+    .include-card p {
+      font-size: 0.8rem;
+      color: var(--gray);
+      line-height: 1.7;
+      flex: 1;
+    }
+    .include-tag {
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--coral);
+      border: 1px solid var(--coral-light);
+      border-radius: 20px;
+      padding: 4px 10px;
+      align-self: flex-start;
+    }
+    @media (max-width: 768px) {
+      .includes-section { padding: 56px 20px; }
+      .includes-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    }
+    @media (max-width: 480px) {
+      .includes-grid { grid-template-columns: 1fr; }
+    }
+
     /* ─── HOW TO USE ─── */
     .how-section {
       background: var(--white);
@@ -989,6 +1067,47 @@
     <div style="text-align:center"><div class="proof-num">4.8★</div><div class="proof-label">calificación promedio</div></div>
     <div style="text-align:center"><div class="proof-num">3 semanas</div><div class="proof-label">para ver resultados</div></div>
     <div style="text-align:center"><div class="proof-num">0%</div><div class="proof-label">formol ni sulfatos</div></div>
+  </div>
+
+  <!-- QUÉ INCLUYE -->
+  <div class="includes-section">
+    <h2>¿Qué incluye el combo?</h2>
+    <p class="how-sub">4 productos que trabajan en conjunto para un tratamiento completo.</p>
+    <div class="includes-grid">
+
+      <div class="include-card">
+        <div class="include-badge">500ml</div>
+        <div class="include-icon">🧴</div>
+        <h3>Shampoo de Biotina</h3>
+        <p>Limpieza profunda que fortalece desde la raíz. Formulado con biotina activa para reducir la caída, estimular el crecimiento y dejar el cabello más denso y saludable desde la primera lavada. Sin formol ni sulfatos agresivos. Apto uso diario para todo tipo de cabello.</p>
+        <span class="include-tag">USO DIARIO</span>
+      </div>
+
+      <div class="include-card">
+        <div class="include-badge">500ml</div>
+        <div class="include-icon">💧</div>
+        <h3>Acondicionador de Biotina</h3>
+        <p>Hidratación y reparación profunda de medios a puntas. Su fórmula con biotina activa sella la cutícula, elimina el frizz y deja el cabello suave, manejable y con brillo natural. Sin formol ni sulfatos. Apto uso diario.</p>
+        <span class="include-tag">USO DIARIO</span>
+      </div>
+
+      <div class="include-card include-card--featured">
+        <div class="include-badge">250ml</div>
+        <div class="include-icon">✨</div>
+        <h3>Biotina Pura en Spray</h3>
+        <p>El corazón del combo. Biotina concentrada en spray de aplicación directa sobre el cuero cabelludo. Actúa donde realmente importa: en el folículo piloso, estimulando el crecimiento de pelitos nuevos y frenando la caída. No requiere enjuague.</p>
+        <span class="include-tag">USO DIARIO · NO ENJUAGAR</span>
+      </div>
+
+      <div class="include-card">
+        <div class="include-badge">60ml</div>
+        <div class="include-icon">💊</div>
+        <h3>Ampolla Plex + Biotina</h3>
+        <p>Tratamiento intensivo semanal para recuperar el cabello dañado, teñido o debilitado. Repara la fibra capilar desde adentro, fortalece y reduce la quebradura. Mezclá con la crema de tratamiento, aplicá de medios a puntas y dejá actuar.</p>
+        <span class="include-tag">USO SEMANAL</span>
+      </div>
+
+    </div>
   </div>
 
   <!-- HOW TO USE -->
