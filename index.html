@@ -176,22 +176,7 @@
       letter-spacing: 0.05em;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 32px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      font-size: 0.82rem;
-      color: var(--dark);
-      text-decoration: none;
-      font-weight: 400;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--coral); }
-
-    .nav-right {
+.nav-right {
       display: flex;
       align-items: center;
       gap: 16px;
@@ -830,7 +815,6 @@
     /* ─── RESPONSIVE ─── */
     @media (max-width: 768px) {
       nav { padding: 14px 20px; }
-      .nav-links { display: none; }
 
       .hero {
         grid-template-columns: 1fr;
@@ -879,11 +863,6 @@
   <!-- NAV -->
   <nav>
     <img src="logo.png" alt="PG Productos Capilares" style="height:48px; width:auto;" />
-    <ul class="nav-links">
-      <li><a href="#">Combos</a></li>
-      <li><a href="#">Productos</a></li>
-      <li><a href="#">Contacto</a></li>
-    </ul>
     <div class="nav-right">
       <button class="nav-cart">🛒</button>
       <a href="https://wa.me/5491124838177" class="nav-wa">
