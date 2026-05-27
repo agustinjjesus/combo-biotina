@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Combo Biotina® | Menos caída, recuperá tu cabello de forma natural</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── MODAL FORMULARIO ─── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6); z-index: 1000;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: white; border-radius: 20px;
+      padding: 36px 32px; width: 100%; max-width: 520px;
+      max-height: 90vh; overflow-y: auto;
+      animation: modalIn 0.3s ease; position: relative;
+    }
+    @keyframes modalIn {
+      from { opacity:0; transform:translateY(20px) scale(0.97); }
+      to   { opacity:1; transform:translateY(0) scale(1); }
+    }
+    .modal-close { position:absolute; top:16px; right:20px; background:none; border:none; font-size:1.4rem; cursor:pointer; color:#999; }
+    .modal-close:hover { color:var(--dark); }
+    .modal h3 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin-bottom:6px; color:var(--dark); }
+    .modal-sub { font-size:0.82rem; color:var(--gray); margin-bottom:24px; }
+    .modal-sub span { color:var(--coral); font-weight:500; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+    .form-group { display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+    .form-group label { font-size:0.75rem; font-weight:500; color:var(--dark); letter-spacing:0.05em; text-transform:uppercase; }
+    .form-group input, .form-group select { border:2px solid var(--cream2); border-radius:8px; padding:12px 14px; font-family:'DM Sans',sans-serif; font-size:0.88rem; color:var(--dark); background:var(--cream); outline:none; transition:border-color 0.2s; }
+    .form-group input:focus, .form-group select:focus { border-color:var(--coral); background:white; }
+    .form-section-title { font-size:0.7rem; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:var(--coral); margin:20px 0 12px; padding-bottom:8px; border-bottom:1px solid var(--cream2); }
+    .btn-confirm { width:100%; background:var(--coral); color:white; border:none; padding:16px; border-radius:12px; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:600; cursor:pointer; transition:background 0.2s; margin-top:8px; }
+    .btn-confirm:hover { background:var(--coral-dark); }
+    .modal-disclaimer { font-size:0.72rem; color:var(--gray); text-align:center; margin-top:12px; line-height:1.5; }
+    @media (max-width:540px) { .modal { padding:28px 20px; } .form-row { grid-template-columns:1fr; } }
+    /* ─── URGENCIA ─── */
+    .urgency-bar {
+      background: var(--dark); color: white;
+      text-align: center; padding: 10px 20px;
+      font-size: 0.78rem; letter-spacing: 0.08em;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+    }
+    .urgency-bar span { color: #f4a08a; font-weight: 600; }
+    .countdown {
+      background: var(--coral); color: white;
+      padding: 3px 10px; border-radius: 4px;
+      font-weight: 700; font-size: 0.82rem; letter-spacing: 0.05em;
+    }
+    /* ─── STOCK BADGE ─── */
+    .stock-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #f0faf4; border: 1px solid #c3e6cb;
+      border-radius: 20px; padding: 6px 14px;
+      font-size: 0.72rem; color: var(--green); font-weight: 500; margin-bottom: 16px;
+    }
+    .stock-dot {
+      width: 7px; height: 7px; background: var(--green);
+      border-radius: 50%; animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:0.5; transform:scale(1.3); }
+    }
+    /* ─── GUARANTEE ─── */
+    .guarantee-box {
+      background: #f0faf4; border: 1px solid #c3e6cb;
+      border-radius: 12px; padding: 16px;
+      display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px;
+    }
+    .guarantee-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .guarantee-text strong { display: block; font-size: 0.85rem; font-weight: 600; color: var(--green); }
+    .guarantee-text span { font-size: 0.78rem; color: var(--gray); }
+    /* ─── WA ALT BUTTON ─── */
+    .btn-wa-alt {
+      width: 100%; background: white; color: var(--dark);
+      border: 2px solid var(--cream2); padding: 14px; border-radius: 12px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 500;
+      cursor: pointer; transition: all 0.2s; margin-bottom: 16px;
+      display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;
+    }
+    .btn-wa-alt:hover { border-color: #25d366; color: #25d366; }
+    /* ─── PROOF STRIP ─── */
+    .proof-strip {
+      background: var(--dark); color: white;
+      padding: 20px 48px; display: flex;
+      align-items: center; justify-content: center; gap: 48px; flex-wrap: wrap;
+    }
+    .proof-num { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: #f4a08a; }
+    .proof-label { font-size: 0.72rem; color: rgba(255,255,255,0.6); }
+    /* ─── FAQ ─── */
+    .faq-section { padding: 80px 48px; max-width: 780px; margin: 0 auto; }
+    .faq-section h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; text-align: center; margin-bottom: 40px; }
+    .faq-item { border-bottom: 1px solid var(--cream2); }
+    .faq-q {
+      width: 100%; background: none; border: none; padding: 20px 0;
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: 'DM Sans', sans-serif; font-size: 0.92rem; font-weight: 500;
+      color: var(--dark); cursor: pointer; text-align: left;
+    }
+    .faq-arrow { transition: transform 0.3s; font-size: 1.2rem; color: var(--coral); }
+    .faq-item.open .faq-arrow { transform: rotate(45deg); }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s; font-size: 0.85rem; color: var(--gray); line-height: 1.7; }
+    .faq-item.open .faq-a { max-height: 200px; padding-bottom: 20px; }
+    /* ─── FLOATING CTA ─── */
+    .floating-cta {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0;
+      background: white; padding: 16px 20px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.12); z-index: 200;
+    }
+    .floating-cta-btn {
+      width: 100%; background: var(--coral); color: white; border: none;
+      padding: 16px; border-radius: 12px;
+      font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer;
+    }
+    @media (max-width: 768px) {
+      .floating-cta { display: block; }
+      body { padding-bottom: 80px; }
+      .proof-strip { gap: 24px; padding: 16px 20px; }
+      .faq-section { padding: 56px 20px; }
+    }
+
+    :root {
+      --cream: #f5f0ea;
+      --cream2: #ede7df;
+      --coral: #e07a5f;
+      --coral-dark: #c96a4f;
+      --coral-light: #f4a08a;
+      --green: #3d7a4f;
+      --dark: #1a1a1a;
+      --gray: #6b6b6b;
+      --gray-light: #c4bdb5;
+      --white: #ffffff;
+      --gold: #d4a853;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--dark);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      background: var(--white);
+      padding: 14px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--cream2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .nav-logo {
+      width: 42px; height: 42px;
+      border: 2px solid var(--dark);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.82rem;
+      color: var(--dark);
+      text-decoration: none;
+      font-weight: 400;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--coral); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-cart {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: var(--dark);
+    }
+
+    .nav-wa {
+      background: #25d366;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-wa:hover { background: #1ebe5a; }
+
+    /* ─── HERO ─── */
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 56px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .hero-img {
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--cream2);
+      aspect-ratio: 4/5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .hero-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-img-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      color: var(--gray-light);
+    }
+
+    .hero-img-placeholder svg { opacity: 0.4; }
+
+    .hero-img-placeholder span {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .hero-right h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      color: var(--dark);
+    }
+
+    .hero-right h1 span { color: var(--coral); }
+
+    .stars-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .stars { color: #e8a838; font-size: 1rem; }
+
+    .stars-text {
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+
+    .benefits-list {
+      list-style: none;
+      margin-bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .benefits-list li {
+      font-size: 0.88rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--dark);
+    }
+
+    .benefit-check {
+      width: 20px; height: 20px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .benefit-check svg { color: white; }
+
+    .benefits-list li strong { font-weight: 500; }
+
+    .promo-tag {
+      background: var(--coral);
+      color: white;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    /* ─── QUANTITY SELECTOR ─── */
+    .quantity-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .qty-option {
+      border: 2px solid var(--cream2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--white);
+      position: relative;
+    }
+
+    .qty-option:hover { border-color: var(--coral-light); }
+
+    .qty-option.selected {
+      border-color: var(--coral);
+      background: #fdf5f2;
+    }
+
+    .qty-option.popular::before {
+      content: 'MÁS VENDIDO';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--coral);
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      padding: 3px 10px;
+      border-radius: 10px;
+    }
+
+    .qty-option.best::before {
+      content: 'MEJOR OFERTA';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--green);
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      padding: 3px 10px;
+      border-radius: 10px;
+    }
+
+    .qty-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .qty-radio {
+      width: 18px; height: 18px;
+      border: 2px solid var(--gray-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .qty-option.selected .qty-radio {
+      border-color: var(--coral);
+    }
+
+    .qty-option.selected .qty-radio::after {
+      content: '';
+      width: 8px; height: 8px;
+      background: var(--coral);
+      border-radius: 50%;
+    }
+
+    .qty-info strong {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
+
+    .qty-info span {
+      font-size: 0.75rem;
+      color: var(--gray);
+    }
+
+    .qty-price {
+      text-align: right;
+    }
+
+    .qty-price .price-now {
+      display: block;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .qty-price .price-old {
+      font-size: 0.78rem;
+      color: var(--gray-light);
+      text-decoration: line-through;
+    }
+
+    .qty-count {
+      position: absolute;
+      top: -10px;
+      right: 16px;
+      background: var(--dark);
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      padding: 3px 8px;
+      border-radius: 10px;
+    }
+
+    /* ─── BUY BUTTON ─── */
+    .btn-buy {
+      width: 100%;
+      background: var(--coral);
+      color: white;
+      border: none;
+      padding: 18px;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      margin-bottom: 20px;
+      letter-spacing: 0.03em;
+    }
+
+    .btn-buy:hover {
+      background: var(--coral-dark);
+      transform: translateY(-2px);
+    }
+
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+    }
+
+    .trust-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.68rem;
+      color: var(--gray);
+      text-align: center;
+    }
+
+    .trust-badge svg { color: var(--gray); opacity: 0.7; }
+
+    /* ─── HOW TO USE ─── */
+    .how-section {
+      background: var(--white);
+      padding: 80px 48px;
+      text-align: center;
+    }
+
+    .how-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .how-sub {
+      font-size: 0.88rem;
+      color: var(--gray);
+      margin-bottom: 48px;
+    }
+
+    .steps-grid {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .step-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .step-num {
+      width: 40px; height: 40px;
+      background: var(--coral);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .step-text {
+      font-size: 0.82rem;
+      color: var(--dark);
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    /* ─── REVIEWS ─── */
+    .reviews-section {
+      padding: 80px 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .reviews-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .reviews-stars {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .reviews-stars .stars { font-size: 1.4rem; }
+
+    .reviews-stars p {
+      font-size: 0.82rem;
+      color: var(--gray);
+      margin-top: 4px;
+    }
+
+    .rating-bars {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 40px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .rating-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .rating-label {
+      font-size: 0.78rem;
+      color: var(--gray);
+      width: 20px;
+      text-align: right;
+    }
+
+    .rating-bar-bg {
+      flex: 1;
+      height: 8px;
+      background: var(--cream2);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .rating-bar-fill {
+      height: 100%;
+      background: var(--coral);
+      border-radius: 4px;
+    }
+
+    .rating-pct {
+      font-size: 0.75rem;
+      color: var(--gray);
+      width: 28px;
+    }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .review-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .review-verified {
+      font-size: 0.65rem;
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+    }
+
+    .review-stars { font-size: 0.85rem; color: #e8a838; }
+
+    .review-title {
+      font-weight: 600;
+      font-size: 0.88rem;
+      margin-bottom: 8px;
+    }
+
+    .review-text {
+      font-size: 0.82rem;
+      color: var(--gray);
+      line-height: 1.65;
+      margin-bottom: 12px;
+    }
+
+    .review-meta {
+      font-size: 0.7rem;
+      color: var(--gray-light);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .btn-reviews {
+      display: block;
+      margin: 32px auto 0;
+      background: none;
+      border: 2px solid var(--coral);
+      color: var(--coral);
+      padding: 12px 32px;
+      border-radius: 24px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-reviews:hover { background: var(--coral); color: white; }
+
+    /* ─── CTA FINAL ─── */
+    .cta-final {
+      background: var(--coral);
+      padding: 80px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-final::before {
+      content: '✦';
+      position: absolute;
+      font-size: 20rem;
+      color: rgba(255,255,255,0.04);
+      top: -60px;
+      left: -60px;
+    }
+
+    .cta-final h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .cta-final p {
+      color: rgba(255,255,255,0.85);
+      font-size: 0.9rem;
+      max-width: 480px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+
+    .btn-cta-final {
+      background: white;
+      color: var(--coral);
+      border: none;
+      padding: 18px 48px;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-cta-final:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.6);
+      padding: 48px;
+    }
+
+    .footer-top {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .footer-logo {
+      width: 52px; height: 52px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: white;
+    }
+
+    .footer-tagline {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+    }
+
+    .footer-links {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      margin-bottom: 40px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 40px;
+    }
+
+    .footer-col h4 {
+      color: white;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .footer-col a {
+      display: block;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: white; }
+
+    .payment-methods {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 24px;
+    }
+
+    .payment-badge {
+      background: rgba(255,255,255,0.1);
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.6);
+      font-weight: 500;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 32px 20px;
+        gap: 32px;
+      }
+
+      .how-section { padding: 56px 20px; }
+      .steps-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .reviews-section { padding: 56px 20px; }
+      .reviews-grid { grid-template-columns: 1fr; }
+
+      .cta-final { padding: 56px 20px; }
+      .cta-final h2 { font-size: 1.6rem; }
+
+      footer { padding: 40px 20px; }
+      .footer-links { grid-template-columns: repeat(2, 1fr); }
+
+      .trust-badges { gap: 16px; }
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-right > * {
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero-right h1      { animation-delay: 0.1s; }
+    .stars-row          { animation-delay: 0.2s; }
+    .benefits-list      { animation-delay: 0.3s; }
+    .quantity-options   { animation-delay: 0.4s; }
+    .btn-buy            { animation-delay: 0.5s; }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA URGENCIA -->
+  <div class="urgency-bar">
+    🔥 Oferta por tiempo limitado &nbsp;·&nbsp; <span>¡Últimas unidades disponibles!</span>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <img src="logo.png" alt="PG Productos Capilares" style="height:48px; width:auto;" />
+    <ul class="nav-links">
+      <li><a href="#">Combos</a></li>
+      <li><a href="#">Productos</a></li>
+      <li><a href="#">Contacto</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nav-cart">🛒</button>
+      <a href="https://wa.me/TU_NUMERO" class="nav-wa">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-img">
+      <!-- Reemplazá con: <img src="TU-FOTO.jpg" alt="Combo Biotina"> -->
+      <div class="hero-img-placeholder">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#c4bdb5" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        <span>Foto del producto</span>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="stock-badge">
+        <span class="stock-dot"></span>
+        Stock disponible · Envío hoy
+      </div>
+      <h1>Combo Biotina® | Menos caída, recuperá tu cabello de forma natural.</h1>
+
+      <div class="stars-row">
+        <span class="stars">★★★★☆</span>
+        <span class="stars-text">4.8 · 2.244 reseñas</span>
+      </div>
+
+      <ul class="benefits-list">
+        <li>
+          <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span><strong>Reduce la caída</strong> desde la primera semana.</span>
+        </li>
+        <li>
+          <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span><strong>Estimula el crecimiento</strong> y fortalece la raíz.</span>
+        </li>
+        <li>
+          <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span><strong>Activa pelitos nuevos</strong> en zonas debilitadas.</span>
+        </li>
+        <li>
+          <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span><strong>Sin formol ni sulfatos.</strong> Apto uso diario.</span>
+        </li>
+      </ul>
+
+      <div class="promo-tag">¡Llevá más, pagá menos!</div>
+
+      <div class="quantity-options">
+        <div class="qty-option" onclick="selectQty(this, '$34.000', 1)" data-price="34000">
+          <span class="qty-count">1 producto</span>
+          <div class="qty-left">
+            <div class="qty-radio"></div>
+            <div class="qty-info">
+              <strong>Lleva 1</strong>
+              <span>Tratamiento 1 mes</span>
+            </div>
+          </div>
+          <div class="qty-price">
+            <span class="price-now">$ 34.000</span>
+          </div>
+        </div>
+
+        <div class="qty-option popular" onclick="selectQty(this, '$62.000', 2)" data-price="62000">
+          <span class="qty-count">2 productos</span>
+          <div class="qty-left">
+            <div class="qty-radio"></div>
+            <div class="qty-info">
+              <strong>Lleva 2</strong>
+              <span>3 cuotas sin interés de $20.667</span>
+            </div>
+          </div>
+          <div class="qty-price">
+            <span class="price-now">$ 62.000</span>
+            <span class="price-old">$ 68.000</span>
+          </div>
+        </div>
+
+        <div class="qty-option best" onclick="selectQty(this, '$82.000', 3)" data-price="82000">
+          <span class="qty-count">3 productos</span>
+          <div class="qty-left">
+            <div class="qty-radio"></div>
+            <div class="qty-info">
+              <strong>Lleva 3</strong>
+              <span>3 cuotas sin interés de $27.333 + envío gratis</span>
+            </div>
+          </div>
+          <div class="qty-price">
+            <span class="price-now">$ 82.000</span>
+            <span class="price-old">$ 102.000</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reemplazá href con tu link de MercadoPago -->
+      <button class="btn-buy" id="buyBtn" onclick="openModal()">
+        COMPRAR AHORA · $ 34.000
+      </button>
+
+      <a href="https://wa.me/TU_NUMERO?text=Hola!%20Quiero%20comprar%20el%20Combo%20Biotina" class="btn-wa-alt">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Consultar por WhatsApp
+      </a>
+
+      <div class="guarantee-box">
+        <span class="guarantee-icon">🛡️</span>
+        <div class="guarantee-text">
+          <strong>Compra 100% protegida</strong>
+          <span>Si no quedás conforme te devolvemos el dinero. Sin preguntas.</span>
+        </div>
+      </div>
+
+      <div class="trust-badges">
+        <div class="trust-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><path d="m16 8 2 2 4-4"/><path d="M1 13h15v8H1z"/></svg>
+          Envío rápido
+        </div>
+        <div class="trust-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Compra protegida
+        </div>
+        <div class="trust-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+          Sin formol
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROOF STRIP -->
+  <div class="proof-strip">
+    <div style="text-align:center"><div class="proof-num">+2.244</div><div class="proof-label">clientas felices</div></div>
+    <div style="text-align:center"><div class="proof-num">4.8★</div><div class="proof-label">calificación promedio</div></div>
+    <div style="text-align:center"><div class="proof-num">1 semana</div><div class="proof-label">para ver resultados</div></div>
+    <div style="text-align:center"><div class="proof-num">0%</div><div class="proof-label">formol ni sulfatos</div></div>
+  </div>
+
+  <!-- HOW TO USE -->
+  <div class="how-section">
+    <h2>¿Cómo se usa?</h2>
+    <p class="how-sub">Una rutina simple, resultados visibles.</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <p class="step-text">Lavá con el Shampoo de Biotina</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <p class="step-text">Aplicá la Crema de medios a puntas</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <p class="step-text">2 veces por semana, usá la Ampolla Plex</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <p class="step-text">Diariamente, aplicá Biotina Pure en el cuero cabelludo</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section">
+    <h2>Preguntas frecuentes</h2>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">¿Cuándo voy a ver resultados? <span class="faq-arrow">+</span></button>
+      <div class="faq-a">La mayoría de las clientas notan menos caída en la primera semana. El crecimiento visible de pelo nuevo se nota entre la semana 3 y 6 con uso constante.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">¿Sirve para todo tipo de cabello? <span class="faq-arrow">+</span></button>
+      <div class="faq-a">Sí, está formulado para todo tipo de cabello: liso, ondulado, rizado, teñido o tratado químicamente. Sin formol ni sulfatos, apto uso diario.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">¿Cómo llega el envío? <span class="faq-arrow">+</span></button>
+      <div class="faq-a">Despachamos por Correo Argentino a todo el país con envío rápido. Te enviamos el número de seguimiento por WhatsApp cuando despachamos.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">¿Puedo pagar en cuotas? <span class="faq-arrow">+</span></button>
+      <div class="faq-a">Sí. Con las opciones de 2 o 3 combos podés pagar en 3 cuotas sin interés con tarjeta a través de MercadoPago. También aceptamos débito, efectivo y dinero en cuenta.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">¿Qué pasa si no me gusta el producto? <span class="faq-arrow">+</span></button>
+      <div class="faq-a">Tu compra está 100% protegida. Si no quedás satisfecha te devolvemos el dinero sin preguntas. Contactanos por WhatsApp y lo resolvemos en el día.</div>
+    </div>
+  </div>
+
+  <!-- REVIEWS -->
+  <div class="reviews-section">
+    <h2>Más de 2.244 clientas felices</h2>
+    <div class="reviews-stars">
+      <div class="stars">★★★★★</div>
+      <p>4.8 de 5 estrellas</p>
+    </div>
+
+    <div class="rating-bars">
+      <div class="rating-row">
+        <span class="rating-label">5★</span>
+        <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:88%"></div></div>
+        <span class="rating-pct">88%</span>
+      </div>
+      <div class="rating-row">
+        <span class="rating-label">4★</span>
+        <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:9%"></div></div>
+        <span class="rating-pct">9%</span>
+      </div>
+      <div class="rating-row">
+        <span class="rating-label">3★</span>
+        <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:2%"></div></div>
+        <span class="rating-pct">2%</span>
+      </div>
+      <div class="rating-row">
+        <span class="rating-label">2★</span>
+        <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:1%"></div></div>
+        <span class="rating-pct">1%</span>
+      </div>
+      <div class="rating-row">
+        <span class="rating-label">1★</span>
+        <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:0%"></div></div>
+        <span class="rating-pct">0%</span>
+      </div>
+    </div>
+
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-header">
+          <span class="review-stars">★★★★★</span>
+          <span class="review-verified">✓ Verificado</span>
+        </div>
+        <div class="review-title">El mejor tratamiento que probé</div>
+        <p class="review-text">Se me cae muchísimo el pelo y en 1 mes ya noté la diferencia. Estoy fascinada con los resultados. Lo recomiendo 100%.</p>
+        <div class="review-meta">
+          <span>Carla P.</span>
+          <span>hace 2 semanas</span>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <span class="review-stars">★★★★★</span>
+          <span class="review-verified">✓ Verificado</span>
+        </div>
+        <div class="review-title">¡Pelo nuevo!</div>
+        <p class="review-text">Me están saliendo pelitos nuevos en la coronilla. No lo podía creer. Llevo 6 semanas usándolo todos los días.</p>
+        <div class="review-meta">
+          <span>Daniela P.</span>
+          <span>hace 1 mes</span>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <span class="review-stars">★★★★★</span>
+          <span class="review-verified">✓ Verificado</span>
+        </div>
+        <div class="review-title">Salvó mi pelo post-parto</div>
+        <p class="review-text">Después de tener a mi bebé se me caía a mechones. Con la biotina pura mejoré un montón en muy poco tiempo.</p>
+        <div class="review-meta">
+          <span>Luciana M.</span>
+          <span>hace 3 semanas</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-reviews">Ver todas las reseñas</button>
+  </div>
+
+  <!-- CTA FINAL -->
+  <div class="cta-final">
+    <h2>Empezá hoy tu tratamiento</h2>
+    <p>Resultados visibles desde la primera semana. Sin formol, sin sulfatos, sin efectos secundarios.</p>
+    <a href="#" onclick="openModal(); return false;" class="btn-cta-final">Lleva 2 · $ 62.000</a>
+  </div>
+
+  <!-- MODAL FORMULARIO -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <h3>¡Un paso más! 📦</h3>
+      <p class="modal-sub">Completá tus datos para coordinar el envío. Tu pedido: <span id="modalProducto">Combo Biotina x2 — $62.000</span></p>
+
+      <div class="form-section-title">Datos personales</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" id="nombre" placeholder="María" required />
+        </div>
+        <div class="form-group">
+          <label>Apellido</label>
+          <input type="text" id="apellido" placeholder="González" required />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>DNI</label>
+          <input type="text" id="dni" placeholder="12345678" required />
+        </div>
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="tel" id="telefono" placeholder="11 1234-5678" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="maria@email.com" required />
+      </div>
+
+      <div class="form-section-title">Dirección de entrega</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Calle</label>
+          <input type="text" id="calle" placeholder="Av. Corrientes" required />
+        </div>
+        <div class="form-group">
+          <label>Número</label>
+          <input type="text" id="numero" placeholder="1234" required />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Piso / Depto</label>
+          <input type="text" id="piso" placeholder="3° B (opcional)" />
+        </div>
+        <div class="form-group">
+          <label>Código Postal</label>
+          <input type="text" id="cp" placeholder="1414" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Barrio / Localidad</label>
+        <input type="text" id="localidad" placeholder="Palermo" required />
+      </div>
+      <div class="form-group">
+        <label>Provincia</label>
+        <select id="provincia" required>
+          <option value="">Seleccioná tu provincia</option>
+          <option>Buenos Aires (GBA)</option>
+          <option>Buenos Aires (interior)</option>
+          <option>CABA</option>
+          <option>Catamarca</option>
+          <option>Chaco</option>
+          <option>Chubut</option>
+          <option>Córdoba</option>
+          <option>Corrientes</option>
+          <option>Entre Ríos</option>
+          <option>Formosa</option>
+          <option>Jujuy</option>
+          <option>La Pampa</option>
+          <option>La Rioja</option>
+          <option>Mendoza</option>
+          <option>Misiones</option>
+          <option>Neuquén</option>
+          <option>Río Negro</option>
+          <option>Salta</option>
+          <option>San Juan</option>
+          <option>San Luis</option>
+          <option>Santa Cruz</option>
+          <option>Santa Fe</option>
+          <option>Santiago del Estero</option>
+          <option>Tierra del Fuego</option>
+          <option>Tucumán</option>
+        </select>
+      </div>
+
+      <button class="btn-confirm" onclick="confirmarCompra()">Confirmar y pagar →</button>
+      <p class="modal-disclaimer">🔒 Tus datos están protegidos y solo se usan para coordinar el envío.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <img src="logo.png" alt="PG Productos Capilares" style="height:52px; width:auto; opacity:0.85;" />
+      <span class="footer-tagline">Tratamientos capilares profesionales · Pablo Podestá, Buenos Aires</span>
+    </div>
+
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Navegación</h4>
+        <a href="#">Combos</a>
+        <a href="#">Contacto</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#" onclick="openLegal('privacidad'); return false;">Política de Privacidad</a>
+        <a href="#" onclick="openLegal('terminos'); return false;">Términos y Condiciones</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <a href="#">WhatsApp</a>
+        <a href="#">Pablo Podestá, Buenos Aires</a>
+      </div>
+      <div class="footer-col">
+        <h4>Seguinos</h4>
+        <a href="#">Instagram</a>
+        <a href="#">TikTok</a>
+      </div>
+    </div>
+
+    <div class="payment-methods">
+      <span class="payment-badge">MercadoPago</span>
+      <span class="payment-badge">Visa</span>
+      <span class="payment-badge">Mastercard</span>
+      <span class="payment-badge">Débito</span>
+      <span class="payment-badge">Efectivo</span>
+    </div>
+  </footer>
+
+  <!-- MODAL POLÍTICA DE PRIVACIDAD -->
+  <div class="modal-overlay" id="modalPrivacidad" onclick="closeLegalOutside(event, 'privacidad')">
+    <div class="modal" style="max-width:640px;">
+      <button class="modal-close" onclick="closeLegal('privacidad')">×</button>
+      <h3>Política de Privacidad</h3>
+      <p class="modal-sub">Última actualización: Mayo 2025</p>
+      <div style="font-size:0.83rem; color:#444; line-height:1.85; max-height:60vh; overflow-y:auto; padding-right:8px;">
+        <p style="margin-bottom:14px"><strong>1. Información que recopilamos</strong><br>
+        Cuando realizás una compra en nuestro sitio, recopilamos datos personales como nombre, apellido, DNI, teléfono, email y dirección de entrega. Esta información es necesaria para procesar tu pedido y coordinar el envío.</p>
+        <p style="margin-bottom:14px"><strong>2. Uso de la información</strong><br>
+        Los datos que nos proporcionás se utilizan exclusivamente para: procesar y enviar tu pedido, comunicarnos con vos sobre el estado de tu compra, y mejorar nuestros servicios. No vendemos ni compartimos tu información personal con terceros, salvo los necesarios para efectuar el envío (Correo Argentino).</p>
+        <p style="margin-bottom:14px"><strong>3. Protección de datos</strong><br>
+        Tu información es almacenada de forma segura. Implementamos medidas técnicas y organizativas para proteger tus datos contra accesos no autorizados. Los pagos son procesados de forma segura por MercadoPago, que cuenta con sus propias políticas de seguridad y privacidad.</p>
+        <p style="margin-bottom:14px"><strong>4. Tus derechos</strong><br>
+        De acuerdo con la Ley 25.326 de Protección de Datos Personales de Argentina, tenés derecho a acceder, rectificar y suprimir tus datos personales. Para ejercer estos derechos podés contactarnos por WhatsApp.</p>
+        <p style="margin-bottom:14px"><strong>5. Cookies</strong><br>
+        Nuestro sitio puede utilizar cookies para mejorar tu experiencia de navegación y para fines estadísticos. Podés configurar tu navegador para rechazarlas, aunque esto podría afectar algunas funcionalidades del sitio.</p>
+        <p style="margin-bottom:14px"><strong>6. Contacto</strong><br>
+        Si tenés alguna consulta sobre esta política podés contactarnos por WhatsApp o por Instagram.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL TÉRMINOS Y CONDICIONES -->
+  <div class="modal-overlay" id="modalTerminos" onclick="closeLegalOutside(event, 'terminos')">
+    <div class="modal" style="max-width:640px;">
+      <button class="modal-close" onclick="closeLegal('terminos')">×</button>
+      <h3>Términos y Condiciones</h3>
+      <p class="modal-sub">Última actualización: Mayo 2025</p>
+      <div style="font-size:0.83rem; color:#444; line-height:1.85; max-height:60vh; overflow-y:auto; padding-right:8px;">
+        <p style="margin-bottom:14px"><strong>1. Aceptación</strong><br>
+        Al realizar una compra en este sitio, aceptás estos términos y condiciones en su totalidad. Si no estás de acuerdo con alguno de ellos, te pedimos que no realices la compra.</p>
+        <p style="margin-bottom:14px"><strong>2. Productos</strong><br>
+        Todos los productos ofrecidos son cosméticos capilares de uso externo. Los resultados pueden variar según el tipo de cabello y la constancia en el uso. No reemplazamos tratamientos médicos. Si tenés alguna condición de salud, consultá con un profesional antes de usar el producto.</p>
+        <p style="margin-bottom:14px"><strong>3. Precios y pagos</strong><br>
+        Los precios están expresados en pesos argentinos (ARS) e incluyen IVA. El pago se realiza a través de MercadoPago, que acepta tarjetas de crédito, débito, efectivo y dinero en cuenta. Los precios pueden modificarse sin previo aviso.</p>
+        <p style="margin-bottom:14px"><strong>4. Envíos</strong><br>
+        Los envíos se realizan por Correo Argentino a todo el país. El costo de envío se informa al momento de la compra. Los plazos de entrega son estimativos y pueden variar según la provincia. No nos hacemos responsables por demoras atribuibles al servicio postal.</p>
+        <p style="margin-bottom:14px"><strong>5. Cambios y devoluciones</strong><br>
+        Si el producto llega dañado o con defectos de fabricación, lo reemplazamos sin costo. Para solicitar un cambio tenés hasta 10 días desde la recepción del pedido, contactándonos por WhatsApp con foto del producto. No se aceptan devoluciones de productos abiertos o usados salvo que presenten defectos.</p>
+        <p style="margin-bottom:14px"><strong>6. Garantía de satisfacción</strong><br>
+        Si no quedás conforme con el producto podés contactarnos y evaluamos cada caso de forma personalizada. Nuestro compromiso es que quedes satisfecha con tu compra.</p>
+        <p style="margin-bottom:14px"><strong>7. Responsabilidad</strong><br>
+        No nos responsabilizamos por el uso inadecuado del producto. Antes de usar, leé las instrucciones en el envase y realizá una prueba de alergia en una pequeña zona de piel.</p>
+        <p style="margin-bottom:14px"><strong>8. Contacto</strong><br>
+        Para cualquier consulta podés comunicarte con nosotros por WhatsApp o por Instagram. Respondemos en el día en horario comercial.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING CTA MOBILE -->
+  <div class="floating-cta">
+    <button class="floating-cta-btn" id="floatingBtn" onclick="openModal()">
+      COMPRAR AHORA · $ 62.000
+    </button>
+  </div>
+
+  <script>
+    // Precios por cantidad
+    const precios = { 1: { label: 'Combo Biotina x1 — $34.000', mp: 'MERCADOPAGO_URL_1' }, 2: { label: 'Combo Biotina x2 — $62.000', mp: 'MERCADOPAGO_URL_2' }, 3: { label: 'Combo Biotina x3 — $82.000', mp: 'MERCADOPAGO_URL_3' } };
+    let selectedQty = 2;
+
+    function selectQty(el, price, qty) {
+      document.querySelectorAll('.qty-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedQty = qty;
+      const prices = { 1: '34.000', 2: '62.000', 3: '82.000' };
+      document.getElementById('buyBtn').textContent = `COMPRAR AHORA · $ ${prices[qty]}`;
+      document.getElementById('floatingBtn').textContent = `COMPRAR AHORA · $ ${prices[qty]}`;
+    }
+
+    function openModal() {
+      document.getElementById('modalProducto').textContent = precios[selectedQty].label;
+      document.getElementById('modalOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function closeModalOutside(e) {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    function confirmarCompra() {
+      const campos = ['nombre','apellido','dni','telefono','email','calle','numero','cp','localidad','provincia'];
+      const obligatorios = ['nombre','apellido','dni','telefono','email','calle','numero','cp','localidad','provincia'];
+      let valido = true;
+      obligatorios.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el.value.trim()) { el.style.borderColor = 'var(--coral)'; valido = false; }
+        else { el.style.borderColor = ''; }
+      });
+      if (!valido) { alert('Por favor completá todos los campos obligatorios.'); return; }
+
+      // Guardar datos en localStorage
+      const datos = {};
+      campos.forEach(id => { datos[id] = document.getElementById(id).value; });
+      datos.producto = precios[selectedQty].label;
+      datos.fecha = new Date().toLocaleString('es-AR');
+      const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
+      pedidos.push(datos);
+      localStorage.setItem('pedidos', JSON.stringify(pedidos));
+
+      // Redirigir a MercadoPago
+      window.location.href = precios[selectedQty].mp;
+    }
+
+    function toggleFaq(btn) {
+      const item = btn.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    }
+
+    function openLegal(tipo) {
+      document.getElementById(tipo === 'privacidad' ? 'modalPrivacidad' : 'modalTerminos').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLegal(tipo) {
+      document.getElementById(tipo === 'privacidad' ? 'modalPrivacidad' : 'modalTerminos').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    function closeLegalOutside(e, tipo) {
+      const id = tipo === 'privacidad' ? 'modalPrivacidad' : 'modalTerminos';
+      if (e.target === document.getElementById(id)) closeLegal(tipo);
+    }
+
+    document.querySelector('.qty-option.popular').click();
+  </script>
+
+</body>
+</html>
