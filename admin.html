@@ -211,6 +211,9 @@
       .form-grid   { grid-template-columns: 1fr; }
     }
   </style>
+  <!-- Firebase SDK (sincronización en tiempo real) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -239,6 +242,7 @@
         <img src="logo.png" alt="Biotina PG" onerror="this.style.display='none'" />
         <h1>Panel de Ventas</h1>
         <span class="badge-admin">Admin</span>
+        <span id="syncBadge" style="font-size:0.62rem;font-weight:600;letter-spacing:0.08em;padding:3px 8px;border-radius:4px;background:#f0faf4;color:#3d7a4f;display:none">🟢 Firebase</span>
       </div>
       <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
     </nav>
@@ -389,6 +393,42 @@
       cerrado:    'Cerrado por WhatsApp 💬',
     };
 
+    // ─── FIREBASE CONFIG ────────────────────────────────────────────────────
+    // Para activar la sincronización en tiempo real:
+    // 1. Ir a https://console.firebase.google.com y crear un proyecto
+    // 2. Agregar una app web → copiar el objeto firebaseConfig
+    // 3. Habilitar Firestore Database (modo producción)
+    // 4. En Reglas de Firestore, pegar estas reglas y publicar:
+    //    rules_version = '2';
+    //    service cloud.firestore {
+    //      match /databases/{database}/documents {
+    //        match /pedidos/{id} {
+    //          allow create: if request.resource.data.keys().hasAll(['nombre','producto','fecha']);
+    //          allow read, update: if true;
+    //        }
+    //      }
+    //    }
+    // 5. Completar FIREBASE_CONFIG con los valores reales y cambiar FIREBASE_ENABLED a true
+    // 6. Hacer lo mismo en index.html (mismos valores)
+    const FIREBASE_ENABLED = false; // ← cambiar a true después de configurar
+
+    const FIREBASE_CONFIG = {
+      apiKey:            'TU-API-KEY',
+      authDomain:        'TU-PROJECT.firebaseapp.com',
+      projectId:         'TU-PROJECT-ID',
+      storageBucket:     'TU-PROJECT.appspot.com',
+      messagingSenderId: '000000000000',
+      appId:             'TU-APP-ID'
+    };
+
+    if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
+      firebase.initializeApp(FIREBASE_CONFIG);
+    }
+    // ────────────────────────────────────────────────────────────────────────
+
+    /* ── DATA CACHE ─────────────────────────────────────────────────── */
+    let pedidosCache = [];
+
     /* ── AUTH ────────────────────────────────────────────────────────── */
     if (sessionStorage.getItem('adminAuth') === 'ok') showPanel();
 
@@ -416,7 +456,12 @@
     function showPanel() {
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('adminPanel').style.display  = 'block';
-      loadData();
+      if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
+        document.getElementById('syncBadge').style.display = 'inline-block';
+        setupFirestoreListener();
+      } else {
+        loadFromLocalStorage();
+      }
     }
 
     /* ── FORM TOGGLE ─────────────────────────────────────────────────── */
@@ -427,15 +472,73 @@
       toggle.classList.toggle('open', open);
     }
 
-    /* ── STORAGE ─────────────────────────────────────────────────────── */
-    const getPedidos  = () => JSON.parse(localStorage.getItem('pedidos')      || '[]');
-    const getStatuses = () => JSON.parse(localStorage.getItem('pedidoStatus') || '{}');
+    /* ── FIREBASE LISTENER ───────────────────────────────────────────── */
+    function setupFirestoreListener() {
+      firebase.firestore()
+        .collection('pedidos')
+        .orderBy('createdAt', 'asc')
+        .onSnapshot(snapshot => {
+          pedidosCache = snapshot.docs.map(doc => {
+            const d = doc.data();
+            return {
+              id:        doc.id,
+              nombre:    d.nombre    || '',
+              apellido:  d.apellido  || '',
+              dni:       d.dni       || '',
+              telefono:  d.telefono  || '',
+              email:     d.email     || '',
+              provincia: d.provincia || '',
+              producto:  d.producto  || '',
+              fecha:     d.fecha     || '',
+              _manual:   d._manual   || false,
+              _st:       d.status    || 'abandonado',
+              _c:        getCombo(d.producto),
+            };
+          });
+          loadData();
+        }, err => {
+          console.warn('Firestore listener error:', err);
+          loadFromLocalStorage();
+        });
+    }
 
-    function saveStatus(i, val) {
-      const s = getStatuses();
-      s[i] = val;
-      localStorage.setItem('pedidoStatus', JSON.stringify(s));
+    /* ── LOCALSTORAGE FALLBACK ───────────────────────────────────────── */
+    function loadFromLocalStorage() {
+      const pedidos  = JSON.parse(localStorage.getItem('pedidos')      || '[]');
+      const statuses = JSON.parse(localStorage.getItem('pedidoStatus') || '{}');
+      pedidosCache = pedidos.map((p, i) => ({
+        id:        String(i),
+        nombre:    p.nombre    || '',
+        apellido:  p.apellido  || '',
+        dni:       p.dni       || '',
+        telefono:  p.telefono  || '',
+        email:     p.email     || '',
+        provincia: p.provincia || '',
+        producto:  p.producto  || '',
+        fecha:     p.fecha     || '',
+        _manual:   p._manual   || false,
+        _st:       statuses[i] || 'abandonado',
+        _c:        getCombo(p.producto),
+      }));
       loadData();
+    }
+
+    /* ── SAVE STATUS ─────────────────────────────────────────────────── */
+    function saveStatus(id, val) {
+      if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
+        firebase.firestore().collection('pedidos').doc(id)
+          .update({ status: val })
+          .catch(e => console.warn('saveStatus:', e));
+        const p = pedidosCache.find(x => x.id === id);
+        if (p) { p._st = val; }
+        loadData();
+      } else {
+        const idx = parseInt(id);
+        const s   = JSON.parse(localStorage.getItem('pedidoStatus') || '{}');
+        s[idx] = val;
+        localStorage.setItem('pedidoStatus', JSON.stringify(s));
+        loadFromLocalStorage();
+      }
     }
 
     /* ── HELPERS ─────────────────────────────────────────────────────── */
@@ -465,24 +568,21 @@
 
     /* ── STATS ───────────────────────────────────────────────────────── */
     function loadData() {
-      const pedidos  = getPedidos();
-      const statuses = getStatuses();
       let ventasHoy = 0, ventasMes = 0, ingresosMes = 0, gananciaMes = 0, abandoned = 0;
 
-      pedidos.forEach((p, i) => {
-        const st    = statuses[i] || 'abandonado';
-        const combo = getCombo(p.producto);
-        if (st === 'confirmado' && combo) {
+      pedidosCache.forEach(p => {
+        const combo = p._c;
+        if (p._st === 'confirmado' && combo) {
           if (isToday(p.fecha))     ventasHoy++;
           if (isThisMonth(p.fecha)) { ventasMes++; ingresosMes += combo.precio; gananciaMes += combo.ganancia; }
         }
-        if (st === 'abandonado') abandoned++;
+        if (p._st === 'abandonado') abandoned++;
       });
 
-      document.getElementById('sHoy').textContent      = ventasHoy;
-      document.getElementById('sMes').textContent      = ventasMes;
-      document.getElementById('sIngresos').textContent = fmt(ingresosMes);
-      document.getElementById('sGanancia').textContent = fmt(gananciaMes);
+      document.getElementById('sHoy').textContent       = ventasHoy;
+      document.getElementById('sMes').textContent       = ventasMes;
+      document.getElementById('sIngresos').textContent  = fmt(ingresosMes);
+      document.getElementById('sGanancia').textContent  = fmt(gananciaMes);
       document.getElementById('sAbandoned').textContent = abandoned;
 
       renderTable();
@@ -490,15 +590,12 @@
 
     /* ── TABLE ───────────────────────────────────────────────────────── */
     function renderTable() {
-      const pedidos  = getPedidos();
-      const statuses = getStatuses();
-      const q        = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
-      const fSt      = document.getElementById('filterStatus')?.value || '';
-      const tbody    = document.getElementById('tableBody');
-      const tfoot    = document.getElementById('tableFoot');
+      const q     = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+      const fSt   = document.getElementById('filterStatus')?.value || '';
+      const tbody = document.getElementById('tableBody');
+      const tfoot = document.getElementById('tableFoot');
 
-      const rows = pedidos
-        .map((p, i) => ({ ...p, _i: i, _st: statuses[i] || 'abandonado', _c: getCombo(p.producto) }))
+      const rows = [...pedidosCache]
         .filter(p => {
           if (fSt && p._st !== fSt) return false;
           if (!q) return true;
@@ -515,7 +612,6 @@
         return;
       }
 
-      /* totals row */
       let tPrecio = 0, tMP = 0, tCosto = 0, tEnvio = 0, tGanancia = 0;
       rows.forEach(p => {
         if (p._c) { tPrecio += p._c.precio; tMP += p._c.mp; tCosto += p._c.costo; tEnvio += p._c.envio; tGanancia += p._c.ganancia; }
@@ -526,9 +622,10 @@
       ).join('');
 
       tbody.innerHTML = rows.map(p => {
-        const nombre = `${p.nombre || ''} ${p.apellido || ''}`.trim() || '—';
+        const nombre = `${p.nombre} ${p.apellido}`.trim() || '—';
         const c      = p._c;
         const waMsg  = encodeURIComponent(`Hola ${p.nombre || ''}! Vi que estuviste viendo nuestro Combo Biotina 🌿 ¿Te puedo ayudar a completar tu pedido? Tenemos envío a todo el país 📦`);
+        const safeId = p.id.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
         return `<tr>
           <td class="td-name">${nombre}</td>
@@ -542,7 +639,7 @@
           <td class="td-r td-gain">${c ? fmt(c.ganancia) : '—'}</td>
           <td>
             <select class="status-sel s-${p._st}"
-              onchange="saveStatus(${p._i},this.value);this.className='status-sel s-'+this.value">
+              onchange="saveStatus('${safeId}',this.value);this.className='status-sel s-'+this.value">
               ${opts(p._st)}
             </select>
           </td>
@@ -582,30 +679,40 @@
         return;
       }
 
-      const combo    = COMBOS[prodAmt];
-      const pedidos  = getPedidos();
-      const statuses = getStatuses();
-      const idx      = pedidos.length;
+      const combo = COMBOS[prodAmt];
 
-      pedidos.push({
-        nombre, apellido: '', dni: '', telefono: tel, email: '',
-        calle: '', numero: '', piso: '', cp: '', localidad: '', provincia: prov,
-        producto: combo.label,
-        fecha: new Date().toLocaleString('es-AR'),
-        _manual: true,
-      });
+      if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
+        firebase.firestore().collection('pedidos').add({
+          nombre, apellido: '', dni: '', telefono: tel, email: '',
+          calle: '', numero: '', piso: '', cp: '', localidad: '', provincia: prov,
+          producto: combo.label,
+          fecha: new Date().toLocaleString('es-AR'),
+          status: estado,
+          _manual: true,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        }).catch(e => console.warn('addManualSale:', e));
+      } else {
+        const pedidos  = JSON.parse(localStorage.getItem('pedidos')      || '[]');
+        const statuses = JSON.parse(localStorage.getItem('pedidoStatus') || '{}');
+        const idx      = pedidos.length;
+        pedidos.push({
+          nombre, apellido: '', dni: '', telefono: tel, email: '',
+          calle: '', numero: '', piso: '', cp: '', localidad: '', provincia: prov,
+          producto: combo.label,
+          fecha: new Date().toLocaleString('es-AR'),
+          _manual: true,
+        });
+        statuses[idx] = estado;
+        localStorage.setItem('pedidos',      JSON.stringify(pedidos));
+        localStorage.setItem('pedidoStatus', JSON.stringify(statuses));
+        loadFromLocalStorage();
+      }
 
-      statuses[idx] = estado;
-      localStorage.setItem('pedidos',      JSON.stringify(pedidos));
-      localStorage.setItem('pedidoStatus', JSON.stringify(statuses));
-
-      document.getElementById('fNombre').value   = '';
-      document.getElementById('fTel').value      = '';
+      document.getElementById('fNombre').value    = '';
+      document.getElementById('fTel').value       = '';
       document.getElementById('fProvincia').value = '';
       document.getElementById('fProducto').value  = '';
       document.getElementById('fEstado').value    = 'confirmado';
-
-      loadData();
     }
   </script>
 

@@ -943,6 +943,9 @@
     .quantity-options   { animation-delay: 0.4s; }
     .btn-buy            { animation-delay: 0.5s; }
   </style>
+  <!-- Firebase SDK (sincronización en tiempo real) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -1463,6 +1466,29 @@
   </div>
 
   <script>
+    // ─── FIREBASE CONFIG ──────────────────────────────────────────────────────
+    // Para activar la sincronización en tiempo real con el panel admin:
+    // 1. Crear un proyecto en https://console.firebase.google.com
+    // 2. Agregar una app web → copiar el objeto firebaseConfig
+    // 3. Habilitar Firestore Database (modo producción)
+    // 4. Pegar las reglas del comentario en admin.html y publicarlas
+    // 5. Completar FIREBASE_CONFIG y cambiar FIREBASE_ENABLED a true
+    const FIREBASE_ENABLED = false; // ← cambiar a true después de configurar
+
+    const FIREBASE_CONFIG = {
+      apiKey:            'TU-API-KEY',
+      authDomain:        'TU-PROJECT.firebaseapp.com',
+      projectId:         'TU-PROJECT-ID',
+      storageBucket:     'TU-PROJECT.appspot.com',
+      messagingSenderId: '000000000000',
+      appId:             'TU-APP-ID'
+    };
+
+    if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
+      firebase.initializeApp(FIREBASE_CONFIG);
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
     // ─── CONFIGURACIÓN ────────────────────────────────────────────────────────
     // WhatsApp (formato internacional sin + ni espacios)
     const WA_NUMERO = '5491124838177';
@@ -1516,14 +1542,25 @@
       });
       if (!valido) { alert('Por favor completá todos los campos obligatorios.'); return; }
 
-      // Guardar datos en localStorage
+      // Guardar datos
       const datos = {};
       campos.forEach(id => { datos[id] = document.getElementById(id).value; });
       datos.producto = precios[selectedQty].label;
       datos.fecha = new Date().toLocaleString('es-AR');
+
+      // Guardar en localStorage (siempre, como respaldo)
       const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
       pedidos.push(datos);
       localStorage.setItem('pedidos', JSON.stringify(pedidos));
+
+      // Guardar en Firestore si está habilitado (sincronización en tiempo real)
+      if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
+        firebase.firestore().collection('pedidos').add({
+          ...datos,
+          status: 'abandonado',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(e => console.warn('Firestore:', e));
+      }
 
       const mpUrl = precios[selectedQty].mp;
       const mpListo = mpUrl && !mpUrl.startsWith('MERCADOPAGO_URL');
