@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Admin · Biotina PG</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream:       #f5f0ea;
+      --cream2:      #ede7df;
+      --coral:       #e07a5f;
+      --coral-dark:  #c96a4f;
+      --coral-light: #f4a08a;
+      --green:       #3d7a4f;
+      --dark:        #1a1a1a;
+      --gray:        #6b6b6b;
+      --gray-light:  #c4bdb5;
+      --white:       #ffffff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--cream); color: var(--dark); font-family: 'Outfit', sans-serif; font-weight: 400; line-height: 1.6; min-height: 100vh; }
+
+    /* ── LOGIN ──────────────────────────────────────────────────── */
+    .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+
+    .login-box {
+      background: white; border-radius: 20px; padding: 48px 40px;
+      width: 100%; max-width: 400px; text-align: center;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    }
+    .login-box img   { height: 68px; width: auto; margin-bottom: 24px; }
+    .login-box h2    { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
+    .login-sub       { font-size: 0.82rem; color: var(--gray); margin-bottom: 32px; }
+    .login-error     { display: none; font-size: 0.8rem; color: var(--coral); margin-top: 14px; }
+
+    /* ── SHARED FIELD ───────────────────────────────────────────── */
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; text-align: left; }
+    .field label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dark); }
+    .field input, .field select {
+      border: 2px solid var(--cream2); border-radius: 10px; padding: 11px 14px;
+      font-family: 'Outfit', sans-serif; font-size: 0.88rem; color: var(--dark);
+      background: var(--cream); outline: none; transition: border-color 0.2s;
+    }
+    .field input:focus, .field select:focus { border-color: var(--coral); background: white; }
+
+    /* ── BUTTONS ────────────────────────────────────────────────── */
+    .btn-primary {
+      background: var(--coral); color: white; border: none;
+      padding: 14px 24px; border-radius: 12px; width: 100%;
+      font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--coral-dark); }
+
+    .btn-dark {
+      background: var(--dark); color: white; border: none;
+      padding: 11px 24px; border-radius: 10px;
+      font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .btn-dark:hover { background: #333; }
+
+    .btn-logout {
+      background: none; border: 2px solid var(--cream2); color: var(--gray);
+      padding: 8px 18px; border-radius: 8px; font-family: 'Outfit', sans-serif;
+      font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: var(--coral); color: var(--coral); }
+
+    /* ── NAV ────────────────────────────────────────────────────── */
+    .admin-nav {
+      background: white; padding: 14px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--cream2); position: sticky; top: 0;
+      z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .nav-left    { display: flex; align-items: center; gap: 14px; }
+    .nav-left img { height: 40px; width: auto; }
+    .admin-nav h1 { font-size: 1.2rem; font-weight: 700; }
+    .badge-admin {
+      background: var(--coral); color: white; font-size: 0.58rem;
+      font-weight: 700; letter-spacing: 0.1em; padding: 3px 8px;
+      border-radius: 4px; text-transform: uppercase;
+    }
+
+    /* ── BODY ───────────────────────────────────────────────────── */
+    .admin-body { padding: 36px 48px; max-width: 1500px; margin: 0 auto; }
+
+    /* ── STATS ──────────────────────────────────────────────────── */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 16px; margin-bottom: 32px;
+    }
+    .stat-card    { background: white; border-radius: 14px; padding: 20px 18px; }
+    .stat-label   { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray); margin-bottom: 10px; }
+    .stat-value   { font-size: 2rem; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+    .stat-sub     { font-size: 0.7rem; color: var(--gray-light); }
+    .c-coral .stat-value { color: var(--coral); }
+    .c-green .stat-value { color: var(--green); }
+    .c-blue  .stat-value { color: #1d4ed8; }
+    .c-warn  .stat-value { color: #c08000; }
+
+    /* ── FORM SECTION ───────────────────────────────────────────── */
+    .form-section { background: white; border-radius: 14px; margin-bottom: 28px; overflow: hidden; }
+
+    .form-toggle {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 22px; background: none; border: none;
+      font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 600;
+      color: var(--dark); cursor: pointer; transition: background 0.2s;
+    }
+    .form-toggle:hover { background: var(--cream); }
+    .form-toggle .arrow { transition: transform 0.3s; color: var(--coral); font-size: 1.1rem; }
+    .form-toggle.open .arrow { transform: rotate(45deg); }
+
+    .form-inner { display: none; padding: 4px 22px 22px; border-top: 1px solid var(--cream2); }
+    .form-inner.open { display: block; }
+
+    .form-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 12px; margin: 16px 0;
+    }
+
+    /* ── TABLE ──────────────────────────────────────────────────── */
+    .table-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px; flex-wrap: wrap; gap: 10px;
+    }
+    .table-header h2 { font-size: 1.3rem; font-weight: 700; }
+    .table-controls  { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .input-search, .input-filter {
+      border: 2px solid var(--cream2); border-radius: 10px; padding: 9px 13px;
+      font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: var(--dark);
+      background: white; outline: none; transition: border-color 0.2s;
+    }
+    .input-search { width: 210px; }
+    .input-search:focus, .input-filter:focus { border-color: var(--coral); }
+
+    .table-wrap { background: white; border-radius: 14px; overflow-x: auto; box-shadow: 0 2px 16px rgba(0,0,0,0.04); }
+
+    table { width: 100%; border-collapse: collapse; min-width: 1200px; }
+
+    thead { background: var(--dark); color: white; }
+    thead th {
+      padding: 12px 13px; font-size: 0.62rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase; text-align: left; white-space: nowrap;
+    }
+    thead th.th-r { text-align: right; }
+
+    tbody tr  { border-bottom: 1px solid var(--cream2); transition: background 0.15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--cream); }
+    tbody td  { padding: 10px 13px; font-size: 0.8rem; vertical-align: middle; white-space: nowrap; }
+
+    tfoot     { border-top: 2px solid var(--dark); background: #f8f4ef; }
+    tfoot td  { padding: 10px 13px; font-size: 0.78rem; font-weight: 700; white-space: nowrap; }
+
+    .td-name  { font-weight: 600; max-width: 130px; overflow: hidden; text-overflow: ellipsis; }
+    .td-phone { color: var(--gray); font-size: 0.77rem; }
+    .td-r     { text-align: right; font-variant-numeric: tabular-nums; }
+    .td-mp    { color: var(--coral); }
+    .td-gain  { color: var(--green); font-weight: 600; }
+    .td-date  { color: var(--gray-light); font-size: 0.72rem; }
+
+    /* ── STATUS SELECT ──────────────────────────────────────────── */
+    .status-sel {
+      border: none; border-radius: 20px; padding: 5px 12px;
+      font-family: 'Outfit', sans-serif; font-size: 0.7rem; font-weight: 600;
+      cursor: pointer; outline: none; -webkit-appearance: none; appearance: none;
+    }
+    .s-confirmado { background: #e8f5ee; color: #1e6640; }
+    .s-abandonado { background: #fff3cd; color: #856404; }
+    .s-contactado { background: #dbeafe; color: #1d4ed8; }
+    .s-cerrado    { background: #fef0ec; color: var(--coral-dark); }
+
+    /* ── WA BUTTON ──────────────────────────────────────────────── */
+    .btn-wa {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #25d366; color: white; border: none; border-radius: 7px;
+      padding: 6px 11px; font-family: 'Outfit', sans-serif;
+      font-size: 0.72rem; font-weight: 600; cursor: pointer;
+      text-decoration: none; transition: background 0.2s; white-space: nowrap;
+    }
+    .btn-wa:hover { background: #1ebe5a; }
+
+    /* ── EMPTY STATE ────────────────────────────────────────────── */
+    .empty-state { text-align: center; padding: 56px 20px; }
+    .empty-state .ei { font-size: 2.2rem; margin-bottom: 10px; }
+    .empty-state p  { font-size: 0.85rem; color: var(--gray); }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────────── */
+    @media (max-width: 1200px) {
+      .admin-body  { padding: 24px 20px; }
+      .admin-nav   { padding: 14px 20px; }
+      .stats-grid  { grid-template-columns: repeat(3, 1fr); }
+      .form-grid   { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .stats-grid  { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .form-grid   { grid-template-columns: repeat(2, 1fr); }
+      .table-header { flex-direction: column; align-items: flex-start; }
+      .input-search { width: 100%; }
+      .admin-nav h1 { font-size: 1rem; }
+    }
+    @media (max-width: 480px) {
+      .stats-grid  { grid-template-columns: 1fr 1fr; }
+      .stat-value  { font-size: 1.6rem; }
+      .form-grid   { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── LOGIN ───────────────────────────────────────────────────────── -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <img src="logo.png" alt="Biotina PG" onerror="this.style.display='none'" />
+      <h2>Panel Administrativo</h2>
+      <p class="login-sub">Biotina PG · Acceso exclusivo</p>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" id="pwInput" placeholder="••••••••"
+          onkeydown="if(event.key==='Enter') login()" />
+      </div>
+      <button class="btn-primary" onclick="login()">Ingresar →</button>
+      <p class="login-error" id="loginError">Contraseña incorrecta. Intentá de nuevo.</p>
+    </div>
+  </div>
+
+  <!-- ── PANEL ────────────────────────────────────────────────────────── -->
+  <div id="adminPanel" style="display:none">
+
+    <!-- NAV -->
+    <nav class="admin-nav">
+      <div class="nav-left">
+        <img src="logo.png" alt="Biotina PG" onerror="this.style.display='none'" />
+        <h1>Panel de Ventas</h1>
+        <span class="badge-admin">Admin</span>
+      </div>
+      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+    </nav>
+
+    <div class="admin-body">
+
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-card c-coral">
+          <div class="stat-label">Ventas hoy</div>
+          <div class="stat-value" id="sHoy">0</div>
+          <div class="stat-sub">pedidos confirmados hoy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ventas del mes</div>
+          <div class="stat-value" id="sMes">0</div>
+          <div class="stat-sub">pedidos confirmados</div>
+        </div>
+        <div class="stat-card c-blue">
+          <div class="stat-label">Ingresos brutos del mes</div>
+          <div class="stat-value" id="sIngresos">$0</div>
+          <div class="stat-sub">precio de venta total</div>
+        </div>
+        <div class="stat-card c-green">
+          <div class="stat-label">Ganancia neta del mes</div>
+          <div class="stat-value" id="sGanancia">$0</div>
+          <div class="stat-sub">después de todos los costos</div>
+        </div>
+        <div class="stat-card c-warn">
+          <div class="stat-label">Carritos abandonados</div>
+          <div class="stat-value" id="sAbandoned">0</div>
+          <div class="stat-sub">pendientes de contacto</div>
+        </div>
+      </div>
+
+      <!-- FORM NUEVA VENTA -->
+      <div class="form-section">
+        <button class="form-toggle" id="formToggle" onclick="toggleForm()">
+          <span>➕&nbsp; Registrar venta manual</span>
+          <span class="arrow">+</span>
+        </button>
+        <div class="form-inner" id="formInner">
+          <div class="form-grid">
+            <div class="field">
+              <label>Nombre</label>
+              <input type="text" id="fNombre" placeholder="María González" />
+            </div>
+            <div class="field">
+              <label>Teléfono</label>
+              <input type="tel" id="fTel" placeholder="11 1234-5678" />
+            </div>
+            <div class="field">
+              <label>Provincia</label>
+              <select id="fProvincia">
+                <option value="">Seleccioná</option>
+                <option>Buenos Aires (GBA)</option><option>Buenos Aires (interior)</option>
+                <option>CABA</option><option>Catamarca</option><option>Chaco</option>
+                <option>Chubut</option><option>Córdoba</option><option>Corrientes</option>
+                <option>Entre Ríos</option><option>Formosa</option><option>Jujuy</option>
+                <option>La Pampa</option><option>La Rioja</option><option>Mendoza</option>
+                <option>Misiones</option><option>Neuquén</option><option>Río Negro</option>
+                <option>Salta</option><option>San Juan</option><option>San Luis</option>
+                <option>Santa Cruz</option><option>Santa Fe</option>
+                <option>Santiago del Estero</option><option>Tierra del Fuego</option>
+                <option>Tucumán</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Producto</label>
+              <select id="fProducto">
+                <option value="">Seleccioná combo</option>
+                <option value="34000">Combo x1 — $34.000</option>
+                <option value="62000">Combo x2 — $62.000</option>
+                <option value="82000">Combo x3 — $82.000</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Estado</label>
+              <select id="fEstado">
+                <option value="confirmado">Pago confirmado ✅</option>
+                <option value="abandonado">Abandonó carrito ⚠️</option>
+                <option value="contactado">Contactado 📞</option>
+                <option value="cerrado">Cerrado por WA 💬</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-dark" onclick="addManualSale()">Guardar venta</button>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-header">
+        <h2>Clientes</h2>
+        <div class="table-controls">
+          <input type="text" class="input-search" id="searchInput"
+            placeholder="🔍  Nombre, teléfono..." oninput="renderTable()" />
+          <select class="input-filter" id="filterStatus" onchange="renderTable()">
+            <option value="">Todos los estados</option>
+            <option value="confirmado">Pago confirmado ✅</option>
+            <option value="abandonado">Abandonó carrito ⚠️</option>
+            <option value="contactado">Contactado 📞</option>
+            <option value="cerrado">Cerrado por WA 💬</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Teléfono</th>
+              <th>Provincia</th>
+              <th>Producto</th>
+              <th class="th-r">Precio venta</th>
+              <th class="th-r">Comisión MP</th>
+              <th class="th-r">Costo producto</th>
+              <th class="th-r">Costo envío</th>
+              <th class="th-r">Ganancia neta</th>
+              <th>Estado</th>
+              <th>Fecha</th>
+              <th>WhatsApp</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+          <tfoot id="tableFoot"></tfoot>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    /* ── CONFIG ─────────────────────────────────────────────────────── */
+    const PASSWORD = 'biotina2025';
+    const WA_NUM   = '5491124838177';
+
+    const COMBOS = {
+      34000: { label: 'Combo Biotina x1 — $34.000', qty: 1, precio: 34000, mp: 2244, costo: 9888, envio: 0,    ganancia: 21868 },
+      62000: { label: 'Combo Biotina x2 — $62.000', qty: 2, precio: 62000, mp: 4092, costo: 9888, envio: 0,    ganancia: 48020 },
+      82000: { label: 'Combo Biotina x3 — $82.000', qty: 3, precio: 82000, mp: 5412, costo: 9888, envio: 9000, ganancia: 57700 },
+    };
+
+    const STATUS_CFG = {
+      confirmado: 'Pago confirmado ✅',
+      abandonado: 'Abandonó carrito ⚠️',
+      contactado: 'Contactado 📞',
+      cerrado:    'Cerrado por WhatsApp 💬',
+    };
+
+    /* ── AUTH ────────────────────────────────────────────────────────── */
+    if (sessionStorage.getItem('adminAuth') === 'ok') showPanel();
+
+    function login() {
+      if (document.getElementById('pwInput').value === PASSWORD) {
+        sessionStorage.setItem('adminAuth', 'ok');
+        showPanel();
+      } else {
+        const err = document.getElementById('loginError');
+        const inp = document.getElementById('pwInput');
+        err.style.display = 'block';
+        inp.style.borderColor = 'var(--coral)';
+        setTimeout(() => { inp.style.borderColor = ''; }, 2000);
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem('adminAuth');
+      document.getElementById('adminPanel').style.display  = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('pwInput').value             = '';
+      document.getElementById('loginError').style.display  = 'none';
+    }
+
+    function showPanel() {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminPanel').style.display  = 'block';
+      loadData();
+    }
+
+    /* ── FORM TOGGLE ─────────────────────────────────────────────────── */
+    function toggleForm() {
+      const inner  = document.getElementById('formInner');
+      const toggle = document.getElementById('formToggle');
+      const open   = inner.classList.toggle('open');
+      toggle.classList.toggle('open', open);
+    }
+
+    /* ── STORAGE ─────────────────────────────────────────────────────── */
+    const getPedidos  = () => JSON.parse(localStorage.getItem('pedidos')      || '[]');
+    const getStatuses = () => JSON.parse(localStorage.getItem('pedidoStatus') || '{}');
+
+    function saveStatus(i, val) {
+      const s = getStatuses();
+      s[i] = val;
+      localStorage.setItem('pedidoStatus', JSON.stringify(s));
+      loadData();
+    }
+
+    /* ── HELPERS ─────────────────────────────────────────────────────── */
+    function getCombo(productoStr) {
+      if (!productoStr) return null;
+      const m = productoStr.match(/\$([0-9.]+)/);
+      if (!m) return null;
+      return COMBOS[parseInt(m[1].replace(/\./g, ''))] || null;
+    }
+
+    function fmt(n) {
+      return '$' + Math.round(n).toLocaleString('es-AR');
+    }
+
+    function isToday(f) {
+      return f ? f.startsWith(new Date().toLocaleDateString('es-AR')) : false;
+    }
+
+    function isThisMonth(f) {
+      if (!f) return false;
+      const now = new Date();
+      const p   = f.split('/');
+      return p.length >= 3 &&
+        parseInt(p[1]) === now.getMonth() + 1 &&
+        parseInt(p[2]) === now.getFullYear();
+    }
+
+    /* ── STATS ───────────────────────────────────────────────────────── */
+    function loadData() {
+      const pedidos  = getPedidos();
+      const statuses = getStatuses();
+      let ventasHoy = 0, ventasMes = 0, ingresosMes = 0, gananciaMes = 0, abandoned = 0;
+
+      pedidos.forEach((p, i) => {
+        const st    = statuses[i] || 'abandonado';
+        const combo = getCombo(p.producto);
+        if (st === 'confirmado' && combo) {
+          if (isToday(p.fecha))     ventasHoy++;
+          if (isThisMonth(p.fecha)) { ventasMes++; ingresosMes += combo.precio; gananciaMes += combo.ganancia; }
+        }
+        if (st === 'abandonado') abandoned++;
+      });
+
+      document.getElementById('sHoy').textContent      = ventasHoy;
+      document.getElementById('sMes').textContent      = ventasMes;
+      document.getElementById('sIngresos').textContent = fmt(ingresosMes);
+      document.getElementById('sGanancia').textContent = fmt(gananciaMes);
+      document.getElementById('sAbandoned').textContent = abandoned;
+
+      renderTable();
+    }
+
+    /* ── TABLE ───────────────────────────────────────────────────────── */
+    function renderTable() {
+      const pedidos  = getPedidos();
+      const statuses = getStatuses();
+      const q        = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+      const fSt      = document.getElementById('filterStatus')?.value || '';
+      const tbody    = document.getElementById('tableBody');
+      const tfoot    = document.getElementById('tableFoot');
+
+      const rows = pedidos
+        .map((p, i) => ({ ...p, _i: i, _st: statuses[i] || 'abandonado', _c: getCombo(p.producto) }))
+        .filter(p => {
+          if (fSt && p._st !== fSt) return false;
+          if (!q) return true;
+          return `${p.nombre} ${p.apellido} ${p.telefono} ${p.provincia}`.toLowerCase().includes(q);
+        })
+        .reverse();
+
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="12"><div class="empty-state">
+          <div class="ei">📋</div>
+          <p>${q || fSt ? 'Sin resultados para el filtro aplicado.' : 'Aún no hay clientes registrados.'}</p>
+        </div></td></tr>`;
+        tfoot.innerHTML = '';
+        return;
+      }
+
+      /* totals row */
+      let tPrecio = 0, tMP = 0, tCosto = 0, tEnvio = 0, tGanancia = 0;
+      rows.forEach(p => {
+        if (p._c) { tPrecio += p._c.precio; tMP += p._c.mp; tCosto += p._c.costo; tEnvio += p._c.envio; tGanancia += p._c.ganancia; }
+      });
+
+      const opts = (selected) => Object.entries(STATUS_CFG).map(([v, l]) =>
+        `<option value="${v}" ${selected === v ? 'selected' : ''}>${l}</option>`
+      ).join('');
+
+      tbody.innerHTML = rows.map(p => {
+        const nombre = `${p.nombre || ''} ${p.apellido || ''}`.trim() || '—';
+        const c      = p._c;
+        const waMsg  = encodeURIComponent(`Hola ${p.nombre || ''}! Vi que estuviste viendo nuestro Combo Biotina 🌿 ¿Te puedo ayudar a completar tu pedido? Tenemos envío a todo el país 📦`);
+
+        return `<tr>
+          <td class="td-name">${nombre}</td>
+          <td class="td-phone">${p.telefono || '—'}</td>
+          <td>${p.provincia || '—'}</td>
+          <td>${c ? `Combo x${c.qty}` : '—'}</td>
+          <td class="td-r">${c ? fmt(c.precio) : '—'}</td>
+          <td class="td-r td-mp">${c ? fmt(c.mp) : '—'}</td>
+          <td class="td-r">${c ? fmt(c.costo) : '—'}</td>
+          <td class="td-r">${c && c.envio ? fmt(c.envio) : '—'}</td>
+          <td class="td-r td-gain">${c ? fmt(c.ganancia) : '—'}</td>
+          <td>
+            <select class="status-sel s-${p._st}"
+              onchange="saveStatus(${p._i},this.value);this.className='status-sel s-'+this.value">
+              ${opts(p._st)}
+            </select>
+          </td>
+          <td class="td-date">${p.fecha || '—'}</td>
+          <td>
+            <a href="https://wa.me/${WA_NUM}?text=${waMsg}" target="_blank" class="btn-wa">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              WA
+            </a>
+          </td>
+        </tr>`;
+      }).join('');
+
+      tfoot.innerHTML = `<tr>
+        <td colspan="4" style="color:var(--gray);font-style:italic">TOTAL — ${rows.length} registro${rows.length !== 1 ? 's' : ''}</td>
+        <td class="td-r">${fmt(tPrecio)}</td>
+        <td class="td-r td-mp">${fmt(tMP)}</td>
+        <td class="td-r">${fmt(tCosto)}</td>
+        <td class="td-r">${fmt(tEnvio)}</td>
+        <td class="td-r td-gain">${fmt(tGanancia)}</td>
+        <td colspan="3"></td>
+      </tr>`;
+    }
+
+    /* ── MANUAL SALE ─────────────────────────────────────────────────── */
+    function addManualSale() {
+      const nombre  = document.getElementById('fNombre').value.trim();
+      const tel     = document.getElementById('fTel').value.trim();
+      const prov    = document.getElementById('fProvincia').value;
+      const prodAmt = document.getElementById('fProducto').value;
+      const estado  = document.getElementById('fEstado').value;
+
+      if (!nombre || !prodAmt) {
+        alert('Completá al menos nombre y producto.');
+        return;
+      }
+
+      const combo    = COMBOS[prodAmt];
+      const pedidos  = getPedidos();
+      const statuses = getStatuses();
+      const idx      = pedidos.length;
+
+      pedidos.push({
+        nombre, apellido: '', dni: '', telefono: tel, email: '',
+        calle: '', numero: '', piso: '', cp: '', localidad: '', provincia: prov,
+        producto: combo.label,
+        fecha: new Date().toLocaleString('es-AR'),
+        _manual: true,
+      });
+
+      statuses[idx] = estado;
+      localStorage.setItem('pedidos',      JSON.stringify(pedidos));
+      localStorage.setItem('pedidoStatus', JSON.stringify(statuses));
+
+      document.getElementById('fNombre').value   = '';
+      document.getElementById('fTel').value      = '';
+      document.getElementById('fProvincia').value = '';
+      document.getElementById('fProducto').value  = '';
+      document.getElementById('fEstado').value    = 'confirmado';
+
+      loadData();
+    }
+  </script>
+
+</body>
+</html>
