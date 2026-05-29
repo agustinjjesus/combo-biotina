@@ -624,7 +624,7 @@
       tbody.innerHTML = rows.map(p => {
         const nombre = `${p.nombre} ${p.apellido}`.trim() || '—';
         const c      = p._c;
-        const waMsg  = encodeURIComponent(`Hola ${p.nombre || ''}! Vi que estuviste viendo nuestro Combo Biotina 🌿 ¿Te puedo ayudar a completar tu pedido? Tenemos envío a todo el país 📦`);
+        const waMsg  = encodeURIComponent(`Hola ${p.nombre || ''}! Vi que estuviste viendo nuestro Combo Biotina 🌿 ¿Te puedo ayudar a completar tu pedido? Tenemos envío gratis a todo el país 📦`);
         const safeId = p.id.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
         return `<tr>
