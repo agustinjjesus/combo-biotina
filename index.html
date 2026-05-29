@@ -87,6 +87,51 @@
     .guarantee-icon { font-size: 1.4rem; flex-shrink: 0; }
     .guarantee-text strong { display: block; font-size: 0.85rem; font-weight: 600; color: var(--green); }
     .guarantee-text span { font-size: 0.78rem; color: var(--gray); }
+    /* ─── PAYMENT BOX ─── */
+    .payment-box {
+      background: white;
+      border: 1.5px solid var(--cream2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+    }
+    .payment-box-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--gray);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .payment-logos {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+    .payment-logo {
+      background: white;
+      border: 1px solid #eee;
+      border-radius: 6px;
+      padding: 5px 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+    }
+    .payment-logo img { height: 16px; width: auto; object-fit: contain; display: block; }
+    .payment-logo-text {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--dark);
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      line-height: 1;
+    }
     /* ─── WA ALT BUTTON ─── */
     .btn-wa-alt {
       width: 100%; background: white; color: var(--dark);
@@ -1064,6 +1109,34 @@
         COMPRAR AHORA · $80.000 — 🚚 ENVÍO GRATIS
       </button>
 
+      <!-- MÉTODOS DE PAGO -->
+      <div class="payment-box">
+        <div class="payment-box-title">🔒 Pagá seguro con MercadoPago</div>
+        <div class="payment-logos">
+          <div class="payment-logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" alt="Visa" />
+          </div>
+          <div class="payment-logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" />
+          </div>
+          <div class="payment-logo">
+            <img src="https://http2.mlstatic.com/frontend-assets/mp-web-navigation/ui-navigation/6.6.72/mercadopago/logo__large@2x.png" alt="MercadoPago" />
+          </div>
+          <div class="payment-logo">
+            <span class="payment-logo-text">AMEX</span>
+          </div>
+          <div class="payment-logo">
+            <span class="payment-logo-text">DÉBITO</span>
+          </div>
+          <div class="payment-logo">
+            <span class="payment-logo-text">EFECTIVO</span>
+          </div>
+          <div class="payment-logo">
+            <span class="payment-logo-text">CUOTAS S/I</span>
+          </div>
+        </div>
+      </div>
+
       <a href="https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20el%20Combo%20Biotina%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F" class="btn-wa-alt">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Consultar por WhatsApp
@@ -1370,7 +1443,10 @@
       </div>
 
       <button class="btn-confirm" onclick="confirmarCompra()">Confirmar y pagar →</button>
-      <p class="modal-disclaimer">🔒 Tus datos están protegidos y solo se usan para coordinar el envío.</p>
+      <p style="text-align:center;font-size:0.75rem;color:var(--green);font-weight:600;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px;">
+        🔒 Pago 100% seguro procesado por MercadoPago
+      </p>
+      <p class="modal-disclaimer">Tus datos están protegidos y solo se usan para coordinar el envío.</p>
     </div>
   </div>
 
@@ -1400,11 +1476,27 @@
     </div>
 
     <div class="payment-methods">
-      <span class="payment-badge">MercadoPago</span>
-      <span class="payment-badge">Visa</span>
-      <span class="payment-badge">Mastercard</span>
-      <span class="payment-badge">Débito</span>
-      <span class="payment-badge">Efectivo</span>
+      <div class="payment-logo" style="background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.15);box-shadow:none;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" alt="Visa" style="height:14px;filter:brightness(0) invert(1);opacity:0.7;" />
+      </div>
+      <div class="payment-logo" style="background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.15);box-shadow:none;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" style="height:18px;opacity:0.7;" />
+      </div>
+      <div class="payment-logo" style="background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.15);box-shadow:none;">
+        <img src="https://http2.mlstatic.com/frontend-assets/mp-web-navigation/ui-navigation/6.6.72/mercadopago/logo__large@2x.png" alt="MercadoPago" style="height:14px;filter:brightness(0) invert(1);opacity:0.7;" />
+      </div>
+      <div class="payment-logo" style="background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.15);box-shadow:none;">
+        <span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:0.03em;">AMEX</span>
+      </div>
+      <div class="payment-logo" style="background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.15);box-shadow:none;">
+        <span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:0.03em;">DÉBITO</span>
+      </div>
+      <div class="payment-logo" style="background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.15);box-shadow:none;">
+        <span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:0.03em;">EFECTIVO</span>
+      </div>
+      <div class="payment-logo" style="background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.15);box-shadow:none;">
+        <span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:0.03em;">CUOTAS S/I</span>
+      </div>
     </div>
   </footer>
 
