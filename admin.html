@@ -330,11 +330,43 @@
           <div class="form-grid">
             <div class="field">
               <label>Nombre</label>
-              <input type="text" id="fNombre" placeholder="María González" />
+              <input type="text" id="fNombre" placeholder="María" />
+            </div>
+            <div class="field">
+              <label>Apellido</label>
+              <input type="text" id="fApellido" placeholder="González" />
+            </div>
+            <div class="field">
+              <label>DNI</label>
+              <input type="text" id="fDni" placeholder="12345678" />
             </div>
             <div class="field">
               <label>Teléfono</label>
               <input type="tel" id="fTel" placeholder="11 1234-5678" />
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <input type="email" id="fEmail" placeholder="maria@email.com" />
+            </div>
+            <div class="field">
+              <label>Calle</label>
+              <input type="text" id="fCalle" placeholder="Av. Corrientes" />
+            </div>
+            <div class="field">
+              <label>Número</label>
+              <input type="text" id="fNumero" placeholder="1234" />
+            </div>
+            <div class="field">
+              <label>Piso / depto</label>
+              <input type="text" id="fPiso" placeholder="3° B (opcional)" />
+            </div>
+            <div class="field">
+              <label>CP</label>
+              <input type="text" id="fCp" placeholder="1414" />
+            </div>
+            <div class="field">
+              <label>Localidad</label>
+              <input type="text" id="fLocalidad" placeholder="Palermo" />
             </div>
             <div class="field">
               <label>Provincia</label>
@@ -779,11 +811,19 @@
 
     /* ── MANUAL SALE ─────────────────────────────────────────────────── */
     function addManualSale() {
-      const nombre  = document.getElementById('fNombre').value.trim();
-      const tel     = document.getElementById('fTel').value.trim();
-      const prov    = document.getElementById('fProvincia').value;
-      const prodAmt = document.getElementById('fProducto').value;
-      const estado  = document.getElementById('fEstado').value;
+      const nombre    = document.getElementById('fNombre').value.trim();
+      const apellido  = document.getElementById('fApellido').value.trim();
+      const dni       = document.getElementById('fDni').value.trim();
+      const tel       = document.getElementById('fTel').value.trim();
+      const email     = document.getElementById('fEmail').value.trim();
+      const calle     = document.getElementById('fCalle').value.trim();
+      const numero    = document.getElementById('fNumero').value.trim();
+      const piso      = document.getElementById('fPiso').value.trim();
+      const cp        = document.getElementById('fCp').value.trim();
+      const localidad = document.getElementById('fLocalidad').value.trim();
+      const prov      = document.getElementById('fProvincia').value;
+      const prodAmt   = document.getElementById('fProducto').value;
+      const estado    = document.getElementById('fEstado').value;
 
       if (!nombre || !prodAmt) {
         alert('Completá al menos nombre y producto.');
@@ -794,8 +834,8 @@
 
       if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
         firebase.firestore().collection('pedidos').add({
-          nombre, apellido: '', dni: '', telefono: tel, email: '',
-          calle: '', numero: '', piso: '', cp: '', localidad: '', provincia: prov,
+          nombre, apellido, dni, telefono: tel, email,
+          calle, numero, piso, cp, localidad, provincia: prov,
           producto: combo.label,
           fecha: new Date().toLocaleString('es-AR'),
           status: estado,
@@ -807,8 +847,8 @@
         const statuses = JSON.parse(localStorage.getItem('pedidoStatus') || '{}');
         const idx      = pedidos.length;
         pedidos.push({
-          nombre, apellido: '', dni: '', telefono: tel, email: '',
-          calle: '', numero: '', piso: '', cp: '', localidad: '', provincia: prov,
+          nombre, apellido, dni, telefono: tel, email,
+          calle, numero, piso, cp, localidad, provincia: prov,
           producto: combo.label,
           fecha: new Date().toLocaleString('es-AR'),
           _manual: true,
@@ -820,7 +860,15 @@
       }
 
       document.getElementById('fNombre').value    = '';
+      document.getElementById('fApellido').value  = '';
+      document.getElementById('fDni').value       = '';
       document.getElementById('fTel').value       = '';
+      document.getElementById('fEmail').value     = '';
+      document.getElementById('fCalle').value     = '';
+      document.getElementById('fNumero').value    = '';
+      document.getElementById('fPiso').value      = '';
+      document.getElementById('fCp').value        = '';
+      document.getElementById('fLocalidad').value = '';
       document.getElementById('fProvincia').value = '';
       document.getElementById('fProducto').value  = '';
       document.getElementById('fEstado').value    = 'confirmado';
