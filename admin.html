@@ -102,6 +102,35 @@
     .c-blue  .stat-value { color: #1d4ed8; }
     .c-warn  .stat-value { color: #c08000; }
 
+    /* ── DISTRIBUCIÓN DE GANANCIAS ─────────────────────────────────── */
+    .dist-section { margin-bottom: 28px; }
+    .dist-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px; flex-wrap: wrap; gap: 10px;
+    }
+    .dist-header h2 { font-size: 1.3rem; font-weight: 700; }
+    .dist-alert {
+      display: none; background: #fef0ec; color: var(--coral-dark);
+      border: 1px solid var(--coral-light); border-radius: 10px;
+      padding: 12px 16px; font-size: 0.82rem; font-weight: 600; margin-bottom: 14px;
+    }
+    .dist-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .dist-card { background: white; border-radius: 14px; padding: 20px 18px; }
+    .dist-name {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em;
+      color: var(--dark); margin-bottom: 12px; min-height: 32px;
+    }
+    .dist-pct-row { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+    .dist-pct-input {
+      width: 72px; border: 2px solid var(--cream2); border-radius: 10px;
+      padding: 8px 10px; font-family: 'Outfit', sans-serif; font-size: 0.95rem;
+      font-weight: 600; color: var(--coral); background: var(--cream); outline: none;
+      transition: border-color 0.2s;
+    }
+    .dist-pct-input:focus { border-color: var(--coral); background: white; }
+    .dist-pct-sign { font-size: 0.85rem; color: var(--gray); font-weight: 600; }
+    .dist-monto { font-size: 1.4rem; font-weight: 700; color: var(--green); }
+
     /* ── FORM SECTION ───────────────────────────────────────────── */
     .form-section { background: white; border-radius: 14px; margin-bottom: 28px; overflow: hidden; }
 
@@ -197,6 +226,7 @@
       .admin-nav   { padding: 14px 20px; }
       .stats-grid  { grid-template-columns: repeat(3, 1fr); }
       .form-grid   { grid-template-columns: repeat(3, 1fr); }
+      .dist-grid   { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 768px) {
       .stats-grid  { grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -204,11 +234,13 @@
       .table-header { flex-direction: column; align-items: flex-start; }
       .input-search { width: 100%; }
       .admin-nav h1 { font-size: 1rem; }
+      .dist-header { flex-direction: column; align-items: flex-start; }
     }
     @media (max-width: 480px) {
       .stats-grid  { grid-template-columns: 1fr 1fr; }
       .stat-value  { font-size: 1.6rem; }
       .form-grid   { grid-template-columns: 1fr; }
+      .dist-grid   { grid-template-columns: 1fr; }
     }
   </style>
   <!-- Firebase SDK (sincronización en tiempo real) -->
@@ -276,6 +308,16 @@
           <div class="stat-value" id="sAbandoned">0</div>
           <div class="stat-sub">pendientes de contacto</div>
         </div>
+      </div>
+
+      <!-- DISTRIBUCIÓN DE GANANCIAS -->
+      <div class="dist-section">
+        <div class="dist-header">
+          <h2>💰 Distribución de ganancias</h2>
+          <button class="btn-logout" onclick="resetDistribucion()">↺ Restablecer valores por defecto</button>
+        </div>
+        <div class="dist-alert" id="distAlert">⚠️ Los porcentajes deben sumar 100%. Actualmente suman <span id="distSumaTxt">0</span>%.</div>
+        <div class="dist-grid" id="distGrid"></div>
       </div>
 
       <!-- FORM NUEVA VENTA -->
@@ -428,6 +470,73 @@
 
     /* ── DATA CACHE ─────────────────────────────────────────────────── */
     let pedidosCache = [];
+
+    /* ── DISTRIBUCIÓN DE GANANCIAS ─────────────────────────────────── */
+    const DIST_CATEGORIAS = [
+      { key: 'sueldo',     label: 'Tu sueldo / gastos personales' },
+      { key: 'publicidad', label: 'Publicidad' },
+      { key: 'materia',    label: 'Materia prima / stock' },
+      { key: 'gonza',      label: 'Sueldo Gonza' },
+      { key: 'colchon',    label: 'Colchón / imprevistos' },
+    ];
+    const DIST_DEFAULTS = { sueldo: 30, publicidad: 25, materia: 20, gonza: 15, colchon: 10 };
+    let gananciaMesActual = 0;
+
+    function getDistribucionPct() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('distribucionPct') || 'null');
+        if (saved && typeof saved === 'object') return { ...DIST_DEFAULTS, ...saved };
+      } catch (e) {}
+      return { ...DIST_DEFAULTS };
+    }
+
+    function saveDistribucionPct(pct) {
+      localStorage.setItem('distribucionPct', JSON.stringify(pct));
+    }
+
+    function renderDistribucion() {
+      const pct  = getDistribucionPct();
+      const grid = document.getElementById('distGrid');
+      grid.innerHTML = DIST_CATEGORIAS.map(c => {
+        const p     = pct[c.key] ?? 0;
+        const monto = gananciaMesActual * (p / 100);
+        return `<div class="dist-card">
+          <div class="dist-name">${c.label}</div>
+          <div class="dist-pct-row">
+            <input type="number" class="dist-pct-input" id="distPct_${c.key}"
+              value="${p}" min="0" max="100" step="1" oninput="updateDistribucion()" />
+            <span class="dist-pct-sign">%</span>
+          </div>
+          <div class="dist-monto" id="distMonto_${c.key}">${fmt(monto)}</div>
+        </div>`;
+      }).join('');
+      validateDistribucion(pct);
+    }
+
+    function updateDistribucion() {
+      const pct = {};
+      DIST_CATEGORIAS.forEach(c => {
+        pct[c.key] = parseFloat(document.getElementById(`distPct_${c.key}`).value) || 0;
+      });
+      saveDistribucionPct(pct);
+      DIST_CATEGORIAS.forEach(c => {
+        const monto = gananciaMesActual * (pct[c.key] / 100);
+        document.getElementById(`distMonto_${c.key}`).textContent = fmt(monto);
+      });
+      validateDistribucion(pct);
+    }
+
+    function validateDistribucion(pct) {
+      const suma  = DIST_CATEGORIAS.reduce((s, c) => s + (pct[c.key] || 0), 0);
+      const alert = document.getElementById('distAlert');
+      document.getElementById('distSumaTxt').textContent = suma;
+      alert.style.display = Math.abs(suma - 100) > 0.01 ? 'block' : 'none';
+    }
+
+    function resetDistribucion() {
+      saveDistribucionPct({ ...DIST_DEFAULTS });
+      renderDistribucion();
+    }
 
     /* ── AUTH ────────────────────────────────────────────────────────── */
     if (sessionStorage.getItem('adminAuth') === 'ok') showPanel();
@@ -585,6 +694,8 @@
       document.getElementById('sGanancia').textContent  = fmt(gananciaMes);
       document.getElementById('sAbandoned').textContent = abandoned;
 
+      gananciaMesActual = gananciaMes;
+      renderDistribucion();
       renderTable();
     }
 
