@@ -615,12 +615,74 @@
       padding: 4px 10px;
       align-self: flex-start;
     }
+    .include-card {
+      cursor: pointer;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+    .include-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.10);
+    }
+    .include-card:hover .include-more { opacity: 1; }
+    .include-more {
+      font-size: 0.7rem; font-weight: 600; color: var(--coral);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      margin-top: auto; padding-top: 10px;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    /* ─── PRODUCT MODAL ─── */
+    .pmodal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55); z-index: 1100;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .pmodal-overlay.active { display: flex; }
+    .pmodal {
+      background: white; border-radius: 24px;
+      padding: 40px 36px; width: 100%; max-width: 560px;
+      max-height: 90vh; overflow-y: auto;
+      animation: modalIn 0.3s ease; position: relative;
+    }
+    .pmodal-close {
+      position: absolute; top: 16px; right: 20px;
+      background: none; border: none; font-size: 1.5rem;
+      cursor: pointer; color: #999; line-height: 1;
+    }
+    .pmodal-close:hover { color: var(--dark); }
+    .pmodal-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+    .pmodal-icon { font-size: 2.4rem; line-height: 1; }
+    .pmodal-header h2 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--dark); line-height: 1.2; }
+    .pmodal-ml {
+      display: inline-block; background: var(--dark); color: white;
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em;
+      padding: 3px 8px; border-radius: 6px; margin-top: 4px;
+    }
+    .pmodal-tag {
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; border-radius: 20px; padding: 4px 12px;
+      display: inline-block; margin-bottom: 16px; align-self: flex-start;
+    }
+    .pmodal-tag.coral { color: var(--coral); border: 1px solid var(--coral-light); }
+    .pmodal-tag.green { color: var(--green); border: 1px solid #b2dfc0; background: #f0faf4; }
+    .pmodal-desc { font-size: 0.85rem; color: var(--gray); line-height: 1.75; margin-bottom: 20px; }
+    .pmodal-section { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--cream2); }
+    .pmodal-list { list-style: none; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .pmodal-list li { font-size: 0.83rem; color: var(--dark); display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+    .pmodal-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--coral); flex-shrink: 0; margin-top: 6px; }
+    .pmodal-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .pmodal-steps li { font-size: 0.83rem; color: var(--dark); display: flex; gap: 12px; align-items: flex-start; line-height: 1.5; }
+    .pmodal-step-num { width: 22px; height: 22px; background: var(--coral); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; flex-shrink: 0; }
+    .pmodal-nota { background: #f0faf4; border: 1px solid #c3e6cb; border-radius: 10px; padding: 12px 14px; font-size: 0.78rem; color: var(--green); line-height: 1.6; }
+    .pmodal-buy { margin-top: 24px; width: 100%; background: var(--coral); color: white; border: none; padding: 15px; border-radius: 12px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .pmodal-buy:hover { background: var(--coral-dark); }
     @media (max-width: 768px) {
       .includes-section { padding: 56px 20px; }
       .includes-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .include-more { opacity: 1; }
     }
     @media (max-width: 480px) {
       .includes-grid { grid-template-columns: 1fr; }
+      .pmodal { padding: 28px 20px; }
     }
 
     /* ─── HOW TO USE ─── */
@@ -1167,36 +1229,40 @@
     <p class="how-sub">4 productos que trabajan en conjunto para un tratamiento completo.</p>
     <div class="includes-grid">
 
-      <div class="include-card">
+      <div class="include-card" onclick="openProduct(0)" role="button">
         <div class="include-badge">500ml</div>
         <div class="include-icon">🧴</div>
         <h3>Shampoo de Biotina</h3>
         <p>Limpieza profunda que fortalece desde la raíz. Formulado con biotina activa para reducir la caída, estimular el crecimiento y dejar el cabello más denso y saludable desde la primera lavada. Sin formol ni sulfatos agresivos. Apto uso diario para todo tipo de cabello.</p>
         <span class="include-tag">USO DIARIO</span>
+        <span class="include-more">Ver más →</span>
       </div>
 
-      <div class="include-card">
+      <div class="include-card" onclick="openProduct(1)" role="button">
         <div class="include-badge">500ml</div>
         <div class="include-icon">💧</div>
         <h3>Acondicionador de Biotina</h3>
         <p>Hidratación y reparación profunda de medios a puntas. Su fórmula con biotina activa sella la cutícula, elimina el frizz y deja el cabello suave, manejable y con brillo natural. Sin formol ni sulfatos. Apto uso diario.</p>
         <span class="include-tag">USO DIARIO</span>
+        <span class="include-more">Ver más →</span>
       </div>
 
-      <div class="include-card include-card--featured">
+      <div class="include-card include-card--featured" onclick="openProduct(2)" role="button">
         <div class="include-badge">250ml</div>
         <div class="include-icon">✨</div>
         <h3>Biotina Pura en Spray</h3>
         <p>El corazón del combo. Biotina concentrada en spray de aplicación directa sobre el cuero cabelludo. Actúa donde realmente importa: en el folículo piloso, estimulando el crecimiento de pelitos nuevos y frenando la caída. No requiere enjuague.</p>
         <span class="include-tag">USO DIARIO · NO ENJUAGAR</span>
+        <span class="include-more">Ver más →</span>
       </div>
 
-      <div class="include-card">
+      <div class="include-card" onclick="openProduct(3)" role="button">
         <div class="include-badge">60ml</div>
         <div class="include-icon">💊</div>
         <h3>Ampolla Plex + Biotina</h3>
         <p>Tratamiento intensivo semanal para recuperar el cabello dañado, teñido o debilitado. Repara la fibra capilar desde adentro, fortalece y reduce la quebradura. Mezclá con la crema de tratamiento, aplicá de medios a puntas y dejá actuar.</p>
         <span class="include-tag">USO SEMANAL</span>
+        <span class="include-more">Ver más →</span>
       </div>
 
     </div>
@@ -1472,6 +1538,28 @@
     </div>
   </footer>
 
+  <!-- MODAL PRODUCTO -->
+  <div class="pmodal-overlay" id="pmodalOverlay" onclick="closeProductOutside(event)">
+    <div class="pmodal">
+      <button class="pmodal-close" onclick="closeProduct()">×</button>
+      <div class="pmodal-header">
+        <div class="pmodal-icon" id="pmIcon"></div>
+        <div>
+          <h2 id="pmName"></h2>
+          <span class="pmodal-ml" id="pmMl"></span>
+        </div>
+      </div>
+      <span class="pmodal-tag" id="pmTag"></span>
+      <p class="pmodal-desc" id="pmDesc"></p>
+      <div class="pmodal-section">Beneficios principales</div>
+      <ul class="pmodal-list" id="pmBeneficios"></ul>
+      <div class="pmodal-section">Cómo usarlo</div>
+      <ol class="pmodal-steps" id="pmUso"></ol>
+      <div class="pmodal-nota" id="pmNota"></div>
+      <button class="pmodal-buy" onclick="closeProduct(); openModal()">Comprar ahora →</button>
+    </div>
+  </div>
+
   <!-- MODAL POLÍTICA DE PRIVACIDAD -->
   <div class="modal-overlay" id="modalPrivacidad" onclick="closeLegalOutside(event, 'privacidad')">
     <div class="modal" style="max-width:640px;">
@@ -1673,6 +1761,114 @@
       const id = tipo === 'privacidad' ? 'modalPrivacidad' : 'modalTerminos';
       if (e.target === document.getElementById(id)) closeLegal(tipo);
     }
+
+    // ─── MODAL PRODUCTOS ──────────────────────────────────────────────────────
+    const PRODUCTS = [
+      {
+        icon: '🧴', ml: '500ml', name: 'Shampoo de Biotina',
+        tag: 'USO DIARIO', tagClass: 'coral',
+        desc: 'Limpieza profunda formulada con biotina activa para reducir la caída, estimular el crecimiento y fortalecer el cabello desde la raíz. Sin formol ni sulfatos agresivos. Apto para uso diario en todo tipo de cabello.',
+        beneficios: [
+          'Reduce notablemente la caída desde la primera lavada',
+          'Estimula el crecimiento capilar con biotina activa',
+          'Fortalece el cabello desde la raíz',
+          'Apto para cabello teñido, rizado, liso u ondulado',
+          'Sin formol · Sin sulfatos agresivos · Sin parabenos',
+        ],
+        uso: [
+          'Mojá bien el cabello con agua tibia.',
+          'Aplicá el shampoo y masajeá el cuero cabelludo con las yemas de los dedos durante 2-3 minutos.',
+          'Enjuagá completamente con agua.',
+          'Podés repetir si es necesario.',
+        ],
+        nota: '💡 Podés usarlo todos los días. La fórmula suave no reseca el cuero cabelludo.',
+      },
+      {
+        icon: '💧', ml: '500ml', name: 'Acondicionador de Biotina',
+        tag: 'USO DIARIO', tagClass: 'coral',
+        desc: 'Acondicionador de biotina activa que hidrata en profundidad, sella la cutícula, elimina el frizz y deja el cabello suave, manejable y con brillo natural. Sin formol ni sulfatos. Apto para uso diario.',
+        beneficios: [
+          'Sella la cutícula y elimina el frizz de forma duradera',
+          'Hidratación profunda de medios a puntas',
+          'Deja el cabello suave, sedoso y con brillo',
+          'Facilita el peinado y reduce los nudos',
+          'Sin formol · Sin sulfatos',
+        ],
+        uso: [
+          'Después del shampoo, exprimí el exceso de agua del cabello.',
+          'Aplicá de medios a puntas (evitá el cuero cabelludo).',
+          'Dejá actuar 3 a 5 minutos.',
+          'Enjuagá con agua fría para potenciar el brillo.',
+        ],
+        nota: '💡 No aplicar directamente en el cuero cabelludo para no obstruir los folículos pilosos.',
+      },
+      {
+        icon: '✨', ml: '250ml', name: 'Biotina Pura en Spray',
+        tag: 'USO DIARIO · NO ENJUAGAR', tagClass: 'green',
+        desc: 'El corazón del combo. Biotina concentrada en spray de aplicación directa sobre el cuero cabelludo. Actúa donde realmente importa: en el folículo piloso, estimulando el crecimiento de pelitos nuevos y frenando la caída. No requiere enjuague.',
+        beneficios: [
+          'Activa el folículo piloso directamente en la raíz',
+          'Estimula el crecimiento de pelitos nuevos en zonas debilitadas',
+          'Frena la caída de forma progresiva',
+          'Absorción rápida, no deja residuo ni aplasta el cabello',
+          'No requiere enjuague — ideal para usar en cualquier momento',
+        ],
+        uso: [
+          'Aplicá sobre el cuero cabelludo seco o semihúmedo.',
+          'Separar el cabello en secciones para llegar bien a la raíz.',
+          'Dar 2-3 pulverizaciones por zona.',
+          'Masajear suavemente con las yemas de los dedos durante 1 minuto.',
+          'No enjuagar. Dejá que absorba solo.',
+        ],
+        nota: '⭐ Este es el producto más importante del combo. La constancia diaria es la clave para ver resultados desde la semana 3.',
+      },
+      {
+        icon: '💊', ml: '60ml', name: 'Ampolla Plex + Biotina',
+        tag: 'USO SEMANAL', tagClass: 'coral',
+        desc: 'Tratamiento intensivo semanal para recuperar el cabello dañado, teñido o debilitado. Repara la fibra capilar desde adentro, fortalece y reduce la quebradura. El complemento perfecto para el tratamiento completo.',
+        beneficios: [
+          'Repara la fibra capilar dañada o teñida en profundidad',
+          'Reduce la quebradura y el cabello partido',
+          'Fortalece el cabello desde adentro hacia afuera',
+          'Ideal para cabello sometido a procesos químicos (decoloración, alaciados)',
+          'Resultados visibles desde la primera aplicación',
+        ],
+        uso: [
+          'Mezclá el contenido de la ampolla con tu crema de tratamiento habitual.',
+          'Aplicá de medios a puntas sobre cabello húmedo (no en la raíz).',
+          'Cubrí con una bolsa de plástico o gorro de ducha para potenciar el efecto.',
+          'Dejá actuar 15 a 20 minutos.',
+          'Enjuagá completamente con agua tibia.',
+        ],
+        nota: '💡 Usarlo 1 vez por semana es suficiente. No sobredosificar.',
+      },
+    ];
+
+    function openProduct(idx) {
+      const p = PRODUCTS[idx];
+      document.getElementById('pmIcon').textContent  = p.icon;
+      document.getElementById('pmName').textContent  = p.name;
+      document.getElementById('pmMl').textContent    = p.ml;
+      document.getElementById('pmDesc').textContent  = p.desc;
+      document.getElementById('pmNota').textContent  = p.nota;
+      document.getElementById('pmTag').textContent   = p.tag;
+      document.getElementById('pmTag').className     = 'pmodal-tag ' + p.tagClass;
+      document.getElementById('pmBeneficios').innerHTML = p.beneficios.map(b => `<li>${b}</li>`).join('');
+      document.getElementById('pmUso').innerHTML     = p.uso.map((u, i) =>
+        `<li><span class="pmodal-step-num">${i+1}</span><span>${u}</span></li>`).join('');
+      document.getElementById('pmodalOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeProduct() {
+      document.getElementById('pmodalOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function closeProductOutside(e) {
+      if (e.target === document.getElementById('pmodalOverlay')) closeProduct();
+    }
+    // ─────────────────────────────────────────────────────────────────────────
 
     // Seleccionar "2 combos" por defecto sin hacer scroll
     selectQty(document.querySelector('.qty-option[data-price="43000"]'), '$43.000', 1);
