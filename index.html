@@ -545,6 +545,90 @@
 
     .trust-badge svg { color: var(--gray); opacity: 0.7; }
 
+    /* ─── WA FAB ─── */
+    .wa-fab {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 56px; height: 56px; background: #25d366; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 18px rgba(37,211,102,0.45);
+      z-index: 300; text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .wa-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.55); }
+    .wa-fab-tooltip {
+      position: absolute; right: 66px; top: 50%; transform: translateY(-50%);
+      background: var(--dark); color: white; white-space: nowrap;
+      font-size: 0.72rem; font-weight: 600; padding: 5px 10px;
+      border-radius: 8px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .wa-fab:hover .wa-fab-tooltip { opacity: 1; }
+    @media (max-width: 768px) { .wa-fab { bottom: 96px; right: 14px; width: 50px; height: 50px; } }
+
+    /* ─── INGREDIENTES ─── */
+    .ing-section {
+      background: var(--cream); padding: 80px 48px; text-align: center;
+    }
+    .ing-section h2 {
+      font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 8px;
+    }
+    .ing-grid {
+      max-width: 1060px; margin: 40px auto 0;
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px;
+    }
+    .ing-card {
+      background: white; border-radius: 16px; padding: 26px 16px; text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .ing-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+    .ing-icon { font-size: 1.8rem; margin-bottom: 10px; }
+    .ing-name { font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 6px; line-height: 1.2; }
+    .ing-benefit { font-size: 0.72rem; color: var(--gray); line-height: 1.6; }
+    @media (max-width: 900px) { .ing-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 600px) { .ing-section { padding: 56px 20px; } .ing-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    /* ─── ENVÍO ─── */
+    .envio-section { background: white; padding: 80px 48px; }
+    .envio-section h2 {
+      font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700;
+      text-align: center; margin-bottom: 8px;
+    }
+    .envio-inner { max-width: 1000px; margin: 0 auto; }
+    .envio-steps {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 40px 0;
+    }
+    .envio-step {
+      display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;
+    }
+    .envio-step-icon {
+      width: 56px; height: 56px; background: #f0faf4; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+    }
+    .envio-step-title { font-weight: 600; font-size: 0.88rem; color: var(--dark); }
+    .envio-step-desc { font-size: 0.78rem; color: var(--gray); line-height: 1.5; }
+    .envio-divider { border: none; border-top: 1px solid var(--cream2); margin: 0 0 32px; }
+    .envio-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px;
+    }
+    .envio-row {
+      background: var(--cream); border-radius: 12px; padding: 16px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .envio-region { font-size: 0.83rem; font-weight: 500; color: var(--dark); }
+    .envio-time {
+      font-size: 0.78rem; font-weight: 600; color: var(--green);
+      background: #e8f5ee; padding: 3px 10px; border-radius: 20px;
+    }
+    .envio-footer {
+      display: flex; align-items: center; gap: 12px; justify-content: center;
+      background: #f0faf4; border: 1px solid #c3e6cb; border-radius: 12px;
+      padding: 16px 20px; font-size: 0.82rem; color: var(--green); font-weight: 500;
+    }
+    @media (max-width: 768px) {
+      .envio-section { padding: 56px 20px; }
+      .envio-steps { grid-template-columns: 1fr; gap: 20px; }
+      .envio-grid { grid-template-columns: 1fr; }
+    }
+
     /* ─── QUÉ INCLUYE ─── */
     .includes-section {
       background: var(--white);
@@ -1268,6 +1352,39 @@
     </div>
   </div>
 
+  <!-- INGREDIENTES ACTIVOS -->
+  <div class="ing-section">
+    <h2>Ingredientes activos</h2>
+    <p class="how-sub">Una fórmula pensada para resultados reales.</p>
+    <div class="ing-grid">
+      <div class="ing-card">
+        <div class="ing-icon">🌿</div>
+        <h3 class="ing-name">Biotina B7</h3>
+        <p class="ing-desc">Vitamina esencial que activa el folículo piloso y estimula el crecimiento de pelo nuevo.</p>
+      </div>
+      <div class="ing-card">
+        <div class="ing-icon">💎</div>
+        <h3 class="ing-name">Keratina Hidrolizada</h3>
+        <p class="ing-desc">Repara la fibra capilar desde adentro, reduce la quebradura y aporta brillo duradero.</p>
+      </div>
+      <div class="ing-card">
+        <div class="ing-icon">💧</div>
+        <h3 class="ing-name">Pantenol</h3>
+        <p class="ing-desc">Pro-vitamina B5 que hidrata en profundidad y fortalece la estructura del cabello.</p>
+      </div>
+      <div class="ing-card">
+        <div class="ing-icon">🎋</div>
+        <h3 class="ing-name">Extracto de Bambú</h3>
+        <p class="ing-desc">Rico en sílice, nutre el cuero cabelludo y le da elasticidad y densidad al pelo.</p>
+      </div>
+      <div class="ing-card">
+        <div class="ing-icon">☀️</div>
+        <h3 class="ing-name">Vitamina E</h3>
+        <p class="ing-desc">Antioxidante que protege el folículo del daño oxidativo y prolonga la vida del pelo.</p>
+      </div>
+    </div>
+  </div>
+
   <!-- HOW TO USE -->
   <div class="how-section">
     <h2>¿Cómo se usa?</h2>
@@ -1315,6 +1432,50 @@
       <button class="faq-q" onclick="toggleFaq(this)">¿Qué pasa si no me gusta el producto? <span class="faq-arrow">+</span></button>
       <div class="faq-a">Tu compra está 100% protegida. Si no quedás satisfecha te devolvemos el dinero sin preguntas. Contactanos por WhatsApp y lo resolvemos en el día.</div>
     </div>
+  </div>
+
+  <!-- ENVÍO DETALLADO -->
+  <div class="envio-section">
+    <h2>¿Cómo llega tu pedido?</h2>
+    <p class="how-sub">Despachamos a todo el país con seguimiento incluido.</p>
+    <div class="envio-steps">
+      <div class="envio-step">
+        <div class="envio-step-icon">📦</div>
+        <h3>Preparamos tu pedido</h3>
+        <p>Lo armamos y empaquetamos el mismo día que recibimos el pago confirmado.</p>
+      </div>
+      <div class="envio-arrow">→</div>
+      <div class="envio-step">
+        <div class="envio-step-icon">🚚</div>
+        <h3>Lo despachamos</h3>
+        <p>Enviamos por Correo Argentino y te mandamos el número de seguimiento por WhatsApp.</p>
+      </div>
+      <div class="envio-arrow">→</div>
+      <div class="envio-step">
+        <div class="envio-step-icon">🏠</div>
+        <h3>Llega a tu puerta</h3>
+        <p>Tu combo llega directo a la dirección que nos diste. Podés rastrearlo en tiempo real.</p>
+      </div>
+    </div>
+    <div class="envio-grid">
+      <div class="envio-row">
+        <span>📍 AMBA</span>
+        <span class="envio-time">3–5 días hábiles</span>
+      </div>
+      <div class="envio-row">
+        <span>🗺️ Interior</span>
+        <span class="envio-time">5–8 días hábiles</span>
+      </div>
+      <div class="envio-row">
+        <span>🌄 Patagonia</span>
+        <span class="envio-time">7–12 días hábiles</span>
+      </div>
+      <div class="envio-row">
+        <span>💸 Costo</span>
+        <span class="envio-time" style="color:var(--green);font-weight:700;">¡Gratis en todos los combos!</span>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:0.8rem;color:#888;margin-top:16px;">✉️ Servicio de envío: Correo Argentino — Envío domicilio o sucursal a elección</p>
   </div>
 
   <!-- REVIEWS -->
@@ -1877,6 +2038,12 @@
     history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
   </script>
+
+  <!-- FLOATING WA BUTTON -->
+  <a class="wa-fab" href="https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20el%20Combo%20Biotina%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F" target="_blank" aria-label="Consultar por WhatsApp">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    <span class="wa-fab-tooltip">Consultar por WhatsApp</span>
+  </a>
 
 </body>
 </html>
