@@ -1106,7 +1106,7 @@
       </p>
 
       <button class="btn-buy" id="buyBtn" onclick="openModal()">
-        COMPRAR AHORA · $80.000 — 🚚 ENVÍO GRATIS
+        COMPRAR AHORA · $43.000 — 🚚 ENVÍO GRATIS
       </button>
 
       <!-- MÉTODOS DE PAGO -->
@@ -1335,7 +1335,7 @@
   <div class="cta-final">
     <h2>Empezá hoy tu tratamiento</h2>
     <p>Resultados visibles desde la primera semana. Sin formol, sin sulfatos, sin efectos secundarios.</p>
-    <a href="#" onclick="openModal(); return false;" class="btn-cta-final">Lleva 2 · $80.000 — Envío gratis 🚚</a>
+    <a href="#" onclick="openModal(); return false;" class="btn-cta-final">Lleva 1 · $43.000 — Envío gratis 🚚</a>
   </div>
 
   <!-- MODAL FORMULARIO -->
@@ -1525,7 +1525,7 @@
   <!-- FLOATING CTA MOBILE -->
   <div class="floating-cta">
     <button class="floating-cta-btn" id="floatingBtn" onclick="openModal()">
-      COMPRAR AHORA · $ 62.000
+      COMPRAR AHORA · $43.000 — 🚚 ENVÍO GRATIS
     </button>
   </div>
 
@@ -1569,7 +1569,7 @@
       2: { label: 'Combo Biotina x2 — $80.000', mp: MP_URL_2 },
       3: { label: 'Combo Biotina x3 — $100.000', mp: MP_URL_3 }
     };
-    let selectedQty = 2;
+    let selectedQty = 1;
 
     function selectQty(el, price, qty) {
       document.querySelectorAll('.qty-option').forEach(o => o.classList.remove('selected'));
@@ -1675,7 +1675,7 @@
     }
 
     // Seleccionar "2 combos" por defecto sin hacer scroll
-    selectQty(document.querySelector('.qty-option.popular'), '$80.000', 2);
+    selectQty(document.querySelector('.qty-option[data-price="43000"]'), '$43.000', 1);
 
     // Asegurar que la página arranque desde arriba
     history.scrollRestoration = 'manual';
