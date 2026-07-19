@@ -254,30 +254,32 @@
 
  /* ─── HERO ─── */
  .hero {
- max-width: 1100px;
+ max-width: 1200px;
  margin: 0 auto;
  padding: 56px 48px;
  display: grid;
- grid-template-columns: 1fr 1fr;
- gap: 64px;
- align-items: start;
+ grid-template-columns: 55% 1fr;
+ gap: 56px;
+ align-items: center;
  }
 
  .hero-img {
- border-radius: 16px;
+ border-radius: 20px;
  overflow: hidden;
- background: var(--cream2);
- aspect-ratio: 4/5;
+ background: #f8f8f6;
+ aspect-ratio: 4/3;
  display: flex;
  align-items: center;
  justify-content: center;
  position: relative;
+ box-shadow: 0 8px 40px rgba(0,0,0,0.07);
  }
 
  .hero-img img {
  width: 100%;
  height: 100%;
- object-fit: cover;
+ object-fit: contain;
+ padding: 20px;
  }
 
  .hero-img-placeholder {
@@ -1131,8 +1133,9 @@
  .hero {
  grid-template-columns: 1fr;
  padding: 32px 20px;
- gap: 32px;
+ gap: 28px;
  }
+ .hero-img { aspect-ratio: 3/2; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
 
  .how-section { padding: 56px 20px; }
  .steps-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1173,8 +1176,8 @@
   box-shadow: 0 1px 20px rgba(0,0,0,0.06);
  }
 
- /* Hero image placeholder */
- .hero-img { background: #f7f7f5; }
+ /* Hero image */
+ .hero-img { background: #f8f8f6; }
 
  /* Secciones alternadas sutilmente */
  .ing-section { background: #f7f7f5; }
