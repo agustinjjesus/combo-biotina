@@ -178,16 +178,16 @@
  }
 
  :root {
- --cream: #252525;
- --cream2: rgba(255,255,255,0.08);
+ --cream: #f7f7f5;
+ --cream2: #e6e6e3;
  --coral: #e07a5f;
  --coral-dark: #c96a4f;
  --coral-light: #f4a08a;
- --green: #5dba77;
+ --green: #3d7a4f;
  --dark: #1a1a1a;
- --gray: rgba(255,255,255,0.50);
- --gray-light: rgba(255,255,255,0.26);
- --white: #1c1c1c;
+ --gray: #6b6b6b;
+ --gray-light: #c4bdb5;
+ --white: #ffffff;
  --gold: #d4a853;
  }
 
@@ -195,8 +195,8 @@
  html { scroll-behavior: smooth; }
 
  body {
- background: #0f0f0f;
- color: rgba(255,255,255,0.87);
+ background: #ffffff;
+ color: var(--dark);
  font-family: 'Outfit', sans-serif;
  font-weight: 300;
  line-height: 1.6;
@@ -1164,135 +1164,84 @@
  .quantity-options { animation-delay: 0.4s; }
  .btn-buy { animation-delay: 0.5s; }
 
- /* ─── DARK THEME COMPLETO ─── */
- .announce-bar { background: #080808; }
+ /* ─── TEMA BLANCO ELEGANTE ─── */
 
+ /* Nav limpio */
  nav {
-  background: #141414;
-  border-bottom-color: rgba(255,255,255,0.05);
-  box-shadow: 0 2px 16px rgba(0,0,0,0.6);
- }
- .nav-logo { border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.87); }
-
- h1, h2, h3, h4, h5, h6 { color: rgba(255,255,255,0.90); }
- .hero-right h1 { color: rgba(255,255,255,0.90); }
- .stars-text { color: rgba(255,255,255,0.42); }
-
- .stock-badge {
-  background: rgba(93,186,119,0.10);
-  border-color: rgba(93,186,119,0.28);
-  color: #5dba77;
+  background: #ffffff;
+  border-bottom: 1px solid #f0f0ee;
+  box-shadow: 0 1px 20px rgba(0,0,0,0.06);
  }
 
- .benefits-list li { color: rgba(255,255,255,0.80); }
- .benefits-list li strong { color: rgba(255,255,255,0.92); }
+ /* Hero image placeholder */
+ .hero-img { background: #f7f7f5; }
 
- .guarantee-box {
-  background: rgba(93,186,119,0.08);
-  border-color: rgba(93,186,119,0.2);
+ /* Secciones alternadas sutilmente */
+ .ing-section { background: #f7f7f5; }
+ .ing-card {
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.055);
+  border: 1px solid #f0f0ee;
  }
- .guarantee-text strong { color: #5dba77; }
- .guarantee-text span { color: rgba(255,255,255,0.42); }
+ .ing-card:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.10); border-color: #e6e6e3; }
 
- .qty-option { background: #222222; border-color: rgba(255,255,255,0.08); }
- .qty-option:hover { border-color: var(--coral-light); }
- .qty-option.selected { background: #2c1e19; border-color: var(--coral); }
- .qty-radio { border-color: rgba(255,255,255,0.22); }
- .qty-info strong { color: rgba(255,255,255,0.87); }
- .qty-info span { color: rgba(255,255,255,0.42); }
- .qty-price .price-now { color: rgba(255,255,255,0.87); }
- .qty-price .price-old { color: rgba(255,255,255,0.25); }
- .qty-count { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.65); }
-
- .payment-box { background: #222222; border-color: rgba(255,255,255,0.07); }
- .payment-box-title { color: rgba(255,255,255,0.35); }
- .payment-logo { background: #2e2e2e; border-color: rgba(255,255,255,0.1); box-shadow: none; }
-
- .btn-wa-alt { background: #222222; border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.80); }
- .btn-wa-alt:hover { border-color: #25d366; color: #25d366; }
-
- .trust-badge { color: rgba(255,255,255,0.38); }
- .trust-badge svg { color: rgba(255,255,255,0.38); opacity: 1; }
-
- .hero-img { background: #222222; }
-
- .ing-section { background: #141414; }
- .ing-card { background: #222222; }
- .ing-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.5); }
- .ing-name { color: rgba(255,255,255,0.87); }
- .ing-benefit { color: rgba(255,255,255,0.42); }
-
- .includes-section { background: #0f0f0f; }
- .include-card { background: #1c1c1c; }
- .include-card--featured { background: #241912; border-color: rgba(224,122,95,0.35); }
- .include-badge { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.65); }
- .include-card h3 { color: rgba(255,255,255,0.87); }
- .include-card p { color: rgba(255,255,255,0.42); }
- .include-more { color: var(--coral); }
-
- .how-section { background: #141414; }
- .step-text { color: rgba(255,255,255,0.60); }
- .how-sub { color: rgba(255,255,255,0.45); }
-
- .envio-section { background: #0f0f0f; }
- .envio-step-title { color: rgba(255,255,255,0.87); }
- .envio-step-desc { color: rgba(255,255,255,0.42); }
- .envio-step-icon { background: rgba(93,186,119,0.12); }
- .envio-row { background: #1c1c1c; }
- .envio-region { color: rgba(255,255,255,0.78); }
- .envio-time { background: rgba(93,186,119,0.15); color: #5dba77; }
- .envio-divider { border-top-color: rgba(255,255,255,0.05); }
- .envio-footer { background: rgba(93,186,119,0.08); border-color: rgba(93,186,119,0.2); color: #5dba77; }
-
- .faq-item { border-bottom-color: rgba(255,255,255,0.06); }
- .faq-q { color: rgba(255,255,255,0.87); }
- .faq-a { color: rgba(255,255,255,0.45); }
-
- .reviews-section { background: #141414; }
- .reviews-stars p { color: rgba(255,255,255,0.42); }
- .rating-bars { background: #1c1c1c; }
- .rating-label, .rating-pct { color: rgba(255,255,255,0.42); }
- .rating-bar-bg { background: rgba(255,255,255,0.08); }
- .review-card { background: #1c1c1c; }
- .review-title { color: rgba(255,255,255,0.87); }
- .review-text { color: rgba(255,255,255,0.48); }
- .review-meta { color: rgba(255,255,255,0.26); }
- .review-verified { color: #5dba77; }
-
- .floating-cta { background: #1a1a1a; box-shadow: 0 -4px 20px rgba(0,0,0,0.7); }
-
- .modal { background: #1e1e1e; }
- .modal h3 { color: rgba(255,255,255,0.87); }
- .modal-close { color: rgba(255,255,255,0.32); }
- .modal-close:hover { color: rgba(255,255,255,0.87); }
- .modal-sub { color: rgba(255,255,255,0.42); }
- .form-section-title { color: var(--coral); border-bottom-color: rgba(255,255,255,0.07); }
- .form-group label { color: rgba(255,255,255,0.58); }
- .form-group input, .form-group select {
-  background: #2a2a2a;
-  border-color: rgba(255,255,255,0.10);
-  color: rgba(255,255,255,0.87);
+ .includes-section { background: #ffffff; }
+ .include-card {
+  background: #f7f7f5;
+  border: 1px solid transparent;
  }
- .form-group input:focus, .form-group select:focus {
-  background: #333333;
+ .include-card--featured { background: #fdf3ef; border-color: #f4c0b0; }
+ .include-card:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.09); border-color: #e6e6e3; }
+
+ .how-section { background: #f7f7f5; }
+
+ .envio-section { background: #ffffff; }
+ .envio-row {
+  background: #f7f7f5;
+  border: 1px solid #f0f0ee;
+ }
+
+ .faq-section { background: #f7f7f5; }
+
+ .reviews-section { background: #ffffff; }
+ .review-card {
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.055);
+  border: 1px solid #f0f0ee;
+ }
+ .rating-bars {
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.055);
+  border: 1px solid #f0f0ee;
+ }
+
+ /* Cards de cantidad más elegantes */
+ .qty-option {
+  background: #ffffff;
+  border: 1.5px solid #ebebea;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+ }
+ .qty-option:hover { border-color: var(--coral-light); box-shadow: 0 2px 12px rgba(224,122,95,0.12); }
+ .qty-option.selected {
+  background: #fdf5f2;
   border-color: var(--coral);
+  box-shadow: 0 2px 14px rgba(224,122,95,0.14);
  }
- .form-group select option { background: #2a2a2a; color: rgba(255,255,255,0.87); }
- .modal-disclaimer { color: rgba(255,255,255,0.28); }
 
- .pmodal { background: #1e1e1e; }
- .pmodal-header h2 { color: rgba(255,255,255,0.87); }
- .pmodal-close { color: rgba(255,255,255,0.32); }
- .pmodal-close:hover { color: rgba(255,255,255,0.87); }
- .pmodal-tag.coral { color: var(--coral); border-color: rgba(224,122,95,0.3); background: rgba(224,122,95,0.07); }
- .pmodal-tag.green { color: #5dba77; border-color: rgba(93,186,119,0.28); background: rgba(93,186,119,0.08); }
- .pmodal-desc { color: rgba(255,255,255,0.48); }
- .pmodal-section { color: var(--coral); border-bottom-color: rgba(255,255,255,0.06); }
- .pmodal-list li { color: rgba(255,255,255,0.72); }
- .pmodal-steps li { color: rgba(255,255,255,0.72); }
- .pmodal-nota { background: rgba(93,186,119,0.10); border-color: rgba(93,186,119,0.22); color: #5dba77; }
+ /* Payment box más limpio */
+ .payment-box { background: #f7f7f5; border: 1.5px solid #ebebea; }
 
- .proof-strip { background: #080808; }
+ /* Sección how-to steps */
+ .step-num { box-shadow: 0 3px 10px rgba(224,122,95,0.3); }
+
+ /* Floating CTA blanca limpia */
+ .floating-cta { background: #ffffff; box-shadow: 0 -2px 20px rgba(0,0,0,0.08); }
+
+ /* Proof strip levemente diferente */
+ .proof-strip { background: #111111; }
+
+ /* Separador más sutil en FAQ */
+ .faq-item { border-bottom-color: #ebebea; }
  </style>
  <!-- Firebase SDK (sincronización en tiempo real) -->
  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
