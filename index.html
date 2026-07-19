@@ -143,7 +143,7 @@
  padding: 20px 48px; display: flex;
  align-items: center; justify-content: center; gap: 48px; flex-wrap: wrap;
  }
- .proof-num { font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 700; color: #f4a08a; }
+ .proof-num { font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 700; color: #ffffff; }
  .proof-label { font-size: 0.72rem; color: rgba(255,255,255,0.6); }
  /* ─── FAQ ─── */
  .faq-section { padding: 80px 48px; max-width: 780px; margin: 0 auto; }
@@ -180,10 +180,10 @@
  :root {
  --cream: #f7f7f5;
  --cream2: #e6e6e3;
- --coral: #e07a5f;
- --coral-dark: #c96a4f;
- --coral-light: #f4a08a;
- --green: #3d7a4f;
+ --coral: #111111;
+ --coral-dark: #000000;
+ --coral-light: #777777;
+ --green: #111111;
  --dark: #1a1a1a;
  --gray: #6b6b6b;
  --gray-light: #c4bdb5;
@@ -314,7 +314,7 @@
  margin-bottom: 20px;
  }
 
- .stars { color: #e8a838; font-size: 1rem; }
+ .stars { color: #111111; font-size: 1rem; }
 
  .stars-text {
  font-size: 0.8rem;
@@ -920,7 +920,7 @@
  font-weight: 500;
  }
 
- .review-stars { font-size: 0.85rem; color: #e8a838; }
+ .review-stars { font-size: 0.85rem; color: #111111; }
 
  .review-title {
  font-weight: 600;
@@ -1190,8 +1190,8 @@
   background: #f7f7f5;
   border: 1px solid transparent;
  }
- .include-card--featured { background: #fdf3ef; border-color: #f4c0b0; }
- .include-card:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.09); border-color: #e6e6e3; }
+ .include-card--featured { background: #f0f0f0; border-color: #cccccc; }
+ .include-card:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.09); border-color: #cccccc; }
 
  .how-section { background: #f7f7f5; }
 
@@ -1221,11 +1221,11 @@
   border: 1.5px solid #ebebea;
   box-shadow: 0 1px 6px rgba(0,0,0,0.04);
  }
- .qty-option:hover { border-color: var(--coral-light); box-shadow: 0 2px 12px rgba(224,122,95,0.12); }
+ .qty-option:hover { border-color: #999; box-shadow: 0 2px 12px rgba(0,0,0,0.09); }
  .qty-option.selected {
-  background: #fdf5f2;
-  border-color: var(--coral);
-  box-shadow: 0 2px 14px rgba(224,122,95,0.14);
+  background: #f5f5f5;
+  border-color: #111111;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.10);
  }
 
  /* Payment box más limpio */
@@ -1242,6 +1242,26 @@
 
  /* Separador más sutil en FAQ */
  .faq-item { border-bottom-color: #ebebea; }
+
+ /* ─── BLANCO Y NEGRO: eliminar todos los colores ─── */
+ .stock-badge { background: #f5f5f5; border-color: #d0d0d0; color: #111111; }
+ .stock-dot { background: #111111; }
+ .guarantee-box { background: #f7f7f5; border-color: #d8d8d5; }
+ .guarantee-text strong { color: #111111; }
+ .guarantee-text span { color: var(--gray); }
+ .benefit-check { background: #111111; }
+ .step-num { background: #111111; box-shadow: none; }
+ .envio-step-icon { background: #f0f0ee; }
+ .envio-time { background: #ebebea; color: #111111; }
+ .envio-footer { background: #f5f5f5; border-color: #d0d0d0; color: #111111; }
+ .review-verified { color: #555555; }
+ .qty-shipping { color: #555555; }
+ .pmodal-nota { background: #f7f7f5; border-color: #d8d8d5; color: #333333; }
+ .pmodal-tag.green { color: #111111; border-color: #bbbbbb; background: #f5f5f5; }
+ .payment-box { background: #f7f7f5; border-color: #e0e0de; }
+ .reviews-stars .stars { color: #111111; }
+ .stars-row .stars { color: #111111; }
+ .rating-bars { background: #ffffff; box-shadow: 0 2px 12px rgba(0,0,0,0.055); border: 1px solid #f0f0ee; }
  </style>
  <!-- Firebase SDK (sincronización en tiempo real) -->
  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
