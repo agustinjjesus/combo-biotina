@@ -38,30 +38,26 @@
     .btn-confirm:hover { background:var(--coral-dark); }
     .modal-disclaimer { font-size:0.72rem; color:var(--gray); text-align:center; margin-top:12px; line-height:1.5; }
     @media (max-width:540px) { .modal { padding:28px 20px; } .form-row { grid-template-columns:1fr; } }
-    /* ─── BARRA ENVÍO GRATIS ─── */
-    .shipping-bar {
-      background: var(--coral);
-      color: white;
-      text-align: center;
-      padding: 12px 20px;
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
+    /* ─── BARRA SCROLLING ─── */
+    .announce-bar {
+      background: var(--dark);
+      color: rgba(255,255,255,0.92);
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 11px 0;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
     }
-
-    /* ─── URGENCIA ─── */
-    .urgency-bar {
-      background: var(--dark); color: white;
-      text-align: center; padding: 10px 20px;
-      font-size: 0.78rem; letter-spacing: 0.08em;
-      display: flex; align-items: center; justify-content: center; gap: 12px;
+    .announce-track {
+      display: inline-block;
+      animation: marquee 28s linear infinite;
     }
-    .urgency-bar span { color: #f4a08a; font-weight: 600; }
-    .countdown {
-      background: var(--coral); color: white;
-      padding: 3px 10px; border-radius: 4px;
-      font-weight: 700; font-size: 0.82rem; letter-spacing: 0.05em;
+    .announce-track:hover { animation-play-state: paused; }
+    .announce-sep { margin: 0 28px; opacity: 0.4; }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
     }
     /* ─── STOCK BADGE ─── */
     .stock-badge {
@@ -182,8 +178,8 @@
     }
 
     :root {
-      --cream: #f5f0ea;
-      --cream2: #ede7df;
+      --cream: #fafaf8;
+      --cream2: #e8e8e5;
       --coral: #e07a5f;
       --coral-dark: #c96a4f;
       --coral-light: #f4a08a;
@@ -1174,9 +1170,34 @@
 </head>
 <body>
 
-  <!-- BARRA URGENCIA -->
-  <div class="urgency-bar">
-    🔥 ¡Últimas unidades disponibles! &nbsp;·&nbsp; <span>🚚 Envío gratis a todo el país</span>
+  <!-- BARRA SCROLLING -->
+  <div class="announce-bar">
+    <div class="announce-track">
+      🚚 ENVÍO GRATIS A TODO EL PAÍS
+      <span class="announce-sep">✦</span>
+      RESULTADOS DESDE LA PRIMERA SEMANA
+      <span class="announce-sep">✦</span>
+      SIN FORMOL NI SULFATOS
+      <span class="announce-sep">✦</span>
+      +2.244 CLIENTAS SATISFECHAS
+      <span class="announce-sep">✦</span>
+      PAGO 100% SEGURO CON MERCADOPAGO
+      <span class="announce-sep">✦</span>
+      30 DÍAS DE GARANTÍA
+      <span class="announce-sep">✦</span>
+      🚚 ENVÍO GRATIS A TODO EL PAÍS
+      <span class="announce-sep">✦</span>
+      RESULTADOS DESDE LA PRIMERA SEMANA
+      <span class="announce-sep">✦</span>
+      SIN FORMOL NI SULFATOS
+      <span class="announce-sep">✦</span>
+      +2.244 CLIENTAS SATISFECHAS
+      <span class="announce-sep">✦</span>
+      PAGO 100% SEGURO CON MERCADOPAGO
+      <span class="announce-sep">✦</span>
+      30 DÍAS DE GARANTÍA
+      <span class="announce-sep">✦</span>
+    </div>
   </div>
 
   <!-- NAV -->
@@ -1189,11 +1210,6 @@
       </a>
     </div>
   </nav>
-
-  <!-- BARRA ENVÍO GRATIS -->
-  <div class="shipping-bar">
-    🚚 ENVÍO GRATIS A TODO EL PAÍS EN TODOS LOS COMBOS 🚚
-  </div>
 
   <!-- HERO -->
   <div class="hero">
