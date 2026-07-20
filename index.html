@@ -325,6 +325,14 @@
  color: var(--gray);
  }
 
+ .stars-link {
+ text-decoration: underline;
+ text-underline-offset: 2px;
+ cursor: pointer;
+ transition: color 0.2s;
+ }
+ .stars-link:hover { color: var(--dark); }
+
  .benefits-list {
  list-style: none;
  margin-bottom: 28px;
@@ -1436,7 +1444,7 @@
 
  <div class="stars-row">
  <span class="stars"></span>
- <span class="stars-text">4.8 · 2.244 reseñas</span>
+ <a href="#reseñas" class="stars-text stars-link">4.8 · 2.244 reseñas</a>
  </div>
 
  <ul class="benefits-list">
@@ -1806,7 +1814,7 @@
  </div>
 
  <!-- REVIEWS -->
- <div class="reviews-section">
+ <div class="reviews-section" id="reseñas">
  <h2>Más de 2.244 clientas felices</h2>
  <div class="reviews-stars">
  <div class="stars"></div>
