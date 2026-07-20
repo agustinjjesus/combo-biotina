@@ -787,38 +787,90 @@
  margin-bottom: 48px;
  }
 
- .steps-grid {
- max-width: 900px;
- margin: 0 auto;
- display: grid;
- grid-template-columns: repeat(4, 1fr);
- gap: 24px;
+ /* ─── STEPPER INTERACTIVO ─── */
+ .how-stepper { max-width: 620px; margin: 0 auto; }
+
+ .how-track {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; margin-bottom: 48px; position: relative;
+ }
+ .how-track-line {
+  position: absolute; height: 2px; background: #e0e0de;
+  left: 72px; right: 72px; top: 50%; transform: translateY(-50%); z-index: 0;
+ }
+ .how-track-fill {
+  position: absolute; height: 2px; background: #111111;
+  left: 72px; top: 50%; transform: translateY(-50%);
+  z-index: 1; transition: width 0.4s ease; width: 0%;
+ }
+ .how-dot {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: #ebebea; border: 2px solid #d8d8d5;
+  color: #aaa; font-family: 'Outfit', sans-serif;
+  font-size: 0.88rem; font-weight: 700; cursor: pointer;
+  transition: all 0.25s; z-index: 2; position: relative;
+  margin: 0 36px; flex-shrink: 0;
+ }
+ .how-dot.active { background: #111111; border-color: #111111; color: white; }
+ .how-dot.done { background: #444444; border-color: #444444; color: white; }
+ .how-dot.done::after {
+  content: '✓'; position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; color: white;
+ }
+ .how-dot.done span { display: none; }
+
+ .how-steps-wrapper { min-height: 200px; margin-bottom: 36px; }
+ .how-step-item { display: none; }
+ .how-step-item.active { display: block; animation: stepIn 0.35s ease both; }
+ .how-step-item.back { display: block; animation: stepBack 0.35s ease both; }
+ @keyframes stepIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+ }
+ @keyframes stepBack {
+  from { opacity: 0; transform: translateX(-24px); }
+  to { opacity: 1; transform: translateX(0); }
  }
 
- .step-card {
- display: flex;
- flex-direction: column;
- align-items: center;
- gap: 12px;
+ .how-step-tag {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: #999; margin-bottom: 14px;
+ }
+ .how-step-title {
+  font-family: 'Outfit', sans-serif; font-size: 1.9rem; font-weight: 700;
+  color: #111111; margin-bottom: 16px; line-height: 1.15;
+ }
+ .how-step-text {
+  font-size: 0.9rem; color: #6b6b6b; line-height: 1.78;
+  max-width: 480px; margin: 0 auto 20px;
+ }
+ .how-step-badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: #444; background: #ebebea; padding: 5px 14px; border-radius: 20px;
  }
 
- .step-num {
- width: 40px; height: 40px;
- background: var(--coral);
- color: white;
- border-radius: 50%;
- display: flex;
- align-items: center;
- justify-content: center;
- font-weight: 700;
- font-size: 0.9rem;
+ .how-nav { display: flex; justify-content: center; gap: 14px; align-items: center; }
+ .how-btn {
+  border: 2px solid #111111; border-radius: 10px;
+  padding: 12px 28px; font-family: 'Outfit', sans-serif;
+  font-size: 0.88rem; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; letter-spacing: 0.03em;
  }
+ .how-btn-prev { background: white; color: #111111; }
+ .how-btn-prev:hover:not(:disabled) { background: #111111; color: white; }
+ .how-btn-prev:disabled { opacity: 0.28; cursor: default; border-color: #bbb; color: #bbb; }
+ .how-btn-next { background: #111111; color: white; }
+ .how-btn-next:hover { background: #000; }
 
- .step-text {
- font-size: 0.82rem;
- color: var(--dark);
- line-height: 1.5;
- text-align: center;
+ .how-step-counter { font-size: 0.78rem; color: #aaa; font-weight: 500; min-width: 60px; text-align: center; }
+
+ @media (max-width: 600px) {
+  .how-dot { width: 40px; height: 40px; margin: 0 20px; font-size: 0.8rem; }
+  .how-track-line { left: 50px; right: 50px; }
+  .how-track-fill { left: 50px; }
+  .how-step-title { font-size: 1.5rem; }
  }
 
  /* ─── REVIEWS ─── */
@@ -1594,26 +1646,55 @@
 
  <!-- HOW TO USE -->
  <div class="how-section">
- <h2>¿Cómo se usa?</h2>
- <p class="how-sub">Una rutina simple, resultados visibles.</p>
- <div class="steps-grid">
- <div class="step-card">
- <div class="step-num">1</div>
- <p class="step-text">Lavá con el Shampoo de Biotina</p>
- </div>
- <div class="step-card">
- <div class="step-num">2</div>
- <p class="step-text">Aplicá la Crema de medios a puntas</p>
- </div>
- <div class="step-card">
- <div class="step-num">3</div>
- <p class="step-text">2 veces por semana, usá la Ampolla Plex</p>
- </div>
- <div class="step-card">
- <div class="step-num">4</div>
- <p class="step-text">Diariamente, aplicá Biotina Pure en el cuero cabelludo</p>
- </div>
- </div>
+  <h2>¿Cómo se usa?</h2>
+  <p class="how-sub">Una rutina simple, resultados visibles.</p>
+
+  <div class="how-stepper">
+   <!-- Barra de progreso -->
+   <div class="how-track">
+    <div class="how-track-line"></div>
+    <div class="how-track-fill" id="howTrackFill"></div>
+    <button class="how-dot active" id="how-dot-0" onclick="howGoTo(0)"><span>1</span></button>
+    <button class="how-dot" id="how-dot-1" onclick="howGoTo(1)"><span>2</span></button>
+    <button class="how-dot" id="how-dot-2" onclick="howGoTo(2)"><span>3</span></button>
+    <button class="how-dot" id="how-dot-3" onclick="howGoTo(3)"><span>4</span></button>
+   </div>
+
+   <!-- Contenido de cada paso -->
+   <div class="how-steps-wrapper">
+    <div class="how-step-item active" id="how-step-0">
+     <div class="how-step-tag">Paso 1 de 4 — Todos los días</div>
+     <h3 class="how-step-title">Shampoo de Biotina</h3>
+     <p class="how-step-text">Lavá el cabello con el shampoo de biotina. Masajeá el cuero cabelludo con las yemas de los dedos durante 2–3 minutos para activar la circulación. Enjuagá con agua tibia.</p>
+     <span class="how-step-badge">Uso diario · 500 ml</span>
+    </div>
+    <div class="how-step-item" id="how-step-1">
+     <div class="how-step-tag">Paso 2 de 4 — Todos los días</div>
+     <h3 class="how-step-title">Acondicionador</h3>
+     <p class="how-step-text">Aplicá la crema acondicionadora de medios a puntas, evitando la raíz. Dejá actuar 3 minutos para hidratar y suavizar la fibra. Enjuagá con agua fría para sellar el brillo.</p>
+     <span class="how-step-badge">Uso diario · 500 ml</span>
+    </div>
+    <div class="how-step-item" id="how-step-2">
+     <div class="how-step-tag">Paso 3 de 4 — 2 veces por semana</div>
+     <h3 class="how-step-title">Ampolla Plex + Biotina</h3>
+     <p class="how-step-text">Mezclá con la crema de tratamiento y aplicá de medios a puntas sobre el cabello húmedo. Dejá actuar 5–10 minutos. Enjuagá. Repara la fibra y reduce la quebradura desde la primera aplicación.</p>
+     <span class="how-step-badge">Tratamiento intensivo · 60 ml · Uso semanal</span>
+    </div>
+    <div class="how-step-item" id="how-step-3">
+     <div class="how-step-tag">Paso 4 de 4 — Todos los días</div>
+     <h3 class="how-step-title">Biotina Pura en Spray</h3>
+     <p class="how-step-text">Aplicá el spray directamente en el cuero cabelludo limpio y seco. Masajeá suavemente con las yemas de los dedos. No enjuagar. Estimula el crecimiento de pelitos nuevos desde el folículo.</p>
+     <span class="how-step-badge">No enjuagar · 250 ml · Uso diario</span>
+    </div>
+   </div>
+
+   <!-- Navegación -->
+   <div class="how-nav">
+    <button class="how-btn how-btn-prev" id="how-prev" onclick="howPrev()" disabled>← Anterior</button>
+    <span class="how-step-counter" id="how-counter">1 / 4</span>
+    <button class="how-btn how-btn-next" id="how-next" onclick="howNext()">Siguiente →</button>
+   </div>
+  </div>
  </div>
 
  <!-- FAQ -->
@@ -2288,6 +2369,59 @@
  if (e.target === document.getElementById('pmodalOverlay')) closeProduct();
  }
  // ─────────────────────────────────────────────────────────────────────────
+
+ // ─── STEPPER CÓMO SE USA ───
+ let howCurrent = 0;
+ const HOW_TOTAL = 4;
+
+ function howUpdateFill() {
+  const pct = howCurrent === 0 ? 0 : (howCurrent / (HOW_TOTAL - 1)) * 100;
+  document.getElementById('howTrackFill').style.width = `calc(${pct}% * (100% - 144px) / 100)`;
+ }
+
+ function howGoTo(idx, isBack) {
+  // Quitar activo del paso actual
+  const prevItem = document.getElementById(`how-step-${howCurrent}`);
+  prevItem.classList.remove('active', 'back');
+  document.getElementById(`how-dot-${howCurrent}`).classList.remove('active');
+  if (howCurrent < idx) document.getElementById(`how-dot-${howCurrent}`).classList.add('done');
+
+  // Desmarcar "done" si volvemos atrás
+  if (isBack) {
+   for (let i = idx; i < HOW_TOTAL; i++) {
+    document.getElementById(`how-dot-${i}`).classList.remove('done');
+   }
+  }
+
+  howCurrent = idx;
+
+  // Activar nuevo paso
+  const newItem = document.getElementById(`how-step-${howCurrent}`);
+  newItem.classList.remove('active', 'back');
+  void newItem.offsetWidth; // reflow para reiniciar animación
+  newItem.classList.add(isBack ? 'back' : 'active');
+  document.getElementById(`how-dot-${howCurrent}`).classList.add('active');
+
+  // Botones
+  document.getElementById('how-prev').disabled = howCurrent === 0;
+  const nextBtn = document.getElementById('how-next');
+  nextBtn.textContent = howCurrent === HOW_TOTAL - 1 ? '↺ Volver al inicio' : 'Siguiente →';
+
+  // Contador
+  document.getElementById('how-counter').textContent = `${howCurrent + 1} / ${HOW_TOTAL}`;
+
+  // Línea de progreso
+  const fillPct = howCurrent / (HOW_TOTAL - 1) * 100;
+  document.getElementById('howTrackFill').style.width = fillPct + '%';
+ }
+
+ function howNext() {
+  if (howCurrent === HOW_TOTAL - 1) { howGoTo(0, true); }
+  else { howGoTo(howCurrent + 1, false); }
+ }
+ function howPrev() {
+  if (howCurrent > 0) howGoTo(howCurrent - 1, true);
+ }
 
  // Seleccionar "2 combos" por defecto sin hacer scroll
  selectQty(document.querySelector('.qty-option[data-price="43000"]'), '$43.000', 1);
