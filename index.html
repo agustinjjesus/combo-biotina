@@ -1361,6 +1361,9 @@
  .envio-time-free { font-size: 0.78rem; font-weight: 700; color: #111111; background: #ffffff; padding: 3px 14px; border-radius: 20px; letter-spacing: 0.06em; }
  .envio-footer { display: flex; align-items: center; gap: 10px; justify-content: center; background: #f7f7f5; border: 1px solid #e8e8e5; border-radius: 12px; padding: 16px 20px; font-size: 0.82rem; color: #555; margin-top: 20px; }
  .envio-footer svg { flex-shrink: 0; opacity: 0.45; }
+ .envio-dispatch-note { display: flex; align-items: center; gap: 8px; background: #111111; color: #ffffff; border-radius: 10px; padding: 11px 18px; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.02em; margin-bottom: 16px; }
+ .envio-dispatch-note svg { flex-shrink: 0; opacity: 0.8; }
+ .envio-dispatch-note strong { font-weight: 700; }
  @media (max-width: 768px) {
   .envio-section { padding: 56px 20px; }
   .envio-steps { grid-template-columns: 1fr; gap: 28px; }
@@ -1726,7 +1729,7 @@
  <div class="envio-section">
  <div class="envio-inner">
   <h2>¿Cómo llega tu pedido?</h2>
-  <p class="how-sub">Despachamos a todo el país con seguimiento incluido.</p>
+  <p class="how-sub">Despachamos a todo el país el mismo día si pedís antes de las 14hs.</p>
 
   <div class="envio-steps">
    <div class="envio-step">
@@ -1734,7 +1737,7 @@
      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
     </div>
     <h3 class="envio-step-title">Preparamos tu pedido</h3>
-    <p class="envio-step-desc">Lo armamos y empaquetamos el mismo día que recibimos el pago confirmado.</p>
+    <p class="envio-step-desc">Pedidos con pago confirmado antes de las 14hs los despachamos ese mismo día.</p>
    </div>
    <div class="envio-connector"></div>
    <div class="envio-step">
@@ -1756,6 +1759,10 @@
 
   <hr class="envio-divider" />
   <p class="envio-tiempos-title">Tiempos de entrega estimados</p>
+  <div class="envio-dispatch-note">
+   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+   Pedidos confirmados antes de las <strong>14hs</strong> se despachan el mismo día
+  </div>
 
   <div class="envio-grid">
    <div class="envio-row">
@@ -1763,21 +1770,21 @@
      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
      <span class="envio-region">AMBA</span>
     </div>
-    <span class="envio-time">3–5 días hábiles</span>
+    <span class="envio-time">2–4 días hábiles</span>
    </div>
    <div class="envio-row">
     <div class="envio-row-info">
      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
      <span class="envio-region">Interior del país</span>
     </div>
-    <span class="envio-time">5–8 días hábiles</span>
+    <span class="envio-time">4–6 días hábiles</span>
    </div>
    <div class="envio-row">
     <div class="envio-row-info">
      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
      <span class="envio-region">Patagonia</span>
     </div>
-    <span class="envio-time">7–12 días hábiles</span>
+    <span class="envio-time">6–9 días hábiles</span>
    </div>
    <div class="envio-row envio-row--free">
     <div class="envio-row-info">
