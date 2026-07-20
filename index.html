@@ -1228,13 +1228,19 @@
 
  /* ─── RESPONSIVE ─── */
  @media (max-width: 768px) {
- nav { padding: 10px 12px; }
- .nav-brand { gap: 6px; }
- .nav-brand img { height: 28px; }
- .nav-brand-name { font-size: 0.62rem; letter-spacing: 0.05em; }
+ nav { padding: 13px 16px; }
+ .nav-brand { gap: 9px; }
+ .nav-brand img { height: 32px; }
+ .nav-brand-name { font-size: 0.68rem; letter-spacing: 0.045em; }
  .nav-brand-sub { display: none; }
  .nav-wa span { display: none; }
- .nav-wa { padding: 10px; border-radius: 50%; }
+ .nav-wa {
+  width: 40px; height: 40px; padding: 0;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 10px rgba(37,211,102,0.35);
+ }
+ .nav-wa svg { width: 18px; height: 18px; }
 
  .hero {
  grid-template-columns: 1fr;
