@@ -111,6 +111,11 @@ N8N_BLOCK_ENV_ACCESS_IN_NODE=false
 ANTHROPIC_API_KEY=sk-ant-TU_CLAVE_DE_ANTHROPIC
 EVOLUTION_URL=http://bot_evolution:8080
 EVOLUTION_API_KEY=LA_MISMA_CLAVE_QUE_PONGAS_EN_EVOLUTION
+
+# Grupo de WhatsApp del equipo (Dolores/dueño) donde el bot avisa cuando
+# hay que escalar una conversación. Ver sección 4.1 para obtener este ID.
+# Podés dejarlo como PENDIENTE por ahora y completarlo más adelante.
+ESCALATION_GROUP_JID=PENDIENTE
 ```
 
 > Genera valores aleatorios con: `openssl rand -hex 24`
@@ -164,14 +169,33 @@ DEL_INSTANCE=false
 
 ## 4. Importar y configurar el workflow en n8n
 
-1. En n8n: **Workflows → Import from File** → sube `n8n-workflow-whatsapp-claude.json` (está en esta misma carpeta del repo).
+El workflow ya incluye el prompt de ventas cargado y la lógica de **escalamiento**: cuando llega un audio, o cuando Claude decide que hay que avisar al equipo (venta a cerrar, pago contra entrega en Zona Norte, mensaje fuera de tema, etc.), el bot le manda un aviso automático al **grupo de WhatsApp del equipo** — no reemplaza a Dolores/dueño, los avisa.
+
+1. En n8n: **Workflows → Import from URL** (o "Import from File" si no aparece esa opción) → pega/sube `n8n-workflow-whatsapp-claude.json` (está en esta misma carpeta del repo).
 2. Crea la credencial de Postgres: **Credentials → New → Postgres**
    - Host: `bot_postgres` — Database: `n8n` — User: `postgres` — Password: la tuya — Port: `5432` — SSL: disable.
    - Asígnala a los dos nodos de Postgres del workflow (`Cargar historial` y `Guardar conversación`).
-3. Abre el nodo **“Preparar mensajes (EDITA TU PROMPT AQUÍ)”** y pega tu prompt de ventas donde dice `PEGA AQUÍ TU PROMPT`.
-4. **Activa** el workflow (switch arriba a la derecha).
-5. Copia la **URL de producción** del nodo Webhook. Debería ser:
+3. **Activa** el workflow (switch arriba a la derecha / botón "Publish").
+4. Copia la **URL de producción** del nodo Webhook. Debería ser:
    `https://n8n.productoscapilarespg.com/webhook/whatsapp`
+
+### 4.1 Obtener el ID del grupo de WhatsApp del equipo (para las alertas)
+
+El bot necesita saber a qué grupo avisar. Ese grupo debe incluir al **número de WhatsApp del negocio** (el que vincules en el paso 3) más Dolores y/o el dueño.
+
+1. Crea (o usa uno existente) un grupo de WhatsApp con: el número del negocio + Dolores + dueño.
+2. Con el workflow ya **activado** en n8n, pide que alguien escriba cualquier mensaje en ese grupo.
+3. En n8n, ve a la pestaña **Executions** (arriba, al lado de "Editor") → abre la ejecución más reciente.
+4. Haz clic en el nodo **"Webhook Evolution"** y mira su salida (Output) → busca el campo `data.key.remoteJid`. Va a ser un texto que termina en `@g.us` (por ejemplo `120363012345678901@g.us`).
+5. Copia ese valor completo.
+6. Ve al servicio `n8n` en Easypanel → pestaña **Entorno** → reemplaza la línea `ESCALATION_GROUP_JID=PENDIENTE` por:
+   ```
+   ESCALATION_GROUP_JID=120363012345678901@g.us
+   ```
+   (con el valor real que copiaste)
+7. Dale **Implementar/Deploy** de nuevo para que tome el cambio.
+
+> El bot **nunca responde dentro de ese grupo ni procesa mensajes que lleguen ahí** — el filtro ignora todos los mensajes de grupos. Solo lo usa para *enviar* avisos hacia afuera.
 
 ### Conectar Evolution → n8n (webhook)
 
@@ -215,6 +239,7 @@ Envía un WhatsApp al número del negocio desde otro teléfono. Deberías ver:
 | Error 401 en el nodo Claude API | `ANTHROPIC_API_KEY` mal puesta en el Environment de n8n (redeploy después de cambiarla). |
 | Error en nodos Postgres | Credencial de Postgres en n8n (host `bot_postgres`, base `n8n`) y que exista la tabla `chat_history`. |
 | Claude responde pero no llega al cliente | `EVOLUTION_URL` y `EVOLUTION_API_KEY` en el Environment de n8n; nombre de instancia correcto. |
+| No llegan los avisos de escalamiento al grupo | `ESCALATION_GROUP_JID` mal puesto (debe terminar en `@g.us`) o el número del negocio no es miembro del grupo. Ver sección 4.1. |
 | WhatsApp desconectado | Manager de Evolution → reconectar/escanear QR de nuevo. |
 
 ---
