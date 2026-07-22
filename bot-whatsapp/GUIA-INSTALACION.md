@@ -172,7 +172,7 @@ El workflow ya incluye el prompt de ventas cargado y la lógica de **escalamient
 1. En n8n: **Workflows → Import from URL** (o "Import from File" si no aparece esa opción) → pega/sube `n8n-workflow-whatsapp-claude.json` (está en esta misma carpeta del repo).
 2. Crea la credencial de Postgres: **Credentials → New → Postgres**
    - Host: `bot_postgres` — Database: `n8n` — User: `postgres` — Password: la tuya — Port: `5432` — SSL: disable.
-   - Asígnala a los **once** nodos de Postgres del workflow: `Cargar historial`, `Guardar conversación`, `Leer estado bot`, `Guardar estado bot`, `Leer estado cliente`, `Chequear duplicado`, `Registrar mensaje`, `Registrar imagen recibida`, `Intentar lock`, `Liberar lock`, `Registrar respuesta humana`.
+   - Asígnala a los **once** nodos de Postgres del workflow: `Cargar historial`, `Guardar conversación`, `Leer estado bot`, `Guardar estado bot`, `Leer estado cliente`, `Chequear duplicado`, `Registrar mensaje`, `Registrar imagen recibida`, `Intentar lock`, `Liberar lock`, `Registrar respuesta humana`, `Guardar origen anuncio`.
 3. Crea dos credenciales de tipo **Header Auth** (`Credentials → New → Header Auth`) — son las que reemplazan a las variables de entorno que no funcionan (ver nota de la sección 2.3):
    - **"Anthropic x-api-key"**: Name = `x-api-key`, Value = tu clave de Anthropic (`sk-ant-...`).
    - **"Evolution apikey"**: Name = `apikey`, Value = tu `AUTHENTICATION_API_KEY` de Evolution.
@@ -184,6 +184,7 @@ El workflow ya incluye el prompt de ventas cargado y la lógica de **escalamient
    `https://n8n.productoscapilarespg.com/webhook/whatsapp`
 7. Importá también `n8n-workflow-monitor-whatsapp.json` (mismo repo) — es un workflow aparte que chequea cada 15 min si el WhatsApp sigue conectado y avisa al grupo si se cae. Asignale las mismas credenciales de Postgres y Header Auth "Evolution apikey" a sus nodos, reemplazá el placeholder del JID del grupo (ver 4.1) y activalo.
 8. Importá también `n8n-workflow-analisis-conversaciones.json` (mismo repo) — genera un reporte semanal con IA de por qué no se cierran algunas ventas. Ver sección 4.3 para el detalle. Asignale las mismas tres credenciales (Postgres, Header Auth "Anthropic x-api-key" en el nodo **Analizar con Claude**, Header Auth "Evolution apikey" en **Enviar reporte** y **Notificar falla analisis**), reemplazá el placeholder del JID (ver 4.1) y activalo.
+9. Importá también `n8n-workflow-resumen-diario.json` (mismo repo) — manda un resumen diario de ventas por WhatsApp al número personal del dueño. Ver sección 4.6 para el detalle. Asignale la credencial de Postgres a `Traer conversaciones del dia` y `Traer origenes de anuncio del dia`, la credencial Header Auth "Evolution apikey" al nodo **Enviar resumen**, reemplazá el placeholder `TU_NUMERO_PERSONAL_AQUI@s.whatsapp.net` (nodo **Enviar resumen**) por el JID real del dueño (formato `549` + código de área + número + `@s.whatsapp.net`, ej. `5491140377694@s.whatsapp.net`) y activalo.
 
 ### 4.1 Obtener el ID del grupo de WhatsApp del equipo (para las alertas) y cargarlo en el workflow
 
@@ -229,8 +230,9 @@ El bot se puede pausar/reanudar escribiendo un comando en el **grupo de escalami
 - Escribir **`parar <número>`** (ej. `parar 1140377694`) → el bot deja de responderle SOLO a ese cliente. Útil cuando alguien del equipo (ej. Tomi) va a cerrar manualmente un envío puntual (zona norte, coordinación especial, etc.) y no querés que el bot siga contestándole mientras tanto.
 - Escribir **`seguir <número>`** (ej. `seguir 1140377694`) → reanuda solo a ese cliente.
 - El número podés escribirlo con o sin código de país/9 (`1140377694` o `5491140377694`, funciona igual) — internamente se usan los últimos 10 dígitos para identificar al cliente.
+- El comando tolera tildes, mayúsculas, signos de puntuación (`¡Pará!`) y sinónimos (`para`, `frená`, `frena`, `stop` para pausar; `seguí`, `continuar`, `reanudar` para reanudar).
 
-El estado se guarda en la tabla `chat_history` (filas especiales con `session_id = '__bot_status__'` para el global y `'__paused_customer__:<10 dígitos>'` para el pausado por cliente), no requiere ninguna variable de entorno nueva. El comando debe escribirse exactamente `parar` / `seguir`, opcionalmente seguido de un espacio y el número (sin texto adicional). Tiene que escribirlo alguien del grupo desde su propio WhatsApp (Dolores o el dueño) — si lo escribe el número del negocio (el que está vinculado al bot), el bot lo ignora, porque el workflow descarta todos sus propios mensajes salientes (`fromMe`).
+El estado se guarda en la tabla `chat_history` (filas especiales con `session_id = '__bot_status__'` para el global y `'__paused_customer__:<10 dígitos>'` para el pausado por cliente), no requiere ninguna variable de entorno nueva. Tiene que escribirlo alguien del grupo desde su propio WhatsApp (Dolores o el dueño) — si lo escribe el número del negocio (el que está vinculado al bot), el bot lo ignora, porque el workflow descarta todos sus propios mensajes salientes (`fromMe`).
 
 > Se descartó usar **etiquetas de WhatsApp** para esto: Evolution API (y Baileys por debajo) tiene un bug conocido donde los eventos de etiquetas (`LABELS_ASSOCIATION`) no siempre llegan al webhook, así que no es confiable para algo crítico del negocio.
 
@@ -250,6 +252,17 @@ Si un cliente manda dos mensajes muy rápido (antes de que el bot termine de con
 ### 4.5 Respuestas manuales del equipo (contexto del bot)
 
 Cuando alguien del equipo le responde a un cliente **manualmente** desde el teléfono conectado al bot (por ejemplo para coordinar un envío puntual), ese mensaje queda guardado en `chat_history` como si lo hubiera dicho el bot, sin disparar ninguna respuesta automática. Así, la próxima vez que ese cliente escriba, el bot ya tiene el contexto de lo que se habló manualmente y no "empieza de cero". No requiere ninguna acción de tu parte, funciona automáticamente con cualquier respuesta directa (fuera del grupo del equipo).
+
+### 4.6 Resumen diario de ventas
+
+El workflow `n8n-workflow-resumen-diario.json` manda todos los días, por WhatsApp, al **número personal del dueño** (no al grupo del equipo), un resumen del día: conversaciones iniciadas desde anuncios de Meta, ventas cerradas, porcentaje de conversión, facturación y ganancia neta.
+
+- **Cuándo corre:** automáticamente todos los días a las **22:00 (hora Argentina)**.
+- **Disparo manual:** `GET` a `https://n8n.productoscapilarespg.com/webhook/resumen-diario` (por ejemplo abriendo esa URL en el navegador).
+- **Solo cuenta conversaciones que arrancaron por un anuncio (Meta/Facebook/Instagram Ads):** cuando un cliente escribe por primera vez desde un botón "Enviar mensaje" de un anuncio, WhatsApp marca ese primer mensaje con `contextInfo.conversionSource: "FB_Ads"`. El nodo **Filtrar y extraer** del workflow principal detecta ese campo (`isFromAd`) y el nodo **Guardar origen anuncio** lo graba una sola vez por cliente (fila `__ad_source__:<JID>` en `chat_history`). El resumen diario cruza esa marca con los mensajes del día para contar solo esas conversaciones — así el número coincide con lo que muestra el panel de Meta Ads, no con el total de conversaciones (que también incluye clientes orgánicos, reventas, pruebas, etc.).
+  > ⚠️ Esta detección se agregó recién — cualquier conversación que haya arrancado por un anuncio **antes** de esa fecha no quedó marcada, así que el primer resumen diario después de activar esto puede mostrar menos conversaciones de las reales (solo cuenta desde que se activó en adelante).
+- **Ventas cerradas / facturación / ganancia:** usa el mismo criterio del análisis semanal (recibió datos de pago + mandó comprobante), pero solo sobre las conversaciones de anuncios de ese día. Precio del combo $43.000, costo $10.000 → ganancia neta $33.000 por venta (ambos valores están hardcodeados en el nodo **Calcular resumen del dia** — si cambia el precio o el costo, hay que editarlos ahí).
+- **Nada que cargar aparte:** usa las mismas credenciales de Postgres y Evolution ya creadas en la sección 4, más el JID personal del dueño (ver punto 9 de la sección 4).
 
 ### Conectar Evolution → n8n (webhook)
 
@@ -292,11 +305,12 @@ Envía un WhatsApp al número del negocio desde otro teléfono. Deberías ver:
 | No llega nada a n8n | Webhook de Evolution: URL exacta y evento `MESSAGES_UPSERT` activado. Workflow **activado** en n8n. |
 | Error `access to env vars denied` en cualquier nodo | Quedó una referencia a `$env.ALGO` sin migrar — no funciona en esta versión de n8n (task runner aislado). Ver sección 2.3 y 4: hay que usar credenciales o valores hardcodeados en el nodo, no variables de entorno. |
 | Error 401 en el nodo Claude API | Revisá la credencial **Header Auth "Anthropic x-api-key"** (nombre de header `x-api-key`, valor tu clave real) asignada al nodo. |
-| Error en nodos Postgres | Credencial de Postgres en n8n (host `bot_postgres`, base `n8n`, usuario/contraseña correctos) asignada a los 11 nodos Postgres, y que existan las tablas `chat_history` y `processing_lock`. Si dice "password authentication failed", la contraseña cambió — recreá la credencial. |
+| Error en nodos Postgres | Credencial de Postgres en n8n (host `bot_postgres`, base `n8n`, usuario/contraseña correctos) asignada a los 12 nodos Postgres, y que existan las tablas `chat_history` y `processing_lock`. Si dice "password authentication failed", la contraseña cambió — recreá la credencial. |
 | Claude responde pero no llega al cliente | Credencial **Header Auth "Evolution apikey"** asignada a los nodos de Evolution; nombre de instancia correcto (`pg`); URL `http://bot_evolution:8080` correcta en esos nodos. |
 | No llegan los avisos de escalamiento al grupo, o el comando `parar`/`seguir` no responde | El placeholder `TU_GRUPO_JID_AQUI@g.us` no se reemplazó por el JID real en los 7 nodos (sección 4.1), o el número del negocio no es miembro del grupo. |
 | WhatsApp desconectado | Manager de Evolution → reconectar/escanear QR de nuevo. |
 | No llega el reporte semanal de análisis | Workflow `n8n-workflow-analisis-conversaciones.json` activado, JID reemplazado en sus 2 nodos, y credenciales asignadas (Postgres, Anthropic, Evolution) igual que el workflow principal. |
+| No llega el resumen diario, o siempre muestra 0 conversaciones | Workflow `n8n-workflow-resumen-diario.json` activado, placeholder `TU_NUMERO_PERSONAL_AQUI@s.whatsapp.net` reemplazado por el JID real del dueño, credenciales de Postgres/Evolution asignadas (sección 4, punto 9). Si muestra 0 siendo que sí hubo ventas de anuncios ese día, puede ser que esas conversaciones hayan arrancado antes de activar la detección de origen (ver nota en 4.6). |
 
 ---
 
