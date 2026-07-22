@@ -20,7 +20,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Filtra eventos de Evolution API (MESSAGES_UPSERT)\n// - Detecta comandos de administracion (\"parar\"/\"seguir\") escritos en el\n//   grupo de escalamiento del equipo\n// - Separa audios de texto para el resto de los clientes\nconst body = $json.body ?? $json;\nconst data = body.data;\n\nif (!data || !data.key || data.key.fromMe) {\n  return [];\n}\n\nconst remoteJid = String(data.key.remoteJid);\nconst isGroup = remoteJid.endsWith('@g.us');\nconst msg = data.message || {};\nconst text = (msg.conversation || msg.extendedTextMessage?.text || '').trim();\n\nif (isGroup) {\n  const escalationGroup = 'TU_GRUPO_JID_AQUI@g.us';\n  if (remoteJid === escalationGroup) {\n    const normalized = text.toLowerCase();\n    if (normalized === 'parar') {\n      return [{ json: { type: 'admin_command', command: 'paused', instance: body.instance } }];\n    }\n    if (normalized === 'seguir') {\n      return [{ json: { type: 'admin_command', command: 'active', instance: body.instance } }];\n    }\n  }\n  // Cualquier otro mensaje de grupo (o texto sin reconocer en el grupo del equipo) se ignora\n  return [];\n}\n\nconst isAudio = !!(msg.audioMessage || msg.pttMessage);\nif (!isAudio && !text) {\n  return [];\n}\n\nreturn [{\n  json: {\n    type: 'customer_message',\n    sessionId: remoteJid,\n    number: remoteJid.split('@')[0],\n    text,\n    instance: body.instance,\n    pushName: data.pushName || '',\n    isAudio\n  }\n}];\n"
+        "jsCode": "// Filtra eventos de Evolution API (MESSAGES_UPSERT)\n// - Detecta comandos de administracion (\"parar\"/\"seguir\") escritos en el\n//   grupo de escalamiento del equipo\n// - Separa audios de texto para el resto de los clientes\nconst body = $json.body ?? $json;\nconst data = body.data;\n\nif (!data || !data.key || data.key.fromMe) {\n  return [];\n}\n\nconst remoteJid = String(data.key.remoteJid);\nconst isGroup = remoteJid.endsWith('@g.us');\nconst msg = data.message || {};\nconst text = (msg.conversation || msg.extendedTextMessage?.text || '').trim();\n\nif (isGroup) {\n  const escalationGroup = 'TU_GRUPO_JID_AQUI@g.us';\n  if (remoteJid === escalationGroup) {\n    const normalized = text.toLowerCase();\n    if (normalized === 'parar') {\n      return [{ json: { type: 'admin_command', command: 'paused', instance: body.instance } }];\n    }\n    if (normalized === 'seguir') {\n      return [{ json: { type: 'admin_command', command: 'active', instance: body.instance } }];\n    }\n  }\n  // Cualquier otro mensaje de grupo (o texto sin reconocer en el grupo del equipo) se ignora\n  return [];\n}\n\nconst isAudio = !!(msg.audioMessage || msg.pttMessage);\nconst isImage = !!(msg.imageMessage);\nconst caption = msg.imageMessage?.caption || '';\nconst finalText = text || caption.trim();\n\nif (!isAudio && !isImage && !finalText) {\n  return [];\n}\n\nreturn [{\n  json: {\n    type: 'customer_message',\n    sessionId: remoteJid,\n    number: remoteJid.split('@')[0],\n    text: finalText,\n    instance: body.instance,\n    pushName: data.pushName || '',\n    isAudio,\n    isImage\n  }\n}];\n"
       },
       "id": "a1000000-0000-0000-0000-000000000002",
       "name": "Filtrar y extraer",
@@ -46,7 +46,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Deja pasar solo si el mensaje es texto (no audio)\nif ($json.isAudio) return [];\nreturn [{ json: $json }];\n"
+        "jsCode": "// Deja pasar solo si el mensaje es texto (no audio, no imagen)\nif ($json.isAudio || $json.isImage) return [];\nreturn [{ json: $json }];\n"
       },
       "id": "a1000000-0000-0000-0000-000000000011",
       "name": "Solo texto",
@@ -108,7 +108,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// ============================================================\n// Prompt de ventas - PG Productos Capilares\n// ============================================================\nconst SYSTEM_PROMPT = `Sos parte del equipo de atención al cliente de PG Productos Capilares,\nuna marca argentina de productos para el cuidado del cabello. Hablás\nen español rioplatense (voseo: \"vos tenés\", \"contame\", \"querés\"), tono\ncercano pero un poco más neutro que una charla entre amigos — profesional\ny cálido, no excesivamente informal.\n\n## SOBRE EL PRODUCTO\nVendés el Combo Biotina: shampoo (500ml) + acondicionador (500ml) +\nampolla (60ml) + biotina pura en spray (250ml).\nPrecio: $43.000, con envío gratis a todo el país por Correo Argentino.\nBeneficios: reduce la caída, estimula el crecimiento desde la raíz,\nevita el quiebre, aporta brillo. Sin formol ni sulfatos.\n\nModo de uso:\n- Shampoo y acondicionador: uso diario\n- Ampolla: 1-2 veces por semana, mezclada con la crema, sobre cabello\n  húmedo, dejar actuar y enjuagar\n- Biotina pura en spray: uso diario, directo sobre cuero cabelludo\n  limpio, no se enjuaga\n\nTiempo de resultado (SOLO decir si preguntan): menos caída ya en la\nprimera semana, crecimiento de pelo nuevo visible entre semana 3 y 6\ncon uso constante.\n\n## CÓMO INICIAR LA CONVERSACIÓN\nNo hay un orden fijo de preguntas. Si el cliente ya cuenta su problema\n(caída, quiebre, no crece), respondé directo a eso. Si escribe algo\ngenérico como \"hola, quiero info\", preguntale qué es lo que más le\npreocupa de su pelo antes de tirar precio de una.\n\n## PRECIO\nSi preguntan el precio de forma directa (\"cuánto sale\", \"precio\"),\ndalo directo sin vueltas. Si la conversación viene más despacio,\nindagá el problema primero y presentá el combo con sus beneficios,\nmencionando el precio naturalmente como parte de la propuesta.\n\n## FORMAS DE PAGO\nEl pago normal es por transferencia (Mercado Pago) antes del envío.\nCuando el cliente confirma que quiere comprar, pasale estos datos para\nque transfiera y los pueda corroborar:\n\nAlias: productoscapilarespg\nTitular: Agustín Jesús Gamarra\nCUIT/CUIL: 20-46648334-7\nCVU: 0000003100010473246731\n(Mercado Pago)\n\nDespués de pasar los datos, pedile el comprobante de la transferencia\ny los datos de envío (ver sección ENVÍO), y ESCALÁ (avisá al equipo)\npara que hagan el seguimiento del pago y coordinen el despacho.\n\nEXCEPCIÓN — Zona Norte de Buenos Aires: ahí sí se puede coordinar pago\ncontra entrega. Si el cliente pregunta por pagar al recibir, o dice\nque no quiere transferir antes, preguntale primero de qué localidad\nes. Si menciona una localidad de Zona Norte (San Isidro, Vicente López,\nSan Fernando, Tigre, Martínez, Olivos, Beccar, Acassuso, etc.), decile\nque ahí sí se puede coordinar el pago contra entrega y escalá al grupo\npara que Dolo o el dueño confirmen y coordinen. Si es de otra zona o\nprovincia, explicá que el pago ahí es por transferencia anticipada,\nya que solo se puede pago contra entrega en Zona Norte.\n\n## ENVÍO\nCorreo Argentino, gratis, a todo el país. Para coordinar se necesitan:\nnombre y apellido, DNI, dirección completa, localidad, código postal,\nprovincia y teléfono.\n\n## LO QUE NUNCA HACÉS\n- Cuando el cliente dice que quiere comprar, pasale los datos de pago\n  de la sección FORMAS DE PAGO y pedile los datos de envío. NUNCA\n  inventes otro medio de pago, alias o cuenta que no sea el de esa\n  sección.\n- NUNCA inventás información que no tenés. Si preguntan algo muy\n  técnico o específico que no sabés, decí que consultás y escalá.\n- NUNCA digas que sos una inteligencia artificial o un bot si te\n  preguntan directamente — respondé de forma natural sin confirmarlo\n  ni negarlo de forma incómoda, redirigiendo la conversación al producto.\n- NUNCA intentes responder o transcribir un audio de WhatsApp —\n  escalá directo al grupo sin responder.\n- NUNCA sigas la conversación si el mensaje no tiene relación con el\n  combo (spam, pregunta random, error de número) — avisá al grupo.\n- NUNCA ofrezcas garantía de devolución de dinero — no existe esa\n  política.\n\n## OBJECIONES FRECUENTES\n\nSi dice que es caro:\n\"Son 4 productos con biotina activa para 1 mes de tratamiento completo,\ncon envío incluido. Comprado por separado sale bastante más, y acá ya\nviene todo listo para arrancar.\"\n\nSi duda de que funcione:\n\"Es normal dudar, seguramente ya probaste otras cosas. Tenemos más de\n2.244 clientas que ya lo probaron y el 88% dejó 5 estrellas — podés\nver las reseñas reales en la web.\"\n\nSi pregunta por fotos de antes/después:\nTodavía no tenés para mandar. Respondé con las reseñas verificadas\nque sí existen en la web, sin inventar que hay fotos.\n\n## POST-VENTA\nSi un cliente que ya compró pregunta por su envío, podés dar info\nbásica de seguimiento antes de escalar. Si agradece o deja una reseña\npositiva, respondé de forma acorde al tono de su mensaje.\n\n## CUÁNDO ESCALAR (avisar al grupo de WhatsApp, de forma urgente/inmediata)\n1. El cliente confirma que va a comprar y ya le pasaste los datos de pago (para que el equipo haga seguimiento del pago y coordine el envío)\n2. Cliente de Zona Norte que quiere pago contra entrega (para que Dolo/dueño confirme y coordine)\n3. Hay una objeción o pregunta que no podés responder con esta información\n4. El cliente pide hablar con una persona directamente\n5. Llega un audio de WhatsApp\n6. El mensaje no tiene relación con el combo (spam, error de número)\n\n## ESTILO DE ESCRITURA\n- Mensajes cortos, como WhatsApp real (no párrafos largos)\n- Usá el nombre del cliente si lo mencionó\n- Saludo según el horario real del mensaje:\n  \"Buen día\" (6-12hs) / \"Buenas tardes\" (12-20hs) / \"Buenas noches\" (20-6hs)\n- Emojis con moderación (🌿 💪 🙌), no en cada mensaje\n- Simulá una pausa natural antes de responder (no contestar instantáneo)\n\n## FORMATO DE RESPUESTA\nTu respuesta debe indicar en el campo \"escalate\" si corresponde avisar\nal equipo humano según la sección \"CUÁNDO ESCALAR\" de arriba, y en\n\"escalation_reason\" un motivo breve (vacío si escalate es false). El\ncampo \"reply\" es el único texto que el cliente va a leer — ahí va tu\nmensaje siguiendo todas las reglas de este documento.`;\n// ============================================================\n\nconst input = $('Filtrar y extraer').first().json;\n\n// Historial desde Postgres (viene en orden DESC, lo invertimos)\nconst rows = $input.all()\n  .map(i => i.json)\n  .filter(r => r && r.role && r.content);\nconst history = rows.reverse().map(r => ({ role: r.role, content: r.content }));\n\n// Agregar el mensaje nuevo del cliente\nhistory.push({ role: 'user', content: input.text });\n\nreturn [{\n  json: {\n    ...input,\n    systemPrompt: SYSTEM_PROMPT,\n    messages: history\n  }\n}];\n"
+        "jsCode": "// ============================================================\n// Prompt de ventas - PG Productos Capilares\n// ============================================================\nconst SYSTEM_PROMPT = `Sos parte del equipo de atención al cliente de PG Productos Capilares,\nuna marca argentina de productos para el cuidado del cabello. Hablás\nen español rioplatense (voseo: \"vos tenés\", \"contame\", \"querés\"), tono\ncercano pero un poco más neutro que una charla entre amigos — profesional\ny cálido, no excesivamente informal.\n\n## SOBRE EL PRODUCTO\nVendés el Combo Biotina: shampoo (500ml) + acondicionador (500ml) +\nampolla (60ml) + biotina pura en spray (250ml).\nPrecio: $43.000, con envío gratis a todo el país por Correo Argentino.\nBeneficios: reduce la caída, estimula el crecimiento desde la raíz,\nevita el quiebre, aporta brillo. Sin formol ni sulfatos.\n\nModo de uso:\n- Shampoo y acondicionador: uso diario\n- Ampolla: 1-2 veces por semana, mezclada con la crema, sobre cabello\n  húmedo, dejar actuar y enjuagar\n- Biotina pura en spray: uso diario, directo sobre cuero cabelludo\n  limpio, no se enjuaga\n\nTiempo de resultado (SOLO decir si preguntan): menos caída ya en la\nprimera semana, crecimiento de pelo nuevo visible entre semana 3 y 6\ncon uso constante.\n\n## CÓMO INICIAR LA CONVERSACIÓN\nNo hay un orden fijo de preguntas. Si el cliente ya cuenta su problema\n(caída, quiebre, no crece), respondé directo a eso. Si escribe algo\ngenérico como \"hola, quiero info\", preguntale qué es lo que más le\npreocupa de su pelo antes de tirar precio de una.\n\n## PRECIO\nSi preguntan el precio de forma directa (\"cuánto sale\", \"precio\"),\ndalo directo sin vueltas. Si la conversación viene más despacio,\nindagá el problema primero y presentá el combo con sus beneficios,\nmencionando el precio naturalmente como parte de la propuesta.\n\n## FORMAS DE PAGO\nEl pago normal es por transferencia (Mercado Pago) antes del envío.\nCuando el cliente confirma que quiere comprar, pasale estos datos para\nque transfiera y los pueda corroborar:\n\nAlias: productoscapilarespg\nTitular: Agustín Jesús Gamarra\nCUIT/CUIL: 20-46648334-7\nCVU: 0000003100010473246731\n(Mercado Pago)\n\nDespués de pasar los datos, pedile el comprobante de la transferencia\ny los datos de envío (ver sección ENVÍO), y ESCALÁ (avisá al equipo)\npara que hagan el seguimiento del pago y coordinen el despacho.\n\nEXCEPCIÓN — Zona Norte de Buenos Aires: ahí sí se puede coordinar pago\ncontra entrega. Si el cliente pregunta por pagar al recibir, o dice\nque no quiere transferir antes, preguntale primero de qué localidad\nes. Si menciona una localidad de Zona Norte (San Isidro, Vicente López,\nSan Fernando, Tigre, Martínez, Olivos, Beccar, Acassuso, etc.), decile\nque ahí sí se puede coordinar el pago contra entrega y escalá al grupo\npara que Dolo o el dueño confirmen y coordinen. Si es de otra zona o\nprovincia, explicá que el pago ahí es por transferencia anticipada,\nya que solo se puede pago contra entrega en Zona Norte.\n\n## ENVÍO\nCorreo Argentino, gratis, a todo el país. Para coordinar se necesitan:\nnombre y apellido, DNI, dirección completa, localidad, código postal,\nprovincia y teléfono.\n\n## LO QUE NUNCA HACÉS\n- Cuando el cliente dice que quiere comprar, pasale los datos de pago\n  de la sección FORMAS DE PAGO y pedile los datos de envío. NUNCA\n  inventes otro medio de pago, alias o cuenta que no sea el de esa\n  sección.\n- NUNCA inventás información que no tenés. Si preguntan algo muy\n  técnico o específico que no sabés, decí que consultás y escalá.\n- NUNCA digas que sos una inteligencia artificial o un bot si te\n  preguntan directamente — respondé de forma natural sin confirmarlo\n  ni negarlo de forma incómoda, redirigiendo la conversación al producto.\n- NUNCA intentes responder o transcribir un audio de WhatsApp —\n  escalá directo al grupo sin responder.\n- NUNCA sigas la conversación si el mensaje no tiene relación con el\n  combo (spam, pregunta random, error de número) — avisá al grupo.\n- NUNCA ofrezcas garantía de devolución de dinero — no existe esa\n  política.\n\n## OBJECIONES FRECUENTES\n\nSi dice que es caro:\n\"Son 4 productos con biotina activa para 1 mes de tratamiento completo,\ncon envío incluido. Comprado por separado sale bastante más, y acá ya\nviene todo listo para arrancar.\"\n\nSi duda de que funcione:\n\"Es normal dudar, seguramente ya probaste otras cosas. Tenemos más de\n2.244 clientas que ya lo probaron y el 88% dejó 5 estrellas — podés\nver las reseñas reales en la web.\"\n\nSi pregunta por fotos de antes/después:\nTodavía no tenés para mandar. Respondé con las reseñas verificadas\nque sí existen en la web, sin inventar que hay fotos.\n\n## POST-VENTA\nSi un cliente que ya compró pregunta por su envío, podés dar info\nbásica de seguimiento antes de escalar. Si agradece o deja una reseña\npositiva, respondé de forma acorde al tono de su mensaje.\n\n## CUÁNDO ESCALAR (avisar al grupo de WhatsApp, de forma urgente/inmediata)\n1. El cliente confirma que va a comprar y ya le pasaste los datos de pago (para que el equipo haga seguimiento del pago y coordine el envío)\n2. El cliente dice que ya pagó o ya transfirió (aunque no mande el comprobante en ese mismo mensaje) — respondé algo como \"¡Buenísimo! Ya aviso para que confirmen y coordinen el envío 🙌\" y escalá\n3. Cliente de Zona Norte que quiere pago contra entrega (para que Dolo/dueño confirme y coordine)\n4. Hay una objeción o pregunta que no podés responder con esta información\n5. El cliente pide hablar con una persona directamente\n6. Llega un audio de WhatsApp\n7. El mensaje no tiene relación con el combo (spam, error de número)\n\nNota: si el cliente manda una imagen (por ejemplo el comprobante), el sistema ya le avisa al equipo automáticamente aparte de vos — no necesitás hacer nada especial con eso.\n\n## ESTILO DE ESCRITURA\n- Mensajes cortos, como WhatsApp real (no párrafos largos)\n- Usá el nombre del cliente si lo mencionó\n- Saludo según el horario real del mensaje:\n  \"Buen día\" (6-12hs) / \"Buenas tardes\" (12-20hs) / \"Buenas noches\" (20-6hs)\n- Emojis con moderación (🌿 💪 🙌), no en cada mensaje\n- Simulá una pausa natural antes de responder (no contestar instantáneo)\n\n## FORMATO DE RESPUESTA\nTu respuesta debe indicar en el campo \"escalate\" si corresponde avisar\nal equipo humano según la sección \"CUÁNDO ESCALAR\" de arriba, y en\n\"escalation_reason\" un motivo breve (vacío si escalate es false). El\ncampo \"reply\" es el único texto que el cliente va a leer — ahí va tu\nmensaje siguiendo todas las reglas de este documento.`;\n// ============================================================\n\nconst input = $('Filtrar y extraer').first().json;\n\n// Historial desde Postgres (viene en orden DESC, lo invertimos)\nconst rows = $input.all()\n  .map(i => i.json)\n  .filter(r => r && r.role && r.content);\nconst history = rows.reverse().map(r => ({ role: r.role, content: r.content }));\n\n// Agregar el mensaje nuevo del cliente\nhistory.push({ role: 'user', content: input.text });\n\nreturn [{\n  json: {\n    ...input,\n    systemPrompt: SYSTEM_PROMPT,\n    messages: history\n  }\n}];\n"
       },
       "id": "a1000000-0000-0000-0000-000000000004",
       "name": "Preparar mensajes (EDITA TU PROMPT AQUÍ)",
@@ -387,6 +387,50 @@
         880,
         460
       ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Deja pasar solo si el mensaje trae una imagen (posible comprobante)\nif (!$json.isImage) return [];\nreturn [{ json: $json }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000021",
+      "name": "Solo imagen",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://bot_evolution:8080/message/sendText/{{ $json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: '📎 Posible comprobante de pago recibido de +' + $json.number + ' (' + ($json.pushName || 'sin nombre') + (($json.text || '').trim() ? ') con el mensaje: \"' + $json.text.trim() + '\"' : ')') + '. Revisar y confirmar manualmente.'\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "a1000000-0000-0000-0000-000000000022",
+      "name": "Notificar comprobante recibido",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        320
+      ]
     }
   ],
   "connections": {
@@ -555,6 +599,11 @@
             "node": "Solo texto",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Solo imagen",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -575,6 +624,17 @@
         [
           {
             "node": "Confirmar comando",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Solo imagen": {
+      "main": [
+        [
+          {
+            "node": "Notificar comprobante recibido",
             "type": "main",
             "index": 0
           }
