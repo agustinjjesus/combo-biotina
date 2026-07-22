@@ -20,7 +20,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Filtra eventos de Evolution API (MESSAGES_UPSERT), separa audios de texto\nconst body = $json.body ?? $json;\nconst data = body.data;\n\n// Ignorar si no hay datos o si el mensaje lo enviamos nosotros\nif (!data || !data.key || data.key.fromMe) {\n  return [];\n}\n\n// Ignorar mensajes de grupos (para no procesar el propio grupo de aviso)\nif (String(data.key.remoteJid).endsWith('@g.us')) {\n  return [];\n}\n\nconst msg = data.message || {};\nconst isAudio = !!(msg.audioMessage || msg.pttMessage);\nconst text = msg.conversation\n  || msg.extendedTextMessage?.text\n  || '';\n\n// Si no es audio y no hay texto (imagen, sticker, ubicación, etc.), ignorar\nif (!isAudio && !text.trim()) {\n  return [];\n}\n\nreturn [{\n  json: {\n    sessionId: data.key.remoteJid,\n    number: String(data.key.remoteJid).split('@')[0],\n    text: text.trim(),\n    instance: body.instance,\n    pushName: data.pushName || '',\n    isAudio\n  }\n}];\n"
+        "jsCode": "// Filtra eventos de Evolution API (MESSAGES_UPSERT)\n// - Detecta comandos de administracion (\"parar\"/\"seguir\") escritos en el\n//   grupo de escalamiento del equipo\n// - Separa audios de texto para el resto de los clientes\nconst body = $json.body ?? $json;\nconst data = body.data;\n\nif (!data || !data.key || data.key.fromMe) {\n  return [];\n}\n\nconst remoteJid = String(data.key.remoteJid);\nconst isGroup = remoteJid.endsWith('@g.us');\nconst msg = data.message || {};\nconst text = (msg.conversation || msg.extendedTextMessage?.text || '').trim();\n\nif (isGroup) {\n  const escalationGroup = $env.ESCALATION_GROUP_JID;\n  if (remoteJid === escalationGroup) {\n    const normalized = text.toLowerCase();\n    if (normalized === 'parar') {\n      return [{ json: { type: 'admin_command', command: 'paused', instance: body.instance } }];\n    }\n    if (normalized === 'seguir') {\n      return [{ json: { type: 'admin_command', command: 'active', instance: body.instance } }];\n    }\n  }\n  // Cualquier otro mensaje de grupo (o texto sin reconocer en el grupo del equipo) se ignora\n  return [];\n}\n\nconst isAudio = !!(msg.audioMessage || msg.pttMessage);\nif (!isAudio && !text) {\n  return [];\n}\n\nreturn [{\n  json: {\n    type: 'customer_message',\n    sessionId: remoteJid,\n    number: remoteJid.split('@')[0],\n    text,\n    instance: body.instance,\n    pushName: data.pushName || '',\n    isAudio\n  }\n}];\n"
       },
       "id": "a1000000-0000-0000-0000-000000000002",
       "name": "Filtrar y extraer",
@@ -292,6 +292,111 @@
         1760,
         280
       ]
+    },
+    {
+      "parameters": {
+        "jsCode": "if ($json.type !== 'customer_message') return [];\nreturn [{ json: $json }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000016",
+      "name": "Es mensaje cliente",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT content FROM chat_history WHERE session_id = '__bot_status__' ORDER BY id DESC LIMIT 1",
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000017",
+      "name": "Leer estado bot",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        660,
+        0
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json).filter(r => r && r.content);\nconst status = rows.length ? rows[0].content : 'active';\nif (status === 'paused') return [];\nreturn [{ json: $('Es mensaje cliente').first().json }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000018",
+      "name": "Chequear pausado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "if ($json.type !== 'admin_command') return [];\nreturn [{ json: $json }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000015",
+      "name": "Es comando admin",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO chat_history (session_id, role, content) VALUES ('__bot_status__', 'status', $1)",
+        "options": {
+          "queryReplacement": "={{ $json.command }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000019",
+      "name": "Guardar estado bot",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        660,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.EVOLUTION_URL }}/message/sendText/{{ $('Es comando admin').first().json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.EVOLUTION_API_KEY }}"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: $env.ESCALATION_GROUP_JID,\n  text: $('Es comando admin').first().json.command === 'paused'\n    ? '⏸️ Bot pausado. No le va a responder a los clientes hasta que alguien escriba \"seguir\" en este grupo.'\n    : '▶️ Bot reanudado. Ya vuelve a responder a los clientes normalmente.'\n}) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000020",
+      "name": "Confirmar comando",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        460
+      ]
     }
   ],
   "connections": {
@@ -310,12 +415,12 @@
       "main": [
         [
           {
-            "node": "Solo audio",
+            "node": "Es mensaje cliente",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Solo texto",
+            "node": "Es comando admin",
             "type": "main",
             "index": 0
           }
@@ -420,6 +525,66 @@
         [
           {
             "node": "Notificar escalamiento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es mensaje cliente": {
+      "main": [
+        [
+          {
+            "node": "Leer estado bot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer estado bot": {
+      "main": [
+        [
+          {
+            "node": "Chequear pausado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chequear pausado": {
+      "main": [
+        [
+          {
+            "node": "Solo audio",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Solo texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es comando admin": {
+      "main": [
+        [
+          {
+            "node": "Guardar estado bot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar estado bot": {
+      "main": [
+        [
+          {
+            "node": "Confirmar comando",
             "type": "main",
             "index": 0
           }
