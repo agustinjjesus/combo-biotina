@@ -223,6 +223,24 @@
     .s-contactado { background: #dbeafe; color: #1d4ed8; }
     .s-cerrado    { background: #fef0ec; color: var(--coral-dark); }
 
+    .fst-pendiente     { background: #fff3cd; color: #856404; }
+    .fst-aprobado      { background: #e8f5ee; color: #1e6640; }
+    .fst-rechazado     { background: #fef0ec; color: var(--coral-dark); }
+    .fst-sinconfirmar  { background: #f3f4f6; color: #6b7280; }
+
+    /* ── SECCIONES NUEVAS (Formularios / Abandonados) ─────────────── */
+    .section-divider {
+      border: none; border-top: 2px solid var(--cream2);
+      margin: 48px 0 28px;
+    }
+    .section-title-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+    .section-title { font-size: 1.3rem; font-weight: 700; }
+    .section-sub   { font-size: 0.82rem; color: var(--gray); margin-bottom: 20px; }
+    .section-count-badge {
+      background: #fff3cd; color: #856404; font-size: 0.72rem; font-weight: 700;
+      padding: 3px 11px; border-radius: 12px;
+    }
+
     /* ── WA BUTTON ──────────────────────────────────────────────── */
     .btn-wa {
       display: inline-flex; align-items: center; gap: 5px;
@@ -432,6 +450,65 @@
         </table>
       </div>
 
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <!-- FORMULARIOS COMPLETADOS                                    -->
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <hr class="section-divider" />
+
+      <div class="section-title-row">
+        <div class="section-title">Formularios completados 📝</div>
+      </div>
+      <p class="section-sub">Todos los datos que un cliente cargó al tocar "Confirmar y pagar", haya o no confirmado el pago después. Estado inicial: Pendiente.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>DNI</th>
+              <th>Teléfono</th>
+              <th>Email</th>
+              <th>Dirección</th>
+              <th>Combo</th>
+              <th>Fecha</th>
+              <th>Estado del pago</th>
+              <th>WhatsApp</th>
+            </tr>
+          </thead>
+          <tbody id="formulariosTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <!-- CARRITOS ABANDONADOS                                       -->
+      <!-- ═══════════════════════════════════════════════════════════ -->
+      <hr class="section-divider" />
+
+      <div class="section-title-row">
+        <div class="section-title">Carritos abandonados</div>
+        <span class="section-count-badge" id="abandonedCount">0</span>
+      </div>
+      <p class="section-sub">Formularios en estado Pendiente o Sin confirmar hace más de 2 horas. Ideal para hacer seguimiento manual antes de que se enfríen.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>DNI</th>
+              <th>Teléfono</th>
+              <th>Email</th>
+              <th>Dirección</th>
+              <th>Combo</th>
+              <th>Fecha</th>
+              <th>Estado del pago</th>
+              <th>WhatsApp</th>
+            </tr>
+          </thead>
+          <tbody id="abandonedTableBody"></tbody>
+        </table>
+      </div>
+
     </div>
   </div>
 
@@ -522,6 +599,7 @@
       } else {
         loadFromLocalStorage();
       }
+      loadFormularios();
     }
 
     /* ── FORM TOGGLE ─────────────────────────────────────────────────── */
@@ -850,6 +928,106 @@
       document.getElementById('fProducto').value  = '';
       document.getElementById('fEstado').value    = 'confirmado';
     }
+
+    /* ── FORMULARIOS COMPLETADOS / CARRITOS ABANDONADOS ────────────────── */
+    const FORM_STATUS_CFG = {
+      pendiente:    'Pendiente ⏳',
+      aprobado:     'Aprobado ✅',
+      rechazado:    'Rechazado ❌',
+      sinconfirmar: 'Sin confirmar ❓',
+    };
+    const ABANDONED_MS = 2 * 60 * 60 * 1000; // 2 horas
+    const WA_ICON_SVG = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+
+    const getFormularios  = () => JSON.parse(localStorage.getItem('formularios') || '[]');
+    const saveFormularios = (arr) => localStorage.setItem('formularios', JSON.stringify(arr));
+
+    function saveFormStatus(idx, val) {
+      const arr = getFormularios();
+      if (arr[idx]) { arr[idx].estadoPago = val; saveFormularios(arr); }
+      loadFormularios();
+    }
+
+    function formStatusOpts(selected) {
+      return Object.entries(FORM_STATUS_CFG).map(([v, l]) =>
+        `<option value="${v}" ${selected === v ? 'selected' : ''}>${l}</option>`
+      ).join('');
+    }
+
+    function formRowHtml(f) {
+      const nombre = `${f.nombre || ''} ${f.apellido || ''}`.trim() || '—';
+      const dirParts = [
+        [f.calle, f.numero].filter(Boolean).join(' '),
+        f.localidad,
+        f.provincia,
+      ].filter(Boolean);
+      const dir = dirParts.length ? dirParts.join(', ') : '—';
+      const fechaFmt = f.fecha || (f.timestamp ? new Date(f.timestamp).toLocaleString('es-AR') : '—');
+      const estado = f.estadoPago || 'pendiente';
+      const waMsg = encodeURIComponent(
+        `Hola ${f.nombre || ''}! Vimos que intentaste completar tu pedido del Combo Biotina pero no pudimos confirmar el pago 🌿 ¿Querés que lo intentemos de nuevo o preferís coordinar por otro medio?`
+      );
+
+      return `<tr>
+        <td class="td-name">${nombre}</td>
+        <td class="td-phone">${f.dni || '—'}</td>
+        <td class="td-phone">${f.telefono || '—'}</td>
+        <td>${f.email || '—'}</td>
+        <td>${dir}</td>
+        <td>${f.producto || '—'}</td>
+        <td class="td-date">${fechaFmt}</td>
+        <td>
+          <select class="status-sel fst-${estado}"
+            onchange="saveFormStatus(${f._i},this.value);this.className='status-sel fst-'+this.value">
+            ${formStatusOpts(estado)}
+          </select>
+        </td>
+        <td>
+          <a href="https://wa.me/${WA_NUM}?text=${waMsg}" target="_blank" class="btn-wa">
+            ${WA_ICON_SVG} WA
+          </a>
+        </td>
+      </tr>`;
+    }
+
+    function loadFormularios() {
+      const arr = getFormularios().map((f, i) => ({ ...f, _i: i }));
+
+      // Formularios completados — todos, más reciente primero
+      const tbody  = document.getElementById('formulariosTableBody');
+      const sorted = [...arr].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+      tbody.innerHTML = sorted.length
+        ? sorted.map(formRowHtml).join('')
+        : `<tr><td colspan="9"><div class="empty-state">
+             <div class="ei">📝</div>
+             <p>Todavía no se registraron formularios completados.</p>
+           </div></td></tr>`;
+
+      // Carritos abandonados — Pendiente / Sin confirmar hace más de 2hs
+      const now = Date.now();
+      const abandoned = arr
+        .filter(f => {
+          const st = f.estadoPago || 'pendiente';
+          if (st !== 'pendiente' && st !== 'sinconfirmar') return false;
+          return f.timestamp && (now - f.timestamp) > ABANDONED_MS;
+        })
+        .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+      document.getElementById('abandonedCount').textContent = abandoned.length;
+
+      const abandonedBody = document.getElementById('abandonedTableBody');
+      abandonedBody.innerHTML = abandoned.length
+        ? abandoned.map(formRowHtml).join('')
+        : `<tr><td colspan="9"><div class="empty-state">
+             <div class="ei">✅</div>
+             <p>No hay carritos abandonados por el momento.</p>
+           </div></td></tr>`;
+    }
+
+    // Refrescar cada 5 min mientras el panel esté abierto (para que "hace más de 2hs" se mantenga al día)
+    setInterval(() => {
+      if (document.getElementById('adminPanel').style.display !== 'none') loadFormularios();
+    }, 5 * 60 * 1000);
 
   </script>
 

@@ -2279,6 +2279,11 @@
  pedidos.push(datos);
  localStorage.setItem('pedidos', JSON.stringify(pedidos));
 
+ // Guardar en "Formularios completados" — siempre, sin importar si el pago se aprueba, rechaza o abandona
+ const formularios = JSON.parse(localStorage.getItem('formularios') || '[]');
+ formularios.push({ ...datos, estadoPago: 'pendiente', timestamp: Date.now() });
+ localStorage.setItem('formularios', JSON.stringify(formularios));
+
  // Guardar en Firestore si está habilitado (sincronización en tiempo real)
  if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
  firebase.firestore().collection('pedidos').add({
