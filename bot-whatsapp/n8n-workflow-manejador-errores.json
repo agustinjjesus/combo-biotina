@@ -1,0 +1,93 @@
+{
+  "name": "Manejador de errores global",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "d1000000-0000-0000-0000-000000000001",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $json;\nconst execution = item.execution || {};\nconst workflow = item.workflow || {};\nconst error = execution.error || {};\n\nconst workflowName = workflow.name || 'workflow desconocido';\nconst nodeName = execution.lastNodeExecuted || 'nodo desconocido';\nconst errorMessage = error.message || 'sin detalle';\nconst executionUrl = 'https://n8n.productoscapilarespg.com/workflow/' + workflow.id + '/executions/' + execution.id;\n\nlet text = `\\u{1F6A8} Error en n8n\\n\\n`;\ntext += `Workflow: ${workflowName}\\n`;\ntext += `Nodo: ${nodeName}\\n`;\ntext += `Error: ${errorMessage}\\n\\n`;\ntext += `Detalle: ${executionUrl}`;\n\nreturn [{ json: { text } }];\n"
+      },
+      "id": "d1000000-0000-0000-0000-000000000002",
+      "name": "Formatear error",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://bot_evolution:8080/message/sendText/pg",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: $json.text\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "d1000000-0000-0000-0000-000000000003",
+      "name": "Enviar alerta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Formatear error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear error": {
+      "main": [
+        [
+          {
+            "node": "Enviar alerta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
