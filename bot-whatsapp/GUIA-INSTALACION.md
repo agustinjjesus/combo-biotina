@@ -163,16 +163,17 @@ El workflow ya incluye el prompt de ventas cargado y la lógica de **escalamient
 1. En n8n: **Workflows → Import from URL** (o "Import from File" si no aparece esa opción) → pega/sube `n8n-workflow-whatsapp-claude.json` (está en esta misma carpeta del repo).
 2. Crea la credencial de Postgres: **Credentials → New → Postgres**
    - Host: `bot_postgres` — Database: `n8n` — User: `postgres` — Password: la tuya — Port: `5432` — SSL: disable.
-   - Asígnala a los **cuatro** nodos de Postgres del workflow (`Cargar historial`, `Guardar conversación`, `Leer estado bot`, `Guardar estado bot`).
+   - Asígnala a los **siete** nodos de Postgres del workflow: `Cargar historial`, `Guardar conversación`, `Leer estado bot`, `Guardar estado bot`, `Leer estado cliente`, `Chequear duplicado`, `Registrar mensaje`.
 3. Crea dos credenciales de tipo **Header Auth** (`Credentials → New → Header Auth`) — son las que reemplazan a las variables de entorno que no funcionan (ver nota de la sección 2.3):
    - **"Anthropic x-api-key"**: Name = `x-api-key`, Value = tu clave de Anthropic (`sk-ant-...`).
    - **"Evolution apikey"**: Name = `apikey`, Value = tu `AUTHENTICATION_API_KEY` de Evolution.
    - Asigná la credencial de Anthropic al nodo **Claude API**.
-   - Asigná la credencial de Evolution a los cuatro nodos que llaman a Evolution: **Notificar audio recibido**, **Enviar WhatsApp**, **Notificar escalamiento**, **Confirmar comando**.
+   - Asigná la credencial de Evolution a los nodos que llaman a Evolution: **Notificar audio recibido**, **Enviar WhatsApp**, **Notificar escalamiento**, **Confirmar comando**, **Notificar comprobante recibido**, **Notificar falla Claude**, **Notificar falla envio**.
 4. El workflow trae `http://bot_evolution:8080` ya cargado como URL de Evolution en esos mismos nodos (no es secreto, es el hostname interno de Docker — no hace falta tocarlo salvo que hayas nombrado distinto al servicio).
 5. **Activa** el workflow (switch arriba a la derecha / botón "Publish").
 6. Copia la **URL de producción** del nodo Webhook. Debería ser:
    `https://n8n.productoscapilarespg.com/webhook/whatsapp`
+7. Importá también `n8n-workflow-monitor-whatsapp.json` (mismo repo) — es un workflow aparte que chequea cada 15 min si el WhatsApp sigue conectado y avisa al grupo si se cae. Asignale las mismas credenciales de Postgres y Header Auth "Evolution apikey" a sus nodos, reemplazá el placeholder del JID del grupo (ver 4.1) y activalo.
 
 ### 4.1 Obtener el ID del grupo de WhatsApp del equipo (para las alertas) y cargarlo en el workflow
 
@@ -192,23 +193,35 @@ El bot necesita saber a qué grupo avisar. Ese grupo debe incluir al **número d
      -H "apikey: TU_AUTHENTICATION_API_KEY"
    ```
    Buscá el grupo por su `subject` (nombre) y copiá su campo `id`, termina en `@g.us` (ej. `120363410624881924@g.us`). Si preferís el método manual: con el workflow activo, hacé que alguien escriba cualquier cosa en el grupo, andá a **Executions** en n8n, abrí la ejecución más reciente y mirá la salida del nodo **"Webhook Evolution"** → `data.key.remoteJid`.
-3. **Cargá ese JID directamente en el workflow** (no como variable de entorno, ver nota de la sección 2.3). Abrí el workflow en n8n y reemplazá el texto `TU_GRUPO_JID_AQUI@g.us` por tu JID real en los **4 lugares** donde aparece:
+3. **Cargá ese JID directamente en el workflow** (no como variable de entorno, ver nota de la sección 2.3). Abrí el workflow en n8n y reemplazá el texto `TU_GRUPO_JID_AQUI@g.us` por tu JID real en los **7 lugares** donde aparece:
    - Nodo **Filtrar y extraer** (Code): línea `const escalationGroup = 'TU_GRUPO_JID_AQUI@g.us';`
-   - Nodo **Notificar audio recibido** (jsonBody): `number: 'TU_GRUPO_JID_AQUI@g.us'`
-   - Nodo **Notificar escalamiento** (jsonBody): `number: 'TU_GRUPO_JID_AQUI@g.us'`
-   - Nodo **Confirmar comando** (jsonBody): `number: 'TU_GRUPO_JID_AQUI@g.us'`
+   - Nodo **Notificar audio recibido** (jsonBody)
+   - Nodo **Notificar escalamiento** (jsonBody)
+   - Nodo **Confirmar comando** (jsonBody)
+   - Nodo **Notificar comprobante recibido** (jsonBody)
+   - Nodo **Notificar falla Claude** (jsonBody)
+   - Nodo **Notificar falla envio** (jsonBody)
+   - Y 1 lugar más en `n8n-workflow-monitor-whatsapp.json`: nodo **Notificar cambio conexion** (jsonBody).
 4. Guardá el workflow (queda guardado automáticamente al activarlo/editarlo, o con el botón de guardar).
 
 > El bot **nunca responde dentro de ese grupo ni procesa mensajes que lleguen ahí como si fueran de un cliente** — el filtro ignora todos los mensajes de grupos, salvo los comandos de administración `parar`/`seguir` descritos abajo. Fuera de eso, solo lo usa para *enviar* avisos hacia afuera.
 
 ### 4.2 Pausar y reanudar el bot manualmente
 
-El bot se puede pausar/reanudar por completo (para todos los clientes) escribiendo un comando en el **grupo de escalamiento del equipo** (el mismo JID que cargaste en la sección 4.1). El cliente nunca ve esto, es un comando interno.
+El bot se puede pausar/reanudar escribiendo un comando en el **grupo de escalamiento del equipo** (el mismo JID que cargaste en la sección 4.1). El cliente nunca ve esto, es un comando interno. Hay dos modos:
 
-- Escribir **`parar`** en el grupo → el bot deja de responderle a cualquier cliente (no procesa ni escala nada mientras está pausado) hasta nuevo aviso. El bot confirma en el grupo: "⏸️ Bot pausado...".
+**Global (todos los clientes):**
+- Escribir **`parar`** en el grupo → el bot deja de responderle a cualquier cliente (no procesa ni escala nada mientras está pausado) hasta nuevo aviso. Confirma: "⏸️ Bot pausado...".
 - Escribir **`seguir`** en el grupo → el bot vuelve a responder normalmente. Confirma: "▶️ Bot reanudado...".
 
-El estado se guarda en la tabla `chat_history` (fila especial con `session_id = '__bot_status__'`), no requiere ninguna variable de entorno nueva. El comando debe escribirse exactamente `parar` o `seguir` (sin mayúsculas ni texto adicional). Tiene que escribirlo alguien del grupo desde su propio WhatsApp (Dolores o el dueño) — si lo escribe el número del negocio (el que está vinculado al bot), el bot lo ignora, porque el workflow descarta todos sus propios mensajes salientes (`fromMe`).
+**Por cliente puntual (solo esa conversación, el resto sigue andando normal):**
+- Escribir **`parar <número>`** (ej. `parar 1140377694`) → el bot deja de responderle SOLO a ese cliente. Útil cuando alguien del equipo (ej. Tomi) va a cerrar manualmente un envío puntual (zona norte, coordinación especial, etc.) y no querés que el bot siga contestándole mientras tanto.
+- Escribir **`seguir <número>`** (ej. `seguir 1140377694`) → reanuda solo a ese cliente.
+- El número podés escribirlo con o sin código de país/9 (`1140377694` o `5491140377694`, funciona igual) — internamente se usan los últimos 10 dígitos para identificar al cliente.
+
+El estado se guarda en la tabla `chat_history` (filas especiales con `session_id = '__bot_status__'` para el global y `'__paused_customer__:<10 dígitos>'` para el pausado por cliente), no requiere ninguna variable de entorno nueva. El comando debe escribirse exactamente `parar` / `seguir`, opcionalmente seguido de un espacio y el número (sin texto adicional). Tiene que escribirlo alguien del grupo desde su propio WhatsApp (Dolores o el dueño) — si lo escribe el número del negocio (el que está vinculado al bot), el bot lo ignora, porque el workflow descarta todos sus propios mensajes salientes (`fromMe`).
+
+> Se descartó usar **etiquetas de WhatsApp** para esto: Evolution API (y Baileys por debajo) tiene un bug conocido donde los eventos de etiquetas (`LABELS_ASSOCIATION`) no siempre llegan al webhook, así que no es confiable para algo crítico del negocio.
 
 ### Conectar Evolution → n8n (webhook)
 
@@ -251,9 +264,9 @@ Envía un WhatsApp al número del negocio desde otro teléfono. Deberías ver:
 | No llega nada a n8n | Webhook de Evolution: URL exacta y evento `MESSAGES_UPSERT` activado. Workflow **activado** en n8n. |
 | Error `access to env vars denied` en cualquier nodo | Quedó una referencia a `$env.ALGO` sin migrar — no funciona en esta versión de n8n (task runner aislado). Ver sección 2.3 y 4: hay que usar credenciales o valores hardcodeados en el nodo, no variables de entorno. |
 | Error 401 en el nodo Claude API | Revisá la credencial **Header Auth "Anthropic x-api-key"** (nombre de header `x-api-key`, valor tu clave real) asignada al nodo. |
-| Error en nodos Postgres | Credencial de Postgres en n8n (host `bot_postgres`, base `n8n`, usuario/contraseña correctos) asignada a los 4 nodos Postgres, y que exista la tabla `chat_history`. Si dice "password authentication failed", la contraseña cambió — recreá la credencial. |
+| Error en nodos Postgres | Credencial de Postgres en n8n (host `bot_postgres`, base `n8n`, usuario/contraseña correctos) asignada a los 7 nodos Postgres, y que exista la tabla `chat_history`. Si dice "password authentication failed", la contraseña cambió — recreá la credencial. |
 | Claude responde pero no llega al cliente | Credencial **Header Auth "Evolution apikey"** asignada a los nodos de Evolution; nombre de instancia correcto (`pg`); URL `http://bot_evolution:8080` correcta en esos nodos. |
-| No llegan los avisos de escalamiento al grupo, o el comando `parar`/`seguir` no responde | El placeholder `TU_GRUPO_JID_AQUI@g.us` no se reemplazó por el JID real en los 4 nodos (sección 4.1), o el número del negocio no es miembro del grupo. |
+| No llegan los avisos de escalamiento al grupo, o el comando `parar`/`seguir` no responde | El placeholder `TU_GRUPO_JID_AQUI@g.us` no se reemplazó por el JID real en los 7 nodos (sección 4.1), o el número del negocio no es miembro del grupo. |
 | WhatsApp desconectado | Manager de Evolution → reconectar/escanear QR de nuevo. |
 
 ---
