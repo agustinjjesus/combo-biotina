@@ -237,8 +237,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2420,
-        60
+        2640,
+        -60
       ],
       "onError": "continueErrorOutput"
     },
@@ -448,7 +448,7 @@
     },
     {
       "parameters": {
-        "amount": 1.5,
+        "amount": "={{ Math.min(4.5, 1 + ($json.text.length / 25) + Math.random() * 0.8) }}",
         "unit": "seconds"
       },
       "id": "a1000000-0000-0000-0000-000000000024",
@@ -456,9 +456,10 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        2200,
-        60
-      ]
+        2420,
+        -60
+      ],
+      "webhookId": "269b83af-b99a-4303-b534-170ab8203eee"
     },
     {
       "parameters": {
@@ -566,7 +567,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2420,
+        2640,
         340
       ]
     },
@@ -587,6 +588,20 @@
         0
       ],
       "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000031",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2200,
+        60
+      ]
     }
   ],
   "connections": {
@@ -803,7 +818,7 @@
       "main": [
         [
           {
-            "node": "Esperar entre mensajes",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -861,7 +876,13 @@
     },
     "Enviar WhatsApp": {
       "main": [
-        [],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Notificar falla envio",
@@ -876,6 +897,29 @@
         [
           {
             "node": "Chequear pausado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Esperar entre mensajes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notificar falla envio": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
