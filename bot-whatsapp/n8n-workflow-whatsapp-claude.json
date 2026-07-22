@@ -20,7 +20,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Filtra eventos de Evolution API (MESSAGES_UPSERT)\n// - Detecta comandos de administracion (\"parar\"/\"seguir\") escritos en el\n//   grupo de escalamiento del equipo\n// - Separa audios de texto para el resto de los clientes\nconst body = $json.body ?? $json;\nconst data = body.data;\n\nif (!data || !data.key || data.key.fromMe) {\n  return [];\n}\n\nconst remoteJid = String(data.key.remoteJid);\nconst isGroup = remoteJid.endsWith('@g.us');\nconst msg = data.message || {};\nconst text = (msg.conversation || msg.extendedTextMessage?.text || '').trim();\n\nif (isGroup) {\n  const escalationGroup = 'TU_GRUPO_JID_AQUI@g.us';\n  if (remoteJid === escalationGroup) {\n    const normalized = text.toLowerCase();\n    if (normalized === 'parar') {\n      return [{ json: { type: 'admin_command', command: 'paused', instance: body.instance } }];\n    }\n    if (normalized === 'seguir') {\n      return [{ json: { type: 'admin_command', command: 'active', instance: body.instance } }];\n    }\n  }\n  // Cualquier otro mensaje de grupo (o texto sin reconocer en el grupo del equipo) se ignora\n  return [];\n}\n\nconst isAudio = !!(msg.audioMessage || msg.pttMessage);\nconst isImage = !!(msg.imageMessage);\nconst caption = msg.imageMessage?.caption || '';\nconst finalText = text || caption.trim();\n\nif (!isAudio && !isImage && !finalText) {\n  return [];\n}\n\nreturn [{\n  json: {\n    type: 'customer_message',\n    sessionId: remoteJid,\n    number: remoteJid.split('@')[0],\n    text: finalText,\n    instance: body.instance,\n    pushName: data.pushName || '',\n    isAudio,\n    isImage\n  }\n}];\n"
+        "jsCode": "// Filtra eventos de Evolution API (MESSAGES_UPSERT)\n// - Detecta comandos de administracion (\"parar\"/\"seguir\") escritos en el\n//   grupo de escalamiento del equipo\n// - Separa audios de texto para el resto de los clientes\nconst body = $json.body ?? $json;\nconst data = body.data;\n\nif (!data || !data.key || data.key.fromMe) {\n  return [];\n}\n\nconst remoteJid = String(data.key.remoteJid);\nconst isGroup = remoteJid.endsWith('@g.us');\nconst msg = data.message || {};\nconst text = (msg.conversation || msg.extendedTextMessage?.text || '').trim();\n\nif (isGroup) {\n  const escalationGroup = 'TU_GRUPO_JID_AQUI@g.us';\n  if (remoteJid === escalationGroup) {\n    const normalized = text.toLowerCase();\n    if (normalized === 'parar') {\n      return [{ json: { type: 'admin_command', command: 'paused', instance: body.instance, messageId: data.key.id } }];\n    }\n    if (normalized === 'seguir') {\n      return [{ json: { type: 'admin_command', command: 'active', instance: body.instance, messageId: data.key.id } }];\n    }\n  }\n  // Cualquier otro mensaje de grupo (o texto sin reconocer en el grupo del equipo) se ignora\n  return [];\n}\n\nconst isAudio = !!(msg.audioMessage || msg.pttMessage);\nconst isImage = !!(msg.imageMessage);\nconst caption = msg.imageMessage?.caption || '';\nconst finalText = text || caption.trim();\n\nif (!isAudio && !isImage && !finalText) {\n  return [];\n}\n\nreturn [{\n  json: {\n    type: 'customer_message',\n    sessionId: remoteJid,\n    number: remoteJid.split('@')[0],\n    text: finalText,\n    instance: body.instance,\n    pushName: data.pushName || '',\n    isAudio,\n    isImage,\n    messageId: data.key.id\n  }\n}];\n"
       },
       "id": "a1000000-0000-0000-0000-000000000002",
       "name": "Filtrar y extraer",
@@ -152,7 +152,8 @@
       "position": [
         1100,
         160
-      ]
+      ],
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -238,7 +239,8 @@
       "position": [
         2420,
         60
-      ]
+      ],
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -286,7 +288,7 @@
     },
     {
       "parameters": {
-        "jsCode": "if ($json.type !== 'customer_message') return [];\nreturn [{ json: $json }];\n"
+        "jsCode": "const d = $('Es nuevo').first().json;\nif (d.type !== 'customer_message') return [];\nreturn [{ json: d }];\n"
       },
       "id": "a1000000-0000-0000-0000-000000000016",
       "name": "Es mensaje cliente",
@@ -328,7 +330,7 @@
     },
     {
       "parameters": {
-        "jsCode": "if ($json.type !== 'admin_command') return [];\nreturn [{ json: $json }];\n"
+        "jsCode": "const d = $('Es nuevo').first().json;\nif (d.type !== 'admin_command') return [];\nreturn [{ json: d }];\n"
       },
       "id": "a1000000-0000-0000-0000-000000000015",
       "name": "Es comando admin",
@@ -457,6 +459,116 @@
         2200,
         60
       ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT 1 FROM chat_history WHERE session_id = '__msg_dedup__' AND content = $1 LIMIT 1",
+        "options": {
+          "queryReplacement": "={{ $json.messageId }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000025",
+      "name": "Chequear duplicado",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        220,
+        460
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Si ya existe un registro con este messageId, es un evento duplicado\n// (Evolution/WhatsApp a veces reenvia el mismo webhook)\n// Nota: alwaysOutputData hace que el nodo anterior siempre devuelva un\n// item aunque no haya filas, por eso filtramos objetos vacios.\nconst rows = $input.all().map(i => i.json).filter(r => r && Object.keys(r).length > 0);\nif (rows.length > 0) return [];\nreturn [{ json: $('Filtrar y extraer').first().json }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000026",
+      "name": "Es nuevo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO chat_history (session_id, role, content) VALUES ('__msg_dedup__', 'msgid', $1)",
+        "options": {
+          "queryReplacement": "={{ $('Es nuevo').first().json.messageId }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000027",
+      "name": "Registrar mensaje",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        660,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://bot_evolution:8080/message/sendText/{{ $('Filtrar y extraer').first().json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: '⚠️ Falló la respuesta automática a +' + $('Filtrar y extraer').first().json.number + ' (' + ($('Filtrar y extraer').first().json.pushName || 'sin nombre') + ').\\n\\n'\n    + 'Mensaje del cliente: \"' + $('Filtrar y extraer').first().json.text + '\"'\n    + '\\n\\nError: ' + ($json.error && $json.error.message ? $json.error.message : 'falló la llamada a Claude')\n    + '\\n\\nRespondé manual, el cliente no recibió nada.'\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "a1000000-0000-0000-0000-000000000028",
+      "name": "Notificar falla Claude",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://bot_evolution:8080/message/sendText/{{ $('Filtrar y extraer').first().json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: '⚠️ Se generó respuesta para +' + $('Filtrar y extraer').first().json.number + ' (' + ($('Filtrar y extraer').first().json.pushName || 'sin nombre') + ') pero falló el envío por WhatsApp.\\n\\n'\n    + 'Mensaje que no llegó: \"' + ($json.text || '') + '\"'\n    + '\\n\\nRevisá y respondé manual.'\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "a1000000-0000-0000-0000-000000000029",
+      "name": "Notificar falla envio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2420,
+        340
+      ]
     }
   ],
   "connections": {
@@ -475,12 +587,7 @@
       "main": [
         [
           {
-            "node": "Es mensaje cliente",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Es comando admin",
+            "node": "Chequear duplicado",
             "type": "main",
             "index": 0
           }
@@ -536,6 +643,13 @@
         [
           {
             "node": "Extraer respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notificar falla Claude",
             "type": "main",
             "index": 0
           }
@@ -683,6 +797,56 @@
         [
           {
             "node": "Enviar WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chequear duplicado": {
+      "main": [
+        [
+          {
+            "node": "Es nuevo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es nuevo": {
+      "main": [
+        [
+          {
+            "node": "Registrar mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar mensaje": {
+      "main": [
+        [
+          {
+            "node": "Es mensaje cliente",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Es comando admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar WhatsApp": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Notificar falla envio",
             "type": "main",
             "index": 0
           }
