@@ -619,6 +619,157 @@
         660,
         240
       ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { ...$json, lockStartedAt: Date.now() } }];"
+      },
+      "id": "a1000000-0000-0000-0000-000000000033",
+      "name": "Preparar lock",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO processing_lock (session_id) VALUES ($1)\nON CONFLICT (session_id) DO UPDATE SET locked_at = now()\n  WHERE processing_lock.locked_at < now() - interval '2 minutes'\nRETURNING session_id",
+        "options": {
+          "queryReplacement": "={{ [ $('Preparar lock').first().json.sessionId ] }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000034",
+      "name": "Intentar lock",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        700,
+        160
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json).filter(r => r && r.session_id);\nconst ctx = $('Preparar lock').first().json;\nconst elapsedMs = Date.now() - ctx.lockStartedAt;\n\nif (rows.length > 0) {\n  return [{ json: { ...ctx, lockAcquired: true } }];\n}\nif (elapsedMs > 20000) {\n  // No se pudo conseguir el lock a tiempo (otra conversacion del mismo cliente\n  // sigue \"trabada\" hace rato). Seguimos igual para no perder el mensaje del\n  // cliente, aceptando el riesgo raro de una carrera en este caso extremo.\n  return [{ json: { ...ctx, lockAcquired: false, gaveUp: true } }];\n}\nreturn [{ json: { ...ctx, lockAcquired: false, retry: true } }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000035",
+      "name": "Chequear lock",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        820,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.retry }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000036",
+      "name": "Necesita reintentar",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        940,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 2,
+        "unit": "seconds"
+      },
+      "id": "a1000000-0000-0000-0000-000000000037",
+      "name": "Esperar y reintentar lock",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        940,
+        300
+      ],
+      "webhookId": "lock-retry-wait-bot-pg"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: $json }];"
+      },
+      "id": "a1000000-0000-0000-0000-000000000038",
+      "name": "Lock resuelto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1060,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Lock resuelto').first().json.lockAcquired }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000039",
+      "name": "Tenia el lock",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1540,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM processing_lock WHERE session_id = $1",
+        "options": {
+          "queryReplacement": "={{ [ $('Lock resuelto').first().json.sessionId ] }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000040",
+      "name": "Liberar lock",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        1760,
+        260
+      ]
     }
   ],
   "connections": {
@@ -659,7 +810,7 @@
       "main": [
         [
           {
-            "node": "Cargar historial",
+            "node": "Preparar lock",
             "type": "main",
             "index": 0
           }
@@ -702,6 +853,11 @@
             "node": "Notificar falla Claude",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Tenia el lock",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -716,6 +872,11 @@
           },
           {
             "node": "Solo escalar",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tenia el lock",
             "type": "main",
             "index": 0
           }
@@ -946,6 +1107,91 @@
             "index": 0
           }
         ]
+      ]
+    },
+    "Preparar lock": {
+      "main": [
+        [
+          {
+            "node": "Intentar lock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intentar lock": {
+      "main": [
+        [
+          {
+            "node": "Chequear lock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chequear lock": {
+      "main": [
+        [
+          {
+            "node": "Necesita reintentar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Necesita reintentar": {
+      "main": [
+        [
+          {
+            "node": "Esperar y reintentar lock",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Lock resuelto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar y reintentar lock": {
+      "main": [
+        [
+          {
+            "node": "Intentar lock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lock resuelto": {
+      "main": [
+        [
+          {
+            "node": "Cargar historial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tenia el lock": {
+      "main": [
+        [
+          {
+            "node": "Liberar lock",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
       ]
     }
   },
