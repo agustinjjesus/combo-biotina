@@ -195,7 +195,16 @@ El bot necesita saber a qué grupo avisar. Ese grupo debe incluir al **número d
    (con el valor real que copiaste)
 7. Dale **Implementar/Deploy** de nuevo para que tome el cambio.
 
-> El bot **nunca responde dentro de ese grupo ni procesa mensajes que lleguen ahí** — el filtro ignora todos los mensajes de grupos. Solo lo usa para *enviar* avisos hacia afuera.
+> El bot **nunca responde dentro de ese grupo ni procesa mensajes que lleguen ahí como si fueran de un cliente** — el filtro ignora todos los mensajes de grupos, salvo los comandos de administración `parar`/`seguir` descritos abajo. Fuera de eso, solo lo usa para *enviar* avisos hacia afuera.
+
+### 4.2 Pausar y reanudar el bot manualmente
+
+El bot se puede pausar/reanudar por completo (para todos los clientes) escribiendo un comando en el **grupo de escalamiento del equipo** (el mismo de `ESCALATION_GROUP_JID`). El cliente nunca ve esto, es un comando interno.
+
+- Escribir **`parar`** en el grupo → el bot deja de responderle a cualquier cliente (no procesa ni escala nada mientras está pausado) hasta nuevo aviso. El bot confirma en el grupo: "⏸️ Bot pausado...".
+- Escribir **`seguir`** en el grupo → el bot vuelve a responder normalmente. Confirma: "▶️ Bot reanudado...".
+
+El estado se guarda en la tabla `chat_history` (fila especial con `session_id = '__bot_status__'`), no requiere ninguna variable de entorno nueva. El comando debe escribirse exactamente `parar` o `seguir` (sin mayúsculas ni texto adicional). Tiene que escribirlo alguien del grupo desde su propio WhatsApp (Dolores o el dueño) — si lo escribe el número del negocio (el que está vinculado al bot), el bot lo ignora, porque el workflow descarta todos sus propios mensajes salientes (`fromMe`).
 
 ### Conectar Evolution → n8n (webhook)
 
