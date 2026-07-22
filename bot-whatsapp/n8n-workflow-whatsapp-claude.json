@@ -602,6 +602,23 @@
         2200,
         60
       ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO chat_history (session_id, role, content) VALUES ($1, 'user', $2)",
+        "options": {
+          "queryReplacement": "={{ [ $json.sessionId, '[Imagen recibida - posible comprobante de pago]' + ($json.text ? ' - texto: ' + $json.text : '') ] }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000032",
+      "name": "Registrar imagen recibida",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        660,
+        240
+      ]
     }
   ],
   "connections": {
@@ -808,6 +825,11 @@
         [
           {
             "node": "Notificar comprobante recibido",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Registrar imagen recibida",
             "type": "main",
             "index": 0
           }
