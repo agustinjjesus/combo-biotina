@@ -77,6 +77,15 @@ CREATE TABLE IF NOT EXISTS chat_history (
 CREATE INDEX IF NOT EXISTS idx_chat_history_session ON chat_history (session_id, id);
 ```
 
+6. Crea también la tabla usada para evitar condiciones de carrera cuando un cliente manda varios mensajes seguidos (ver sección 4.4):
+
+```sql
+CREATE TABLE IF NOT EXISTS processing_lock (
+  session_id TEXT PRIMARY KEY,
+  locked_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+```
+
 ### 2.2 Redis
 
 1. **+ Service → Redis**
@@ -163,7 +172,7 @@ El workflow ya incluye el prompt de ventas cargado y la lógica de **escalamient
 1. En n8n: **Workflows → Import from URL** (o "Import from File" si no aparece esa opción) → pega/sube `n8n-workflow-whatsapp-claude.json` (está en esta misma carpeta del repo).
 2. Crea la credencial de Postgres: **Credentials → New → Postgres**
    - Host: `bot_postgres` — Database: `n8n` — User: `postgres` — Password: la tuya — Port: `5432` — SSL: disable.
-   - Asígnala a los **ocho** nodos de Postgres del workflow: `Cargar historial`, `Guardar conversación`, `Leer estado bot`, `Guardar estado bot`, `Leer estado cliente`, `Chequear duplicado`, `Registrar mensaje`, `Registrar imagen recibida`.
+   - Asígnala a los **diez** nodos de Postgres del workflow: `Cargar historial`, `Guardar conversación`, `Leer estado bot`, `Guardar estado bot`, `Leer estado cliente`, `Chequear duplicado`, `Registrar mensaje`, `Registrar imagen recibida`, `Intentar lock`, `Liberar lock`.
 3. Crea dos credenciales de tipo **Header Auth** (`Credentials → New → Header Auth`) — son las que reemplazan a las variables de entorno que no funcionan (ver nota de la sección 2.3):
    - **"Anthropic x-api-key"**: Name = `x-api-key`, Value = tu clave de Anthropic (`sk-ant-...`).
    - **"Evolution apikey"**: Name = `apikey`, Value = tu `AUTHENTICATION_API_KEY` de Evolution.
@@ -234,6 +243,10 @@ El workflow `n8n-workflow-analisis-conversaciones.json` lee automáticamente tod
 - **Cómo detecta si una venta "se cerró":** se considera que una conversación llegó a la etapa de pago cuando el bot le pasó al cliente los datos de Mercado Pago; se considera "probablemente cerrada" si después de eso el cliente mandó una imagen (comprobante). Esto es una aproximación (el bot no tiene forma de saber si el pago realmente se acreditó) — para una confirmación 100% certera, siempre va a hacer falta que el equipo la valide manualmente.
 - **Nada que cargar aparte:** usa las mismas credenciales de Postgres, Anthropic y Evolution ya creadas en la sección 4.
 
+### 4.4 Protección contra mensajes seguidos (condición de carrera)
+
+Si un cliente manda dos mensajes muy rápido (antes de que el bot termine de contestar el primero), el workflow usa la tabla `processing_lock` (creada en la sección 2.1) como un candado por cliente: la segunda ejecución espera y reintenta cada 2 segundos hasta que la primera libere el candado (o hasta 20 segundos, tras lo cual sigue igual para no perder el mensaje del cliente). Así, cada mensaje se procesa con el historial ya actualizado del anterior, sin cruzarse. El candado se auto-libera solo si una ejecución queda colgada más de 2 minutos (por si el servidor se reinicia a mitad de un procesamiento). No requiere ninguna configuración aparte de la tabla y las credenciales de Postgres ya asignadas.
+
 ### Conectar Evolution → n8n (webhook)
 
 En el Manager de Evolution, entra a la instancia `pg` → **Events → Webhook**:
@@ -275,7 +288,7 @@ Envía un WhatsApp al número del negocio desde otro teléfono. Deberías ver:
 | No llega nada a n8n | Webhook de Evolution: URL exacta y evento `MESSAGES_UPSERT` activado. Workflow **activado** en n8n. |
 | Error `access to env vars denied` en cualquier nodo | Quedó una referencia a `$env.ALGO` sin migrar — no funciona en esta versión de n8n (task runner aislado). Ver sección 2.3 y 4: hay que usar credenciales o valores hardcodeados en el nodo, no variables de entorno. |
 | Error 401 en el nodo Claude API | Revisá la credencial **Header Auth "Anthropic x-api-key"** (nombre de header `x-api-key`, valor tu clave real) asignada al nodo. |
-| Error en nodos Postgres | Credencial de Postgres en n8n (host `bot_postgres`, base `n8n`, usuario/contraseña correctos) asignada a los 8 nodos Postgres, y que exista la tabla `chat_history`. Si dice "password authentication failed", la contraseña cambió — recreá la credencial. |
+| Error en nodos Postgres | Credencial de Postgres en n8n (host `bot_postgres`, base `n8n`, usuario/contraseña correctos) asignada a los 10 nodos Postgres, y que existan las tablas `chat_history` y `processing_lock`. Si dice "password authentication failed", la contraseña cambió — recreá la credencial. |
 | Claude responde pero no llega al cliente | Credencial **Header Auth "Evolution apikey"** asignada a los nodos de Evolution; nombre de instancia correcto (`pg`); URL `http://bot_evolution:8080` correcta en esos nodos. |
 | No llegan los avisos de escalamiento al grupo, o el comando `parar`/`seguir` no responde | El placeholder `TU_GRUPO_JID_AQUI@g.us` no se reemplazó por el JID real en los 7 nodos (sección 4.1), o el número del negocio no es miembro del grupo. |
 | WhatsApp desconectado | Manager de Evolution → reconectar/escanear QR de nuevo. |
