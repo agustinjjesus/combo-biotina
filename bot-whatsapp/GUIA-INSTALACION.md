@@ -185,6 +185,7 @@ El workflow ya incluye el prompt de ventas cargado y la lógica de **escalamient
 7. Importá también `n8n-workflow-monitor-whatsapp.json` (mismo repo) — es un workflow aparte que chequea cada 15 min si el WhatsApp sigue conectado y avisa al grupo si se cae. Asignale las mismas credenciales de Postgres y Header Auth "Evolution apikey" a sus nodos, reemplazá el placeholder del JID del grupo (ver 4.1) y activalo.
 8. Importá también `n8n-workflow-analisis-conversaciones.json` (mismo repo) — genera un reporte semanal con IA de por qué no se cierran algunas ventas. Ver sección 4.3 para el detalle. Asignale las mismas tres credenciales (Postgres, Header Auth "Anthropic x-api-key" en el nodo **Analizar con Claude**, Header Auth "Evolution apikey" en **Enviar reporte** y **Notificar falla analisis**), reemplazá el placeholder del JID (ver 4.1) y activalo.
 9. Importá también `n8n-workflow-resumen-diario.json` (mismo repo) — manda un resumen diario de ventas por WhatsApp al número personal del dueño. Ver sección 4.6 para el detalle. Asignale la credencial de Postgres a `Traer conversaciones del dia` y `Traer origenes de anuncio del dia`, la credencial Header Auth "Evolution apikey" al nodo **Enviar resumen**, reemplazá el placeholder `TU_NUMERO_PERSONAL_AQUI@s.whatsapp.net` (nodo **Enviar resumen**) por el JID real del dueño (formato `549` + código de área + número + `@s.whatsapp.net`, ej. `5491140377694@s.whatsapp.net`) y activalo.
+10. Importá también `n8n-workflow-manejador-errores.json` (mismo repo) — es el manejador de errores global descripto en la sección 4.8. Asignale la credencial Header Auth "Evolution apikey" al nodo **Enviar alerta**, reemplazá el placeholder del JID del grupo (ver 4.1) y activalo. Después, en **cada uno** de los otros 4 workflows (principal, monitor, análisis semanal, resumen diario), andá a los tres puntitos (⋮) → **Settings** → campo **Error Workflow** → seleccioná "Manejador de errores global" y guardá.
 
 ### 4.1 Obtener el ID del grupo de WhatsApp del equipo (para las alertas) y cargarlo en el workflow
 
@@ -214,6 +215,7 @@ El bot necesita saber a qué grupo avisar. Ese grupo debe incluir al **número d
    - Nodo **Notificar falla envio** (jsonBody)
    - Y 1 lugar más en `n8n-workflow-monitor-whatsapp.json`: nodo **Notificar cambio conexion** (jsonBody).
    - Y 2 lugares más en `n8n-workflow-analisis-conversaciones.json`: nodos **Enviar reporte** y **Notificar falla analisis** (jsonBody).
+   - Y 1 lugar más en `n8n-workflow-manejador-errores.json`: nodo **Enviar alerta** (jsonBody).
 4. Guardá el workflow (queda guardado automáticamente al activarlo/editarlo, o con el botón de guardar).
 
 > El bot **nunca responde dentro de ese grupo ni procesa mensajes que lleguen ahí como si fueran de un cliente** — el filtro ignora todos los mensajes de grupos, salvo los comandos de administración `parar`/`seguir` descritos abajo. Fuera de eso, solo lo usa para *enviar* avisos hacia afuera.
@@ -264,6 +266,14 @@ El workflow `n8n-workflow-resumen-diario.json` manda todos los días, por WhatsA
 - **Ventas cerradas / facturación / ganancia:** usa el mismo criterio del análisis semanal (recibió datos de pago + mandó comprobante), pero solo sobre las conversaciones de anuncios de ese día. Precio del combo $43.000, costo $10.000 → ganancia neta $33.000 por venta (ambos valores están hardcodeados en el nodo **Calcular resumen del dia** — si cambia el precio o el costo, hay que editarlos ahí).
 - **Nada que cargar aparte:** usa las mismas credenciales de Postgres y Evolution ya creadas en la sección 4, más el JID personal del dueño (ver punto 9 de la sección 4).
 
+### 4.7 Reintentos automáticos ante sobrecarga de Claude
+
+El nodo **Claude API** del workflow principal tiene reintentos automáticos configurados (`retryOnFail`, hasta 4 intentos con 3 segundos de espera entre cada uno). Esto cubre el caso en que Anthropic devuelve un error `529 overloaded_error` (sobrecarga temporal del lado de ellos, no un bug del bot): antes, un solo fallo dejaba al cliente sin respuesta; ahora el bot reintenta varias veces antes de rendirse y escalar. Si después de los 4 intentos sigue fallando, recién ahí se dispara el aviso "⚠️ Falló la respuesta automática..." al grupo. No requiere ninguna configuración aparte — ya viene armado en el workflow importado.
+
+### 4.8 Alerta global de errores (cualquier falla en n8n)
+
+Además de los avisos puntuales que ya tiene cada workflow (falla de Claude, falla de envío, falla del análisis, etc.), el workflow `n8n-workflow-manejador-errores.json` es un **manejador de errores genérico**: usa un nodo **Error Trigger**, que n8n dispara automáticamente cada vez que falla una ejecución de **cualquier workflow que lo tenga configurado como "Error Workflow"** en su sección Settings (ver punto 10 de la sección 4) — incluso errores no previstos que no tienen un aviso específico armado a mano. Manda por WhatsApp al grupo del equipo el nombre del workflow, el nodo donde falló, el mensaje de error y un link directo a la ejecución en n8n para revisarla. No hace falta tocarlo salvo para reemplazar el placeholder del JID del grupo (ver 4.1) y asignarle la credencial de Evolution.
+
 ### Conectar Evolution → n8n (webhook)
 
 En el Manager de Evolution, entra a la instancia `pg` → **Events → Webhook**:
@@ -311,6 +321,7 @@ Envía un WhatsApp al número del negocio desde otro teléfono. Deberías ver:
 | WhatsApp desconectado | Manager de Evolution → reconectar/escanear QR de nuevo. |
 | No llega el reporte semanal de análisis | Workflow `n8n-workflow-analisis-conversaciones.json` activado, JID reemplazado en sus 2 nodos, y credenciales asignadas (Postgres, Anthropic, Evolution) igual que el workflow principal. |
 | No llega el resumen diario, o siempre muestra 0 conversaciones | Workflow `n8n-workflow-resumen-diario.json` activado, placeholder `TU_NUMERO_PERSONAL_AQUI@s.whatsapp.net` reemplazado por el JID real del dueño, credenciales de Postgres/Evolution asignadas (sección 4, punto 9). Si muestra 0 siendo que sí hubo ventas de anuncios ese día, puede ser que esas conversaciones hayan arrancado antes de activar la detección de origen (ver nota en 4.6). |
+| Un fallo raro no manda ningún aviso | Verificá que el workflow que falló tenga configurado **Error Workflow** = "Manejador de errores global" en su Settings (punto 10 de la sección 4), y que `n8n-workflow-manejador-errores.json` esté activado con el JID del grupo reemplazado (sección 4.8). |
 
 ---
 
