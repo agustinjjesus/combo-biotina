@@ -86,7 +86,13 @@
       "position": [
         660,
         -160
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      }
     },
     {
       "parameters": {
@@ -104,7 +110,13 @@
         660,
         160
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -153,7 +165,16 @@
         1100,
         160
       ],
-      "onError": "continueErrorOutput"
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CttncV9hSaBQiESj",
+          "name": "Anthropic x-api-key"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 4,
+      "waitBetweenTries": 3000
     },
     {
       "parameters": {
@@ -208,7 +229,13 @@
       "position": [
         1760,
         60
-      ]
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -240,6 +267,12 @@
         2640,
         -60
       ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      },
       "onError": "continueErrorOutput"
     },
     {
@@ -284,7 +317,13 @@
       "position": [
         1760,
         280
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      }
     },
     {
       "parameters": {
@@ -313,7 +352,13 @@
         660,
         0
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -356,7 +401,13 @@
       "position": [
         660,
         460
-      ]
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -387,7 +438,13 @@
       "position": [
         880,
         460
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      }
     },
     {
       "parameters": {
@@ -431,7 +488,13 @@
       "position": [
         660,
         320
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      }
     },
     {
       "parameters": {
@@ -477,7 +540,13 @@
         220,
         460
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -507,7 +576,13 @@
       "position": [
         660,
         460
-      ]
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -538,7 +613,13 @@
       "position": [
         1100,
         340
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      }
     },
     {
       "parameters": {
@@ -569,7 +650,13 @@
       "position": [
         2640,
         340
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      }
     },
     {
       "parameters": {
@@ -587,7 +674,13 @@
         770,
         0
       ],
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -618,7 +711,13 @@
       "position": [
         660,
         240
-      ]
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -649,6 +748,12 @@
         700,
         160
       ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      },
       "alwaysOutputData": true
     },
     {
@@ -769,7 +874,13 @@
       "position": [
         1760,
         260
-      ]
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -799,7 +910,13 @@
       "position": [
         660,
         620
-      ]
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
     },
     {
       "parameters": {
@@ -829,7 +946,13 @@
       "position": [
         880,
         -300
-      ]
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
