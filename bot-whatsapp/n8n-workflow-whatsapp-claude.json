@@ -20,7 +20,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Filtra eventos de Evolution API (MESSAGES_UPSERT)\n// - Detecta comandos de administracion (\"parar\"/\"seguir\") escritos en el\n//   grupo de escalamiento del equipo\n// - Separa audios de texto para el resto de los clientes\nconst body = $json.body ?? $json;\nconst data = body.data;\n\nif (!data || !data.key || data.key.fromMe) {\n  return [];\n}\n\nconst remoteJid = String(data.key.remoteJid);\nconst isGroup = remoteJid.endsWith('@g.us');\nconst msg = data.message || {};\nconst text = (msg.conversation || msg.extendedTextMessage?.text || '').trim();\n\nif (isGroup) {\n  const escalationGroup = 'TU_GRUPO_JID_AQUI@g.us';\n  if (remoteJid === escalationGroup) {\n    const normalized = text.toLowerCase();\n    if (normalized === 'parar') {\n      return [{ json: { type: 'admin_command', command: 'paused', instance: body.instance, messageId: data.key.id } }];\n    }\n    if (normalized === 'seguir') {\n      return [{ json: { type: 'admin_command', command: 'active', instance: body.instance, messageId: data.key.id } }];\n    }\n  }\n  // Cualquier otro mensaje de grupo (o texto sin reconocer en el grupo del equipo) se ignora\n  return [];\n}\n\nconst isAudio = !!(msg.audioMessage || msg.pttMessage);\nconst isImage = !!(msg.imageMessage);\nconst caption = msg.imageMessage?.caption || '';\nconst finalText = text || caption.trim();\n\nif (!isAudio && !isImage && !finalText) {\n  return [];\n}\n\nreturn [{\n  json: {\n    type: 'customer_message',\n    sessionId: remoteJid,\n    number: remoteJid.split('@')[0],\n    text: finalText,\n    instance: body.instance,\n    pushName: data.pushName || '',\n    isAudio,\n    isImage,\n    messageId: data.key.id\n  }\n}];\n"
+        "jsCode": "// Filtra eventos de Evolution API (MESSAGES_UPSERT)\n// - Detecta comandos de administracion (\"parar\"/\"seguir\") escritos en el\n//   grupo de escalamiento del equipo\n// - Separa audios de texto para el resto de los clientes\nconst body = $json.body ?? $json;\nconst data = body.data;\n\nif (!data || !data.key || data.key.fromMe) {\n  return [];\n}\n\nconst remoteJid = String(data.key.remoteJid);\nconst isGroup = remoteJid.endsWith('@g.us');\nconst msg = data.message || {};\nconst text = (msg.conversation || msg.extendedTextMessage?.text || '').trim();\n\nif (isGroup) {\n  const escalationGroup = 'TU_GRUPO_JID_AQUI@g.us';\n  if (remoteJid === escalationGroup) {\n    const normalized = text.trim().toLowerCase();\n    const m = normalized.match(/^(parar|seguir)(?:\\s+(\\d{6,15}))?$/);\n    if (m) {\n      const command = m[1] === 'parar' ? 'paused' : 'active';\n      const targetNumber = m[2] || null;\n      return [{\n        json: {\n          type: 'admin_command',\n          command,\n          scope: targetNumber ? 'customer' : 'global',\n          targetNumber,\n          instance: body.instance,\n          messageId: data.key.id\n        }\n      }];\n    }\n  }\n  // Cualquier otro mensaje de grupo (o texto sin reconocer en el grupo del equipo) se ignora\n  return [];\n}\n\nconst isAudio = !!(msg.audioMessage || msg.pttMessage);\nconst isImage = !!(msg.imageMessage);\nconst caption = msg.imageMessage?.caption || '';\nconst finalText = text || caption.trim();\n\nif (!isAudio && !isImage && !finalText) {\n  return [];\n}\n\nreturn [{\n  json: {\n    type: 'customer_message',\n    sessionId: remoteJid,\n    number: remoteJid.split('@')[0],\n    text: finalText,\n    instance: body.instance,\n    pushName: data.pushName || '',\n    isAudio,\n    isImage,\n    messageId: data.key.id\n  }\n}];\n"
       },
       "id": "a1000000-0000-0000-0000-000000000002",
       "name": "Filtrar y extraer",
@@ -288,7 +288,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const d = $('Es nuevo').first().json;\nif (d.type !== 'customer_message') return [];\nreturn [{ json: d }];\n"
+        "jsCode": "const d = $('Es nuevo').first().json;\nif (d.type !== 'customer_message') return [];\nconst numberLast10 = String(d.number || '').replace(/\\D/g, '').slice(-10);\nreturn [{ json: { ...d, numberLast10 } }];\n"
       },
       "id": "a1000000-0000-0000-0000-000000000016",
       "name": "Es mensaje cliente",
@@ -317,7 +317,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const rows = $input.all().map(i => i.json).filter(r => r && r.content);\nconst status = rows.length ? rows[0].content : 'active';\nif (status === 'paused') return [];\nreturn [{ json: $('Es mensaje cliente').first().json }];\n"
+        "jsCode": "const globalRows = $('Leer estado bot').all().map(i => i.json).filter(r => r && r.content);\nconst globalStatus = globalRows.length ? globalRows[0].content : 'active';\n\nconst customerRows = $input.all().map(i => i.json).filter(r => r && r.content);\nconst customerStatus = customerRows.length ? customerRows[0].content : 'active';\n\nif (globalStatus === 'paused' || customerStatus === 'paused') return [];\nreturn [{ json: $('Es mensaje cliente').first().json }];\n"
       },
       "id": "a1000000-0000-0000-0000-000000000018",
       "name": "Chequear pausado",
@@ -330,7 +330,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const d = $('Es nuevo').first().json;\nif (d.type !== 'admin_command') return [];\nreturn [{ json: d }];\n"
+        "jsCode": "const d = $('Es nuevo').first().json;\nif (d.type !== 'admin_command') return [];\nconst last10 = s => String(s || '').replace(/\\D/g, '').slice(-10);\nconst sessionIdKey = d.scope === 'customer'\n  ? ('__paused_customer__:' + last10(d.targetNumber))\n  : '__bot_status__';\nreturn [{ json: { ...d, sessionIdKey } }];\n"
       },
       "id": "a1000000-0000-0000-0000-000000000015",
       "name": "Es comando admin",
@@ -344,9 +344,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO chat_history (session_id, role, content) VALUES ('__bot_status__', 'status', $1)",
+        "query": "INSERT INTO chat_history (session_id, role, content) VALUES ($1, 'status', $2)",
         "options": {
-          "queryReplacement": "={{ $json.command }}"
+          "queryReplacement": "={{ [ $json.sessionIdKey, $json.command ] }}"
         }
       },
       "id": "a1000000-0000-0000-0000-000000000019",
@@ -373,7 +373,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: $('Es comando admin').first().json.command === 'paused'\n    ? '⏸️ Bot pausado. No le va a responder a los clientes hasta que alguien escriba \"seguir\" en este grupo.'\n    : '▶️ Bot reanudado. Ya vuelve a responder a los clientes normalmente.'\n}) }}",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: (() => {\n    const d = $('Es comando admin').first().json;\n    const paused = d.command === 'paused';\n    if (d.scope === 'customer') {\n      return paused\n        ? '⏸️ Bot pausado SOLO para +' + d.targetNumber + '. Sigue respondiendo normal a los demás clientes. Escribí \"seguir ' + d.targetNumber + '\" cuando termines.'\n        : '▶️ Bot reanudado para +' + d.targetNumber + '.';\n    }\n    return paused\n      ? '⏸️ Bot pausado. No le va a responder a los clientes hasta que alguien escriba \"seguir\" en este grupo.'\n      : '▶️ Bot reanudado. Ya vuelve a responder a los clientes normalmente.';\n  })()\n}) }}",
         "options": {
           "timeout": 30000
         },
@@ -569,6 +569,24 @@
         2420,
         340
       ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT content FROM chat_history WHERE session_id = '__paused_customer__:' || $1 ORDER BY id DESC LIMIT 1",
+        "options": {
+          "queryReplacement": "={{ $('Es mensaje cliente').first().json.numberLast10 }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000030",
+      "name": "Leer estado cliente",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        770,
+        0
+      ],
+      "alwaysOutputData": true
     }
   ],
   "connections": {
@@ -720,7 +738,7 @@
       "main": [
         [
           {
-            "node": "Chequear pausado",
+            "node": "Leer estado cliente",
             "type": "main",
             "index": 0
           }
@@ -847,6 +865,17 @@
         [
           {
             "node": "Notificar falla envio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer estado cliente": {
+      "main": [
+        [
+          {
+            "node": "Chequear pausado",
             "type": "main",
             "index": 0
           }
