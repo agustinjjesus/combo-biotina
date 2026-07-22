@@ -103,22 +103,11 @@ N8N_PROTOCOL=https
 WEBHOOK_URL=https://n8n.productoscapilarespg.com/
 GENERIC_TIMEZONE=America/Argentina/Buenos_Aires
 N8N_ENCRYPTION_KEY=UNA_CLAVE_LARGA_ALEATORIA
-
-# Permite usar $env en el workflow (para las claves de API)
-N8N_BLOCK_ENV_ACCESS_IN_NODE=false
-
-# --- Claves que usa el workflow del bot ---
-ANTHROPIC_API_KEY=sk-ant-TU_CLAVE_DE_ANTHROPIC
-EVOLUTION_URL=http://bot_evolution:8080
-EVOLUTION_API_KEY=LA_MISMA_CLAVE_QUE_PONGAS_EN_EVOLUTION
-
-# Grupo de WhatsApp del equipo (Dolores/dueño) donde el bot avisa cuando
-# hay que escalar una conversación. Ver sección 4.1 para obtener este ID.
-# Podés dejarlo como PENDIENTE por ahora y completarlo más adelante.
-ESCALATION_GROUP_JID=PENDIENTE
 ```
 
 > Genera valores aleatorios con: `openssl rand -hex 24`
+>
+> ⚠️ **No cargues acá `ANTHROPIC_API_KEY`, `EVOLUTION_URL`, `EVOLUTION_API_KEY` ni `ESCALATION_GROUP_JID`.** En versiones recientes de n8n, las expresiones (`$env.ALGO`) corren en un *task runner* aislado que **no tiene acceso a las variables de entorno custom del contenedor** — solo a una lista fija muy corta (`PATH`, `GENERIC_TIMEZONE`, etc.). Por más que declares la variable en Easypanel, el workflow nunca la va a poder leer (falla con `access to env vars denied`) y `N8N_BLOCK_ENV_ACCESS_IN_NODE=false` **no soluciona esto**. Esas claves se configuran directamente en el workflow — ver sección 4.
 
 6. **Mounts:** agrega un volumen en `/home/node/.n8n` (para que no pierdas datos al redeployar).
 7. Deploy. Entra a `https://n8n.productoscapilarespg.com` y crea tu cuenta de administrador.
@@ -174,32 +163,47 @@ El workflow ya incluye el prompt de ventas cargado y la lógica de **escalamient
 1. En n8n: **Workflows → Import from URL** (o "Import from File" si no aparece esa opción) → pega/sube `n8n-workflow-whatsapp-claude.json` (está en esta misma carpeta del repo).
 2. Crea la credencial de Postgres: **Credentials → New → Postgres**
    - Host: `bot_postgres` — Database: `n8n` — User: `postgres` — Password: la tuya — Port: `5432` — SSL: disable.
-   - Asígnala a los dos nodos de Postgres del workflow (`Cargar historial` y `Guardar conversación`).
-3. **Activa** el workflow (switch arriba a la derecha / botón "Publish").
-4. Copia la **URL de producción** del nodo Webhook. Debería ser:
+   - Asígnala a los **cuatro** nodos de Postgres del workflow (`Cargar historial`, `Guardar conversación`, `Leer estado bot`, `Guardar estado bot`).
+3. Crea dos credenciales de tipo **Header Auth** (`Credentials → New → Header Auth`) — son las que reemplazan a las variables de entorno que no funcionan (ver nota de la sección 2.3):
+   - **"Anthropic x-api-key"**: Name = `x-api-key`, Value = tu clave de Anthropic (`sk-ant-...`).
+   - **"Evolution apikey"**: Name = `apikey`, Value = tu `AUTHENTICATION_API_KEY` de Evolution.
+   - Asigná la credencial de Anthropic al nodo **Claude API**.
+   - Asigná la credencial de Evolution a los cuatro nodos que llaman a Evolution: **Notificar audio recibido**, **Enviar WhatsApp**, **Notificar escalamiento**, **Confirmar comando**.
+4. El workflow trae `http://bot_evolution:8080` ya cargado como URL de Evolution en esos mismos nodos (no es secreto, es el hostname interno de Docker — no hace falta tocarlo salvo que hayas nombrado distinto al servicio).
+5. **Activa** el workflow (switch arriba a la derecha / botón "Publish").
+6. Copia la **URL de producción** del nodo Webhook. Debería ser:
    `https://n8n.productoscapilarespg.com/webhook/whatsapp`
 
-### 4.1 Obtener el ID del grupo de WhatsApp del equipo (para las alertas)
+### 4.1 Obtener el ID del grupo de WhatsApp del equipo (para las alertas) y cargarlo en el workflow
 
-El bot necesita saber a qué grupo avisar. Ese grupo debe incluir al **número de WhatsApp del negocio** (el que vincules en el paso 3) más Dolores y/o el dueño.
+El bot necesita saber a qué grupo avisar. Ese grupo debe incluir al **número de WhatsApp del negocio** (el que vincules en el paso 3 de la sección 3) más Dolores y/o el dueño.
 
-1. Crea (o usa uno existente) un grupo de WhatsApp con: el número del negocio + Dolores + dueño.
-2. Con el workflow ya **activado** en n8n, pide que alguien escriba cualquier mensaje en ese grupo.
-3. En n8n, ve a la pestaña **Executions** (arriba, al lado de "Editor") → abre la ejecución más reciente.
-4. Haz clic en el nodo **"Webhook Evolution"** y mira su salida (Output) → busca el campo `data.key.remoteJid`. Va a ser un texto que termina en `@g.us` (por ejemplo `120363012345678901@g.us`).
-5. Copia ese valor completo.
-6. Ve al servicio `n8n` en Easypanel → pestaña **Entorno** → reemplaza la línea `ESCALATION_GROUP_JID=PENDIENTE` por:
+1. Crea (o usa uno existente) un grupo de WhatsApp con: el número del negocio + Dolores + dueño. También podés crearlo por API una vez vinculado el WhatsApp:
+   ```bash
+   curl -X POST "https://evo.productoscapilarespg.com/group/create/pg" \
+     -H "Content-Type: application/json" \
+     -H "apikey: TU_AUTHENTICATION_API_KEY" \
+     -d '{"subject": "Biotina", "participants": ["549XXXXXXXXXX", "549YYYYYYYYYY"]}'
    ```
-   ESCALATION_GROUP_JID=120363012345678901@g.us
+   (número completo sin `+` ni espacios: `549` + código de área + número, ej. `5491161558641`)
+2. Para obtener el JID del grupo, lo más directo es listar los grupos de la instancia ya conectada:
+   ```bash
+   curl "https://evo.productoscapilarespg.com/group/fetchAllGroups/pg?getParticipants=false" \
+     -H "apikey: TU_AUTHENTICATION_API_KEY"
    ```
-   (con el valor real que copiaste)
-7. Dale **Implementar/Deploy** de nuevo para que tome el cambio.
+   Buscá el grupo por su `subject` (nombre) y copiá su campo `id`, termina en `@g.us` (ej. `120363410624881924@g.us`). Si preferís el método manual: con el workflow activo, hacé que alguien escriba cualquier cosa en el grupo, andá a **Executions** en n8n, abrí la ejecución más reciente y mirá la salida del nodo **"Webhook Evolution"** → `data.key.remoteJid`.
+3. **Cargá ese JID directamente en el workflow** (no como variable de entorno, ver nota de la sección 2.3). Abrí el workflow en n8n y reemplazá el texto `TU_GRUPO_JID_AQUI@g.us` por tu JID real en los **4 lugares** donde aparece:
+   - Nodo **Filtrar y extraer** (Code): línea `const escalationGroup = 'TU_GRUPO_JID_AQUI@g.us';`
+   - Nodo **Notificar audio recibido** (jsonBody): `number: 'TU_GRUPO_JID_AQUI@g.us'`
+   - Nodo **Notificar escalamiento** (jsonBody): `number: 'TU_GRUPO_JID_AQUI@g.us'`
+   - Nodo **Confirmar comando** (jsonBody): `number: 'TU_GRUPO_JID_AQUI@g.us'`
+4. Guardá el workflow (queda guardado automáticamente al activarlo/editarlo, o con el botón de guardar).
 
 > El bot **nunca responde dentro de ese grupo ni procesa mensajes que lleguen ahí como si fueran de un cliente** — el filtro ignora todos los mensajes de grupos, salvo los comandos de administración `parar`/`seguir` descritos abajo. Fuera de eso, solo lo usa para *enviar* avisos hacia afuera.
 
 ### 4.2 Pausar y reanudar el bot manualmente
 
-El bot se puede pausar/reanudar por completo (para todos los clientes) escribiendo un comando en el **grupo de escalamiento del equipo** (el mismo de `ESCALATION_GROUP_JID`). El cliente nunca ve esto, es un comando interno.
+El bot se puede pausar/reanudar por completo (para todos los clientes) escribiendo un comando en el **grupo de escalamiento del equipo** (el mismo JID que cargaste en la sección 4.1). El cliente nunca ve esto, es un comando interno.
 
 - Escribir **`parar`** en el grupo → el bot deja de responderle a cualquier cliente (no procesa ni escala nada mientras está pausado) hasta nuevo aviso. El bot confirma en el grupo: "⏸️ Bot pausado...".
 - Escribir **`seguir`** en el grupo → el bot vuelve a responder normalmente. Confirma: "▶️ Bot reanudado...".
@@ -245,10 +249,11 @@ Envía un WhatsApp al número del negocio desde otro teléfono. Deberías ver:
 | Síntoma | Revisar |
 |---|---|
 | No llega nada a n8n | Webhook de Evolution: URL exacta y evento `MESSAGES_UPSERT` activado. Workflow **activado** en n8n. |
-| Error 401 en el nodo Claude API | `ANTHROPIC_API_KEY` mal puesta en el Environment de n8n (redeploy después de cambiarla). |
-| Error en nodos Postgres | Credencial de Postgres en n8n (host `bot_postgres`, base `n8n`) y que exista la tabla `chat_history`. |
-| Claude responde pero no llega al cliente | `EVOLUTION_URL` y `EVOLUTION_API_KEY` en el Environment de n8n; nombre de instancia correcto. |
-| No llegan los avisos de escalamiento al grupo | `ESCALATION_GROUP_JID` mal puesto (debe terminar en `@g.us`) o el número del negocio no es miembro del grupo. Ver sección 4.1. |
+| Error `access to env vars denied` en cualquier nodo | Quedó una referencia a `$env.ALGO` sin migrar — no funciona en esta versión de n8n (task runner aislado). Ver sección 2.3 y 4: hay que usar credenciales o valores hardcodeados en el nodo, no variables de entorno. |
+| Error 401 en el nodo Claude API | Revisá la credencial **Header Auth "Anthropic x-api-key"** (nombre de header `x-api-key`, valor tu clave real) asignada al nodo. |
+| Error en nodos Postgres | Credencial de Postgres en n8n (host `bot_postgres`, base `n8n`, usuario/contraseña correctos) asignada a los 4 nodos Postgres, y que exista la tabla `chat_history`. Si dice "password authentication failed", la contraseña cambió — recreá la credencial. |
+| Claude responde pero no llega al cliente | Credencial **Header Auth "Evolution apikey"** asignada a los nodos de Evolution; nombre de instancia correcto (`pg`); URL `http://bot_evolution:8080` correcta en esos nodos. |
+| No llegan los avisos de escalamiento al grupo, o el comando `parar`/`seguir` no responde | El placeholder `TU_GRUPO_JID_AQUI@g.us` no se reemplazó por el JID real en los 4 nodos (sección 4.1), o el número del negocio no es miembro del grupo. |
 | WhatsApp desconectado | Manager de Evolution → reconectar/escanear QR de nuevo. |
 
 ---
@@ -272,5 +277,5 @@ Si más adelante quieres bajar costos, puedes cambiar el modelo en el nodo **Cla
 - [ ] Rotar la contraseña de root del VPS (y idealmente usar llaves SSH + `PasswordAuthentication no`).
 - [ ] Puerto 3000 cerrado (`ufw delete allow 3000/tcp`) una vez que el panel tenga dominio.
 - [ ] `AUTHENTICATION_API_KEY` de Evolution y `N8N_ENCRYPTION_KEY` largas y aleatorias.
-- [ ] La API key de Anthropic solo vive en el Environment de n8n (nunca en el repo ni en chats).
+- [ ] La API key de Anthropic solo vive en la credencial Header Auth de n8n (nunca en el repo ni en chats).
 - [ ] Backups: en DigitalOcean activa los snapshots semanales del droplet.
