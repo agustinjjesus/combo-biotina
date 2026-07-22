@@ -1,0 +1,240 @@
+{
+  "name": "Monitor conexion WhatsApp",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "m1",
+      "name": "Cada 15 min",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://evo.productoscapilarespg.com/instance/fetchInstances",
+        "sendHeaders": false,
+        "options": {
+          "timeout": 15000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "onError": "continueErrorOutput"
+      },
+      "id": "m2",
+      "name": "Estado Evolution",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Viene de la rama success (objeto de la instancia, con connectionStatus)\n// o de la rama error (Evolution no respondio)\nconst item = $json;\nconst currentState = item.connectionStatus || 'unreachable';\nreturn [{ json: { currentState } }];\n"
+      },
+      "id": "m3",
+      "name": "Determinar estado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT content FROM chat_history WHERE session_id = '__wa_status__' ORDER BY id DESC LIMIT 1",
+        "options": {}
+      },
+      "id": "m4",
+      "name": "Leer ultimo estado",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        660,
+        0
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const currentState = $('Determinar estado').first().json.currentState;\nconst rows = $input.all().map(i => i.json).filter(r => r && Object.keys(r).length > 0 && r.content);\nconst lastState = rows.length ? rows[0].content : null;\nif (lastState === currentState) return [];\nreturn [{ json: { currentState, lastState } }];\n"
+      },
+      "id": "m5",
+      "name": "Comparar estado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO chat_history (session_id, role, content) VALUES ('__wa_status__', 'status', $1)",
+        "options": {
+          "queryReplacement": "={{ $json.currentState }}"
+        }
+      },
+      "id": "m6",
+      "name": "Guardar estado wa",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        1100,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// La primera vez que corre no hay estado previo guardado - solo\n// establecemos la base, no avisamos (evita un falso aviso de bienvenida)\nconst ctx = $('Comparar estado').first().json;\nif (ctx.lastState === null) return [];\nreturn [{ json: ctx }];\n"
+      },
+      "id": "m7",
+      "name": "Filtrar aviso",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://evo.productoscapilarespg.com/message/sendText/pg",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: $json.currentState === 'open'\n    ? '✅ WhatsApp del bot reconectado, todo funcionando normal.'\n    : '🔴 El WhatsApp del bot se desconectó (estado: ' + $json.currentState + '). Hay que reconectar/escanear el QR en el Manager de Evolution para que vuelva a responder a los clientes.'\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "m8",
+      "name": "Notificar cambio conexion",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1540,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Cada 15 min": {
+      "main": [
+        [
+          {
+            "node": "Estado Evolution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estado Evolution": {
+      "main": [
+        [
+          {
+            "node": "Determinar estado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Determinar estado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Determinar estado": {
+      "main": [
+        [
+          {
+            "node": "Leer ultimo estado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer ultimo estado": {
+      "main": [
+        [
+          {
+            "node": "Comparar estado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Comparar estado": {
+      "main": [
+        [
+          {
+            "node": "Guardar estado wa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar estado wa": {
+      "main": [
+        [
+          {
+            "node": "Filtrar aviso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar aviso": {
+      "main": [
+        [
+          {
+            "node": "Notificar cambio conexion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
