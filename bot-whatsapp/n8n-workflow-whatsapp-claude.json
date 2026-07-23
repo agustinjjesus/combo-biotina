@@ -599,7 +599,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: '⚠️ Falló la respuesta automática a +' + $('Filtrar y extraer').first().json.number + ' (' + ($('Filtrar y extraer').first().json.pushName || 'sin nombre') + ').\\n\\n'\n    + 'Mensaje del cliente: \"' + $('Filtrar y extraer').first().json.text + '\"'\n    + '\\n\\nError: ' + ($json.error && $json.error.message ? $json.error.message : 'falló la llamada a Claude')\n    + '\\n\\nRespondé manual, el cliente no recibió nada.'\n}) }}",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: '⚠️ Falló la respuesta automática a +' + $('Filtrar y extraer').first().json.number + ' (' + ($('Filtrar y extraer').first().json.pushName || 'sin nombre') + ').\\n\\n'\n    + 'Mensaje del cliente: \"' + $('Filtrar y extraer').first().json.text + '\"'\n    + '\\n\\nError: ' + ($json.friendlyMessage || 'falló la llamada a Claude')\n    + '\\n\\nRespondé manual, el cliente no recibió nada.'\n}) }}",
         "options": {
           "timeout": 30000
         },
@@ -991,6 +991,19 @@
         }
       },
       "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Traduce errores tecnicos de la API de Anthropic a mensajes claros\n// para el equipo (evita mandar JSON crudo por WhatsApp)\nconst raw = ($json.error && $json.error.message) ? String($json.error.message) : '';\n\nfunction friendly(rawMessage) {\n  if (!rawMessage) return 'Fallo la llamada a Claude (sin detalle del error).';\n\n  const match = rawMessage.match(/^(\\d{3})\\s*-\\s*([\\s\\S]+)$/);\n  if (!match) return rawMessage;\n\n  const status = match[1];\n  let parsed;\n  try {\n    // A veces axios devuelve el body ya como objeto ({...}) y a veces\n    // como un string JSON-escapado (\"{...}\") - probamos ambos casos\n    let inner = JSON.parse(match[2]);\n    if (typeof inner === 'string') {\n      inner = JSON.parse(inner);\n    }\n    parsed = inner;\n  } catch (e) {\n    return rawMessage;\n  }\n\n  const errType = (parsed && parsed.error && parsed.error.type) || '';\n  const errMsg = (parsed && parsed.error && parsed.error.message) || '';\n\n  if (errType === 'invalid_request_error' && /credit balance/i.test(errMsg)) {\n    return '💳 Se quedo sin credito la cuenta de Anthropic (Claude). El bot no le esta respondiendo a NINGUN cliente hasta que se cargue credito en console.anthropic.com/settings/billing.';\n  }\n  if (status === '401' || errType === 'authentication_error') {\n    return '🔑 La clave de acceso a Claude no es valida. Revisar la credencial \"Anthropic x-api-key\" en n8n.';\n  }\n  if (status === '429' || errType === 'rate_limit_error') {\n    return '🚦 Se llego al limite de solicitudes a Claude (rate limit). Deberia normalizarse solo en unos minutos.';\n  }\n  if (status === '529' || errType === 'overloaded_error') {\n    return '⏳ El servicio de Claude esta temporalmente saturado (ya se reintento varias veces sin exito).';\n  }\n  return 'Error tecnico (' + status + '): ' + (errMsg || 'sin detalle');\n}\n\nreturn [{ json: { ...$json, friendlyMessage: friendly(raw) } }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000046",
+      "name": "Interpretar error Claude",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        460
+      ]
     }
   ],
   "connections": {
@@ -1071,7 +1084,7 @@
         ],
         [
           {
-            "node": "Notificar falla Claude",
+            "node": "Interpretar error Claude",
             "type": "main",
             "index": 0
           },
@@ -1446,6 +1459,17 @@
         [
           {
             "node": "Guardar origen anuncio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interpretar error Claude": {
+      "main": [
+        [
+          {
+            "node": "Notificar falla Claude",
             "type": "main",
             "index": 0
           }
