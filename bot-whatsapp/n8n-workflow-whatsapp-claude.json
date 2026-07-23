@@ -1,1 +1,1484 @@
-FILE_CONTENT_PLACEHOLDER
+{
+  "name": "Bot WhatsApp - Claude (Productos Capilares PG)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000001",
+      "name": "Webhook Evolution",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "whatsapp-bot-pg"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filtra eventos de Evolution API (MESSAGES_UPSERT)\n// - Detecta comandos de administracion (\"parar\"/\"seguir\") escritos en el\n//   grupo de escalamiento del equipo\n// - Detecta respuestas manuales del equipo (mensajes propios directos a\n//   un cliente) para que el bot no pierda el contexto de la conversacion\n// - Separa audios de texto para el resto de los clientes\nconst body = $json.body ?? $json;\nconst data = body.data;\n\nif (!data || !data.key) {\n  return [];\n}\n\nconst remoteJid = String(data.key.remoteJid);\nconst isGroup = remoteJid.endsWith('@g.us');\nconst msg = data.message || {};\nconst text = (msg.conversation || msg.extendedTextMessage?.text || '').trim();\n\nif (data.key.fromMe) {\n  if (isGroup) {\n    // Mensajes propios del bot en el grupo (avisos, confirmaciones) - se ignoran\n    return [];\n  }\n  // Alguien del equipo le escribio manualmente al cliente desde el telefono\n  // conectado. Lo guardamos en el historial para que el bot no pierda el\n  // contexto, aunque esta respuesta no la haya generado la IA.\n  if (!text) return [];\n  return [{\n    json: {\n      type: 'human_reply',\n      sessionId: remoteJid,\n      text,\n      instance: body.instance,\n      messageId: data.key.id\n    }\n  }];\n}\n\nif (isGroup) {\n  const escalationGroup = 'TU_GRUPO_JID_AQUI@g.us';\n  if (remoteJid === escalationGroup) {\n    const normalized = text.trim().toLowerCase()\n      .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '') // saca tildes (pará -> para)\n      .replace(/[!.,?¡¿]/g, '') // saca puntuacion en cualquier posicion\n      .replace(/\\s+/g, ' ')\n      .trim();\n    const m = normalized.match(/^(parar|para|frenar|frena|stop|seguir|segui|continuar|reanudar)(?:\\s+(\\d{6,15}))?$/);\n    if (m) {\n      const stopWords = ['parar', 'para', 'frenar', 'frena', 'stop'];\n      const command = stopWords.includes(m[1]) ? 'paused' : 'active';\n      const targetNumber = m[2] || null;\n      return [{\n        json: {\n          type: 'admin_command',\n          command,\n          scope: targetNumber ? 'customer' : 'global',\n          targetNumber,\n          instance: body.instance,\n          messageId: data.key.id\n        }\n      }];\n    }\n  }\n  // Cualquier otro mensaje de grupo (o texto sin reconocer en el grupo del equipo) se ignora\n  return [];\n}\n\nconst isAudio = !!(msg.audioMessage || msg.pttMessage);\nconst isImage = !!(msg.imageMessage);\nconst caption = msg.imageMessage?.caption || '';\nconst finalText = text || caption.trim();\n\nif (!isAudio && !isImage && !finalText) {\n  return [];\n}\n\n// Meta marca el primer mensaje de una conversacion iniciada desde un\n// anuncio de Facebook/Instagram (click-to-WhatsApp) con este campo\nconst isFromAd = !!(data.contextInfo && data.contextInfo.conversionSource);\n\nreturn [{\n  json: {\n    type: 'customer_message',\n    sessionId: remoteJid,\n    number: remoteJid.split('@')[0],\n    text: finalText,\n    instance: body.instance,\n    pushName: data.pushName || '',\n    isAudio,\n    isImage,\n    isFromAd,\n    messageId: data.key.id\n  }\n}];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000002",
+      "name": "Filtrar y extraer",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Deja pasar solo si el mensaje es un audio\nif (!$json.isAudio) return [];\nreturn [{ json: $json }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000010",
+      "name": "Solo audio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Deja pasar solo si el mensaje es texto (no audio, no imagen)\nif ($json.isAudio || $json.isImage) return [];\nreturn [{ json: $json }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000011",
+      "name": "Solo texto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://bot_evolution:8080/message/sendText/{{ $json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: '🔊 Audio de WhatsApp recibido de +' + $json.number + ' (' + ($json.pushName || 'sin nombre') + '). No se puede procesar automaticamente - respondé manual.'\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "a1000000-0000-0000-0000-000000000012",
+      "name": "Notificar audio recibido",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        -160
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT role, content FROM chat_history WHERE session_id = $1 ORDER BY id DESC LIMIT 20",
+        "options": {
+          "queryReplacement": "={{ $json.sessionId }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000003",
+      "name": "Cargar historial",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        660,
+        160
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// Prompt de ventas - PG Productos Capilares\n// ============================================================\nconst SYSTEM_PROMPT = `Sos Dolores, atendés el WhatsApp de PG Productos Capilares,\nuna marca argentina de productos para el cuidado del cabello. Hablás\nen español rioplatense (voseo: \"vos tenés\", \"contame\", \"querés\"), tono\ncercano pero un poco más neutro que una charla entre amigos — profesional\ny cálido, no excesivamente informal.\n\n## SOBRE EL PRODUCTO\nVendés el Combo Biotina: shampoo (500ml) + acondicionador (500ml) +\nampolla Plex (60ml) + biotina pura en spray (250ml).\nPrecio: $43.000, con envío gratis a todo el país por Correo Argentino.\nBeneficios: reduce la caída, estimula el crecimiento desde la raíz,\nevita el quiebre, aporta brillo. Sin formol ni sulfatos.\n\nModo de uso:\n- Shampoo y acondicionador: uso diario\n- Ampolla Plex: 1-2 veces por semana, mezclada con la crema, sobre cabello\n  húmedo, dejar actuar y enjuagar\n- Biotina pura en spray: uso diario, directo sobre cuero cabelludo\n  limpio, no se enjuaga\n\nTiempo de resultado (SOLO decir si preguntan): menos caída ya en la\nprimera semana, crecimiento de pelo nuevo visible entre semana 3 y 6\ncon uso constante.\n\n## CÓMO INICIAR LA CONVERSACIÓN\nNo hay un orden fijo de preguntas. Si el cliente ya cuenta su problema\n(caída, quiebre, no crece), respondé directo a eso. Si escribe algo\ngenérico como \"hola, quiero info\", preguntale qué es lo que más le\npreocupa de su pelo antes de tirar precio de una.\n\n## PRECIO\nSi preguntan el precio de forma directa (\"cuánto sale\", \"precio\"),\ndalo directo sin vueltas. Si la conversación viene más despacio,\nindagá el problema primero y presentá el combo con sus beneficios,\nmencionando el precio naturalmente como parte de la propuesta.\n\n## FORMAS DE PAGO\nEl pago es siempre por transferencia (Mercado Pago) antes del envío,\nSIN EXCEPCIÓN — no existe pago contra entrega en ningún caso ni en\nninguna zona del país. Cuando el cliente confirma que quiere comprar,\navisale que le vas a pasar los datos para transferir (por ejemplo:\n\"Dale, te paso los datos para que hagas la transferencia\") y marcá\nsend_payment_info en true.\n\nIMPORTANTE: NUNCA escribas vos el alias, el CVU, el CUIT/CUIL ni ningún\notro dato de la cuenta de Mercado Pago en tus mensajes (reply_parts).\nEsos datos los manda el sistema automáticamente, de forma exacta, en un\nmensaje aparte apenas marques send_payment_info en true. Si los\nescribís vos de memoria te podés equivocar un caracter y el cliente\ntransferiría a un lugar equivocado.\n\nDespués de que el sistema mande los datos, pedile el comprobante de la\ntransferencia y los datos de envío (ver sección ENVÍO), y ESCALÁ (avisá\nal equipo) para que hagan el seguimiento del pago y coordinen el\ndespacho.\n\n## ENVÍO\nCorreo Argentino, gratis, a todo el país, sin excepciones ni otras\ntransportadoras. Para coordinar se necesitan: nombre y apellido, DNI,\ndirección completa, localidad, código postal, provincia y teléfono.\n\n## UBICACIÓN\nSi preguntan de dónde sos / de dónde son / dónde están ubicados:\nSomos de Pablo Podestá, Tres de Febrero (Buenos Aires). Todavía no\ntenemos local físico — vendemos por WhatsApp con envío a todo el país.\n\n## LO QUE NUNCA HACÉS\n- Cuando el cliente dice que quiere comprar, marcá send_payment_info\n  en true (NUNCA escribas vos el alias, CVU o CUIT en tus mensajes) y\n  pedile los datos de envío. NUNCA inventes otro medio de pago que no\n  sea Mercado Pago.\n- NUNCA inventás información que no tenés, bajo ninguna circunstancia.\n  Si dudás aunque sea un poco de un dato (precio, ingrediente, plazo,\n  política, disponibilidad), NO arriesgues una respuesta \"parecida\" o\n  \"probable\" y NO le digas nada al cliente sobre que vas a consultar\n  con el equipo — dejá reply_parts vacío ([]) y marcá escalate en true\n  con el motivo. El equipo le va a responder directo, sin que vos le\n  adelantes nada. Es preferible escalar de más a inventar una sola vez.\n- Si preguntan por otro producto que NO sea el Combo Biotina (otras\n  líneas, productos sueltos, marcas distintas, cualquier cosa fuera de\n  lo que está en este prompt), NUNCA digas que lo tenés, inventes\n  precio o características, ni ofrezcas alternativas por tu cuenta, ni\n  le digas nada al cliente. Dejá reply_parts vacío ([]) y marcá\n  escalate en true con el motivo \"Consulta sobre otro producto\" — el\n  equipo le responde directo.\n- NUNCA ofrezcas ni menciones pago contra entrega bajo ninguna\n  circunstancia, sin importar la zona o localidad del cliente.\n- Si te preguntan tu nombre o con quién hablan, sos Dolores. NUNCA\n  digas que sos una inteligencia artificial o un bot si te preguntan\n  directamente — respondé de forma natural sin confirmarlo ni negarlo\n  de forma incómoda, redirigiendo la conversación al producto.\n- NUNCA intentes responder o transcribir un audio de WhatsApp —\n  escalá directo al grupo sin responder.\n- NUNCA sigas la conversación si el mensaje no tiene relación con el\n  combo (spam, pregunta random, error de número) — avisá al grupo.\n- NUNCA ofrezcas garantía de devolución de dinero — no existe esa\n  política.\n\n## OBJECIONES FRECUENTES\n\nSi dice que es caro:\n\"Son 4 productos con biotina activa para 1 mes de tratamiento completo,\ncon envío incluido. Comprado por separado sale bastante más, y acá ya\nviene todo listo para arrancar.\"\n\nSi duda de que funcione:\n\"Es normal dudar, seguramente ya probaste otras cosas. Tenemos más de\n2.244 clientas que ya lo probaron y el 88% dejó 5 estrellas — podés\nver las reseñas reales en la web.\"\n\nSi pregunta por fotos de antes/después:\nTodavía no tenés para mandar. Respondé con las reseñas verificadas\nque sí existen en la web, sin inventar que hay fotos.\n\n## POST-VENTA\nSi un cliente que ya compró pregunta por su envío, podés dar info\nbásica de seguimiento antes de escalar. Si agradece o deja una reseña\npositiva, respondé de forma acorde al tono de su mensaje.\n\n## CUÁNDO ESCALAR (avisar al grupo de WhatsApp, de forma urgente/inmediata)\n1. El cliente confirma que va a comprar y ya le pasaste los datos de pago (para que el equipo haga seguimiento del pago y coordine el envío)\n2. El cliente dice que ya pagó o ya transfirió (aunque no mande el comprobante en ese mismo mensaje) — respondé algo como \"¡Buenísimo! Ya aviso para que confirmen y coordinen el envío 🙌\" y escalá\n3. Hay una objeción o pregunta que no podés responder con esta información, o dudás aunque sea un poco de un dato (escalá en silencio, ver sección LO QUE NUNCA HACÉS)\n4. El cliente pide hablar con una persona directamente\n5. Llega un audio de WhatsApp\n6. El mensaje no tiene relación con el combo (spam, error de número)\n7. Preguntan por otro producto que no sea el Combo Biotina (escalá en silencio, ver sección LO QUE NUNCA HACÉS)\n\nNota: si el cliente manda una imagen (por ejemplo el comprobante), el sistema ya le avisa al equipo automáticamente aparte de vos — no necesitás hacer nada especial con eso.\n\n## ESTILO DE ESCRITURA\n- Mensajes cortos, como WhatsApp real (no párrafos largos)\n- Usá el nombre del cliente si lo mencionó\n- Saludo según el horario real del mensaje:\n  \"Buen día\" (6-12hs) / \"Buenas tardes\" (12-20hs) / \"Buenas noches\" (20-6hs)\n- Emojis con moderación (🌿 💪 🙌), no en cada mensaje\n- Simulá una pausa natural antes de responder (no contestar instantáneo)\n\n## FORMATO DE RESPUESTA\nTu respuesta debe indicar en el campo \"escalate\" si corresponde avisar\nal equipo humano según la sección \"CUÁNDO ESCALAR\" de arriba, y en\n\"escalation_reason\" un motivo breve (vacío si escalate es false). El\ncampo \"reply_parts\" es un array de 1 a 3 mensajes cortos que en\nconjunto arman tu respuesta, como si los mandaras en burbujas\nseparadas de WhatsApp (por ejemplo: un mensaje corto de reacción/\nsaludo y después el resto de la info en otro). No repitas el nombre\ndel cliente ni el saludo en cada parte. Si la respuesta es corta,\nusá un array de un solo elemento — no dividas por dividir. Dejalo\ncomo array vacío ([]) únicamente en los dos casos de escalada\nsilenciosa descriptos en \"LO QUE NUNCA HACÉS\" (dato que no sabés, o\nconsulta sobre otro producto) — en esos casos no le decís nada al\ncliente.\nEl campo \"send_payment_info\" debe ser true solo cuando corresponda\npasarle los datos de pago de Mercado Pago al cliente en este mensaje -\nel sistema los agrega automáticamente, vos no los escribas.`;\n// ============================================================\n\nconst input = $('Filtrar y extraer').first().json;\n\n// Historial desde Postgres (viene en orden DESC, lo invertimos)\nconst rows = $input.all()\n  .map(i => i.json)\n  .filter(r => r && r.role && r.content);\nconst history = rows.reverse().map(r => ({ role: r.role, content: r.content }));\n\n// Agregar el mensaje nuevo del cliente\nhistory.push({ role: 'user', content: input.text });\n\nreturn [{\n  json: {\n    ...input,\n    systemPrompt: SYSTEM_PROMPT,\n    messages: history\n  }\n}];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000004",
+      "name": "Preparar mensajes (EDITA TU PROMPT AQUÍ)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  model: 'claude-sonnet-5',\n  max_tokens: 2048,\n  system: [\n    {\n      type: 'text',\n      text: $json.systemPrompt,\n      cache_control: { type: 'ephemeral' }\n    }\n  ],\n  output_config: {\n    format: {\n      type: 'json_schema',\n      schema: {\n        type: 'object',\n        properties: {\n          reply_parts: { type: 'array', items: { type: 'string' }, minItems: 0, description: 'Uno a tres mensajes cortos, en el orden en que se van a mandar como burbujas separadas de WhatsApp. No uses mas de 3.' },\n          escalate: { type: 'boolean', description: 'true si hay que avisar al equipo humano segun las reglas del prompt' },\n          escalation_reason: { type: 'string', description: 'Motivo breve de la escalada. Vacio si escalate es false' },\n          send_payment_info: { type: 'boolean', description: 'true si corresponde pasarle los datos de pago de Mercado Pago al cliente ahora. El sistema los agrega automaticamente en un mensaje aparte con el texto exacto - NUNCA escribas el alias/CVU/CUIT vos mismo en reply_parts.' }\n        },\n        required: ['reply_parts', 'escalate', 'escalation_reason', 'send_payment_info'],\n        additionalProperties: false\n      }\n    }\n  },\n  messages: $json.messages\n}) }}",
+        "options": {
+          "timeout": 120000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "a1000000-0000-0000-0000-000000000005",
+      "name": "Claude API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        160
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CttncV9hSaBQiESj",
+          "name": "Anthropic x-api-key"
+        }
+      },
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 4,
+      "waitBetweenTries": 3000
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extrae los mensajes y la decisión de escalar de la respuesta de Claude (formato JSON)\nconst resp = $json;\nconst ctx = $('Preparar mensajes (EDITA TU PROMPT AQUÍ)').first().json;\n\nlet replyParts = [];\nlet escalate = false;\nlet escalationReason = '';\nlet sendPaymentInfo = false;\n\nif (resp.stop_reason === 'refusal') {\n  replyParts = ['Disculpá, no puedo ayudarte con eso. ¿Tenés alguna consulta sobre el Combo Biotina?'];\n  escalate = true;\n  escalationReason = 'Respuesta bloqueada por seguridad (refusal)';\n} else {\n  const textBlock = (resp.content || []).find(b => b.type === 'text');\n  const raw = textBlock ? textBlock.text : '';\n  try {\n    const parsed = JSON.parse(raw);\n    replyParts = Array.isArray(parsed.reply_parts)\n      ? parsed.reply_parts.map(p => String(p || '').trim()).filter(Boolean)\n      : [];\n    escalate = !!parsed.escalate;\n    escalationReason = parsed.escalation_reason || '';\n    sendPaymentInfo = !!parsed.send_payment_info;\n    // Si algun reply_part es sospechosamente largo, no confiamos en el\n    // contenido - mejor escalar en silencio que un cliente viendo basura\n    if (replyParts.some(p => p.length > 500)) {\n      throw new Error('reply_parts sospechosamente largo');\n    }\n  } catch (e) {\n    // El JSON vino incompleto/corrupto (truncado por max_tokens, error del modelo, etc.)\n    // NUNCA se debe mandar ese texto crudo al cliente - puede contener JSON roto,\n    // razonamiento interno del modelo o basura repetida. Se escala en silencio\n    // (sin mandarle nada al cliente) para que el equipo responda manual.\n    replyParts = [];\n    escalate = true;\n    escalationReason = 'No se pudo interpretar la respuesta de la IA en el formato esperado';\n  }\n}\n\n// Los datos de pago NUNCA los escribe la IA - son un texto fijo para evitar\n// que se equivoque un caracter del alias/CVU al \"recordarlos\"\nif (sendPaymentInfo) {\n  const PAYMENT_INFO_TEXT = 'Alias: productoscapilarespg\\nTitular: Agustín Jesús Gamarra\\nCUIT/CUIL: 20-46648334-7\\nCVU: 0000003100010473246731\\n(Mercado Pago)';\n  replyParts.push(PAYMENT_INFO_TEXT);\n}\n\nconst reply = replyParts.join('\\n');\n\nreturn [{ json: { ...ctx, reply, replyParts, escalate, escalationReason } }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000006",
+      "name": "Extraer respuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Genera filas para guardar en chat_history\nconst d = $json;\nconst rows = [{ json: { session_id: d.sessionId, role: 'user', content: d.text } }];\nif (d.reply && d.reply.trim()) {\n  rows.push({ json: { session_id: d.sessionId, role: 'assistant', content: d.reply } });\n}\nreturn rows;\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000007",
+      "name": "Preparar filas historial",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_history",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000008",
+      "name": "Guardar conversación",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        1760,
+        60
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://bot_evolution:8080/message/sendText/{{ $json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: $json.number,\n  text: $json.text\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "a1000000-0000-0000-0000-000000000009",
+      "name": "Enviar WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2640,
+        -60
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Deja pasar solo si Claude decidió que hay que escalar\nif (!$json.escalate) return [];\nreturn [{ json: $json }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000013",
+      "name": "Solo escalar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://bot_evolution:8080/message/sendText/{{ $json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: '⚠️ Escalar conversacion\\nCliente: +' + $json.number + ' (' + ($json.pushName || 'sin nombre') + ')\\nMotivo: ' + ($json.escalationReason || 'sin especificar') + '\\n\\nUltimo mensaje: ' + $json.text\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "a1000000-0000-0000-0000-000000000014",
+      "name": "Notificar escalamiento",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1760,
+        280
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $('Es nuevo').first().json;\nif (d.type !== 'customer_message') return [];\nconst numberLast10 = String(d.number || '').replace(/\\D/g, '').slice(-10);\nreturn [{ json: { ...d, numberLast10 } }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000016",
+      "name": "Es mensaje cliente",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT content FROM chat_history WHERE session_id = '__bot_status__' ORDER BY id DESC LIMIT 1",
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000017",
+      "name": "Leer estado bot",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        660,
+        0
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const globalRows = $('Leer estado bot').all().map(i => i.json).filter(r => r && r.content);\nconst globalStatus = globalRows.length ? globalRows[0].content : 'active';\n\nconst customerRows = $input.all().map(i => i.json).filter(r => r && r.content);\nconst customerStatus = customerRows.length ? customerRows[0].content : 'active';\n\nif (globalStatus === 'paused' || customerStatus === 'paused') return [];\nreturn [{ json: $('Es mensaje cliente').first().json }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000018",
+      "name": "Chequear pausado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $('Es nuevo').first().json;\nif (d.type !== 'admin_command') return [];\nconst last10 = s => String(s || '').replace(/\\D/g, '').slice(-10);\nconst sessionIdKey = d.scope === 'customer'\n  ? ('__paused_customer__:' + last10(d.targetNumber))\n  : '__bot_status__';\nreturn [{ json: { ...d, sessionIdKey } }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000015",
+      "name": "Es comando admin",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO chat_history (session_id, role, content) VALUES ($1, 'status', $2)",
+        "options": {
+          "queryReplacement": "={{ [ $json.sessionIdKey, $json.command ] }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000019",
+      "name": "Guardar estado bot",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        660,
+        460
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://bot_evolution:8080/message/sendText/{{ $('Es comando admin').first().json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: (() => {\n    const d = $('Es comando admin').first().json;\n    const paused = d.command === 'paused';\n    if (d.scope === 'customer') {\n      return paused\n        ? '⏸️ Bot pausado SOLO para +' + d.targetNumber + '. Sigue respondiendo normal a los demás clientes. Escribí \"seguir ' + d.targetNumber + '\" cuando termines.'\n        : '▶️ Bot reanudado para +' + d.targetNumber + '.';\n    }\n    return paused\n      ? '⏸️ Bot pausado. No le va a responder a los clientes hasta que alguien escriba \"seguir\" en este grupo.'\n      : '▶️ Bot reanudado. Ya vuelve a responder a los clientes normalmente.';\n  })()\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "a1000000-0000-0000-0000-000000000020",
+      "name": "Confirmar comando",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        460
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Deja pasar solo si el mensaje trae una imagen (posible comprobante)\nif (!$json.isImage) return [];\nreturn [{ json: $json }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000021",
+      "name": "Solo imagen",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://bot_evolution:8080/message/sendText/{{ $json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: '📎 Posible comprobante de pago recibido de +' + $json.number + ' (' + ($json.pushName || 'sin nombre') + (($json.text || '').trim() ? ') con el mensaje: \"' + $json.text.trim() + '\"' : ')') + '. Revisar y confirmar manualmente.'\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "a1000000-0000-0000-0000-000000000022",
+      "name": "Notificar comprobante recibido",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        320
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Convierte el array replyParts en items separados para mandarlos\n// como mensajes independientes de WhatsApp\nconst ctx = $('Extraer respuesta').first().json;\nconst parts = (Array.isArray(ctx.replyParts) ? ctx.replyParts : (ctx.reply ? [ctx.reply] : []))\n  .filter(text => text && text.trim());\nreturn parts.map(text => ({ json: { number: ctx.number, instance: ctx.instance, text } }));\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000023",
+      "name": "Dividir respuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1980,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ Math.min(4.5, 1 + ($json.text.length / 25) + Math.random() * 0.8) }}",
+        "unit": "seconds"
+      },
+      "id": "a1000000-0000-0000-0000-000000000024",
+      "name": "Esperar entre mensajes",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2420,
+        -60
+      ],
+      "webhookId": "269b83af-b99a-4303-b534-170ab8203eee"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT 1 FROM chat_history WHERE session_id = '__msg_dedup__' AND content = $1 LIMIT 1",
+        "options": {
+          "queryReplacement": "={{ $json.messageId }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000025",
+      "name": "Chequear duplicado",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        220,
+        460
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Si ya existe un registro con este messageId, es un evento duplicado\n// (Evolution/WhatsApp a veces reenvia el mismo webhook)\n// Nota: alwaysOutputData hace que el nodo anterior siempre devuelva un\n// item aunque no haya filas, por eso filtramos objetos vacios.\nconst rows = $input.all().map(i => i.json).filter(r => r && Object.keys(r).length > 0);\nif (rows.length > 0) return [];\nreturn [{ json: $('Filtrar y extraer').first().json }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000026",
+      "name": "Es nuevo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO chat_history (session_id, role, content) VALUES ('__msg_dedup__', 'msgid', $1)",
+        "options": {
+          "queryReplacement": "={{ $('Es nuevo').first().json.messageId }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000027",
+      "name": "Registrar mensaje",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        660,
+        460
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://bot_evolution:8080/message/sendText/{{ $('Filtrar y extraer').first().json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: '⚠️ Falló la respuesta automática a +' + $('Filtrar y extraer').first().json.number + ' (' + ($('Filtrar y extraer').first().json.pushName || 'sin nombre') + ').\\n\\n'\n    + 'Mensaje del cliente: \"' + $('Filtrar y extraer').first().json.text + '\"'\n    + '\\n\\nError: ' + ($json.friendlyMessage || 'falló la llamada a Claude')\n    + '\\n\\nRespondé manual, el cliente no recibió nada.'\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "a1000000-0000-0000-0000-000000000028",
+      "name": "Notificar falla Claude",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        340
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://bot_evolution:8080/message/sendText/{{ $('Filtrar y extraer').first().json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: '⚠️ Se generó respuesta para +' + $('Filtrar y extraer').first().json.number + ' (' + ($('Filtrar y extraer').first().json.pushName || 'sin nombre') + ') pero falló el envío por WhatsApp.\\n\\n'\n    + 'Mensaje que no llegó: \"' + ($json.text || '') + '\"'\n    + '\\n\\nRevisá y respondé manual.'\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "a1000000-0000-0000-0000-000000000029",
+      "name": "Notificar falla envio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2640,
+        340
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT content FROM chat_history WHERE session_id = '__paused_customer__:' || $1 ORDER BY id DESC LIMIT 1",
+        "options": {
+          "queryReplacement": "={{ $('Es mensaje cliente').first().json.numberLast10 }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000030",
+      "name": "Leer estado cliente",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        770,
+        0
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "a1000000-0000-0000-0000-000000000031",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2200,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO chat_history (session_id, role, content) VALUES ($1, 'user', $2)",
+        "options": {
+          "queryReplacement": "={{ [ $json.sessionId, '[Imagen recibida - posible comprobante de pago]' + ($json.text ? ' - texto: ' + $json.text : '') ] }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000032",
+      "name": "Registrar imagen recibida",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        660,
+        240
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { ...$json, lockStartedAt: Date.now() } }];"
+      },
+      "id": "a1000000-0000-0000-0000-000000000033",
+      "name": "Preparar lock",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO processing_lock (session_id) VALUES ($1)\nON CONFLICT (session_id) DO UPDATE SET locked_at = now()\n  WHERE processing_lock.locked_at < now() - interval '2 minutes'\nRETURNING session_id",
+        "options": {
+          "queryReplacement": "={{ [ $('Preparar lock').first().json.sessionId ] }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000034",
+      "name": "Intentar lock",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        700,
+        160
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json).filter(r => r && r.session_id);\nconst ctx = $('Preparar lock').first().json;\nconst elapsedMs = Date.now() - ctx.lockStartedAt;\n\nif (rows.length > 0) {\n  return [{ json: { ...ctx, lockAcquired: true } }];\n}\nif (elapsedMs > 20000) {\n  // No se pudo conseguir el lock a tiempo (otra conversacion del mismo cliente\n  // sigue \"trabada\" hace rato). Seguimos igual para no perder el mensaje del\n  // cliente, aceptando el riesgo raro de una carrera en este caso extremo.\n  return [{ json: { ...ctx, lockAcquired: false, gaveUp: true } }];\n}\nreturn [{ json: { ...ctx, lockAcquired: false, retry: true } }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000035",
+      "name": "Chequear lock",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        820,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.retry }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000036",
+      "name": "Necesita reintentar",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        940,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 2,
+        "unit": "seconds"
+      },
+      "id": "a1000000-0000-0000-0000-000000000037",
+      "name": "Esperar y reintentar lock",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        940,
+        300
+      ],
+      "webhookId": "lock-retry-wait-bot-pg"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: $json }];"
+      },
+      "id": "a1000000-0000-0000-0000-000000000038",
+      "name": "Lock resuelto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1060,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Lock resuelto').first().json.lockAcquired }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000039",
+      "name": "Tenia el lock",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1540,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM processing_lock WHERE session_id = $1",
+        "options": {
+          "queryReplacement": "={{ [ $('Lock resuelto').first().json.sessionId ] }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000040",
+      "name": "Liberar lock",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        1760,
+        260
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $('Es nuevo').first().json;\nif (d.type !== 'human_reply') return [];\nreturn [{ json: d }];"
+      },
+      "id": "a1000000-0000-0000-0000-000000000041",
+      "name": "Es respuesta humana",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO chat_history (session_id, role, content) VALUES ($1, 'assistant', $2)",
+        "options": {
+          "queryReplacement": "={{ [ $json.sessionId, $json.text ] }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000042",
+      "name": "Registrar respuesta humana",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        660,
+        620
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $json;\nif (!d.isFromAd) return [];\nreturn [{ json: d }];"
+      },
+      "id": "a1000000-0000-0000-0000-000000000043",
+      "name": "Es origen anuncio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO chat_history (session_id, role, content)\nSELECT $1, 'source', 'FB_Ads'\nWHERE NOT EXISTS (SELECT 1 FROM chat_history WHERE session_id = $1)",
+        "options": {
+          "queryReplacement": "={{ [ '__ad_source__:' + $json.sessionId ] }}"
+        }
+      },
+      "id": "a1000000-0000-0000-0000-000000000044",
+      "name": "Guardar origen anuncio",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        880,
+        -300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://bot_evolution:8080/label/handleLabel/{{ $json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ number: $json.sessionId, labelId: '15', action: 'add' }) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "a1000000-0000-0000-0000-000000000045",
+      "name": "Etiquetar para contestar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1760,
+        380
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Traduce errores tecnicos de la API de Anthropic a mensajes claros\n// para el equipo (evita mandar JSON crudo por WhatsApp)\nconst raw = ($json.error && $json.error.message) ? String($json.error.message) : '';\n\nfunction friendly(rawMessage) {\n  if (!rawMessage) return 'Fallo la llamada a Claude (sin detalle del error).';\n\n  const match = rawMessage.match(/^(\\d{3})\\s*-\\s*([\\s\\S]+)$/);\n  if (!match) return rawMessage;\n\n  const status = match[1];\n  let parsed;\n  try {\n    // A veces axios devuelve el body ya como objeto ({...}) y a veces\n    // como un string JSON-escapado (\"{...}\") - probamos ambos casos\n    let inner = JSON.parse(match[2]);\n    if (typeof inner === 'string') {\n      inner = JSON.parse(inner);\n    }\n    parsed = inner;\n  } catch (e) {\n    return rawMessage;\n  }\n\n  const errType = (parsed && parsed.error && parsed.error.type) || '';\n  const errMsg = (parsed && parsed.error && parsed.error.message) || '';\n\n  if (errType === 'invalid_request_error' && /credit balance/i.test(errMsg)) {\n    return '💳 Se quedo sin credito la cuenta de Anthropic (Claude). El bot no le esta respondiendo a NINGUN cliente hasta que se cargue credito en console.anthropic.com/settings/billing.';\n  }\n  if (status === '401' || errType === 'authentication_error') {\n    return '🔑 La clave de acceso a Claude no es valida. Revisar la credencial \"Anthropic x-api-key\" en n8n.';\n  }\n  if (status === '429' || errType === 'rate_limit_error') {\n    return '🚦 Se llego al limite de solicitudes a Claude (rate limit). Deberia normalizarse solo en unos minutos.';\n  }\n  if (status === '529' || errType === 'overloaded_error') {\n    return '⏳ El servicio de Claude esta temporalmente saturado (ya se reintento varias veces sin exito).';\n  }\n  return 'Error tecnico (' + status + '): ' + (errMsg || 'sin detalle');\n}\n\nreturn [{ json: { ...$json, friendlyMessage: friendly(raw) } }];\n"
+      },
+      "id": "a1000000-0000-0000-0000-000000000046",
+      "name": "Interpretar error Claude",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        460
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Evolution": {
+      "main": [
+        [
+          {
+            "node": "Filtrar y extraer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar y extraer": {
+      "main": [
+        [
+          {
+            "node": "Chequear duplicado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Solo audio": {
+      "main": [
+        [
+          {
+            "node": "Notificar audio recibido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Solo texto": {
+      "main": [
+        [
+          {
+            "node": "Preparar lock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cargar historial": {
+      "main": [
+        [
+          {
+            "node": "Preparar mensajes (EDITA TU PROMPT AQUÍ)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar mensajes (EDITA TU PROMPT AQUÍ)": {
+      "main": [
+        [
+          {
+            "node": "Claude API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude API": {
+      "main": [
+        [
+          {
+            "node": "Extraer respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Interpretar error Claude",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tenia el lock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer respuesta": {
+      "main": [
+        [
+          {
+            "node": "Preparar filas historial",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Solo escalar",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tenia el lock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar filas historial": {
+      "main": [
+        [
+          {
+            "node": "Guardar conversación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar conversación": {
+      "main": [
+        [
+          {
+            "node": "Dividir respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Solo escalar": {
+      "main": [
+        [
+          {
+            "node": "Notificar escalamiento",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Etiquetar para contestar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es mensaje cliente": {
+      "main": [
+        [
+          {
+            "node": "Leer estado bot",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Es origen anuncio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer estado bot": {
+      "main": [
+        [
+          {
+            "node": "Leer estado cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chequear pausado": {
+      "main": [
+        [
+          {
+            "node": "Solo audio",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Solo texto",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Solo imagen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es comando admin": {
+      "main": [
+        [
+          {
+            "node": "Guardar estado bot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar estado bot": {
+      "main": [
+        [
+          {
+            "node": "Confirmar comando",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Solo imagen": {
+      "main": [
+        [
+          {
+            "node": "Notificar comprobante recibido",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Registrar imagen recibida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dividir respuesta": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar entre mensajes": {
+      "main": [
+        [
+          {
+            "node": "Enviar WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chequear duplicado": {
+      "main": [
+        [
+          {
+            "node": "Es nuevo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es nuevo": {
+      "main": [
+        [
+          {
+            "node": "Registrar mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar mensaje": {
+      "main": [
+        [
+          {
+            "node": "Es mensaje cliente",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Es comando admin",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Es respuesta humana",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notificar falla envio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer estado cliente": {
+      "main": [
+        [
+          {
+            "node": "Chequear pausado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Esperar entre mensajes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notificar falla envio": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar lock": {
+      "main": [
+        [
+          {
+            "node": "Intentar lock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intentar lock": {
+      "main": [
+        [
+          {
+            "node": "Chequear lock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chequear lock": {
+      "main": [
+        [
+          {
+            "node": "Necesita reintentar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Necesita reintentar": {
+      "main": [
+        [
+          {
+            "node": "Esperar y reintentar lock",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Lock resuelto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar y reintentar lock": {
+      "main": [
+        [
+          {
+            "node": "Intentar lock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lock resuelto": {
+      "main": [
+        [
+          {
+            "node": "Cargar historial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tenia el lock": {
+      "main": [
+        [
+          {
+            "node": "Liberar lock",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Es respuesta humana": {
+      "main": [
+        [
+          {
+            "node": "Registrar respuesta humana",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es origen anuncio": {
+      "main": [
+        [
+          {
+            "node": "Guardar origen anuncio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interpretar error Claude": {
+      "main": [
+        [
+          {
+            "node": "Notificar falla Claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "paPVYhKtE3AU7IJA"
+  }
+}
