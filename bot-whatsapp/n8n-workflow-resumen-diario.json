@@ -7,10 +7,11 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "0 1 * * *"
+              "expression": "0 22 * * *"
             }
           ]
-        }
+        },
+        "timezone": "America/Argentina/Buenos_Aires"
       },
       "id": "c1000000-0000-0000-0000-000000000001",
       "name": "Todos los dias 22hs (ART)",
@@ -216,6 +217,7 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "paPVYhKtE3AU7IJA"
   }
 }
