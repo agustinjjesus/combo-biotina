@@ -2046,7 +2046,7 @@
  </select>
  </div>
 
- <button class="btn-confirm" onclick="confirmarCompra()">Confirmar y pagar →</button>
+ <button class="btn-confirm" id="btnConfirmarCompra" onclick="confirmarCompra()">Confirmar y pagar →</button>
  <p style="text-align:center;font-size:0.75rem;color:var(--green);font-weight:600;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px;">
  Pago 100% seguro procesado por MercadoPago
  </p>
@@ -2246,6 +2246,8 @@
  document.getElementById('modalProducto').textContent = precios[selectedQty].label;
  document.getElementById('modalOverlay').classList.add('active');
  document.body.style.overflow = 'hidden';
+ const btn = document.getElementById('btnConfirmarCompra');
+ if (btn) { btn.disabled = false; btn.textContent = 'Confirmar y pagar →'; }
  }
 
  function closeModal() {
@@ -2285,22 +2287,13 @@
  pedidos.push({ ...datos, formStatus: 'pendiente', timestamp: nowTs });
  localStorage.setItem('pedidos', JSON.stringify(pedidos));
 
- // Guardar en Firestore si está habilitado (sincronización en tiempo real entre
- // el celular del cliente y el panel admin — localStorage por sí solo NO alcanza,
- // porque es local a cada navegador/dispositivo)
- if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
- firebase.firestore().collection('pedidos').add({
- ...datos,
- status: 'abandonado',
- formStatus: 'pendiente',
- timestamp: nowTs,
- createdAt: firebase.firestore.FieldValue.serverTimestamp()
- }).catch(e => console.warn('Firestore:', e));
- }
+ const btnConfirmar = document.getElementById('btnConfirmarCompra');
+ if (btnConfirmar) { btnConfirmar.disabled = true; btnConfirmar.textContent = 'Procesando...'; }
 
  const mpUrl = precios[selectedQty].mp;
  const mpListo = mpUrl && !mpUrl.startsWith('MERCADOPAGO_URL');
 
+ function irAlSiguientePaso() {
  if (mpListo) {
  // Redirigir a MercadoPago
  window.location.href = mpUrl;
@@ -2323,6 +2316,26 @@
  );
  window.open(`https://wa.me/${WA_NUMERO}?text=${msg}`, '_blank');
  closeModal();
+ }
+ }
+
+ if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
+ // Esperamos a que el guardado en Firestore termine (con un tope de 2.5s) antes
+ // de navegar. Si redirigimos de inmediato, el navegador corta la petición a
+ // mitad de camino al cambiar de página y el pedido nunca llega a la base de
+ // datos — así es como se perdían clientes con pagos rechazados o abandonados.
+ const guardado = firebase.firestore().collection('pedidos').add({
+ ...datos,
+ status: 'abandonado',
+ formStatus: 'pendiente',
+ timestamp: nowTs,
+ createdAt: firebase.firestore.FieldValue.serverTimestamp()
+ }).catch(e => console.warn('Firestore:', e));
+
+ const tope = new Promise(resolve => setTimeout(resolve, 2500));
+ Promise.race([guardado, tope]).then(irAlSiguientePaso);
+ } else {
+ irAlSiguientePaso();
  }
  }
 
