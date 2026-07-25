@@ -41,8 +41,7 @@
           "id": "cDyIo0T2342kI0Qh",
           "name": "Postgres account 2"
         }
-      },
-      "alwaysOutputData": true
+      }
     },
     {
       "parameters": {
