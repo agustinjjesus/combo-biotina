@@ -17,7 +17,10 @@
       "name": "Cada hora",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
-      "position": [0, 0]
+      "position": [
+        0,
+        0
+      ]
     },
     {
       "parameters": {
@@ -29,7 +32,10 @@
       "name": "Buscar pagos pendientes",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.4,
-      "position": [220, 0],
+      "position": [
+        220,
+        0
+      ],
       "credentials": {
         "postgres": {
           "id": "cDyIo0T2342kI0Qh",
@@ -46,7 +52,10 @@
       "name": "Armar recordatorio",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [440, 0]
+      "position": [
+        440,
+        0
+      ]
     },
     {
       "parameters": {
@@ -74,7 +83,10 @@
       "name": "Enviar recordatorio",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [660, 0],
+      "position": [
+        660,
+        0
+      ],
       "credentials": {
         "httpHeaderAuth": {
           "id": "aJOTrB9KcVsbm5Zq",
@@ -95,27 +107,84 @@
       "name": "Registrar recordatorio enviado",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.4,
-      "position": [880, 0],
+      "position": [
+        880,
+        0
+      ],
       "credentials": {
         "postgres": {
           "id": "cDyIo0T2342kI0Qh",
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "recordatorio-pago-manual",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "d1000000-0000-0000-0000-000000000006",
+      "name": "Disparo manual",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        160
+      ],
+      "webhookId": "recordatorio-pago-manual"
     }
   ],
   "connections": {
     "Cada hora": {
-      "main": [[{ "node": "Buscar pagos pendientes", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Buscar pagos pendientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Buscar pagos pendientes": {
-      "main": [[{ "node": "Armar recordatorio", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Armar recordatorio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Armar recordatorio": {
-      "main": [[
-        { "node": "Enviar recordatorio", "type": "main", "index": 0 },
-        { "node": "Registrar recordatorio enviado", "type": "main", "index": 0 }
-      ]]
+      "main": [
+        [
+          {
+            "node": "Enviar recordatorio",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Registrar recordatorio enviado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Disparo manual": {
+      "main": [
+        [
+          {
+            "node": "Buscar pagos pendientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
