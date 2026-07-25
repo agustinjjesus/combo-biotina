@@ -1,1 +1,125 @@
-ewogICJuYW1lIjogIlJlY29yZGF0b3JpbyBkZSBwYWdvIHBlbmRpZW50ZSIsCiAgIm5vZGVzIjogWwogICAgewogICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAicnVsZSI6IHsKICAgICAgICAgICJpbnRlcnZhbCI6IFsKICAgICAgICAgICAgewogICAgICAgICAgICAgICJmaWVsZCI6ICJjcm9uRXhwcmVzc2lvbiIsCiAgICAgICAgICAgICAgImV4cHJlc3Npb24iOiAiMCAqICogKiAqIgogICAgICAgICAgICB9CiAgICAgICAgICBdCiAgICAgICAgfSwKICAgICAgICAidGltZXpvbmUiOiAiQW1lcmljYS9BcmdlbnRpbmEvQnVlbm9zX0FpcmVzIgogICAgICB9LAogICAgICAiaWQiOiAiZDEwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAxIiwKICAgICAgIm5hbWUiOiAiQ2FkYSBob3JhIiwKICAgICAgInR5cGUiOiAibjhuLW5vZGVzLWJhc2Uuc2NoZWR1bGVUcmlnZ2VyIiwKICAgICAgInR5cGVWZXJzaW9uIjogMS4yLAogICAgICAicG9zaXRpb24iOiBbMCwgMF0KICAgIH0sCiAgICB7CiAgICAgICJwYXJhbWV0ZXJzIjogewogICAgICAgICJvcGVyYXRpb24iOiAiZXhlY3V0ZVF1ZXJ5IiwKICAgICAgICAicXVlcnkiOiAiV0lUSCBsYXN0X2FsaWFzIEFTIChcbiAgU0VMRUNUIHNlc3Npb25faWQsIE1BWChjcmVhdGVkX2F0KSBBUyBhbGlhc19hdFxuICBGUk9NIGNoYXRfaGlzdG9yeVxuICBXSEVSRSByb2xlID0gJ2Fzc2lzdGFudCcgQU5EIGNvbnRlbnQgTElLRSAnJUFsaWFzOiBwcm9kdWN0b3NjYXBpbGFyZXNwZyUnXG4gIEdST1VQIEJZIHNlc3Npb25faWRcbilcblNFTEVDVCBsYS5zZXNzaW9uX2lkLCBsYS5hbGlhc19hdFxuRlJPTSBsYXN0X2FsaWFzIGxhXG5XSEVSRSBsYS5zZXNzaW9uX2lkIExJS0UgJyVAcy53aGF0c2FwcC5uZXQnXG4gIEFORCBsYS5hbGlhc19hdCA8IG5vdygpIC0gaW50ZXJ2YWwgJzMgaG91cnMnXG4gIEFORCBsYS5hbGlhc19hdCA+IG5vdygpIC0gaW50ZXJ2YWwgJzQ4IGhvdXJzJ1xuICBBTkQgRVhUUkFDVChIT1VSIEZST00gbm93KCkgQVQgVElNRSBaT05FICdBbWVyaWNhL0FyZ2VudGluYS9CdWVub3NfQWlyZXMnKSBCRVRXRUVOIDkgQU5EIDIxXG4gIEFORCBOT1QgRVhJU1RTIChcbiAgICBTRUxFQ1QgMSBGUk9NIGNoYXRfaGlzdG9yeSBjaFxuICAgIFdIRVJFIGNoLnNlc3Npb25faWQgPSBsYS5zZXNzaW9uX2lkXG4gICAgICBBTkQgY2guY3JlYXRlZF9hdCA+IGxhLmFsaWFzX2F0XG4gICAgICBBTkQgKFxuICAgICAgICBjaC5jb250ZW50IExJS0UgJ1tJbWFnZW4gcmVjaWJpZGElJ1xuICAgICAgICBPUiBjaC5jb250ZW50IExJS0UgJyVbcmVjb3JkYXRvcmlvX3BhZ29dJSdcbiAgICAgIClcbiAgKVxuICBBTkQgQ09BTEVTQ0UoKFxuICAgIFNFTEVDVCBjb250ZW50IEZST00gY2hhdF9oaXN0b3J5XG4gICAgV0hFUkUgc2Vzc2lvbl9pZCA9ICdfX3BhdXNlZF9jdXN0b21lcl9fOicgfHwgcmlnaHQocmVnZXhwX3JlcGxhY2UobGEuc2Vzc2lvbl9pZCwgJ1xcRCcsICcnLCAnZycpLCAxMClcbiAgICBPUkRFUiBCWSBpZCBERVNDIExJTUlUIDFcbiAgKSwgJ2FjdGl2ZScpIDw+ICdwYXVzZWQnXG4gIEFORCBDT0FMRVNDRSgoXG4gICAgU0VMRUNUIGNvbnRlbnQgRlJPTSBjaGF0X2hpc3RvcnkgV0hFUkUgc2Vzc2lvbl9pZCA9ICdfX2JvdF9zdGF0dXNfXycgT1JERVIgQlkgaWQgREVTQyBMSU1JVCAxXG4gICksICdhY3RpdmUnKSA8PiAncGF1c2VkJyIsCiAgICAgICAgIm9wdGlvbnMiOiB7fQogICAgICB9LAogICAgICAiaWQiOiAiZDEwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDAyIiwKICAgICAgIm5hbWUiOiAiQnVzY2FyIHBhZ29zIHBlbmRpZW50ZXMiLAogICAgICAidHlwZSI6ICJuOG4tbm9kZXMtYmFzZS5wb3N0Z3JlcyIsCiAgICAgICJ0eXBlVmVyc2lvbiI6IDIuNCwKICAgICAgInBvc2l0aW9uIjogWzIyMCwgMF0sCiAgICAgICJjcmVkZW50aWFscyI6IHsKICAgICAgICAicG9zdGdyZXMiOiB7CiAgICAgICAgICAiaWQiOiAiY0R5SW8wVDIzNDJrSTBRaCIsCiAgICAgICAgICAibmFtZSI6ICJQb3N0Z3JlcyBhY2NvdW50IDIiCiAgICAgICAgfQogICAgICB9LAogICAgICAiYWx3YXlzT3V0cHV0RGF0YSI6IHRydWUKICAgIH0sCiAgICB7CiAgICAgICJwYXJhbWV0ZXJzIjogewogICAgICAgICJqc0NvZGUiOiAiY29uc3QgdGV4dCA9ICdIb2xhISDCv0PDs21vIGVzdMOhcz8gUXVlcsOtYSBjb25zdWx0YXJ0ZSBzaSB0ZSBxdWVkw7MgYWxndW5hIGR1ZGEgY29uIGxhIHRyYW5zZmVyZW5jaWEgbyBuZWNlc2l0w6FzIHVuYSBtYW5vIHBhcmEgY29tcGxldGFybGEuIEN1YWxxdWllciBjb3NhLCBlc3RveSBwYXJhIGF5dWRhcnRlIPCfjL8nO1xucmV0dXJuIGl0ZW1zLm1hcChpdGVtID0+ICh7XG4gIGpzb246IHtcbiAgICBzZXNzaW9uSWQ6IGl0ZW0uanNvbi5zZXNzaW9uX2lkLFxuICAgIHRleHQsXG4gICAgbG9nVGV4dDogdGV4dCArICdcXG5bcmVjb3JkYXRvcmlvX3BhZ29dJ1xuICB9XG59KSk7XG4iCiAgICAgIH0sCiAgICAgICJpZCI6ICJkMTAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDMiLAogICAgICAibmFtZSI6ICJBcm1hciByZWNvcmRhdG9yaW8iLAogICAgICAidHlwZSI6ICJuOG4tbm9kZXMtYmFzZS5jb2RlIiwKICAgICAgInR5cGVWZXJzaW9uIjogMiwKICAgICAgInBvc2l0aW9uIjogWzQ0MCwgMF0KICAgIH0sCiAgICB7CiAgICAgICJwYXJhbWV0ZXJzIjogewogICAgICAgICJtZXRob2QiOiAiUE9TVCIsCiAgICAgICAgInVybCI6ICJodHRwczovL2V2by5wcm9kdWN0b3NjYXBpbGFyZXNwZy5jb20vbWVzc2FnZS9zZW5kVGV4dC9wZyIsCiAgICAgICAgInNlbmRIZWFkZXJzIjogdHJ1ZSwKICAgICAgICAiaGVhZGVyUGFyYW1ldGVycyI6IHsKICAgICAgICAgICJwYXJhbWV0ZXJzIjogWwogICAgICAgICAgICB7CiAgICAgICAgICAgICAgIm5hbWUiOiAiY29udGVudC10eXBlIiwKICAgICAgICAgICAgICAidmFsdWUiOiAiYXBwbGljYXRpb24vanNvbiIKICAgICAgICAgICAgfQogICAgICAgICAgXQogICAgICAgIH0sCiAgICAgICAgInNlbmRCb2R5IjogdHJ1ZSwKICAgICAgICAic3BlY2lmeUJvZHkiOiAianNvbiIsCiAgICAgICAgImpzb25Cb2R5IjogIj17eyBKU09OLnN0cmluZ2lmeSh7XG4gIG51bWJlcjogJGpzb24uc2Vzc2lvbklkLFxuICB0ZXh0OiAkanNvbi50ZXh0XG59KSB9fSIsCiAgICAgICAgIm9wdGlvbnMiOiB7CiAgICAgICAgICAidGltZW91dCI6IDMwMDAwCiAgICAgICAgfSwKICAgICAgICAiYXV0aGVudGljYXRpb24iOiAiZ2VuZXJpY0NyZWRlbnRpYWxUeXBlIiwKICAgICAgICAiZ2VuZXJpY0F1dGhUeXBlIjogImh0dHBIZWFkZXJBdXRoIgogICAgICB9LAogICAgICAiaWQiOiAiZDEwMDAwMDAtMDAwMC0wMDAwLTAwMDAtMDAwMDAwMDAwMDA0IiwKICAgICAgIm5hbWUiOiAiRW52aWFyIHJlY29yZGF0b3JpbyIsCiAgICAgICJ0eXBlIjogIm44bi1ub2Rlcy1iYXNlLmh0dHBSZXF1ZXN0IiwKICAgICAgInR5cGVWZXJzaW9uIjogNC4yLAogICAgICAicG9zaXRpb24iOiBbNjYwLCAwXSwKICAgICAgImNyZWRlbnRpYWxzIjogewogICAgICAgICJodHRwSGVhZGVyQXV0aCI6IHsKICAgICAgICAgICJpZCI6ICJhSk9UckI5S2NWc2JtNVpxIiwKICAgICAgICAgICJuYW1lIjogIkV2b2x1dGlvbiBhcGlrZXkiCiAgICAgICAgfQogICAgICB9LAogICAgICAib25FcnJvciI6ICJjb250aW51ZVJlZ3VsYXJPdXRwdXQiCiAgICB9LAogICAgewogICAgICAicGFyYW1ldGVycyI6IHsKICAgICAgICAib3BlcmF0aW9uIjogImV4ZWN1dGVRdWVyeSIsCiAgICAgICAgInF1ZXJ5IjogIklOU0VSVCBJTlRPIGNoYXRfaGlzdG9yeSAoc2Vzc2lvbl9pZCwgcm9sZSwgY29udGVudCkgVkFMVUVTICgkMSwgJ2Fzc2lzdGFudCcsICQyKSIsCiAgICAgICAgIm9wdGlvbnMiOiB7CiAgICAgICAgICAicXVlcnlSZXBsYWNlbWVudCI6ICI9e3sgWyAkanNvbi5zZXNzaW9uSWQsICRqc29uLmxvZ1RleHQgXSB9fSIKICAgICAgICB9CiAgICAgIH0sCiAgICAgICJpZCI6ICJkMTAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDUiLAogICAgICAibmFtZSI6ICJSZWdpc3RyYXIgcmVjb3JkYXRvcmlvIGVudmlhZG8iLAogICAgICAidHlwZSI6ICJuOG4tbm9kZXMtYmFzZS5wb3N0Z3JlcyIsCiAgICAgICJ0eXBlVmVyc2lvbiI6IDIuNCwKICAgICAgInBvc2l0aW9uIjogWzg4MCwgMF0sCiAgICAgICJjcmVkZW50aWFscyI6IHsKICAgICAgICAicG9zdGdyZXMiOiB7CiAgICAgICAgICAiaWQiOiAiY0R5SW8wVDIzNDJrSTBRaCIsCiAgICAgICAgICAibmFtZSI6ICJQb3N0Z3JlcyBhY2NvdW50IDIiCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgXSwKICAiY29ubmVjdGlvbnMiOiB7CiAgICAiQ2FkYSBob3JhIjogewogICAgICAibWFpbiI6IFtbeyAibm9kZSI6ICJCdXNjYXIgcGFnb3MgcGVuZGllbnRlcyIsICJ0eXBlIjogIm1haW4iLCAiaW5kZXgiOiAwIH1dXQogICAgfSwKICAgICJCdXNjYXIgcGFnb3MgcGVuZGllbnRlcyI6IHsKICAgICAgIm1haW4iOiBbW3sgIm5vZGUiOiAiQXJtYXIgcmVjb3JkYXRvcmlvIiwgInR5cGUiOiAibWFpbiIsICJpbmRleCI6IDAgfV1dCiAgICB9LAogICAgIkFybWFyIHJlY29yZGF0b3JpbyI6IHsKICAgICAgIm1haW4iOiBbWwogICAgICAgIHsgIm5vZGUiOiAiRW52aWFyIHJlY29yZGF0b3JpbyIsICJ0eXBlIjogIm1haW4iLCAiaW5kZXgiOiAwIH0sCiAgICAgICAgeyAibm9kZSI6ICJSZWdpc3RyYXIgcmVjb3JkYXRvcmlvIGVudmlhZG8iLCAidHlwZSI6ICJtYWluIiwgImluZGV4IjogMCB9CiAgICAgIF1dCiAgICB9CiAgfSwKICAic2V0dGluZ3MiOiB7CiAgICAiZXhlY3V0aW9uT3JkZXIiOiAidjEiLAogICAgImVycm9yV29ya2Zsb3ciOiAicGFQVllodEtFM0FVN0lKQSIKICB9Cn0K
+{
+  "name": "Recordatorio de pago pendiente",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 * * * *"
+            }
+          ]
+        },
+        "timezone": "America/Argentina/Buenos_Aires"
+      },
+      "id": "d1000000-0000-0000-0000-000000000001",
+      "name": "Cada hora",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH last_alias AS (\n  SELECT session_id, MAX(created_at) AS alias_at\n  FROM chat_history\n  WHERE role = 'assistant' AND content LIKE '%Alias: productoscapilarespg%'\n  GROUP BY session_id\n)\nSELECT la.session_id, la.alias_at\nFROM last_alias la\nWHERE la.session_id LIKE '%@s.whatsapp.net'\n  AND la.alias_at < now() - interval '3 hours'\n  AND la.alias_at > now() - interval '48 hours'\n  AND EXTRACT(HOUR FROM now() AT TIME ZONE 'America/Argentina/Buenos_Aires') BETWEEN 9 AND 21\n  AND NOT EXISTS (\n    SELECT 1 FROM chat_history ch\n    WHERE ch.session_id = la.session_id\n      AND ch.created_at > la.alias_at\n      AND (\n        ch.content LIKE '[Imagen recibida%'\n        OR ch.content LIKE '%[recordatorio_pago]%'\n      )\n  )\n  AND COALESCE((\n    SELECT content FROM chat_history\n    WHERE session_id = '__paused_customer__:' || right(regexp_replace(la.session_id, '\\D', '', 'g'), 10)\n    ORDER BY id DESC LIMIT 1\n  ), 'active') <> 'paused'\n  AND COALESCE((\n    SELECT content FROM chat_history WHERE session_id = '__bot_status__' ORDER BY id DESC LIMIT 1\n  ), 'active') <> 'paused'",
+        "options": {}
+      },
+      "id": "d1000000-0000-0000-0000-000000000002",
+      "name": "Buscar pagos pendientes",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [220, 0],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = 'Hola! ¿Cómo estás? Quería consultarte si te quedó alguna duda con la transferencia o necesitás una mano para completarla. Cualquier cosa, estoy para ayudarte 🌿';\nreturn items.map(item => ({\n  json: {\n    sessionId: item.json.session_id,\n    text,\n    logText: text + '\\n[recordatorio_pago]'\n  }\n}));\n"
+      },
+      "id": "d1000000-0000-0000-0000-000000000003",
+      "name": "Armar recordatorio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://evo.productoscapilarespg.com/message/sendText/pg",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: $json.sessionId,\n  text: $json.text\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "d1000000-0000-0000-0000-000000000004",
+      "name": "Enviar recordatorio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 0],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO chat_history (session_id, role, content) VALUES ($1, 'assistant', $2)",
+        "options": {
+          "queryReplacement": "={{ [ $json.sessionId, $json.logText ] }}"
+        }
+      },
+      "id": "d1000000-0000-0000-0000-000000000005",
+      "name": "Registrar recordatorio enviado",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [880, 0],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Cada hora": {
+      "main": [[{ "node": "Buscar pagos pendientes", "type": "main", "index": 0 }]]
+    },
+    "Buscar pagos pendientes": {
+      "main": [[{ "node": "Armar recordatorio", "type": "main", "index": 0 }]]
+    },
+    "Armar recordatorio": {
+      "main": [[
+        { "node": "Enviar recordatorio", "type": "main", "index": 0 },
+        { "node": "Registrar recordatorio enviado", "type": "main", "index": 0 }
+      ]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "paPVYhKtE3AU7IJA"
+  }
+}
