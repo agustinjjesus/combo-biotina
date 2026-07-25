@@ -2226,6 +2226,15 @@
  const MP_URL_3 = 'https://mpago.la/1puHY2A'; // ← 3 combos $100.000
  // ─────────────────────────────────────────────────────────────────────────
 
+ // ─── CONFIRMACIÓN AUTOMÁTICA DE PAGOS (Cloud Function + webhook MercadoPago) ──
+ // Poné esto en true recién después de desplegar functions/ con `firebase deploy`
+ // y configurar el secret MP_ACCESS_TOKEN. Mientras esté en false, el checkout
+ // sigue usando los links fijos de arriba sin ningún cambio.
+ const MP_AUTO_CONFIRM_ENABLED = false;
+ const CLOUD_FN_CREAR_PREFERENCIA = 'https://us-central1-biotina-pg.cloudfunctions.net/crearPreferencia';
+ const PRECIOS_NUM = { 1: 43000, 2: 80000, 3: 100000 };
+ // ─────────────────────────────────────────────────────────────────────────
+
  const precios = {
  1: { label: 'Combo Biotina x1 — $43.000', mp: MP_URL_1 },
  2: { label: 'Combo Biotina x2 — $80.000', mp: MP_URL_2 },
@@ -2319,6 +2328,29 @@
  }
  }
 
+ // Si logramos crear un pago dinámico en MercadoPago (vía Cloud Function),
+ // ese link reemplaza al link fijo — permite que el webhook identifique
+ // exactamente qué pedido pagó cada cliente y confirme el estado solo.
+ async function crearPagoDinamico(docId) {
+ if (!MP_AUTO_CONFIRM_ENABLED || !docId || !mpListo) return null;
+ const controller = new AbortController();
+ const timeoutId = setTimeout(() => controller.abort(), 2000);
+ try {
+ const resp = await fetch(CLOUD_FN_CREAR_PREFERENCIA, {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ pedidoId: docId, titulo: datos.producto, precio: PRECIOS_NUM[selectedQty] }),
+ signal: controller.signal,
+ });
+ clearTimeout(timeoutId);
+ const data = await resp.json();
+ return (resp.ok && data.initPoint) ? data.initPoint : null;
+ } catch (e) {
+ console.warn('Pago dinámico no disponible, uso link fijo:', e);
+ return null;
+ }
+ }
+
  if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
  // Esperamos a que el guardado en Firestore termine (con un tope de 2.5s) antes
  // de navegar. Si redirigimos de inmediato, el navegador corta la petición a
@@ -2330,10 +2362,14 @@
  formStatus: 'pendiente',
  timestamp: nowTs,
  createdAt: firebase.firestore.FieldValue.serverTimestamp()
- }).catch(e => console.warn('Firestore:', e));
+ }).catch(e => { console.warn('Firestore:', e); return null; });
 
- const tope = new Promise(resolve => setTimeout(resolve, 2500));
- Promise.race([guardado, tope]).then(irAlSiguientePaso);
+ const tope = new Promise(resolve => setTimeout(() => resolve(null), 2500));
+ Promise.race([guardado, tope]).then(async (docRef) => {
+ const dynamicUrl = docRef ? await crearPagoDinamico(docRef.id) : null;
+ if (dynamicUrl) { window.location.href = dynamicUrl; return; }
+ irAlSiguientePaso();
+ });
  } else {
  irAlSiguientePaso();
  }
