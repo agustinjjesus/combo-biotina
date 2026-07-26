@@ -348,6 +348,26 @@
 
  .hero-right h1 span { color: var(--coral); }
 
+ .combo-composition {
+ font-size: 0.92rem;
+ color: var(--gray);
+ font-weight: 500;
+ margin-bottom: 10px;
+ }
+
+ .gift-highlight {
+ display: inline-flex;
+ align-items: center;
+ gap: 7px;
+ background: var(--dark);
+ color: #ffffff;
+ font-size: 0.8rem;
+ font-weight: 700;
+ padding: 7px 16px;
+ border-radius: 30px;
+ margin-bottom: 18px;
+ }
+
  .stars-row {
  display: flex;
  align-items: center;
@@ -478,6 +498,14 @@
  font-size: 0.68rem;
  color: var(--green);
  font-weight: 600;
+ margin-top: 3px;
+ }
+
+ .qty-gift {
+ display: block;
+ font-size: 0.68rem;
+ color: var(--dark);
+ font-weight: 700;
  margin-top: 3px;
  }
 
@@ -706,6 +734,23 @@
  .include-card--featured {
  background: #fdf5f2;
  border: 2px solid var(--coral-light);
+ }
+ .include-card--gift {
+ border: 2px dashed var(--dark);
+ }
+ .include-gift-ribbon {
+ position: absolute;
+ top: -12px;
+ left: 50%;
+ transform: translateX(-50%);
+ background: var(--dark);
+ color: #ffffff;
+ font-size: 0.66rem;
+ font-weight: 700;
+ letter-spacing: 0.06em;
+ padding: 4px 14px;
+ border-radius: 20px;
+ white-space: nowrap;
  }
  .include-badge {
  position: absolute;
@@ -1313,6 +1358,7 @@
   border: 1px solid transparent;
  }
  .include-card--featured { background: #f0f0f0; border-color: #cccccc; }
+ .include-card--gift { border: 2px dashed #111111; background: #fafafa; }
  .include-card:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.09); border-color: #cccccc; }
 
  .how-section { background: #f7f7f5; }
@@ -1488,7 +1534,7 @@
  <!-- HERO -->
  <div class="hero">
  <div class="hero-img">
- <img src="combo-productos-v2.jpg" alt="Combo Biotina PG — Shampoo, Acondicionador, Ampolla Plex y Biotina Pura" />
+ <img src="combo-productos-v2.jpg" alt="Combo Biotina PG — Shampoo, Acondicionador y Biotina Pura + Ampolla Plex de regalo" />
  </div>
 
  <div class="hero-right">
@@ -1497,6 +1543,9 @@
  Stock disponible · Envío hoy
  </div>
  <h1>Combo Biotina® | Menos caída, recuperá tu cabello de forma natural.</h1>
+
+ <p class="combo-composition">Shampoo + Acondicionador + Biotina Pura</p>
+ <div class="gift-highlight"><span>🎁</span> + Ampolla Plex de regalo</div>
 
  <div class="stars-row">
  <span class="stars"></span>
@@ -1533,6 +1582,7 @@
  <strong>Lleva 1</strong>
  <span>Tratamiento 1 mes</span>
  <span class="qty-shipping"> Envío gratis incluido</span>
+ <span class="qty-gift">🎁 Incluye Ampolla Plex de regalo</span>
  </div>
  </div>
  <div class="qty-price">
@@ -1548,6 +1598,7 @@
  <strong>Lleva 2</strong>
  <span>Tratamiento 2 meses</span>
  <span class="qty-shipping"> Envío gratis incluido</span>
+ <span class="qty-gift">🎁 Incluye Ampolla Plex de regalo</span>
  </div>
  </div>
  <div class="qty-price">
@@ -1563,6 +1614,7 @@
  <strong>Lleva 3</strong>
  <span>Tratamiento 3 meses</span>
  <span class="qty-shipping"> Envío gratis incluido</span>
+ <span class="qty-gift">🎁 Incluye Ampolla Plex de regalo</span>
  </div>
  </div>
  <div class="qty-price">
@@ -1639,7 +1691,7 @@
  <!-- QUÉ INCLUYE -->
  <div class="includes-section">
  <h2>¿Qué incluye el combo?</h2>
- <p class="how-sub">4 productos que trabajan en conjunto para un tratamiento completo.</p>
+ <p class="how-sub">3 productos que trabajan en conjunto para un tratamiento completo, + un regalo especial.</p>
  <div class="includes-grid">
 
  <div class="include-card" onclick="openProduct(0)" role="button">
@@ -1669,7 +1721,8 @@
  <span class="include-more">Ver más →</span>
  </div>
 
- <div class="include-card" onclick="openProduct(3)" role="button">
+ <div class="include-card include-card--gift" onclick="openProduct(3)" role="button">
+ <div class="include-gift-ribbon">🎁 De regalo</div>
  <div class="include-badge">60ml</div>
  <div class="include-icon"></div>
  <h3>Ampolla Plex + Biotina</h3>
