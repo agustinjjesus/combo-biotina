@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>Completá tu envío | Combo Biotina PG</title>
+ <link rel="icon" type="image/x-icon" href="favicon.ico" />
+ <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+ <style>
+ :root {
+ --dark: #1a1a1a;
+ --gray: #6b6b6b;
+ --cream: #f5f0ea;
+ --cream2: #e6e6e3;
+ --black: #111111;
+ }
+ *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ body {
+ background: #ffffff; color: var(--dark);
+ font-family: 'Outfit', sans-serif; font-weight: 300; line-height: 1.6;
+ min-height: 100vh; display: flex; align-items: center; justify-content: center;
+ padding: 24px;
+ }
+ .card {
+ background: #ffffff; width: 100%; max-width: 480px;
+ border: 1px solid var(--cream2); border-radius: 20px;
+ padding: 36px 32px; box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+ }
+ .card h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
+ .card p.sub { font-size: 0.85rem; color: var(--gray); margin-bottom: 24px; line-height: 1.6; }
+ .pedido-tag {
+ display: inline-block; background: var(--cream); border: 1px solid var(--cream2);
+ border-radius: 20px; padding: 6px 14px; font-size: 0.78rem; font-weight: 600;
+ margin-bottom: 20px;
+ }
+ .form-group { margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px; }
+ .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+ label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dark); }
+ input, select {
+ border: 2px solid var(--cream2); border-radius: 8px; padding: 12px 14px;
+ font-family: 'Outfit', sans-serif; font-size: 0.88rem; color: var(--dark);
+ background: var(--cream); outline: none; transition: border-color 0.2s;
+ }
+ input:focus, select:focus { border-color: var(--black); background: white; }
+ .btn-submit {
+ width: 100%; background: var(--black); color: white; border: none;
+ padding: 15px; border-radius: 12px; font-family: 'Outfit', sans-serif;
+ font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 10px;
+ transition: opacity 0.2s;
+ }
+ .btn-submit:hover { opacity: 0.85; }
+ .btn-submit:disabled { opacity: 0.5; cursor: default; }
+ .msg { font-size: 0.82rem; text-align: center; margin-top: 14px; display: none; }
+ .msg.show { display: block; }
+ .msg.error { color: #c0392b; }
+ .msg.success { color: #1e6640; }
+ .success-state { display: none; text-align: center; }
+ .success-state.show { display: block; }
+ .success-state .check {
+ width: 56px; height: 56px; border-radius: 50%; background: var(--black);
+ color: white; display: flex; align-items: center; justify-content: center;
+ font-size: 1.6rem; margin: 0 auto 16px;
+ }
+ .error-state { display: none; text-align: center; }
+ .error-state.show { display: block; }
+ </style>
+</head>
+<body>
+
+ <div class="card">
+ <div id="formState">
+ <h1>📦 Completá tu dirección de envío</h1>
+ <p class="sub">¡Gracias por tu compra! Nos falta un último dato para poder despachar tu pedido.</p>
+ <div class="pedido-tag" id="pedidoTag">Cargando pedido…</div>
+
+ <div class="form-group">
+ <label>DNI</label>
+ <input type="text" id="dni" placeholder="12345678" required />
+ </div>
+ <div class="form-row">
+ <div class="form-group">
+ <label>Calle</label>
+ <input type="text" id="calle" placeholder="Av. Corrientes" required />
+ </div>
+ <div class="form-group">
+ <label>Número</label>
+ <input type="text" id="numero" placeholder="1234" required />
+ </div>
+ </div>
+ <div class="form-row">
+ <div class="form-group">
+ <label>Piso / Depto</label>
+ <input type="text" id="piso" placeholder="3° B (opcional)" />
+ </div>
+ <div class="form-group">
+ <label>Código Postal</label>
+ <input type="text" id="cp" placeholder="1414" required />
+ </div>
+ </div>
+ <div class="form-group">
+ <label>Barrio / Localidad</label>
+ <input type="text" id="localidad" placeholder="Palermo" required />
+ </div>
+ <div class="form-group">
+ <label>Provincia</label>
+ <select id="provincia" required>
+ <option value="">Seleccioná tu provincia</option>
+ <option>Buenos Aires (GBA)</option>
+ <option>Buenos Aires (interior)</option>
+ <option>CABA</option>
+ <option>Catamarca</option>
+ <option>Chaco</option>
+ <option>Chubut</option>
+ <option>Córdoba</option>
+ <option>Corrientes</option>
+ <option>Entre Ríos</option>
+ <option>Formosa</option>
+ <option>Jujuy</option>
+ <option>La Pampa</option>
+ <option>La Rioja</option>
+ <option>Mendoza</option>
+ <option>Misiones</option>
+ <option>Neuquén</option>
+ <option>Río Negro</option>
+ <option>Salta</option>
+ <option>San Juan</option>
+ <option>San Luis</option>
+ <option>Santa Cruz</option>
+ <option>Santa Fe</option>
+ <option>Santiago del Estero</option>
+ <option>Tierra del Fuego</option>
+ <option>Tucumán</option>
+ </select>
+ </div>
+
+ <button class="btn-submit" id="btnSubmit" onclick="enviarDireccion()">Confirmar dirección de envío →</button>
+ <p class="msg" id="msgBox"></p>
+ </div>
+
+ <div class="success-state" id="successState">
+ <div class="check">✓</div>
+ <h1>¡Listo, gracias!</h1>
+ <p class="sub">Ya tenemos tu dirección. Preparamos tu pedido y te avisamos por WhatsApp cuando lo despachemos.</p>
+ </div>
+
+ <div class="error-state" id="errorState">
+ <h1>No encontramos tu pedido</h1>
+ <p class="sub">El link no es válido o venció. Escribinos por WhatsApp y te ayudamos a completar tus datos.</p>
+ <a class="btn-submit" style="display:block;text-align:center;text-decoration:none;box-sizing:border-box;"
+ href="https://wa.me/5491124838177?text=Hola!%20Necesito%20completar%20la%20direcci%C3%B3n%20de%20mi%20pedido">Escribir por WhatsApp</a>
+ </div>
+ </div>
+
+ <!-- Firebase SDK -->
+ <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+ <script>
+ const FIREBASE_CONFIG = {
+ apiKey: 'AIzaSyB2lipjGfqeV6gmKRw4vZEnzFHQsF1JxnQ',
+ authDomain: 'biotina-pg.firebaseapp.com',
+ projectId: 'biotina-pg',
+ storageBucket: 'biotina-pg.firebasestorage.app',
+ messagingSenderId: '167629017281',
+ appId: '1:167629017281:web:def9e7b08c390b40d04440'
+ };
+ firebase.initializeApp(FIREBASE_CONFIG);
+ const db = firebase.firestore();
+
+ const params = new URLSearchParams(window.location.search);
+ const pedidoId = params.get('pedidoId');
+
+ let pedidoRef = null;
+
+ async function cargarPedido() {
+ if (!pedidoId) { mostrarError(); return; }
+ pedidoRef = db.collection('pedidos').doc(pedidoId);
+ try {
+ const snap = await pedidoRef.get();
+ if (!snap.exists) { mostrarError(); return; }
+ const d = snap.data();
+ document.getElementById('pedidoTag').textContent = d.producto || 'Tu pedido';
+ } catch (e) {
+ console.warn('No se pudo cargar el pedido:', e);
+ mostrarError();
+ }
+ }
+
+ function mostrarError() {
+ document.getElementById('formState').style.display = 'none';
+ document.getElementById('errorState').classList.add('show');
+ }
+
+ async function enviarDireccion() {
+ const campos = ['dni', 'calle', 'numero', 'cp', 'localidad', 'provincia'];
+ let valido = true;
+ campos.forEach(id => {
+ const el = document.getElementById(id);
+ if (!el.value.trim()) { el.style.borderColor = '#c0392b'; valido = false; }
+ else { el.style.borderColor = ''; }
+ });
+
+ const msgBox = document.getElementById('msgBox');
+ if (!valido) {
+ msgBox.textContent = 'Completá todos los campos obligatorios.';
+ msgBox.className = 'msg show error';
+ return;
+ }
+
+ const btn = document.getElementById('btnSubmit');
+ btn.disabled = true;
+ btn.textContent = 'Guardando...';
+
+ const datos = {};
+ campos.forEach(id => { datos[id] = document.getElementById(id).value.trim(); });
+ datos.piso = document.getElementById('piso').value.trim();
+ datos.direccionCompletada = true;
+ datos.direccionCompletadaEn = Date.now();
+
+ try {
+ await pedidoRef.update(datos);
+ document.getElementById('formState').style.display = 'none';
+ document.getElementById('successState').classList.add('show');
+ } catch (e) {
+ console.warn('Error guardando dirección:', e);
+ msgBox.textContent = 'Hubo un error al guardar. Probá de nuevo en unos segundos.';
+ msgBox.className = 'msg show error';
+ btn.disabled = false;
+ btn.textContent = 'Confirmar dirección de envío →';
+ }
+ }
+
+ cargarPedido();
+ </script>
+</body>
+</html>

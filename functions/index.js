@@ -7,6 +7,14 @@ admin.initializeApp();
 const db = admin.firestore();
 
 const MP_ACCESS_TOKEN = defineSecret('MP_ACCESS_TOKEN');
+const RESEND_API_KEY = defineSecret('RESEND_API_KEY');
+
+// A dónde llega el aviso de "se aprobó una venta". Cambiar si hace falta.
+const ADMIN_EMAIL = 'productopg@gmail.com';
+// Remitente de los emails. El dominio de Resend funciona sin configuración
+// extra; para enviar desde un dominio propio (ej. pedidos@productoscapilarespg.com)
+// hay que verificarlo en Resend y cambiar esta constante.
+const FROM_EMAIL = 'Biotina PG <onboarding@resend.dev>';
 
 // Dominios desde los que se permite llamar a crearPreferencia (la landing).
 const ALLOWED_ORIGINS = [
@@ -21,6 +29,24 @@ function applyCors(req, res) {
   }
   res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.set('Access-Control-Allow-Headers', 'Content-Type');
+}
+
+async function enviarEmail({ to, subject, html }) {
+  try {
+    const resp = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${RESEND_API_KEY.value()}`,
+      },
+      body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject, html }),
+    });
+    if (!resp.ok) {
+      logger.error('Error enviando email', { to, subject, status: resp.status, body: await resp.text() });
+    }
+  } catch (e) {
+    logger.error('enviarEmail error', e);
+  }
 }
 
 // Mapeo de estado de pago de MercadoPago -> vocabulario interno del panel admin.
@@ -107,10 +133,16 @@ exports.crearPreferencia = onRequest({ secrets: [MP_ACCESS_TOKEN], region: 'us-c
  * MercadoPago llama a esta URL (notification_url) cada vez que un pago cambia
  * de estado. Buscamos el pago completo por su ID, y con external_reference
  * (el ID del pedido en Firestore) actualizamos formStatus / status.
+ *
+ * Cuando el pago se aprueba por primera vez, además:
+ *  - le mandamos un email al cliente pidiéndole DNI + dirección de envío
+ *    (completar-envio.html), ya que el formulario de compra no las pide.
+ *  - te avisamos a vos por email que hubo una venta nueva.
+ *
  * Siempre respondemos 200 salvo notificaciones que no son de pago, para que
  * MercadoPago no reintente indefinidamente ante un error nuestro.
  */
-exports.mpWebhook = onRequest({ secrets: [MP_ACCESS_TOKEN], region: 'us-central1' }, async (req, res) => {
+exports.mpWebhook = onRequest({ secrets: [MP_ACCESS_TOKEN, RESEND_API_KEY], region: 'us-central1' }, async (req, res) => {
   try {
     const topic = req.query.type || req.query.topic;
     const paymentId = req.query['data.id'] || req.query.id || (req.body && req.body.data && req.body.data.id);
@@ -131,6 +163,15 @@ exports.mpWebhook = onRequest({ secrets: [MP_ACCESS_TOKEN], region: 'us-central1
       return;
     }
 
+    const pedidoRef = db.collection('pedidos').doc(payment.external_reference);
+    const pedidoSnap = await pedidoRef.get();
+    if (!pedidoSnap.exists) {
+      logger.warn('external_reference no coincide con ningún pedido', payment.external_reference);
+      res.status(200).send('pedido-no-encontrado');
+      return;
+    }
+    const pedido = pedidoSnap.data();
+
     const formStatus = FORM_STATUS_MAP[payment.status] || 'sinconfirmar';
     const update = {
       formStatus,
@@ -139,7 +180,46 @@ exports.mpWebhook = onRequest({ secrets: [MP_ACCESS_TOKEN], region: 'us-central1
     };
     if (payment.status === 'approved') update.status = 'confirmado';
 
-    await db.collection('pedidos').doc(payment.external_reference).update(update);
+    await pedidoRef.update(update);
+
+    // Solo mandamos los emails la primera vez que pasa a aprobado — evita
+    // duplicados si MercadoPago reintenta la notificación del mismo pago.
+    const yaEstabaAprobado = pedido.formStatus === 'aprobado';
+    if (payment.status === 'approved' && !yaEstabaAprobado) {
+      const nombre = pedido.nombre || '';
+      const producto = pedido.producto || 'tu Combo Biotina';
+      const linkEnvio = `https://productoscapilarespg.com/completar-envio.html?pedidoId=${payment.external_reference}`;
+
+      if (pedido.email) {
+        await enviarEmail({
+          to: pedido.email,
+          subject: '¡Confirmamos tu pago! Completá tu envío 📦',
+          html: `
+            <p>Hola ${nombre}!</p>
+            <p>Confirmamos el pago de tu pedido: <strong>${producto}</strong>.</p>
+            <p>Para poder despacharlo necesitamos tu DNI y tu dirección de envío. Completalos acá:</p>
+            <p><a href="${linkEnvio}" style="display:inline-block;background:#111;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600;">Completar dirección de envío</a></p>
+            <p style="color:#888;font-size:13px;">Si el botón no funciona, copiá este link: ${linkEnvio}</p>
+          `,
+        });
+      }
+
+      await enviarEmail({
+        to: ADMIN_EMAIL,
+        subject: `💰 Nueva venta aprobada — ${producto}`,
+        html: `
+          <p>Se aprobó un pago nuevo.</p>
+          <ul>
+            <li><strong>Cliente:</strong> ${nombre} ${pedido.apellido || ''}</li>
+            <li><strong>Producto:</strong> ${producto}</li>
+            <li><strong>Teléfono:</strong> ${pedido.telefono || '—'}</li>
+            <li><strong>Email:</strong> ${pedido.email || '—'}</li>
+            <li><strong>ID de pedido:</strong> ${payment.external_reference}</li>
+          </ul>
+          <p>Le pedimos la dirección de envío por email. Vas a verla en el panel admin apenas la complete.</p>
+        `,
+      });
+    }
 
     res.status(200).send('ok');
   } catch (e) {
