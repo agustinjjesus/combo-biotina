@@ -494,6 +494,27 @@
  color: var(--dark);
  }
 
+ .qty-price .price-old {
+ display: block;
+ font-size: 0.75rem;
+ color: var(--gray-light);
+ text-decoration: line-through;
+ margin-bottom: 2px;
+ }
+
+ .discount-badge {
+ display: inline-block;
+ background: #e63946;
+ color: #fff;
+ font-size: 0.65rem;
+ font-weight: 700;
+ padding: 2px 7px;
+ border-radius: 6px;
+ margin-left: 6px;
+ vertical-align: middle;
+ text-decoration: none;
+ }
+
  .qty-count {
  position: absolute;
  top: -10px;
@@ -916,6 +937,7 @@
  </div>
  </div>
  <div class="qty-price">
+ <span class="price-old">$ 33.300 <span class="discount-badge">-25%</span></span>
  <span class="price-now">$ 25.000</span>
  </div>
  </div>
@@ -931,6 +953,7 @@
  </div>
  </div>
  <div class="qty-price">
+ <span class="price-old">$ 60.000 <span class="discount-badge">-25%</span></span>
  <span class="price-now">$ 45.000</span>
  </div>
  </div>
@@ -946,6 +969,7 @@
  </div>
  </div>
  <div class="qty-price">
+ <span class="price-old">$ 80.000 <span class="discount-badge">-25%</span></span>
  <span class="price-now">$ 60.000</span>
  </div>
  </div>
