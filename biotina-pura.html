@@ -1246,6 +1246,15 @@
  </div>
  </div>
 
+ <!-- MODAL POST-PAGO (redirige a WhatsApp después de pagar) -->
+ <div class="modal-overlay" id="postPagoOverlay">
+ <div class="modal" style="text-align:center;">
+ <h3>¡Gracias por tu compra! 🎉</h3>
+ <p class="modal-sub">Ya confirmamos tu pago. Te estamos llevando a WhatsApp para coordinar el envío (DNI y dirección).</p>
+ <a href="#" id="postPagoWaBtn" class="btn-confirm" style="display:block;text-decoration:none;box-sizing:border-box;">Ir a WhatsApp →</a>
+ </div>
+ </div>
+
  <!-- FOOTER -->
  <footer>
  <div class="footer-top">
@@ -1395,6 +1404,40 @@
  };
  let selectedQty = 1;
 
+ // Al volver de MercadoPago después de pagar, coordinamos el envío por WhatsApp
+ (function manejarRetornoPago() {
+ const params = new URLSearchParams(window.location.search);
+ if (params.get('pago') !== 'aprobado') return;
+
+ let producto = '';
+ let nombreCliente = '';
+ try {
+ const pedidosGuardados = JSON.parse(localStorage.getItem('pedidos') || '[]');
+ const ultimoPedido = pedidosGuardados[pedidosGuardados.length - 1];
+ if (ultimoPedido) {
+ producto = ultimoPedido.producto || '';
+ nombreCliente = ultimoPedido.nombre || '';
+ }
+ } catch (e) { /* localStorage no disponible, seguimos sin esos datos */ }
+
+ const msg = encodeURIComponent(
+ `Hola!${nombreCliente ? ' Soy ' + nombreCliente + '.' : ''} Ya pagué mi pedido${producto ? ' (' + producto + ')' : ''}. ` +
+ `Te paso el comprobante y coordinamos el envío (DNI y dirección) 📦`
+ );
+ const waLink = `https://wa.me/${WA_NUMERO}?text=${msg}`;
+
+ const overlay = document.getElementById('postPagoOverlay');
+ const btnWa = document.getElementById('postPagoWaBtn');
+ if (overlay && btnWa) {
+ btnWa.href = waLink;
+ overlay.classList.add('active');
+ document.body.style.overflow = 'hidden';
+ setTimeout(() => { window.location.href = waLink; }, 1800);
+ } else {
+ window.location.href = waLink;
+ }
+ })();
+
  function selectQty(el, qty) {
  document.querySelectorAll('.qty-option').forEach(o => o.classList.remove('selected'));
  el.classList.add('selected');
@@ -1451,14 +1494,6 @@
 
  function irAlSiguientePaso() {
  if (mpListo) {
- const d = datos;
- const msgPago = encodeURIComponent(
- `Hola! Ya confirmé mi pedido:\n\n` +
- `${d.producto}\n` +
- `${d.nombre} ${d.apellido}\n\n` +
- `Voy a pagar por MercadoPago ahora. Cuando se acredite les mando el comprobante y coordinamos el envío (DNI y dirección) 📦`
- );
- window.open(`https://wa.me/${WA_NUMERO}?text=${msgPago}`, '_blank');
  window.location.href = mpUrl;
  } else {
  const d = datos;
