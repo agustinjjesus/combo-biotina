@@ -11,6 +11,8 @@ const RESEND_API_KEY = defineSecret('RESEND_API_KEY');
 
 // A dónde llega el aviso de "se aprobó una venta". Cambiar si hace falta.
 const ADMIN_EMAIL = 'productopg@gmail.com';
+// Número de WhatsApp donde el cliente coordina el envío después de pagar.
+const WA_NUMERO = '5491124838177';
 // Remitente de los emails. El dominio de Resend funciona sin configuración
 // extra; para enviar desde un dominio propio (ej. pedidos@productoscapilarespg.com)
 // hay que verificarlo en Resend y cambiar esta constante.
@@ -135,8 +137,8 @@ exports.crearPreferencia = onRequest({ secrets: [MP_ACCESS_TOKEN], region: 'us-c
  * (el ID del pedido en Firestore) actualizamos formStatus / status.
  *
  * Cuando el pago se aprueba por primera vez, además:
- *  - le mandamos un email al cliente pidiéndole DNI + dirección de envío
- *    (completar-envio.html), ya que el formulario de compra no las pide.
+ *  - le mandamos un email al cliente pidiéndole que coordine el envío
+ *    (DNI + dirección) por WhatsApp, ya que el formulario de compra no las pide.
  *  - te avisamos a vos por email que hubo una venta nueva.
  *
  * Siempre respondemos 200 salvo notificaciones que no son de pago, para que
@@ -188,18 +190,20 @@ exports.mpWebhook = onRequest({ secrets: [MP_ACCESS_TOKEN, RESEND_API_KEY], regi
     if (payment.status === 'approved' && !yaEstabaAprobado) {
       const nombre = pedido.nombre || '';
       const producto = pedido.producto || 'tu Combo Biotina';
-      const linkEnvio = `https://productoscapilarespg.com/completar-envio.html?pedidoId=${payment.external_reference}`;
+
+      const waMsg = encodeURIComponent(`Hola! Ya pagué mi pedido (${producto}). Te paso el comprobante y coordinamos el envío 📦`);
+      const waLink = `https://wa.me/${WA_NUMERO}?text=${waMsg}`;
 
       if (pedido.email) {
         await enviarEmail({
           to: pedido.email,
-          subject: '¡Confirmamos tu pago! Completá tu envío 📦',
+          subject: '¡Confirmamos tu pago! Coordiná tu envío por WhatsApp 📦',
           html: `
             <p>Hola ${nombre}!</p>
             <p>Confirmamos el pago de tu pedido: <strong>${producto}</strong>.</p>
-            <p>Para poder despacharlo necesitamos tu DNI y tu dirección de envío. Completalos acá:</p>
-            <p><a href="${linkEnvio}" style="display:inline-block;background:#111;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600;">Completar dirección de envío</a></p>
-            <p style="color:#888;font-size:13px;">Si el botón no funciona, copiá este link: ${linkEnvio}</p>
+            <p>Para poder despacharlo necesitamos tu DNI y tu dirección de envío. Escribinos por WhatsApp y lo coordinamos:</p>
+            <p><a href="${waLink}" style="display:inline-block;background:#111;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600;">Coordinar envío por WhatsApp</a></p>
+            <p style="color:#888;font-size:13px;">Si el botón no funciona, copiá este link: ${waLink}</p>
           `,
         });
       }
@@ -216,7 +220,7 @@ exports.mpWebhook = onRequest({ secrets: [MP_ACCESS_TOKEN, RESEND_API_KEY], regi
             <li><strong>Email:</strong> ${pedido.email || '—'}</li>
             <li><strong>ID de pedido:</strong> ${payment.external_reference}</li>
           </ul>
-          <p>Le pedimos la dirección de envío por email. Vas a verla en el panel admin apenas la complete.</p>
+          <p>Le pedimos que coordine el envío por WhatsApp. Vas a verla en el panel admin apenas se complete.</p>
         `,
       });
     }

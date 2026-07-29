@@ -2080,7 +2080,7 @@
  </div>
 
  <div class="modal-info-note">
- 📦 Después de confirmar el pago te vamos a pedir el DNI y la dirección de envío por email, para no hacerte llenar todo antes de pagar.
+ 📦 Después de pagar te vamos a abrir un chat de WhatsApp para coordinar el envío (comprobante, DNI y dirección) — no hace falta completar nada más acá.
  </div>
 
  <button class="btn-confirm" id="btnConfirmarCompra" onclick="confirmarCompra()">Confirmar y pagar →</button>
@@ -2341,7 +2341,15 @@
 
  function irAlSiguientePaso() {
  if (mpListo) {
- // Redirigir a MercadoPago
+ // Redirigir a MercadoPago, pero antes abrimos WhatsApp para coordinar el envío
+ const d = datos;
+ const msgPago = encodeURIComponent(
+ `Hola! Ya confirmé mi pedido:\n\n` +
+ `${d.producto}\n` +
+ `${d.nombre} ${d.apellido}\n\n` +
+ `Voy a pagar por MercadoPago ahora. Cuando se acredite les mando el comprobante y coordinamos el envío (DNI y dirección) 📦`
+ );
+ window.open(`https://wa.me/${WA_NUMERO}?text=${msgPago}`, '_blank');
  window.location.href = mpUrl;
  } else {
  // Fallback: enviar pedido por WhatsApp (la dirección se coordina en el chat)
