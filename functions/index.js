@@ -86,9 +86,13 @@ exports.crearPreferencia = onRequest({ secrets: [MP_ACCESS_TOKEN], region: 'us-c
       res.status(404).json({ error: 'Pedido no encontrado.' });
       return;
     }
+    const pedido = pedidoSnap.data();
 
     const funcBase = `https://us-central1-${process.env.GCLOUD_PROJECT}.cloudfunctions.net`;
 
+    // Le pasamos a MercadoPago los datos que el cliente ya completó en el
+    // formulario (nombre, email, teléfono, dirección) para que el checkout
+    // llegue precargado en vez de pedírselos de nuevo.
     const preference = {
       items: [{
         title: titulo || 'Combo Biotina PG',
@@ -96,6 +100,19 @@ exports.crearPreferencia = onRequest({ secrets: [MP_ACCESS_TOKEN], region: 'us-c
         unit_price: Number(precio),
         currency_id: 'ARS',
       }],
+      payer: {
+        name: pedido.nombre || '',
+        surname: pedido.apellido || '',
+        email: pedido.email || '',
+        ...(pedido.telefono ? { phone: { number: pedido.telefono } } : {}),
+        ...((pedido.calle || pedido.cp) ? {
+          address: {
+            street_name: pedido.calle || '',
+            street_number: pedido.numero || '',
+            zip_code: pedido.cp || '',
+          },
+        } : {}),
+      },
       external_reference: pedidoId,
       notification_url: `${funcBase}/mpWebhook`,
       back_urls: {
