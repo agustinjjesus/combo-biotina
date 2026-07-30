@@ -251,6 +251,15 @@
     }
     .btn-wa:hover { background: #1ebe5a; }
 
+    /* ── DELETE BUTTON ──────────────────────────────────────────── */
+    .btn-delete {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: none; border: 1.5px solid var(--cream2); border-radius: 7px;
+      width: 30px; height: 30px; font-size: 0.85rem; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-delete:hover { border-color: var(--coral); background: #fef0ec; }
+
     /* ── EMPTY STATE ────────────────────────────────────────────── */
     .empty-state { text-align: center; padding: 56px 20px; }
     .empty-state .ei { font-size: 2.2rem; margin-bottom: 10px; }
@@ -443,6 +452,7 @@
               <th>Estado</th>
               <th>Fecha</th>
               <th>WhatsApp</th>
+              <th>Acción</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -473,6 +483,7 @@
               <th>Fecha</th>
               <th>Estado del pago</th>
               <th>WhatsApp</th>
+              <th>Acción</th>
             </tr>
           </thead>
           <tbody id="formulariosTableBody"></tbody>
@@ -503,6 +514,7 @@
               <th>Fecha</th>
               <th>Estado del pago</th>
               <th>WhatsApp</th>
+              <th>Acción</th>
             </tr>
           </thead>
           <tbody id="abandonedTableBody"></tbody>
@@ -541,7 +553,7 @@
     //      match /databases/{database}/documents {
     //        match /pedidos/{id} {
     //          allow create: if request.resource.data.keys().hasAll(['nombre','producto','fecha']);
-    //          allow read, update: if true;
+    //          allow read, update, delete: if true;
     //        }
     //      }
     //    }
@@ -691,6 +703,44 @@
       }
     }
 
+    /* ── ELIMINAR PEDIDO ─────────────────────────────────────────────── */
+    function eliminarPedido(id) {
+      if (!confirm('¿Eliminar este cliente/pedido? Esta acción no se puede deshacer.')) return;
+
+      if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
+        firebase.firestore().collection('pedidos').doc(id).delete()
+          .catch(e => {
+            console.warn('eliminarPedido:', e);
+            alert('No se pudo eliminar. Revisá que las reglas de Firestore permitan "delete".');
+          });
+        // El listener en tiempo real (onSnapshot) actualiza la tabla solo.
+      } else {
+        const idx = parseInt(id);
+        const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
+        const statuses = JSON.parse(localStorage.getItem('pedidoStatus') || '{}');
+        const formStatuses = JSON.parse(localStorage.getItem('pedidoFormStatus') || '{}');
+
+        pedidos.splice(idx, 1);
+
+        // Los mapas de estado están indexados por posición — al sacar un elemento,
+        // hay que correr los índices posteriores para que sigan apuntando al pedido correcto.
+        const reindexar = (map) => {
+          const nuevo = {};
+          Object.keys(map).map(Number).sort((a, b) => a - b).forEach(i => {
+            if (i < idx) nuevo[i] = map[i];
+            else if (i > idx) nuevo[i - 1] = map[i];
+            // i === idx se descarta (era del pedido eliminado)
+          });
+          return nuevo;
+        };
+
+        localStorage.setItem('pedidos', JSON.stringify(pedidos));
+        localStorage.setItem('pedidoStatus', JSON.stringify(reindexar(statuses)));
+        localStorage.setItem('pedidoFormStatus', JSON.stringify(reindexar(formStatuses)));
+        loadFromLocalStorage();
+      }
+    }
+
     /* ── HELPERS ─────────────────────────────────────────────────────── */
     function getCombo(productoStr) {
       if (!productoStr) return null;
@@ -831,7 +881,7 @@
         .reverse();
 
       if (!rows.length) {
-        tbody.innerHTML = `<tr><td colspan="12"><div class="empty-state">
+        tbody.innerHTML = `<tr><td colspan="13"><div class="empty-state">
           <div class="ei">📋</div>
           <p>${q || fSt ? 'Sin resultados para el filtro aplicado.' : 'Aún no hay clientes registrados.'}</p>
         </div></td></tr>`;
@@ -879,6 +929,9 @@
               WA
             </a>
           </td>
+          <td>
+            <button class="btn-delete" onclick="eliminarPedido('${safeId}')" title="Eliminar registro">🗑️</button>
+          </td>
         </tr>`;
       }).join('');
 
@@ -889,7 +942,7 @@
         <td class="td-r">${fmt(tCosto)}</td>
         <td class="td-r">${fmt(tEnvio)}</td>
         <td class="td-r td-gain">${fmt(tGanancia)}</td>
-        <td colspan="3"></td>
+        <td colspan="4"></td>
       </tr>`;
     }
 
@@ -1009,6 +1062,9 @@
             ${WA_ICON_SVG} WA
           </a>
         </td>
+        <td>
+          <button class="btn-delete" onclick="eliminarPedido('${safeId}')" title="Eliminar registro">🗑️</button>
+        </td>
       </tr>`;
     }
 
@@ -1018,7 +1074,7 @@
       const sorted = [...pedidosCache].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
       tbody.innerHTML = sorted.length
         ? sorted.map(formRowHtml).join('')
-        : `<tr><td colspan="9"><div class="empty-state">
+        : `<tr><td colspan="10"><div class="empty-state">
              <div class="ei">📝</div>
              <p>Todavía no se registraron formularios completados.</p>
            </div></td></tr>`;
@@ -1038,7 +1094,7 @@
       const abandonedBody = document.getElementById('abandonedTableBody');
       abandonedBody.innerHTML = abandoned.length
         ? abandoned.map(formRowHtml).join('')
-        : `<tr><td colspan="9"><div class="empty-state">
+        : `<tr><td colspan="10"><div class="empty-state">
              <div class="ei">✅</div>
              <p>No hay carritos abandonados por el momento.</p>
            </div></td></tr>`;
