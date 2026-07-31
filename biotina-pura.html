@@ -930,7 +930,7 @@
  <!-- BARRA SCROLLING -->
  <div class="announce-bar">
  <div class="announce-track">
- ENVÍO GRATIS A TODO EL PAÍS
+ ENVÍO GRATIS EN 2 Y 3 UNIDADES
  <span class="announce-sep">•</span>
  PAGO 100% SEGURO CON MERCADOPAGO
  <span class="announce-sep">•</span>
@@ -940,7 +940,7 @@
  <span class="announce-sep">•</span>
  SIN FORMOL NI SULFATOS
  <span class="announce-sep">•</span>
- ENVÍO GRATIS A TODO EL PAÍS
+ ENVÍO GRATIS EN 2 Y 3 UNIDADES
  <span class="announce-sep">•</span>
  PAGO 100% SEGURO CON MERCADOPAGO
  <span class="announce-sep">•</span>
@@ -1013,14 +1013,14 @@
  </ul>
 
  <div class="quantity-options">
- <div class="qty-option" onclick="selectQty(this, 1)" data-price="25000">
+ <div class="qty-option" onclick="selectQty(this, 1)" data-price="30000">
  <span class="qty-count">1 unidad</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
  <div class="qty-info">
  <strong>Lleva 1</strong>
  <span>Tratamiento 1 mes</span>
- <span class="qty-shipping"> Envío gratis incluido</span>
+ <span class="qty-shipping"> + $5.000 envío a domicilio</span>
  </div>
  </div>
  <div class="qty-price">
@@ -1062,12 +1062,12 @@
  </div>
  </div>
 
- <p style="text-align:center; font-size:0.82rem; font-weight:600; color:var(--green); margin-bottom:12px;">
- Envío gratis a todo el país
+ <p id="envioNota" style="text-align:center; font-size:0.82rem; font-weight:600; color:var(--green); margin-bottom:12px;">
+ Envío a domicilio $5.000 en pedidos de 1 unidad
  </p>
 
  <button class="btn-buy" id="buyBtn" onclick="openModal()">
- COMPRAR AHORA · $25.000 — ENVÍO GRATIS
+ COMPRAR AHORA · $30.000 — ENVÍO $5.000
  </button>
 
  <!-- MÉTODOS DE PAGO -->
@@ -1124,7 +1124,7 @@
  <div style="text-align:center"><div class="proof-num">500ml</div><div class="proof-label">fórmula concentrada</div></div>
  <div style="text-align:center"><div class="proof-num">0%</div><div class="proof-label">formol ni sulfatos</div></div>
  <div style="text-align:center"><div class="proof-num">Diario</div><div class="proof-label">modo de aplicación</div></div>
- <div style="text-align:center"><div class="proof-num">Gratis</div><div class="proof-label">envío a todo el país</div></div>
+ <div style="text-align:center"><div class="proof-num">Gratis</div><div class="proof-label">envío en 2 y 3 unidades</div></div>
  </div>
 
  <!-- BENEFICIOS -->
@@ -1243,9 +1243,16 @@
  <div class="envio-row envio-row--free">
  <div class="envio-row-info">
  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/></svg>
- <span class="envio-region">Costo de envío</span>
+ <span class="envio-region">Costo de envío (2 y 3 unidades)</span>
  </div>
  <span class="envio-time-free">GRATIS</span>
+ </div>
+ <div class="envio-row">
+ <div class="envio-row-info">
+ <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/></svg>
+ <span class="envio-region">Costo de envío (1 unidad)</span>
+ </div>
+ <span class="envio-time">$ 5.000</span>
  </div>
  </div>
 
@@ -1273,7 +1280,7 @@
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Cuánto tarda en llegar mi pedido? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Si confirmás tu pedido antes de las 14hs lo despachamos ese mismo día. Después llega entre 2 y 9 días hábiles según tu zona, con envío gratis a todo el país.</div>
+ <div class="faq-a">Si confirmás tu pedido antes de las 14hs lo despachamos ese mismo día. Después llega entre 2 y 9 días hábiles según tu zona. El envío es gratis en pedidos de 2 y 3 unidades; en pedidos de 1 unidad tiene un costo de $5.000.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Qué pasa si no me gusta el producto? <span class="faq-arrow">+</span></button>
@@ -1289,7 +1296,7 @@
  <div class="cta-final">
  <h2>Empezá hoy tu tratamiento</h2>
  <p>Resultados visibles desde la primera semana. Sin formol, sin sulfatos, sin efectos secundarios.</p>
- <a href="#" onclick="openModal(); return false;" class="btn-cta-final">Lleva 1 · $25.000 — Envío gratis </a>
+ <a href="#" onclick="openModal(); return false;" class="btn-cta-final">Lleva 1 · $30.000 — Envío $5.000</a>
  </div>
 
  <!-- MODAL FORMULARIO -->
@@ -1297,7 +1304,7 @@
  <div class="modal">
  <button class="modal-close" onclick="closeModal()">×</button>
  <h3>¡Un paso más! </h3>
- <p class="modal-sub">Completá tus datos para coordinar el envío. Tu pedido: <span id="modalProducto">Biotina Pura x1 — $25.000</span></p>
+ <p class="modal-sub">Completá tus datos para coordinar el envío. Tu pedido: <span id="modalProducto">Biotina Pura x1 + envío — $30.000</span></p>
 
  <div class="form-section-title">Datos personales</div>
  <div class="form-row">
@@ -1501,7 +1508,7 @@
  <!-- FLOATING CTA MOBILE -->
  <div class="floating-cta">
  <button class="floating-cta-btn" id="floatingBtn" onclick="openModal()">
- COMPRAR AHORA · $25.000 — ENVÍO GRATIS
+ COMPRAR AHORA · $30.000 — ENVÍO $5.000
  </button>
  </div>
 
@@ -1526,16 +1533,23 @@
  const WA_NUMERO = '5491124838177';
 
  // Links de pago de MercadoPago (Link de pago, montos fijos)
- const MP_URL_1 = 'https://mpago.la/1QwZYjA'; // ← 1 unidad $25.000
+ // ⚠️ OJO: MP_URL_1 sigue siendo un link fijo por $25.000 (sin el envío nuevo
+ // de $5.000). Es el fallback estático que se usa solo si la Cloud Function
+ // de pago dinámico falla — mientras no crees en tu panel de MercadoPago un
+ // link fijo nuevo por $30.000 y reemplaces esta URL, ese caso límite
+ // cobraría de menos. El flujo normal (API dinámica) ya cobra $30.000 bien.
+ const MP_URL_1 = 'https://mpago.la/1QwZYjA'; // ← 1 unidad, fallback viejo a $25.000 (ver nota arriba)
  const MP_URL_2 = 'https://mpago.la/2w2KZs5'; // ← 2 unidades $45.000
  const MP_URL_3 = 'https://mpago.la/1MPCQga'; // ← 3 unidades $60.000
 
  const MP_AUTO_CONFIRM_ENABLED = true;
  const CLOUD_FN_CREAR_PREFERENCIA = 'https://us-central1-biotina-pg.cloudfunctions.net/crearPreferencia';
- const PRECIOS_NUM = { 1: 25000, 2: 45000, 3: 60000 };
+ // 1 unidad ahora suma $5.000 de envío a domicilio ($25.000 + $5.000 = $30.000).
+ // 2 y 3 unidades siguen con envío gratis.
+ const PRECIOS_NUM = { 1: 30000, 2: 45000, 3: 60000 };
 
  const precios = {
- 1: { label: 'Biotina Pura x1 — $25.000', mp: MP_URL_1 },
+ 1: { label: 'Biotina Pura x1 + envío — $30.000', mp: MP_URL_1 },
  2: { label: 'Biotina Pura x2 — $45.000', mp: MP_URL_2 },
  3: { label: 'Biotina Pura x3 — $60.000', mp: MP_URL_3 }
  };
@@ -1546,9 +1560,12 @@
  document.querySelectorAll('.qty-option').forEach(o => o.classList.remove('selected'));
  el.classList.add('selected');
  selectedQty = qty;
- const prices = { 1: '25.000', 2: '45.000', 3: '60.000' };
- document.getElementById('buyBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
- document.getElementById('floatingBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
+ const prices = { 1: '30.000', 2: '45.000', 3: '60.000' };
+ const envioTxt = { 1: 'ENVÍO $5.000', 2: 'ENVÍO GRATIS', 3: 'ENVÍO GRATIS' };
+ document.getElementById('buyBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ${envioTxt[qty]}`;
+ document.getElementById('floatingBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ${envioTxt[qty]}`;
+ const nota = document.getElementById('envioNota');
+ if (nota) nota.textContent = qty === 1 ? 'Envío a domicilio $5.000 en pedidos de 1 unidad' : 'Envío gratis a todo el país';
  }
 
  function openModal() {
