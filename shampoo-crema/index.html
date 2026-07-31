@@ -1630,7 +1630,10 @@
  }
 
  async function crearPagoDinamico(docId) {
- if (!MP_AUTO_CONFIRM_ENABLED || !docId || !mpListo) return null;
+ if (!MP_AUTO_CONFIRM_ENABLED || !docId || !mpListo) {
+ console.warn('Pago dinámico: no se intenta ->', { MP_AUTO_CONFIRM_ENABLED, docId, mpListo });
+ return null;
+ }
  const controller = new AbortController();
  const timeoutId = setTimeout(() => controller.abort(), 2000);
  try {
@@ -1650,17 +1653,23 @@
  }
 
  if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
+ // El tope está en 6s (no 2.5s) porque el primer write de Firestore de la
+ // sesión suele tardar más por el handshake del canal — con 2.5s el timeout
+ // le ganaba la carrera casi siempre y el pago dinámico nunca llegaba ni a
+ // intentarse (se veía como "cae directo al link fijo" sin ningún error).
  const guardado = firebase.firestore().collection('pedidos').add({
  ...datosTracking,
  status: 'abandonado',
  formStatus: 'pendiente',
  timestamp: nowTs,
  createdAt: firebase.firestore.FieldValue.serverTimestamp()
- }).catch(e => { console.warn('Firestore:', e); return null; });
+ }).catch(e => { console.warn('Firestore: guardado del pedido falló ->', e); return null; });
 
- const tope = new Promise(resolve => setTimeout(() => resolve(null), 2500));
+ const tope = new Promise(resolve => setTimeout(() => { console.warn('Firestore: tope de 6s alcanzado antes de que termine el guardado -> se va por link fijo sin intentar el pago dinámico'); resolve(null); }, 6000));
  Promise.race([guardado, tope]).then(async (docRef) => {
- if (docRef) {
+ if (!docRef) {
+ console.warn('Pago dinámico: no hay docRef (Firestore falló o tardó más que el tope) -> uso link fijo');
+ } else {
  try {
  const ult = JSON.parse(localStorage.getItem('ultimoPedido') || '{}');
  ult.pedidoId = docRef.id;
