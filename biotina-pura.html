@@ -1532,13 +1532,9 @@
  // ─── CONFIGURACIÓN ────────────────────────────────────────────────────────
  const WA_NUMERO = '5491124838177';
 
- // Links de pago de MercadoPago (Link de pago, montos fijos)
- // ⚠️ OJO: MP_URL_1 sigue siendo un link fijo por $25.000 (sin el envío nuevo
- // de $5.000). Es el fallback estático que se usa solo si la Cloud Function
- // de pago dinámico falla — mientras no crees en tu panel de MercadoPago un
- // link fijo nuevo por $30.000 y reemplaces esta URL, ese caso límite
- // cobraría de menos. El flujo normal (API dinámica) ya cobra $30.000 bien.
- const MP_URL_1 = 'https://mpago.la/1QwZYjA'; // ← 1 unidad, fallback viejo a $25.000 (ver nota arriba)
+ // Links de pago de MercadoPago (Link de pago, montos fijos) — fallback
+ // estático que se usa solo si la Cloud Function de pago dinámico falla.
+ const MP_URL_1 = 'https://mpago.la/2aCHP53'; // ← 1 unidad + envío, $30.000
  const MP_URL_2 = 'https://mpago.la/2w2KZs5'; // ← 2 unidades $45.000
  const MP_URL_3 = 'https://mpago.la/1MPCQga'; // ← 3 unidades $60.000
 
