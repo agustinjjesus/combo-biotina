@@ -251,6 +251,16 @@
     }
     .btn-wa:hover { background: #1ebe5a; }
 
+    /* ── PREP BUTTON (enviarme el pedido para preparar) ───────────── */
+    .btn-prep {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--dark); color: white; border: none; border-radius: 7px;
+      padding: 6px 11px; font-family: 'Outfit', sans-serif;
+      font-size: 0.72rem; font-weight: 600; cursor: pointer;
+      text-decoration: none; transition: background 0.2s; white-space: nowrap;
+    }
+    .btn-prep:hover { background: #333; }
+
     /* ── DELETE BUTTON ──────────────────────────────────────────── */
     .btn-delete {
       display: inline-flex; align-items: center; justify-content: center;
@@ -528,6 +538,8 @@
     /* ── CONFIG ─────────────────────────────────────────────────────── */
     const PASSWORD = 'biotina2025';
     const WA_NUM   = '5491124838177';
+    // Tu número personal, donde querés recibir el pedido completo para preparar el envío.
+    const MI_NUMERO_PREPARACION = '5491140377694';
 
     const COMBOS = {
       43000:  { label: 'Combo Biotina x1 — $43.000',  qty: 1, precio: 43000,  mp: 2838, costo: 9888, envio: 9000, ganancia: 21274 },
@@ -762,6 +774,29 @@
       return digits.startsWith('54') ? digits : `549${digits}`;
     }
 
+    // Arma un link de WhatsApp hacia TU propio número (MI_NUMERO_PREPARACION)
+    // con todos los datos del pedido, para tenerlo a mano y preparar el envío.
+    function waLinkPreparacion(p) {
+      const dir = [
+        [p.calle, p.numero].filter(Boolean).join(' ') + (p.piso ? ` ${p.piso}` : ''),
+        p.localidad,
+        p.provincia,
+        p.cp ? `CP ${p.cp}` : '',
+      ].filter(Boolean).join(', ');
+
+      const msg = encodeURIComponent(
+        `📦 *Pedido para preparar*\n\n` +
+        `*Cliente:* ${p.nombre || ''} ${p.apellido || ''}\n` +
+        `*DNI:* ${p.dni || '—'}\n` +
+        `*Teléfono:* ${p.telefono || '—'}\n` +
+        `*Email:* ${p.email || '—'}\n\n` +
+        `*Producto:* ${p.producto || '—'}\n\n` +
+        `*Dirección de envío:*\n${dir || '—'}\n\n` +
+        `*Fecha del pedido:* ${p.fecha || '—'}`
+      );
+      return `https://wa.me/${MI_NUMERO_PREPARACION}?text=${msg}`;
+    }
+
     function isToday(f) {
       return f ? f.startsWith(new Date().toLocaleDateString('es-AR')) : false;
     }
@@ -940,6 +975,7 @@
             </a>` : `<span style="color:var(--gray-light);font-size:0.72rem;">Sin teléfono</span>`}
           </td>
           <td>
+            <a href="${waLinkPreparacion(p)}" target="_blank" class="btn-prep" title="Enviarme este pedido completo por WhatsApp">📱 Preparar</a>
             <button class="btn-delete" onclick="eliminarPedido('${safeId}')" title="Eliminar registro">🗑️</button>
           </td>
         </tr>`;
@@ -1074,6 +1110,7 @@
           </a>` : `<span style="color:var(--gray-light);font-size:0.72rem;">Sin teléfono</span>`}
         </td>
         <td>
+          <a href="${waLinkPreparacion(p)}" target="_blank" class="btn-prep" title="Enviarme este pedido completo por WhatsApp">📱 Preparar</a>
           <button class="btn-delete" onclick="eliminarPedido('${safeId}')" title="Eliminar registro">🗑️</button>
         </td>
       </tr>`;
