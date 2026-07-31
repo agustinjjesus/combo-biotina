@@ -777,22 +777,21 @@
     // Arma un link de WhatsApp hacia TU propio número (MI_NUMERO_PREPARACION)
     // con todos los datos del pedido, para tenerlo a mano y preparar el envío.
     function waLinkPreparacion(p) {
-      const dir = [
-        [p.calle, p.numero].filter(Boolean).join(' ') + (p.piso ? ` ${p.piso}` : ''),
-        p.localidad,
-        p.provincia,
-        p.cp ? `CP ${p.cp}` : '',
-      ].filter(Boolean).join(', ');
+      const calleNum = [p.calle, p.numero].filter(Boolean).join(' ') + (p.piso ? ` ${p.piso}` : '');
 
       const msg = encodeURIComponent(
         `📦 *Pedido para preparar*\n\n` +
-        `*Cliente:* ${p.nombre || ''} ${p.apellido || ''}\n` +
-        `*DNI:* ${p.dni || '—'}\n` +
-        `*Teléfono:* ${p.telefono || '—'}\n` +
-        `*Email:* ${p.email || '—'}\n\n` +
-        `*Producto:* ${p.producto || '—'}\n\n` +
-        `*Dirección de envío:*\n${dir || '—'}\n\n` +
-        `*Fecha del pedido:* ${p.fecha || '—'}`
+        `Nombre y Apellido: ${p.nombre || ''} ${p.apellido || ''}\n` +
+        `DNI: ${p.dni || '—'}\n` +
+        `Provincia: ${p.provincia || '—'}\n` +
+        `Localidad: ${p.localidad || '—'}\n` +
+        `Dirección: ${calleNum || '—'}\n` +
+        `Código postal: ${p.cp || '—'}\n` +
+        `Correo electrónico: ${p.email || '—'}\n` +
+        `Número de celu: ${p.telefono || '—'}\n\n` +
+        `Producto: ${p.producto || '—'}\n` +
+        `Fecha del pedido: ${p.fecha || '—'}\n\n` +
+        `Observación: `
       );
       return `https://wa.me/${MI_NUMERO_PREPARACION}?text=${msg}`;
     }
