@@ -282,8 +282,15 @@ exports.crearPreferencia = onRequest({ secrets: [MP_ACCESS_TOKEN], region: 'us-c
  *
  * Siempre respondemos 200 salvo notificaciones que no son de pago, para que
  * MercadoPago no reintente indefinidamente ante un error nuestro.
+ *
+ * NOTA: META_CAPI_TOKEN todavía no está en la lista de secrets a propósito —
+ * así se puede deployar esta function (y crearPreferencia) con solo
+ * MP_ACCESS_TOKEN configurado, sin bloquear el deploy por el secret de Meta
+ * que todavía no existe. El bloque de Purchase CAPI de más abajo va a fallar
+ * silenciosamente (queda logueado) hasta que se agregue META_CAPI_TOKEN acá
+ * y se re-deploye — eso es la tarea 1 (Meta Conversions API).
  */
-exports.mpWebhook = onRequest({ secrets: [MP_ACCESS_TOKEN, RESEND_API_KEY, META_CAPI_TOKEN], region: 'us-central1' }, async (req, res) => {
+exports.mpWebhook = onRequest({ secrets: [MP_ACCESS_TOKEN, RESEND_API_KEY], region: 'us-central1' }, async (req, res) => {
   try {
     const topic = req.query.type || req.query.topic;
     const paymentId = req.query['data.id'] || req.query.id || (req.body && req.body.data && req.body.data.id);
