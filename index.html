@@ -18,9 +18,76 @@
  t.src=v;s=b.getElementsByTagName(e)[0];
  s.parentNode.insertBefore(t,s)}(window, document,'script',
  'https://connect.facebook.net/en_US/fbevents.js');
- fbq('init', '914585307701969');
- fbq('track', 'PageView');
- fbq('track', 'ViewContent', { content_name: 'Combo Biotina', content_type: 'product', currency: 'ARS', value: 43000 });
+
+ // ─── Identificador anónimo persistente (mejora el EMQ de eventos previos al
+ // formulario, cuando todavía no sabemos email/teléfono del visitante) ───────
+ function fbAnonId() {
+ let id = localStorage.getItem('_biotina_uid');
+ if (!id) {
+ id = (crypto.randomUUID ? crypto.randomUUID() : 'uid-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+ localStorage.setItem('_biotina_uid', id);
+ }
+ return id;
+ }
+ fbq('init', '914585307701969', { external_id: fbAnonId() });
+
+ // ─── Helpers CAPI — mandan el mismo evento por server (Cloud Function) en
+ // paralelo al pixel del browser, con el mismo event_id, para que Meta
+ // deduplique y suba el Event Match Quality (IP real, resiste ad-blockers). ──
+ const CAPI_ENDPOINT = 'https://us-central1-biotina-pg.cloudfunctions.net/capiEvent';
+ function fbGetCookie(name) {
+ const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+ return m ? decodeURIComponent(m[1]) : null;
+ }
+ function fbGetFbc() {
+ let fbc = fbGetCookie('_fbc');
+ if (!fbc) {
+ const fbclid = new URLSearchParams(location.search).get('fbclid');
+ if (fbclid) {
+ fbc = `fb.1.${Date.now()}.${fbclid}`;
+ document.cookie = `_fbc=${fbc};max-age=7776000;path=/`;
+ }
+ }
+ return fbc;
+ }
+ function genEventId() {
+ return (crypto.randomUUID ? crypto.randomUUID() : 'ev-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+ }
+ // Misma normalización que hace el server (functions/index.js) antes de
+ // hashear — si no coinciden, el pixel del browser y el CAPI del server
+ // mandan un "ph" distinto para el mismo evento y Meta no puede matchearlos.
+ function fbNormalizePhone(raw) {
+ let d = String(raw || '').replace(/\D/g, '');
+ if (!d) return undefined;
+ if (d.startsWith('54')) return d;
+ d = d.replace(/^0+/, '');
+ return '54' + d;
+ }
+ function sendCapiEvent(eventName, eventId, customData, userDataOverrides) {
+ try {
+ fetch(CAPI_ENDPOINT, {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({
+ event_name: eventName,
+ event_id: eventId,
+ event_source_url: location.href,
+ user_data: Object.assign({ fbp: fbGetCookie('_fbp'), fbc: fbGetFbc(), external_id: fbAnonId() }, userDataOverrides || {}),
+ custom_data: customData || {},
+ }),
+ keepalive: true,
+ }).catch(function(){});
+ } catch (e) {}
+ }
+
+ const pvEventId = genEventId();
+ fbq('track', 'PageView', {}, { eventID: pvEventId });
+ sendCapiEvent('PageView', pvEventId, {});
+
+ const vcEventId = genEventId();
+ const vcData = { content_name: 'Combo Biotina', content_type: 'product', currency: 'ARS', value: 43000 };
+ fbq('track', 'ViewContent', vcData, { eventID: vcEventId });
+ sendCapiEvent('ViewContent', vcEventId, vcData);
  </script>
  <noscript><img height="1" width="1" style="display:none"
  src="https://www.facebook.com/tr?id=914585307701969&ev=PageView&noscript=1"
@@ -2344,7 +2411,7 @@
  // Poné esto en true recién después de desplegar functions/ con `firebase deploy`
  // y configurar el secret MP_ACCESS_TOKEN. Mientras esté en false, el checkout
  // sigue usando los links fijos de arriba sin ningún cambio.
- const MP_AUTO_CONFIRM_ENABLED = false;
+ const MP_AUTO_CONFIRM_ENABLED = true;
  const CLOUD_FN_CREAR_PREFERENCIA = 'https://us-central1-biotina-pg.cloudfunctions.net/crearPreferencia';
  const PRECIOS_NUM = { 1: 43000, 2: 80000, 3: 100000 };
  // ─────────────────────────────────────────────────────────────────────────
@@ -2372,7 +2439,10 @@
  const btn = document.getElementById('btnConfirmarCompra');
  if (btn) { btn.disabled = false; btn.textContent = 'Confirmar y pagar →'; }
  if (typeof fbq === 'function') {
- fbq('track', 'AddToCart', { content_name: precios[selectedQty].label, content_type: 'product', currency: 'ARS', value: PRECIOS_NUM[selectedQty] });
+ const atcData = { content_name: precios[selectedQty].label, content_type: 'product', currency: 'ARS', value: PRECIOS_NUM[selectedQty] };
+ const atcEventId = genEventId();
+ fbq('track', 'AddToCart', atcData, { eventID: atcEventId });
+ sendCapiEvent('AddToCart', atcEventId, atcData);
  }
  }
 
@@ -2396,15 +2466,24 @@
  });
  if (!valido) { alert('Por favor completá todos los campos obligatorios.'); return; }
 
- if (typeof fbq === 'function') {
- fbq('track', 'InitiateCheckout', { content_name: precios[selectedQty].label, content_type: 'product', currency: 'ARS', value: PRECIOS_NUM[selectedQty] });
- }
-
  // Guardar datos
  const datos = {};
  campos.forEach(id => { datos[id] = document.getElementById(id).value; });
  datos.producto = precios[selectedQty].label;
  datos.fecha = new Date().toLocaleString('es-AR');
+
+ // Meta: InitiateCheckout con Advanced Matching — acá ya tenemos los datos
+ // reales del formulario, así que se los pasamos al pixel (fbq los hashea
+ // solo, client-side) y al mismo tiempo por CAPI (server-side, hasheado ahí).
+ // Mismo event_id en los dos para que Meta deduplique en vez de contar doble.
+ const icEventId = genEventId();
+ const icCustomData = { content_name: precios[selectedQty].label, content_type: 'product', currency: 'ARS', value: PRECIOS_NUM[selectedQty] };
+ const icUserData = { em: datos.email, ph: fbNormalizePhone(datos.telefono), fn: datos.nombre, ln: datos.apellido, ct: datos.localidad, st: datos.provincia, zp: datos.cp, external_id: datos.dni };
+ if (typeof fbq === 'function') {
+ fbq('set', 'userData', Object.assign({ country: 'ar' }, icUserData));
+ fbq('track', 'InitiateCheckout', icCustomData, { eventID: icEventId });
+ sendCapiEvent('InitiateCheckout', icEventId, icCustomData, icUserData);
+ }
 
  // Aviso de venta por WhatsApp (bot de n8n) — no bloquea el checkout si falla.
  fetch('https://n8n.productoscapilarespg.com/webhook/aviso-venta', {
@@ -2416,13 +2495,22 @@
  // Datos que viajan siempre: sean guardados en localStorage o en Firestore,
  // formStatus/timestamp permiten que "Formularios completados" y "Carritos
  // abandonados" en el admin vean este pedido sin importar si el pago
- // después se aprueba, rechaza o queda abandonado.
+ // después se aprueba, rechaza o queda abandonado. Sumamos precio/fbp/fbc/
+ // event_source_url para poder mandar un Purchase por CAPI bien "matcheado"
+ // cuando MercadoPago confirme el pago, y para la página de "gracias".
  const nowTs = Date.now();
+ const datosTracking = Object.assign({}, datos, {
+ precio: PRECIOS_NUM[selectedQty],
+ fbp: fbGetCookie('_fbp'),
+ fbc: fbGetFbc(),
+ event_source_url: location.href,
+ });
 
- // Guardar en localStorage (siempre, como respaldo)
+ // Guardar en localStorage (siempre, como respaldo, y para la página de "gracias")
  const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
- pedidos.push({ ...datos, formStatus: 'pendiente', timestamp: nowTs });
+ pedidos.push({ ...datosTracking, formStatus: 'pendiente', timestamp: nowTs });
  localStorage.setItem('pedidos', JSON.stringify(pedidos));
+ localStorage.setItem('ultimoPedido', JSON.stringify(datosTracking));
 
  const btnConfirmar = document.getElementById('btnConfirmarCompra');
  if (btnConfirmar) { btnConfirmar.disabled = true; btnConfirmar.textContent = 'Procesando...'; }
@@ -2487,7 +2575,7 @@
  // mitad de camino al cambiar de página y el pedido nunca llega a la base de
  // datos — así es como se perdían clientes con pagos rechazados o abandonados.
  const guardado = firebase.firestore().collection('pedidos').add({
- ...datos,
+ ...datosTracking,
  status: 'abandonado',
  formStatus: 'pendiente',
  timestamp: nowTs,
@@ -2496,6 +2584,16 @@
 
  const tope = new Promise(resolve => setTimeout(() => resolve(null), 2500));
  Promise.race([guardado, tope]).then(async (docRef) => {
+ if (docRef) {
+ // Guardamos el id real del pedido junto a los datos en localStorage: la
+ // página de "gracias" lo usa como event_id del Purchase para deduplicar
+ // con el que ya mandamos por CAPI desde el webhook de MercadoPago.
+ try {
+ const ult = JSON.parse(localStorage.getItem('ultimoPedido') || '{}');
+ ult.pedidoId = docRef.id;
+ localStorage.setItem('ultimoPedido', JSON.stringify(ult));
+ } catch (e) {}
+ }
  const dynamicUrl = docRef ? await crearPagoDinamico(docRef.id) : null;
  if (dynamicUrl) { window.location.href = dynamicUrl; return; }
  irAlSiguientePaso();
@@ -2702,6 +2800,62 @@
  // Asegurar que la página arranque desde arriba
  history.scrollRestoration = 'manual';
  window.scrollTo(0, 0);
+
+ // ─── VUELTA DE MERCADOPAGO (?pago=aprobado|pendiente|rechazado&pid=...) ────
+ // Hoy esto no se manejaba: el cliente volvía del pago y caía en la home sin
+ // ningún aviso. Además de la UX, es el único lugar donde el pixel del
+ // browser puede disparar el Purchase (con Advanced Matching de verdad, desde
+ // los datos que guardamos en localStorage al confirmar la compra).
+ function mostrarBannerPago(texto, bg, color) {
+ const div = document.createElement('div');
+ div.textContent = texto;
+ div.style.cssText = `position:fixed;top:0;left:0;right:0;z-index:99999;padding:14px 44px 14px 20px;text-align:center;font-weight:600;font-size:0.92rem;background:${bg};color:${color};box-shadow:0 2px 8px rgba(0,0,0,0.15)`;
+ const closeBtn = document.createElement('span');
+ closeBtn.textContent = '✕';
+ closeBtn.style.cssText = 'position:absolute;right:16px;top:50%;transform:translateY(-50%);cursor:pointer;font-weight:700';
+ closeBtn.onclick = () => div.remove();
+ div.appendChild(closeBtn);
+ document.body.prepend(div);
+ }
+
+ (function handlePaymentReturn() {
+ const params = new URLSearchParams(location.search);
+ const pago = params.get('pago');
+ if (!pago) return;
+ const pid = params.get('pid');
+
+ // Limpiamos la URL para que un refresh no vuelva a disparar el Purchase.
+ history.replaceState({}, '', location.pathname);
+
+ let ultimo = null;
+ try { ultimo = JSON.parse(localStorage.getItem('ultimoPedido') || 'null'); } catch (e) {}
+
+ if (pago === 'aprobado') {
+ const flagKey = 'purchasePixelFired_' + (pid || 'sin-id');
+ if (!sessionStorage.getItem(flagKey) && typeof fbq === 'function') {
+ sessionStorage.setItem(flagKey, '1');
+ const eventId = pid || genEventId();
+ const purchaseData = { currency: 'ARS', content_type: 'product' };
+ if (ultimo) { purchaseData.value = ultimo.precio; purchaseData.content_name = ultimo.producto; }
+ if (ultimo && ultimo.email) {
+ fbq('set', 'userData', {
+ em: ultimo.email, ph: fbNormalizePhone(ultimo.telefono), fn: ultimo.nombre, ln: ultimo.apellido,
+ ct: ultimo.localidad, st: ultimo.provincia, zp: ultimo.cp, country: 'ar',
+ });
+ }
+ fbq('track', 'Purchase', purchaseData, { eventID: eventId });
+ sendCapiEvent('Purchase', eventId, purchaseData, ultimo ? {
+ em: ultimo.email, ph: fbNormalizePhone(ultimo.telefono), fn: ultimo.nombre, ln: ultimo.apellido,
+ ct: ultimo.localidad, st: ultimo.provincia, zp: ultimo.cp, external_id: ultimo.dni,
+ } : {});
+ }
+ mostrarBannerPago('✅ ¡Pago aprobado! Gracias por tu compra' + (ultimo && ultimo.producto ? ' de ' + ultimo.producto : '') + '. Te contactamos por WhatsApp con el seguimiento del envío.', '#e8f5ee', '#1e6640');
+ } else if (pago === 'pendiente') {
+ mostrarBannerPago('⏳ Tu pago está pendiente de confirmación. Te avisamos apenas se acredite.', '#fff3cd', '#856404');
+ } else if (pago === 'rechazado') {
+ mostrarBannerPago('⚠️ El pago no se pudo procesar. Podés intentar de nuevo o escribirnos por WhatsApp.', '#fde8e8', '#9b2c2c');
+ }
+ })();
  </script>
 
  <!-- FLOATING WA BUTTON -->
