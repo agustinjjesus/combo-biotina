@@ -1524,6 +1524,13 @@
  datos.producto = precios[selectedQty].label;
  datos.fecha = new Date().toLocaleString('es-AR');
 
+ // Aviso de venta por WhatsApp (bot de n8n) — no bloquea el checkout si falla.
+ fetch('https://n8n.productoscapilarespg.com/webhook/aviso-venta', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify(datos),
+ }).catch(e => console.warn('Aviso WhatsApp no disponible:', e));
+
  const nowTs = Date.now();
 
  const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
