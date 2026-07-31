@@ -545,6 +545,15 @@
       43000:  { label: 'Combo Biotina x1 — $43.000',  qty: 1, precio: 43000,  mp: 2838, costo: 9888, envio: 9000, ganancia: 21274 },
       80000:  { label: 'Combo Biotina x2 — $80.000',  qty: 2, precio: 80000,  mp: 5280, costo: 9888, envio: 9000, ganancia: 55832 },
       100000: { label: 'Combo Biotina x3 — $100.000', qty: 3, precio: 100000, mp: 6600, costo: 9888, envio: 9000, ganancia: 74512 },
+      // ⚠️ costo/envío en $0 = todavía no me pasaste el costo real de estos productos.
+      // Las ventas ya cuentan bien, pero la "Ganancia neta" de estos dos no es precisa
+      // hasta que actualices costo/envio con los números reales.
+      25000:  { label: 'Biotina Pura x1 — $25.000', qty: 1, precio: 25000, mp: 1650, costo: 0, envio: 0, ganancia: 23350 },
+      45000:  { label: 'Biotina Pura x2 — $45.000', qty: 2, precio: 45000, mp: 2970, costo: 0, envio: 0, ganancia: 42030 },
+      60000:  { label: 'Biotina Pura x3 — $60.000', qty: 3, precio: 60000, mp: 3960, costo: 0, envio: 0, ganancia: 56040 },
+      32000:  { label: 'Dúo Shampoo + Acondicionador x1 — $32.000', qty: 1, precio: 32000, mp: 2112, costo: 0, envio: 0, ganancia: 29888 },
+      58000:  { label: 'Dúo Shampoo + Acondicionador x2 — $58.000', qty: 2, precio: 58000, mp: 3828, costo: 0, envio: 0, ganancia: 54172 },
+      75000:  { label: 'Dúo Shampoo + Acondicionador x3 — $75.000', qty: 3, precio: 75000, mp: 4950, costo: 0, envio: 0, ganancia: 70050 },
     };
 
     const STATUS_CFG = {
@@ -952,7 +961,7 @@
           <td class="td-name">${nombre}</td>
           <td class="td-phone">${p.telefono || '—'}</td>
           <td>${p.provincia || '—'}</td>
-          <td>${c ? `Combo x${c.qty}` : '—'}</td>
+          <td>${p.producto || (c ? `Combo x${c.qty}` : '—')}</td>
           <td class="td-r">${c ? fmt(c.precio) : '—'}</td>
           <td class="td-r td-mp">${c ? fmt(c.mp) : '—'}</td>
           <td class="td-r">${c ? fmt(c.costo) : '—'}</td>
