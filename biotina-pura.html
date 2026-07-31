@@ -523,10 +523,24 @@
  white-space: nowrap;
  }
 
- .qty-shipping {
+ .qty-shipping-free {
+ display: inline-flex;
+ align-items: center;
+ gap: 4px;
+ background: var(--gold);
+ color: #fff;
+ font-size: 0.72rem;
+ font-weight: 700;
+ letter-spacing: 0.02em;
+ padding: 4px 10px;
+ border-radius: 20px;
+ margin-top: 6px;
+ }
+
+ .qty-shipping-paid {
  display: inline-block;
  font-size: 0.68rem;
- color: var(--green);
+ color: var(--gray);
  font-weight: 600;
  margin-top: 3px;
  }
@@ -1020,7 +1034,7 @@
  <div class="qty-info">
  <strong>Lleva 1</strong>
  <span>Tratamiento 1 mes</span>
- <span class="qty-shipping"> + $5.000 envío a domicilio</span>
+ <span class="qty-shipping-paid"> + $5.000 envío a domicilio</span>
  </div>
  </div>
  <div class="qty-price">
@@ -1036,7 +1050,7 @@
  <div class="qty-info">
  <strong>Lleva 2</strong>
  <span>Tratamiento 2 meses</span>
- <span class="qty-shipping"> Envío gratis incluido</span>
+ <span class="qty-shipping-free">🚚 Envío gratis incluido</span>
  </div>
  </div>
  <div class="qty-price">
@@ -1052,7 +1066,7 @@
  <div class="qty-info">
  <strong>Lleva 3</strong>
  <span>Tratamiento 3 meses</span>
- <span class="qty-shipping"> Envío gratis incluido</span>
+ <span class="qty-shipping-free">🚚 Envío gratis incluido</span>
  </div>
  </div>
  <div class="qty-price">
