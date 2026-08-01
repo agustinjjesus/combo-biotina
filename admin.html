@@ -141,6 +141,14 @@
       font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700;
       color: var(--green);
     }
+    .prod-stat-row {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.8rem; color: var(--gray); padding: 4px 0;
+      border-top: 1px solid var(--cream2);
+    }
+    .prod-stat-row:first-of-type { border-top: none; }
+    .prod-stat-row strong { color: var(--dark); font-weight: 700; }
+    .prod-stat-ganancia strong { color: var(--green); font-size: 0.95rem; }
     .btn-reset {
       background: none; border: 2px solid var(--cream2); color: var(--gray);
       padding: 8px 16px; border-radius: 8px; font-family: 'Outfit', sans-serif;
@@ -363,6 +371,17 @@
         </div>
       </div>
 
+      <!-- GANANCIAS POR PRODUCTO -->
+      <div class="dist-section">
+        <div class="dist-header">
+          <div>
+            <div class="dist-title">🧴 Ganancias por producto (este mes)</div>
+            <p class="dist-sub">Pedidos confirmados del mes, agrupados por producto</p>
+          </div>
+        </div>
+        <div class="dist-grid" id="prodGrid"></div>
+      </div>
+
       <!-- DISTRIBUCIÓN DE GANANCIAS -->
       <div class="dist-section">
         <div class="dist-header">
@@ -543,9 +562,9 @@
     const MI_NUMERO_PREPARACION = '5491140377694';
 
     const COMBOS = {
-      43000:  { label: 'Combo Biotina x1 — $43.000',  qty: 1, precio: 43000,  mp: 2838, costo: 9888, envio: 9000, ganancia: 21274 },
-      80000:  { label: 'Combo Biotina x2 — $80.000',  qty: 2, precio: 80000,  mp: 5280, costo: 9888, envio: 9000, ganancia: 55832 },
-      100000: { label: 'Combo Biotina x3 — $100.000', qty: 3, precio: 100000, mp: 6600, costo: 9888, envio: 9000, ganancia: 74512 },
+      43000:  { label: 'Combo Biotina x1 — $43.000',  qty: 1, precio: 43000,  mp: 2838, costo: 9888, envio: 9000, ganancia: 21274, familia: 'Combo Biotina' },
+      80000:  { label: 'Combo Biotina x2 — $80.000',  qty: 2, precio: 80000,  mp: 5280, costo: 9888, envio: 9000, ganancia: 55832, familia: 'Combo Biotina' },
+      100000: { label: 'Combo Biotina x3 — $100.000', qty: 3, precio: 100000, mp: 6600, costo: 9888, envio: 9000, ganancia: 74512, familia: 'Combo Biotina' },
       // Biotina Pura — costos reales que me pasaste: materia prima $1.500 + envase $790 +
       // etiqueta $1.000 = $3.290 por unidad, más un envío único de $10.000 por pedido
       // (no por unidad). Ganancia = precio - costo total (sin restar la comisión de
@@ -555,14 +574,14 @@
       // que paga el negocio sigue siendo $10.000, sin cambios). Se deja la entrada
       // vieja (25000) para que los pedidos ya guardados con ese precio sigan
       // calculando bien su ganancia histórica.
-      25000:  { label: 'Biotina Pura x1 — $25.000', qty: 1, precio: 25000, mp: 1650, costo: 3290, envio: 10000, ganancia: 11710 },
-      30000:  { label: 'Biotina Pura x1 + envío — $30.000', qty: 1, precio: 30000, mp: 1980, costo: 3290, envio: 10000, ganancia: 16710 },
-      45000:  { label: 'Biotina Pura x2 — $45.000', qty: 2, precio: 45000, mp: 2970, costo: 6580, envio: 10000, ganancia: 28420 },
-      60000:  { label: 'Biotina Pura x3 — $60.000', qty: 3, precio: 60000, mp: 3960, costo: 9870, envio: 10000, ganancia: 40130 },
+      25000:  { label: 'Biotina Pura x1 — $25.000', qty: 1, precio: 25000, mp: 1650, costo: 3290, envio: 10000, ganancia: 11710, familia: 'Biotina Pura' },
+      30000:  { label: 'Biotina Pura x1 + envío — $30.000', qty: 1, precio: 30000, mp: 1980, costo: 3290, envio: 10000, ganancia: 16710, familia: 'Biotina Pura' },
+      45000:  { label: 'Biotina Pura x2 — $45.000', qty: 2, precio: 45000, mp: 2970, costo: 6580, envio: 10000, ganancia: 28420, familia: 'Biotina Pura' },
+      60000:  { label: 'Biotina Pura x3 — $60.000', qty: 3, precio: 60000, mp: 3960, costo: 9870, envio: 10000, ganancia: 40130, familia: 'Biotina Pura' },
       // ⚠️ costo/envío en $0 = todavía no me pasaste el costo real de este producto.
-      32000:  { label: 'Dúo Shampoo + Acondicionador x1 — $32.000', qty: 1, precio: 32000, mp: 2112, costo: 0, envio: 0, ganancia: 29888 },
-      58000:  { label: 'Dúo Shampoo + Acondicionador x2 — $58.000', qty: 2, precio: 58000, mp: 3828, costo: 0, envio: 0, ganancia: 54172 },
-      75000:  { label: 'Dúo Shampoo + Acondicionador x3 — $75.000', qty: 3, precio: 75000, mp: 4950, costo: 0, envio: 0, ganancia: 70050 },
+      32000:  { label: 'Dúo Shampoo + Acondicionador x1 — $32.000', qty: 1, precio: 32000, mp: 2112, costo: 0, envio: 0, ganancia: 29888, familia: 'Dúo Shampoo + Crema' },
+      58000:  { label: 'Dúo Shampoo + Acondicionador x2 — $58.000', qty: 2, precio: 58000, mp: 3828, costo: 0, envio: 0, ganancia: 54172, familia: 'Dúo Shampoo + Crema' },
+      75000:  { label: 'Dúo Shampoo + Acondicionador x3 — $75.000', qty: 3, precio: 75000, mp: 4950, costo: 0, envio: 0, ganancia: 70050, familia: 'Dúo Shampoo + Crema' },
     };
 
     const STATUS_CFG = {
@@ -827,6 +846,28 @@
         parseInt(p[2]) === now.getFullYear();
     }
 
+    /* ── GANANCIAS POR PRODUCTO ────────────────────────────────────────── */
+    const FAMILIAS = [
+      { key: 'Combo Biotina',        emoji: '🌿' },
+      { key: 'Biotina Pura',         emoji: '💧' },
+      { key: 'Dúo Shampoo + Crema',  emoji: '🧴' },
+    ];
+
+    function renderProductos(porProducto) {
+      document.getElementById('prodGrid').innerHTML = FAMILIAS.map(f => {
+        const d = porProducto[f.key] || { pedidos: 0, ingresos: 0, ganancia: 0 };
+        return `
+          <div class="dist-card">
+            <div class="dist-card-emoji">${f.emoji}</div>
+            <div class="dist-card-label">${f.key}</div>
+            <div class="prod-stat-row"><span>Pedidos</span><strong>${d.pedidos}</strong></div>
+            <div class="prod-stat-row"><span>Ingresos</span><strong>${fmt(d.ingresos)}</strong></div>
+            <div class="prod-stat-row prod-stat-ganancia"><span>Ganancia</span><strong>${fmt(d.ganancia)}</strong></div>
+          </div>
+        `;
+      }).join('');
+    }
+
     /* ── DISTRIBUCIÓN DE GANANCIAS ──────────────────────────────────── */
     const DIST_DEFAULTS = [
       { key: 'sueldo',    emoji: '💰', label: 'Tu sueldo / gastos personales', pct: 30 },
@@ -897,12 +938,20 @@
     /* ── STATS ───────────────────────────────────────────────────────── */
     function loadData() {
       let ventasHoy = 0, ventasMes = 0, ingresosMes = 0, gananciaMes = 0, abandoned = 0;
+      const porProducto = {};
 
       pedidosCache.forEach(p => {
         const combo = p._c;
         if (p._st === 'confirmado' && combo) {
           if (isToday(p.fecha))     ventasHoy++;
-          if (isThisMonth(p.fecha)) { ventasMes++; ingresosMes += combo.precio; gananciaMes += combo.ganancia; }
+          if (isThisMonth(p.fecha)) {
+            ventasMes++; ingresosMes += combo.precio; gananciaMes += combo.ganancia;
+            const fam = combo.familia || 'Otro';
+            if (!porProducto[fam]) porProducto[fam] = { pedidos: 0, ingresos: 0, ganancia: 0 };
+            porProducto[fam].pedidos++;
+            porProducto[fam].ingresos += combo.precio;
+            porProducto[fam].ganancia += combo.ganancia;
+          }
         }
         if (p._st === 'abandonado') abandoned++;
       });
@@ -912,6 +961,7 @@
       document.getElementById('sIngresos').textContent  = fmt(ingresosMes);
       document.getElementById('sGanancia').textContent  = fmt(gananciaMes);
       document.getElementById('sAbandoned').textContent = abandoned;
+      renderProductos(porProducto);
       renderDistribucion(gananciaMes);
 
       renderTable();
