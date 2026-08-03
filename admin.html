@@ -102,7 +102,7 @@
     .c-blue  .stat-value { color: #1d4ed8; }
     .c-warn  .stat-value { color: #c08000; }
 
-    /* ── DISTRIBUCIÓN DE GANANCIAS ──────────────────────────── */
+    /* ── GANANCIAS POR PRODUCTO ──────────────────────────────── */
     .dist-section {
       background: white; border-radius: 14px;
       padding: 22px 24px; margin-bottom: 28px;
@@ -114,12 +114,6 @@
     .dist-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
     .dist-sub { font-size: 0.78rem; color: var(--gray); margin-bottom: 16px; }
     .dist-sub strong { color: var(--green); }
-    .dist-alert {
-      display: none; background: #fff3cd; border: 1px solid #ffc107;
-      border-radius: 8px; padding: 10px 14px;
-      font-size: 0.78rem; color: #856404; font-weight: 600; margin-bottom: 16px;
-    }
-    .dist-alert.show { display: block; }
     .dist-grid {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
     }
@@ -129,18 +123,6 @@
     }
     .dist-card-emoji { font-size: 1.3rem; margin-bottom: 8px; }
     .dist-card-label { font-size: 0.78rem; font-weight: 600; color: var(--dark); margin-bottom: 10px; line-height: 1.3; }
-    .dist-amt-row {
-      display: flex; align-items: center; gap: 4px;
-      border: 2px solid var(--cream2); border-radius: 8px;
-      padding: 6px 10px; background: var(--cream); transition: border-color 0.2s;
-    }
-    .dist-amt-row:focus-within { border-color: var(--coral); background: white; }
-    .dist-amt-sign { font-size: 1.15rem; font-weight: 700; color: var(--green); }
-    .dist-input-amount {
-      flex: 1; width: 100%; border: none; background: none; outline: none;
-      font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700;
-      color: var(--green);
-    }
     .prod-stat-row {
       display: flex; align-items: center; justify-content: space-between;
       font-size: 0.8rem; color: var(--gray); padding: 4px 0;
@@ -149,12 +131,6 @@
     .prod-stat-row:first-of-type { border-top: none; }
     .prod-stat-row strong { color: var(--dark); font-weight: 700; }
     .prod-stat-ganancia strong { color: var(--green); font-size: 0.95rem; }
-    .btn-reset {
-      background: none; border: 2px solid var(--cream2); color: var(--gray);
-      padding: 8px 16px; border-radius: 8px; font-family: 'Outfit', sans-serif;
-      font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap;
-    }
-    .btn-reset:hover { border-color: var(--coral); color: var(--coral); }
     @media (max-width: 900px) { .dist-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .dist-grid { grid-template-columns: 1fr; } }
 
@@ -389,18 +365,6 @@
         <div class="dist-grid" id="prodGrid"></div>
       </div>
 
-      <!-- DISTRIBUCIÓN DE GANANCIAS -->
-      <div class="dist-section">
-        <div class="dist-header">
-          <div>
-            <div class="dist-title">📊 Distribución de ganancias del mes</div>
-            <p class="dist-sub">Base: <strong id="distBase">$0</strong> de ganancia neta · Te queda sin asignar: <strong id="distRestante" style="color:var(--green)">$0</strong></p>
-          </div>
-          <button class="btn-reset" onclick="resetDistribucion()">↺ Restablecer valores</button>
-        </div>
-        <div id="distAlert" class="dist-alert">⚠️ Asignaste más plata de la que ganaste este mes — revisá los montos.</div>
-        <div class="dist-grid" id="distGrid"></div>
-      </div>
 
       <!-- FORM NUEVA VENTA -->
       <div class="form-section">
@@ -875,73 +839,6 @@
       }).join('');
     }
 
-    /* ── DISTRIBUCIÓN DE GANANCIAS ──────────────────────────────────── */
-    const DIST_DEFAULTS = [
-      { key: 'sueldo',    emoji: '💰', label: 'Tu sueldo / gastos personales', pct: 30 },
-      { key: 'publi',     emoji: '📣', label: 'Publicidad',                     pct: 25 },
-      { key: 'stock',     emoji: '📦', label: 'Materia prima / stock',          pct: 20 },
-      { key: 'gonza',     emoji: '🤝', label: 'Sueldo Gonza',                   pct: 15 },
-      { key: 'colchon',   emoji: '🛡️', label: 'Colchón / imprevistos',         pct: 10 },
-    ];
-
-    // Los % de DIST_DEFAULTS solo se usan para sugerir un reparto inicial en
-    // pesos la primera vez (o al tocar "Restablecer") — una vez que el usuario
-    // toca cualquier monto, se guarda en $ y ya no se recalcula solo con la
-    // ganancia del mes, para no pisarle valores que ya ajustó a mano.
-    function loadDistAmts(gananciaMes) {
-      try {
-        const saved = JSON.parse(localStorage.getItem('distAmts') || 'null');
-        if (saved && saved.length === DIST_DEFAULTS.length) return saved;
-      } catch(e) {}
-      return DIST_DEFAULTS.map(d => Math.round(gananciaMes * d.pct / 100));
-    }
-
-    function saveDistAmts(amts) {
-      localStorage.setItem('distAmts', JSON.stringify(amts));
-    }
-
-    function resetDistribucion() {
-      const base = window._lastGananciaMes || 0;
-      saveDistAmts(DIST_DEFAULTS.map(d => Math.round(base * d.pct / 100)));
-      renderDistribucion(base);
-    }
-
-    function refreshDistSummary(amts) {
-      const base = window._lastGananciaMes || 0;
-      const restante = base - amts.reduce((a, b) => a + b, 0);
-      const restanteEl = document.getElementById('distRestante');
-      restanteEl.textContent = fmt(restante);
-      restanteEl.style.color = restante >= 0 ? 'var(--green)' : 'var(--coral)';
-      document.getElementById('distAlert').classList.toggle('show', restante < 0);
-    }
-
-    function updateDistAmt() {
-      const amts = DIST_DEFAULTS.map((_, i) => parseFloat(document.getElementById('distAmt_' + i)?.value) || 0);
-      saveDistAmts(amts);
-      refreshDistSummary(amts);
-    }
-
-    function renderDistribucion(gananciaMes) {
-      window._lastGananciaMes = gananciaMes;
-      const amts = loadDistAmts(gananciaMes);
-
-      document.getElementById('distBase').textContent = fmt(gananciaMes);
-      refreshDistSummary(amts);
-
-      document.getElementById('distGrid').innerHTML = DIST_DEFAULTS.map((d, i) => `
-        <div class="dist-card">
-          <div class="dist-card-emoji">${d.emoji}</div>
-          <div class="dist-card-label">${d.label}</div>
-          <div class="dist-amt-row">
-            <span class="dist-amt-sign">$</span>
-            <input type="number" class="dist-input-amount" id="distAmt_${i}"
-              value="${amts[i]}" min="0" step="1000"
-              oninput="updateDistAmt()" />
-          </div>
-        </div>
-      `).join('');
-    }
-
     /* ── STATS ───────────────────────────────────────────────────────── */
     function setStatsPeriodo(val) {
       window._statsPeriodo = val;
@@ -951,7 +848,6 @@
     function loadData() {
       const periodo = window._statsPeriodo || document.getElementById('statsPeriodo')?.value || 'todo';
       let ventasHoy = 0, ventasPeriodo = 0, ingresosPeriodo = 0, gananciaPeriodo = 0, abandoned = 0;
-      let gananciaMesActual = 0; // siempre el mes en curso — la usa "Distribución de ganancias", que es un presupuesto mensual y no debería moverse con el selector de período de más arriba.
       const porProducto = {};
 
       pedidosCache.forEach(p => {
@@ -964,7 +860,6 @@
         // re-tocarlos uno por uno.
         if ((p._st === 'confirmado' || p._fst === 'aprobado') && combo) {
           if (isToday(p.fecha))     ventasHoy++;
-          if (isThisMonth(p.fecha)) gananciaMesActual += combo.ganancia;
 
           if (periodo === 'todo' || isThisMonth(p.fecha)) {
             ventasPeriodo++; ingresosPeriodo += combo.precio; gananciaPeriodo += combo.ganancia;
@@ -990,7 +885,6 @@
       document.getElementById('lblProdPeriodo').textContent = periodo === 'todo' ? '🧴 Ganancias por producto (histórico)' : '🧴 Ganancias por producto (este mes)';
 
       renderProductos(porProducto);
-      renderDistribucion(gananciaMesActual);
 
       renderTable();
       loadFormularios();
