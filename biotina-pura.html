@@ -927,6 +927,40 @@
  .trust-badges { gap: 16px; }
  }
 
+ /* ─── STARS / RESEÑAS ─── */
+ .stars-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+ .stars { color: #111111; font-size: 1rem; }
+ .stars-text { font-size: 0.8rem; color: var(--gray); font-weight: 500; }
+ .stars-link { text-decoration: underline; cursor: pointer; }
+ .stars-link:hover { color: var(--dark); }
+
+ .reviews-section { padding: 80px 48px; max-width: 1100px; margin: 0 auto; }
+ .reviews-section h2 { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; text-align: center; margin-bottom: 8px; }
+ .reviews-stars { text-align: center; margin-bottom: 32px; }
+ .reviews-stars .stars { font-size: 1.4rem; }
+ .reviews-stars p { font-size: 0.82rem; color: var(--gray); margin-top: 4px; }
+ .rating-bars { background: var(--white); border-radius: 16px; padding: 24px; margin-bottom: 40px; max-width: 400px; margin-left: auto; margin-right: auto; }
+ .rating-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+ .rating-label { font-size: 0.78rem; color: var(--gray); width: 20px; text-align: right; }
+ .rating-bar-bg { flex: 1; height: 8px; background: var(--cream2); border-radius: 4px; overflow: hidden; }
+ .rating-bar-fill { height: 100%; background: var(--coral); border-radius: 4px; }
+ .rating-pct { font-size: 0.75rem; color: var(--gray); width: 28px; }
+ .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+ .review-card { background: var(--white); border-radius: 16px; padding: 24px; position: relative; border: 1px solid var(--cream2); }
+ .review-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+ .review-verified { font-size: 0.65rem; color: var(--green); display: flex; align-items: center; gap: 4px; font-weight: 500; }
+ .review-stars { font-size: 0.85rem; color: #111111; }
+ .review-title { font-weight: 600; font-size: 0.88rem; margin-bottom: 8px; }
+ .review-text { font-size: 0.82rem; color: var(--gray); line-height: 1.65; margin-bottom: 12px; }
+ .review-meta { font-size: 0.7rem; color: var(--gray-light); display: flex; justify-content: space-between; }
+ .btn-reviews {
+ display: block; margin: 32px auto 0; background: none; border: 2px solid var(--coral); color: var(--coral);
+ padding: 12px 32px; border-radius: 24px; font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 500;
+ cursor: pointer; transition: all 0.2s;
+ }
+ .btn-reviews:hover { background: var(--coral); color: white; }
+ @media (max-width: 768px) { .reviews-section { padding: 56px 20px; } .reviews-grid { grid-template-columns: 1fr; } }
+
  /* ─── ANIMATIONS ─── */
  @keyframes fadeUp {
  from { opacity: 0; transform: translateY(20px); }
@@ -1006,6 +1040,11 @@
  </div>
  <h1>Biotina Pura® | Menos caída, activá el crecimiento desde la raíz.</h1>
  <p class="combo-composition">Spray de 500ml · Fórmula concentrada de Biotina B7</p>
+
+ <div class="stars-row">
+ <span class="stars">★★★★★</span>
+ <a href="#resenas" class="stars-text stars-link">4.9 · 1.680 reseñas</a>
+ </div>
 
  <ul class="benefits-list">
  <li>
@@ -1304,6 +1343,86 @@
  <button class="faq-q" onclick="toggleFaq(this)">¿Qué métodos de pago aceptan? <span class="faq-arrow">+</span></button>
  <div class="faq-a">Aceptamos tarjeta de crédito, débito, efectivo y dinero en cuenta a través de MercadoPago.</div>
  </div>
+ </div>
+
+ <!-- REVIEWS -->
+ <div class="reviews-section" id="resenas">
+ <h2>Más de 1.680 clientas felices</h2>
+ <div class="reviews-stars">
+ <div class="stars">★★★★★</div>
+ <p>4.9 de 5 estrellas</p>
+ </div>
+
+ <div class="rating-bars">
+ <div class="rating-row">
+ <span class="rating-label">5</span>
+ <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:91%"></div></div>
+ <span class="rating-pct">91%</span>
+ </div>
+ <div class="rating-row">
+ <span class="rating-label">4</span>
+ <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:7%"></div></div>
+ <span class="rating-pct">7%</span>
+ </div>
+ <div class="rating-row">
+ <span class="rating-label">3</span>
+ <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:1%"></div></div>
+ <span class="rating-pct">1%</span>
+ </div>
+ <div class="rating-row">
+ <span class="rating-label">2</span>
+ <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:1%"></div></div>
+ <span class="rating-pct">1%</span>
+ </div>
+ <div class="rating-row">
+ <span class="rating-label">1</span>
+ <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:0%"></div></div>
+ <span class="rating-pct">0%</span>
+ </div>
+ </div>
+
+ <div class="reviews-grid">
+ <div class="review-card">
+ <div class="review-header">
+ <span class="review-stars">★★★★★</span>
+ <span class="review-verified"> Verificado</span>
+ </div>
+ <div class="review-title">El mejor tratamiento que probé</div>
+ <p class="review-text">Se me caía muchísimo el pelo y en 1 mes ya noté la diferencia aplicándolo todos los días en la raíz. Estoy fascinada con los resultados.</p>
+ <div class="review-meta">
+ <span>Carla P.</span>
+ <span>hace 2 semanas</span>
+ </div>
+ </div>
+
+ <div class="review-card">
+ <div class="review-header">
+ <span class="review-stars">★★★★★</span>
+ <span class="review-verified"> Verificado</span>
+ </div>
+ <div class="review-title">¡Pelo nuevo!</div>
+ <p class="review-text">Me están saliendo pelitos nuevos en la coronilla. No lo podía creer. Llevo 6 semanas usándolo todos los días sin faltar ni uno.</p>
+ <div class="review-meta">
+ <span>Daniela P.</span>
+ <span>hace 1 mes</span>
+ </div>
+ </div>
+
+ <div class="review-card">
+ <div class="review-header">
+ <span class="review-stars">★★★★★</span>
+ <span class="review-verified"> Verificado</span>
+ </div>
+ <div class="review-title">Salvó mi pelo post-parto</div>
+ <p class="review-text">Después de tener a mi bebé se me caía a mechones. Con la Biotina Pura mejoré un montón en muy poco tiempo, y no deja nada de residuo.</p>
+ <div class="review-meta">
+ <span>Luciana M.</span>
+ <span>hace 3 semanas</span>
+ </div>
+ </div>
+ </div>
+
+ <button class="btn-reviews">Ver todas las reseñas</button>
  </div>
 
  <!-- CTA FINAL -->

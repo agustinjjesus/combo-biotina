@@ -892,6 +892,100 @@
  .trust-badges { gap: 16px; }
  }
 
+ /* ─── STARS / RESEÑAS (hero + sección reviews) ─── */
+ .stars-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+ .stars { color: #111111; font-size: 1rem; }
+ .stars-text { font-size: 0.8rem; color: var(--gray); font-weight: 500; }
+ .stars-link { text-decoration: underline; cursor: pointer; }
+ .stars-link:hover { color: var(--dark); }
+
+ /* ─── QUÉ INCLUYE ─── */
+ .includes-section { background: var(--white); padding: 80px 48px; text-align: center; }
+ .includes-section h2 { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+ .includes-grid { max-width: 1060px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+ .include-card {
+ background: var(--cream); border-radius: 16px; padding: 28px 22px; text-align: left;
+ display: flex; flex-direction: column; gap: 10px; position: relative;
+ cursor: pointer; transition: transform 0.22s ease, box-shadow 0.22s ease;
+ }
+ .include-card--featured { background: #fdf5f2; border: 2px solid var(--coral-light); }
+ .include-badge {
+ position: absolute; top: 16px; right: 16px; background: var(--dark); color: white;
+ font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 8px;
+ }
+ .include-icon { font-size: 1.6rem; }
+ .include-card h3 { font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--dark); line-height: 1.2; }
+ .include-card p { font-size: 0.8rem; color: var(--gray); line-height: 1.7; flex: 1; }
+ .include-tag {
+ font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+ color: var(--coral); border: 1px solid var(--coral-light); border-radius: 20px; padding: 4px 10px;
+ align-self: flex-start;
+ }
+ .include-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,0.10); }
+ .include-card:hover .include-more { opacity: 1; }
+ .include-more {
+ font-size: 0.7rem; font-weight: 600; color: var(--coral); letter-spacing: 0.06em; text-transform: uppercase;
+ margin-top: auto; padding-top: 10px; opacity: 0; transition: opacity 0.2s;
+ }
+ @media (max-width: 768px) {
+ .includes-section { padding: 56px 20px; }
+ .include-more { opacity: 1; }
+ }
+ @media (max-width: 480px) { .includes-grid { grid-template-columns: 1fr; } .pmodal { padding: 28px 20px; } }
+
+ /* ─── MODAL PRODUCTO ─── */
+ .pmodal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1100; align-items: center; justify-content: center; padding: 20px; }
+ .pmodal-overlay.active { display: flex; }
+ .pmodal { background: white; border-radius: 24px; padding: 40px 36px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; animation: modalIn 0.3s ease; position: relative; }
+ .pmodal-close { position: absolute; top: 16px; right: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999; line-height: 1; }
+ .pmodal-close:hover { color: var(--dark); }
+ .pmodal-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+ .pmodal-icon { font-size: 2.4rem; line-height: 1; }
+ .pmodal-header h2 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--dark); line-height: 1.2; }
+ .pmodal-ml { display: inline-block; background: var(--dark); color: white; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; padding: 3px 8px; border-radius: 6px; margin-top: 4px; }
+ .pmodal-tag { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; border-radius: 20px; padding: 4px 12px; display: inline-block; margin-bottom: 16px; align-self: flex-start; }
+ .pmodal-tag.coral { color: var(--coral); border: 1px solid var(--coral-light); }
+ .pmodal-tag.green { color: var(--green); border: 1px solid #b2dfc0; background: #f0faf4; }
+ .pmodal-desc { font-size: 0.85rem; color: var(--gray); line-height: 1.75; margin-bottom: 20px; }
+ .pmodal-section { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--cream2); }
+ .pmodal-list { list-style: none; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+ .pmodal-list li { font-size: 0.83rem; color: var(--dark); display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+ .pmodal-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--coral); flex-shrink: 0; margin-top: 6px; }
+ .pmodal-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+ .pmodal-steps li { font-size: 0.83rem; color: var(--dark); display: flex; gap: 12px; align-items: flex-start; line-height: 1.5; }
+ .pmodal-step-num { width: 22px; height: 22px; background: var(--coral); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; flex-shrink: 0; }
+ .pmodal-nota { background: #f0faf4; border: 1px solid #c3e6cb; border-radius: 10px; padding: 12px 14px; font-size: 0.78rem; color: var(--green); line-height: 1.6; }
+ .pmodal-buy { margin-top: 24px; width: 100%; background: var(--coral); color: white; border: none; padding: 15px; border-radius: 12px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+ .pmodal-buy:hover { background: var(--coral-dark); }
+
+ /* ─── REVIEWS ─── */
+ .reviews-section { padding: 80px 48px; max-width: 1100px; margin: 0 auto; }
+ .reviews-section h2 { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; text-align: center; margin-bottom: 8px; }
+ .reviews-stars { text-align: center; margin-bottom: 32px; }
+ .reviews-stars .stars { font-size: 1.4rem; }
+ .reviews-stars p { font-size: 0.82rem; color: var(--gray); margin-top: 4px; }
+ .rating-bars { background: var(--white); border-radius: 16px; padding: 24px; margin-bottom: 40px; max-width: 400px; margin-left: auto; margin-right: auto; }
+ .rating-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+ .rating-label { font-size: 0.78rem; color: var(--gray); width: 20px; text-align: right; }
+ .rating-bar-bg { flex: 1; height: 8px; background: var(--cream2); border-radius: 4px; overflow: hidden; }
+ .rating-bar-fill { height: 100%; background: var(--coral); border-radius: 4px; }
+ .rating-pct { font-size: 0.75rem; color: var(--gray); width: 28px; }
+ .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+ .review-card { background: var(--white); border-radius: 16px; padding: 24px; position: relative; border: 1px solid var(--cream2); }
+ .review-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+ .review-verified { font-size: 0.65rem; color: var(--green); display: flex; align-items: center; gap: 4px; font-weight: 500; }
+ .review-stars { font-size: 0.85rem; color: #111111; }
+ .review-title { font-weight: 600; font-size: 0.88rem; margin-bottom: 8px; }
+ .review-text { font-size: 0.82rem; color: var(--gray); line-height: 1.65; margin-bottom: 12px; }
+ .review-meta { font-size: 0.7rem; color: var(--gray-light); display: flex; justify-content: space-between; }
+ .btn-reviews {
+ display: block; margin: 32px auto 0; background: none; border: 2px solid var(--coral); color: var(--coral);
+ padding: 12px 32px; border-radius: 24px; font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 500;
+ cursor: pointer; transition: all 0.2s;
+ }
+ .btn-reviews:hover { background: var(--coral); color: white; }
+ @media (max-width: 768px) { .reviews-section { padding: 56px 20px; } .reviews-grid { grid-template-columns: 1fr; } }
+
  /* ─── ANIMATIONS ─── */
  @keyframes fadeUp {
  from { opacity: 0; transform: translateY(20px); }
@@ -971,6 +1065,11 @@
  </div>
  <h1>Dúo Shampoo + Acondicionador® | Fortalece, repará y cuidá tu cabello.</h1>
  <p class="combo-composition">Shampoo 500ml + Acondicionador 500ml · Fórmula con Biotina activa</p>
+
+ <div class="stars-row">
+ <span class="stars">★★★★★</span>
+ <a href="#resenas" class="stars-text stars-link">4.8 · 2.244 reseñas</a>
+ </div>
 
  <ul class="benefits-list">
  <li>
@@ -1101,6 +1200,33 @@
  <div style="text-align:center"><div class="proof-num">0%</div><div class="proof-label">formol ni sulfatos</div></div>
  <div style="text-align:center"><div class="proof-num">Diario</div><div class="proof-label">apto para uso diario</div></div>
  <div style="text-align:center"><div class="proof-num">Gratis</div><div class="proof-label">envío a todo el país</div></div>
+ </div>
+
+ <!-- QUÉ INCLUYE -->
+ <div class="includes-section">
+ <h2>¿Qué incluye el dúo?</h2>
+ <p class="how-sub">2 productos que trabajan en conjunto para una rutina de lavado completa.</p>
+ <div class="includes-grid">
+
+ <div class="include-card" onclick="openProduct(0)" role="button">
+ <div class="include-badge">500ml</div>
+ <div class="include-icon"></div>
+ <h3>Shampoo de Biotina</h3>
+ <p>Limpieza profunda que fortalece desde la raíz. Formulado con biotina activa para reducir la caída, estimular el crecimiento y dejar el cabello más denso y saludable desde la primera lavada. Sin formol ni sulfatos agresivos. Apto uso diario para todo tipo de cabello.</p>
+ <span class="include-tag">USO DIARIO</span>
+ <span class="include-more">Ver más →</span>
+ </div>
+
+ <div class="include-card include-card--featured" onclick="openProduct(1)" role="button">
+ <div class="include-badge">500ml</div>
+ <div class="include-icon"></div>
+ <h3>Acondicionador de Biotina</h3>
+ <p>Hidratación y reparación profunda de medios a puntas. Su fórmula con biotina activa sella la cutícula, elimina el frizz y deja el cabello suave, manejable y con brillo natural. Sin formol ni sulfatos. Apto uso diario.</p>
+ <span class="include-tag">USO DIARIO</span>
+ <span class="include-more">Ver más →</span>
+ </div>
+
+ </div>
  </div>
 
  <!-- BENEFICIOS -->
@@ -1261,6 +1387,86 @@
  </div>
  </div>
 
+ <!-- REVIEWS -->
+ <div class="reviews-section" id="resenas">
+ <h2>Más de 2.244 clientas felices</h2>
+ <div class="reviews-stars">
+ <div class="stars">★★★★★</div>
+ <p>4.8 de 5 estrellas</p>
+ </div>
+
+ <div class="rating-bars">
+ <div class="rating-row">
+ <span class="rating-label">5</span>
+ <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:86%"></div></div>
+ <span class="rating-pct">86%</span>
+ </div>
+ <div class="rating-row">
+ <span class="rating-label">4</span>
+ <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:10%"></div></div>
+ <span class="rating-pct">10%</span>
+ </div>
+ <div class="rating-row">
+ <span class="rating-label">3</span>
+ <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:3%"></div></div>
+ <span class="rating-pct">3%</span>
+ </div>
+ <div class="rating-row">
+ <span class="rating-label">2</span>
+ <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:1%"></div></div>
+ <span class="rating-pct">1%</span>
+ </div>
+ <div class="rating-row">
+ <span class="rating-label">1</span>
+ <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:0%"></div></div>
+ <span class="rating-pct">0%</span>
+ </div>
+ </div>
+
+ <div class="reviews-grid">
+ <div class="review-card">
+ <div class="review-header">
+ <span class="review-stars">★★★★★</span>
+ <span class="review-verified"> Verificado</span>
+ </div>
+ <div class="review-title">Se acabó el frizz</div>
+ <p class="review-text">Tengo el pelo muy encrespado y con el acondicionador lo dejé re manejable. El shampoo también hace espuma rica y no reseca. Los uso todos los días.</p>
+ <div class="review-meta">
+ <span>Sofía R.</span>
+ <span>hace 2 semanas</span>
+ </div>
+ </div>
+
+ <div class="review-card">
+ <div class="review-header">
+ <span class="review-stars">★★★★★</span>
+ <span class="review-verified"> Verificado</span>
+ </div>
+ <div class="review-title">Mi pelo brilla de nuevo</div>
+ <p class="review-text">Notaba el pelo opaco y sin vida. A las 3 semanas de usar el dúo todos los días lo tengo brillante y mucho más suave al tacto.</p>
+ <div class="review-meta">
+ <span>Milagros T.</span>
+ <span>hace 1 mes</span>
+ </div>
+ </div>
+
+ <div class="review-card">
+ <div class="review-header">
+ <span class="review-stars">★★★★★</span>
+ <span class="review-verified"> Verificado</span>
+ </div>
+ <div class="review-title">Redujo bastante la caída</div>
+ <p class="review-text">Empecé a usarlo porque se me caía mucho al lavarlo y ya note diferencia. Además me encanta el olor y lo rendidor que es cada frasco.</p>
+ <div class="review-meta">
+ <span>Antonella G.</span>
+ <span>hace 3 semanas</span>
+ </div>
+ </div>
+ </div>
+
+ <button class="btn-reviews">Ver todas las reseñas</button>
+ </div>
+
  <!-- CTA FINAL -->
  <div class="cta-final">
  <h2>Empezá hoy tu rutina de lavado</h2>
@@ -1419,6 +1625,28 @@
  <p>© 2025 Productos Capilares PG · Todos los derechos reservados</p>
  </div>
  </footer>
+
+ <!-- MODAL PRODUCTO -->
+ <div class="pmodal-overlay" id="pmodalOverlay" onclick="closeProductOutside(event)">
+ <div class="pmodal">
+ <button class="pmodal-close" onclick="closeProduct()">×</button>
+ <div class="pmodal-header">
+ <div class="pmodal-icon" id="pmIcon"></div>
+ <div>
+ <h2 id="pmName"></h2>
+ <span class="pmodal-ml" id="pmMl"></span>
+ </div>
+ </div>
+ <span class="pmodal-tag" id="pmTag"></span>
+ <p class="pmodal-desc" id="pmDesc"></p>
+ <div class="pmodal-section">Beneficios principales</div>
+ <ul class="pmodal-list" id="pmBeneficios"></ul>
+ <div class="pmodal-section">Cómo usarlo</div>
+ <ol class="pmodal-steps" id="pmUso"></ol>
+ <div class="pmodal-nota" id="pmNota"></div>
+ <button class="pmodal-buy" onclick="closeProduct(); openModal()">Comprar ahora →</button>
+ </div>
+ </div>
 
  <!-- MODAL POLÍTICA DE PRIVACIDAD -->
  <div class="modal-overlay" id="modalPrivacidad" onclick="closeLegalOutside(event, 'privacidad')">
@@ -1678,6 +1906,73 @@
  } else {
  irAlSiguientePaso();
  }
+ }
+
+ // ─── MODAL PRODUCTOS ──────────────────────────────────────────────────────
+ const PRODUCTS = [
+ {
+ icon: '', ml: '500ml', name: 'Shampoo de Biotina',
+ tag: 'USO DIARIO', tagClass: 'coral',
+ desc: 'Limpieza profunda formulada con biotina activa para reducir la caída, estimular el crecimiento y fortalecer el cabello desde la raíz. Sin formol ni sulfatos agresivos. Apto para uso diario en todo tipo de cabello.',
+ beneficios: [
+ 'Reduce notablemente la caída desde la primera lavada',
+ 'Estimula el crecimiento capilar con biotina activa',
+ 'Fortalece el cabello desde la raíz',
+ 'Apto para cabello teñido, rizado, liso u ondulado',
+ 'Sin formol · Sin sulfatos agresivos · Sin parabenos',
+ ],
+ uso: [
+ 'Mojá bien el cabello con agua tibia.',
+ 'Aplicá el shampoo y masajeá el cuero cabelludo con las yemas de los dedos durante 2-3 minutos.',
+ 'Enjuagá completamente con agua.',
+ 'Podés repetir si es necesario.',
+ ],
+ nota: ' Podés usarlo todos los días. La fórmula suave no reseca el cuero cabelludo.',
+ },
+ {
+ icon: '', ml: '500ml', name: 'Acondicionador de Biotina',
+ tag: 'USO DIARIO', tagClass: 'coral',
+ desc: 'Acondicionador de biotina activa que hidrata en profundidad, sella la cutícula, elimina el frizz y deja el cabello suave, manejable y con brillo natural. Sin formol ni sulfatos. Apto para uso diario.',
+ beneficios: [
+ 'Sella la cutícula y elimina el frizz de forma duradera',
+ 'Hidratación profunda de medios a puntas',
+ 'Deja el cabello suave, sedoso y con brillo',
+ 'Facilita el peinado y reduce los nudos',
+ 'Sin formol · Sin sulfatos',
+ ],
+ uso: [
+ 'Después del shampoo, exprimí el exceso de agua del cabello.',
+ 'Aplicá de medios a puntas (evitá el cuero cabelludo).',
+ 'Dejá actuar 3 a 5 minutos.',
+ 'Enjuagá con agua fría para potenciar el brillo.',
+ ],
+ nota: ' No aplicar directamente en el cuero cabelludo para no obstruir los folículos pilosos.',
+ },
+ ];
+
+ function openProduct(idx) {
+ const p = PRODUCTS[idx];
+ document.getElementById('pmIcon').textContent = p.icon;
+ document.getElementById('pmName').textContent = p.name;
+ document.getElementById('pmMl').textContent = p.ml;
+ document.getElementById('pmDesc').textContent = p.desc;
+ document.getElementById('pmNota').textContent = p.nota;
+ document.getElementById('pmTag').textContent = p.tag;
+ document.getElementById('pmTag').className = 'pmodal-tag ' + p.tagClass;
+ document.getElementById('pmBeneficios').innerHTML = p.beneficios.map(b => `<li>${b}</li>`).join('');
+ document.getElementById('pmUso').innerHTML = p.uso.map((u, i) =>
+ `<li><span class="pmodal-step-num">${i+1}</span><span>${u}</span></li>`).join('');
+ document.getElementById('pmodalOverlay').classList.add('active');
+ document.body.style.overflow = 'hidden';
+ }
+
+ function closeProduct() {
+ document.getElementById('pmodalOverlay').classList.remove('active');
+ document.body.style.overflow = '';
+ }
+
+ function closeProductOutside(e) {
+ if (e.target === document.getElementById('pmodalOverlay')) closeProduct();
  }
 
  function toggleFaq(btn) {
