@@ -239,11 +239,19 @@ exports.crearPreferencia = onRequest({ secrets: [MP_ACCESS_TOKEN], region: 'us-c
       },
       external_reference: pedidoId,
       notification_url: `${funcBase}/mpWebhook`,
-      back_urls: {
-        success: `https://productoscapilarespg.com/?pago=aprobado&pid=${pedidoId}`,
-        failure: `https://productoscapilarespg.com/?pago=rechazado&pid=${pedidoId}`,
-        pending: `https://productoscapilarespg.com/?pago=pendiente&pid=${pedidoId}`,
-      },
+      // Volvemos a la página exacta donde el cliente inició la compra (guardada
+      // como event_source_url al crear el pedido) — no a la raíz del dominio,
+      // que ahora es una home con selector de productos y no maneja el "gracias"
+      // ni dispara el Purchase del pixel. Si por lo que sea no la tenemos
+      // guardada, caemos a la raíz como red de seguridad.
+      back_urls: (() => {
+        const base = (pedido.event_source_url || 'https://productoscapilarespg.com/').split('?')[0].split('#')[0];
+        return {
+          success: `${base}?pago=aprobado&pid=${pedidoId}`,
+          failure: `${base}?pago=rechazado&pid=${pedidoId}`,
+          pending: `${base}?pago=pendiente&pid=${pedidoId}`,
+        };
+      })(),
       auto_return: 'approved',
     };
 

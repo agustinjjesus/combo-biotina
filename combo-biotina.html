@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8" />
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <title>Biotina Pura® | Menos caída, activá el crecimiento desde la raíz</title>
+ <title>Combo Biotina® | Menos caída, recuperá tu cabello de forma natural</title>
  <link rel="icon" type="image/x-icon" href="favicon.ico" />
  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -85,7 +85,7 @@
  sendCapiEvent('PageView', pvEventId, {});
 
  const vcEventId = genEventId();
- const vcData = { content_name: 'Biotina Pura', content_type: 'product', currency: 'ARS', value: 25000 };
+ const vcData = { content_name: 'Combo Biotina', content_type: 'product', currency: 'ARS', value: 43000 };
  fbq('track', 'ViewContent', vcData, { eventID: vcEventId });
  sendCapiEvent('ViewContent', vcEventId, vcData);
  </script>
@@ -210,6 +210,14 @@
  height: 32px;
  }
  .payment-logo img { height: 16px; width: auto; object-fit: contain; display: block; }
+ .payment-logo-text {
+ font-size: 0.6rem;
+ font-weight: 700;
+ color: var(--dark);
+ letter-spacing: 0.03em;
+ white-space: nowrap;
+ line-height: 1;
+ }
  /* ─── WA ALT BUTTON ─── */
  .btn-wa-alt {
  width: 100%; background: white; color: var(--dark);
@@ -297,6 +305,18 @@
  top: 0;
  z-index: 100;
  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+ }
+
+ .nav-logo {
+ width: 42px; height: 42px;
+ border: 2px solid var(--dark);
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-weight: 700;
+ font-size: 0.8rem;
+ letter-spacing: 0.05em;
  }
 
  .nav-spacer { justify-self: start; display: flex; align-items: center; }
@@ -417,6 +437,22 @@
  padding: 12px;
  }
 
+ .hero-img-placeholder {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 12px;
+ color: var(--gray-light);
+ }
+
+ .hero-img-placeholder svg { opacity: 0.4; }
+
+ .hero-img-placeholder span {
+ font-size: 0.7rem;
+ letter-spacing: 0.2em;
+ text-transform: uppercase;
+ }
+
  .hero-right h1 {
  font-family: 'Outfit', sans-serif;
  font-size: clamp(1.9rem, 3vw, 2.6rem);
@@ -426,12 +462,49 @@
  color: var(--dark);
  }
 
+ .hero-right h1 span { color: var(--coral); }
+
  .combo-composition {
  font-size: 0.92rem;
  color: var(--gray);
  font-weight: 500;
+ margin-bottom: 10px;
+ }
+
+ .gift-highlight {
+ display: inline-flex;
+ align-items: center;
+ gap: 7px;
+ background: var(--dark);
+ color: #ffffff;
+ font-size: 0.8rem;
+ font-weight: 700;
+ padding: 7px 16px;
+ border-radius: 30px;
+ margin-bottom: 18px;
+ }
+
+ .stars-row {
+ display: flex;
+ align-items: center;
+ gap: 8px;
  margin-bottom: 20px;
  }
+
+ .stars { color: #111111; font-size: 1rem; }
+
+ .stars-text {
+ font-size: 0.8rem;
+ color: var(--gray);
+ }
+
+ .stars-link {
+ text-decoration: underline;
+ text-underline-offset: 2px;
+ cursor: pointer;
+ transition: color 0.2s;
+ }
+ .stars-link:hover { color: var(--dark); }
 
  .benefits-list {
  list-style: none;
@@ -463,6 +536,19 @@
  .benefit-check svg { color: white; }
 
  .benefits-list li strong { font-weight: 500; }
+
+ .promo-tag {
+ background: var(--coral);
+ color: white;
+ font-size: 0.68rem;
+ font-weight: 500;
+ letter-spacing: 0.15em;
+ text-transform: uppercase;
+ padding: 6px 16px;
+ border-radius: 4px;
+ display: inline-block;
+ margin-bottom: 16px;
+ }
 
  /* ─── QUANTITY SELECTOR ─── */
  .quantity-options {
@@ -523,25 +609,19 @@
  white-space: nowrap;
  }
 
- .qty-shipping-free {
- display: inline-flex;
- align-items: center;
- gap: 4px;
- background: var(--gold);
- color: #fff;
- font-size: 0.72rem;
- font-weight: 700;
- letter-spacing: 0.02em;
- padding: 4px 10px;
- border-radius: 20px;
- margin-top: 6px;
- }
-
- .qty-shipping-paid {
+ .qty-shipping {
  display: inline-block;
  font-size: 0.68rem;
- color: var(--gray);
+ color: var(--green);
  font-weight: 600;
+ margin-top: 3px;
+ }
+
+ .qty-gift {
+ display: block;
+ font-size: 0.68rem;
+ color: var(--dark);
+ font-weight: 700;
  margin-top: 3px;
  }
 
@@ -596,24 +676,9 @@
  }
 
  .qty-price .price-old {
- display: block;
- font-size: 0.75rem;
+ font-size: 0.78rem;
  color: var(--gray-light);
  text-decoration: line-through;
- margin-bottom: 2px;
- }
-
- .discount-badge {
- display: inline-block;
- background: #e63946;
- color: #fff;
- font-size: 0.65rem;
- font-weight: 700;
- padding: 2px 7px;
- border-radius: 6px;
- margin-left: 6px;
- vertical-align: middle;
- text-decoration: none;
  }
 
  .qty-count {
@@ -679,11 +744,18 @@
  transition: transform 0.2s, box-shadow 0.2s;
  }
  .wa-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.55); }
+ .wa-fab-tooltip {
+ position: absolute; right: 66px; top: 50%; transform: translateY(-50%);
+ background: var(--dark); color: white; white-space: nowrap;
+ font-size: 0.72rem; font-weight: 600; padding: 5px 10px;
+ border-radius: 8px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+ }
+ .wa-fab:hover .wa-fab-tooltip { opacity: 1; }
  @media (max-width: 768px) { .wa-fab { display: none; } }
 
- /* ─── BENEFICIOS / INGREDIENTES ─── */
+ /* ─── INGREDIENTES ─── */
  .ing-section {
- background: #f7f7f5; padding: 80px 48px; text-align: center;
+ background: var(--cream); padding: 80px 48px; text-align: center;
  }
  .ing-section h2 {
  font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 8px;
@@ -693,74 +765,460 @@
  display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px;
  }
  .ing-card {
- background: #ffffff; border-radius: 16px; padding: 26px 16px; text-align: center;
- box-shadow: 0 2px 12px rgba(0,0,0,0.055); border: 1px solid #f0f0ee;
+ background: white; border-radius: 16px; padding: 26px 16px; text-align: center;
  transition: transform 0.2s, box-shadow 0.2s;
  }
- .ing-card:hover { transform: translateY(-4px); box-shadow: 0 10px 32px rgba(0,0,0,0.10); border-color: #e6e6e3; }
+ .ing-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
  .ing-icon { font-size: 1.8rem; margin-bottom: 10px; }
  .ing-name { font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 6px; line-height: 1.2; }
  .ing-benefit { font-size: 0.72rem; color: var(--gray); line-height: 1.6; }
  @media (max-width: 900px) { .ing-grid { grid-template-columns: repeat(3, 1fr); } }
  @media (max-width: 600px) { .ing-section { padding: 56px 20px; } .ing-grid { grid-template-columns: repeat(2, 1fr); } }
 
- .resultados-note {
- max-width: 720px; margin: 40px auto 0;
- background: #111111; color: #ffffff;
- border-radius: 14px; padding: 20px 24px;
- display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; text-align: left;
- }
- .resultados-note .r-item { display: flex; align-items: center; gap: 10px; }
- .resultados-note strong { display: block; font-size: 0.85rem; }
- .resultados-note span { font-size: 0.75rem; color: rgba(255,255,255,0.7); }
- @media (max-width: 600px) { .resultados-note { flex-direction: column; gap: 14px; } }
-
  /* ─── ENVÍO ─── */
- .envio-section { background: #ffffff; padding: 80px 48px; }
+ .envio-section { background: white; padding: 80px 48px; }
  .envio-section h2 {
  font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700;
  text-align: center; margin-bottom: 8px;
  }
- .envio-inner { max-width: 960px; margin: 0 auto; }
+ .envio-inner { max-width: 1000px; margin: 0 auto; }
  .envio-steps {
- display: grid;
- grid-template-columns: 1fr 72px 1fr 72px 1fr;
- align-items: start;
- margin: 48px 0 44px;
+ display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 40px 0;
  }
- .envio-step { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+ .envio-step {
+ display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;
+ }
  .envio-step-icon {
- width: 72px; height: 72px; border-radius: 50%;
- background: #f5f5f5; border: 2px solid #e8e8e5;
- display: flex; align-items: center; justify-content: center;
+ width: 56px; height: 56px; background: #f0faf4; border-radius: 50%;
+ display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
  }
- .envio-connector { display: flex; align-items: flex-start; justify-content: center; padding-top: 36px; }
- .envio-connector::after { content: ''; display: block; width: 42px; height: 1.5px; background: #d0d0cc; }
- .envio-step-title { font-size: 0.9rem; font-weight: 700; color: var(--dark); }
- .envio-step-desc { font-size: 0.78rem; color: var(--gray); line-height: 1.6; max-width: 200px; }
+ .envio-step-title { font-weight: 600; font-size: 0.88rem; color: var(--dark); }
+ .envio-step-desc { font-size: 0.78rem; color: var(--gray); line-height: 1.5; }
  .envio-divider { border: none; border-top: 1px solid var(--cream2); margin: 0 0 32px; }
- .envio-tiempos-title { text-align: center; font-size: 1rem; font-weight: 600; color: var(--dark); margin-bottom: 20px; }
- .envio-dispatch-note { display: flex; align-items: center; gap: 8px; background: #111111; color: #ffffff; border-radius: 10px; padding: 11px 18px; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.02em; margin-bottom: 16px; }
- .envio-dispatch-note svg { flex-shrink: 0; opacity: 0.8; }
- .envio-dispatch-note strong { font-weight: 700; }
- .envio-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px; }
- .envio-row { background: #f7f7f5; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #f0f0ee; }
- .envio-row-info { display: flex; align-items: center; gap: 10px; }
- .envio-row-info svg { flex-shrink: 0; opacity: 0.4; }
- .envio-region { font-size: 0.85rem; font-weight: 500; color: var(--dark); }
- .envio-time { font-size: 0.78rem; font-weight: 600; color: #444; background: #ebebea; padding: 3px 12px; border-radius: 20px; }
- .envio-row--free { background: #111111; border-color: #111111; }
- .envio-row--free .envio-region { color: #ffffff; }
- .envio-row--free .envio-row-info svg { stroke: #ffffff; opacity: 0.7; }
- .envio-time-free { font-size: 0.78rem; font-weight: 700; color: #111111; background: #ffffff; padding: 3px 14px; border-radius: 20px; letter-spacing: 0.06em; }
- .envio-footer { display: flex; align-items: center; gap: 10px; justify-content: center; background: #f7f7f5; border: 1px solid #e8e8e5; border-radius: 12px; padding: 16px 20px; font-size: 0.82rem; color: #555; margin-top: 20px; }
- .envio-footer svg { flex-shrink: 0; opacity: 0.45; }
+ .envio-grid {
+ display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px;
+ }
+ .envio-row {
+ background: var(--cream); border-radius: 12px; padding: 16px 20px;
+ display: flex; align-items: center; justify-content: space-between;
+ }
+ .envio-region { font-size: 0.83rem; font-weight: 500; color: var(--dark); }
+ .envio-time {
+ font-size: 0.78rem; font-weight: 600; color: var(--green);
+ background: #e8f5ee; padding: 3px 10px; border-radius: 20px;
+ }
+ .envio-footer {
+ display: flex; align-items: center; gap: 12px; justify-content: center;
+ background: #f0faf4; border: 1px solid #c3e6cb; border-radius: 12px;
+ padding: 16px 20px; font-size: 0.82rem; color: var(--green); font-weight: 500;
+ }
  @media (max-width: 768px) {
  .envio-section { padding: 56px 20px; }
- .envio-steps { grid-template-columns: 1fr; gap: 28px; }
- .envio-connector { display: none; }
+ .envio-steps { grid-template-columns: 1fr; gap: 20px; }
  .envio-grid { grid-template-columns: 1fr; }
  }
+
+ /* ─── QUÉ INCLUYE ─── */
+ .includes-section {
+ background: var(--white);
+ padding: 80px 48px;
+ text-align: center;
+ }
+ .includes-section h2 {
+ font-family: 'Outfit', sans-serif;
+ font-size: 2rem;
+ font-weight: 700;
+ margin-bottom: 8px;
+ }
+ .includes-grid {
+ max-width: 1060px;
+ margin: 0 auto;
+ display: grid;
+ grid-template-columns: repeat(4, 1fr);
+ gap: 20px;
+ }
+ .include-card {
+ background: var(--cream);
+ border-radius: 16px;
+ padding: 28px 22px;
+ text-align: left;
+ display: flex;
+ flex-direction: column;
+ gap: 10px;
+ position: relative;
+ }
+ .include-card--featured {
+ background: #fdf5f2;
+ border: 2px solid var(--coral-light);
+ }
+ .include-card--gift {
+ border: 2px dashed var(--dark);
+ }
+ .include-gift-ribbon {
+ position: absolute;
+ top: -12px;
+ left: 50%;
+ transform: translateX(-50%);
+ background: var(--dark);
+ color: #ffffff;
+ font-size: 0.66rem;
+ font-weight: 700;
+ letter-spacing: 0.06em;
+ padding: 4px 14px;
+ border-radius: 20px;
+ white-space: nowrap;
+ }
+ .include-badge {
+ position: absolute;
+ top: 16px;
+ right: 16px;
+ background: var(--dark);
+ color: white;
+ font-size: 0.62rem;
+ font-weight: 600;
+ letter-spacing: 0.08em;
+ padding: 3px 8px;
+ border-radius: 8px;
+ }
+ .include-icon { font-size: 1.6rem; }
+ .include-card h3 {
+ font-family: 'Outfit', sans-serif;
+ font-size: 1.15rem;
+ font-weight: 700;
+ color: var(--dark);
+ line-height: 1.2;
+ }
+ .include-card p {
+ font-size: 0.8rem;
+ color: var(--gray);
+ line-height: 1.7;
+ flex: 1;
+ }
+ .include-tag {
+ font-size: 0.62rem;
+ font-weight: 600;
+ letter-spacing: 0.12em;
+ text-transform: uppercase;
+ color: var(--coral);
+ border: 1px solid var(--coral-light);
+ border-radius: 20px;
+ padding: 4px 10px;
+ align-self: flex-start;
+ }
+ .include-card {
+ cursor: pointer;
+ transition: transform 0.22s ease, box-shadow 0.22s ease;
+ }
+ .include-card:hover {
+ transform: translateY(-6px);
+ box-shadow: 0 12px 32px rgba(0,0,0,0.10);
+ }
+ .include-card:hover .include-more { opacity: 1; }
+ .include-more {
+ font-size: 0.7rem; font-weight: 600; color: var(--coral);
+ letter-spacing: 0.06em; text-transform: uppercase;
+ margin-top: auto; padding-top: 10px;
+ opacity: 0; transition: opacity 0.2s;
+ }
+ /* ─── PRODUCT MODAL ─── */
+ .pmodal-overlay {
+ display: none; position: fixed; inset: 0;
+ background: rgba(0,0,0,0.55); z-index: 1100;
+ align-items: center; justify-content: center; padding: 20px;
+ }
+ .pmodal-overlay.active { display: flex; }
+ .pmodal {
+ background: white; border-radius: 24px;
+ padding: 40px 36px; width: 100%; max-width: 560px;
+ max-height: 90vh; overflow-y: auto;
+ animation: modalIn 0.3s ease; position: relative;
+ }
+ .pmodal-close {
+ position: absolute; top: 16px; right: 20px;
+ background: none; border: none; font-size: 1.5rem;
+ cursor: pointer; color: #999; line-height: 1;
+ }
+ .pmodal-close:hover { color: var(--dark); }
+ .pmodal-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+ .pmodal-icon { font-size: 2.4rem; line-height: 1; }
+ .pmodal-header h2 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--dark); line-height: 1.2; }
+ .pmodal-ml {
+ display: inline-block; background: var(--dark); color: white;
+ font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em;
+ padding: 3px 8px; border-radius: 6px; margin-top: 4px;
+ }
+ .pmodal-tag {
+ font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em;
+ text-transform: uppercase; border-radius: 20px; padding: 4px 12px;
+ display: inline-block; margin-bottom: 16px; align-self: flex-start;
+ }
+ .pmodal-tag.coral { color: var(--coral); border: 1px solid var(--coral-light); }
+ .pmodal-tag.green { color: var(--green); border: 1px solid #b2dfc0; background: #f0faf4; }
+ .pmodal-desc { font-size: 0.85rem; color: var(--gray); line-height: 1.75; margin-bottom: 20px; }
+ .pmodal-section { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--cream2); }
+ .pmodal-list { list-style: none; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+ .pmodal-list li { font-size: 0.83rem; color: var(--dark); display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+ .pmodal-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--coral); flex-shrink: 0; margin-top: 6px; }
+ .pmodal-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+ .pmodal-steps li { font-size: 0.83rem; color: var(--dark); display: flex; gap: 12px; align-items: flex-start; line-height: 1.5; }
+ .pmodal-step-num { width: 22px; height: 22px; background: var(--coral); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; flex-shrink: 0; }
+ .pmodal-nota { background: #f0faf4; border: 1px solid #c3e6cb; border-radius: 10px; padding: 12px 14px; font-size: 0.78rem; color: var(--green); line-height: 1.6; }
+ .pmodal-buy { margin-top: 24px; width: 100%; background: var(--coral); color: white; border: none; padding: 15px; border-radius: 12px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+ .pmodal-buy:hover { background: var(--coral-dark); }
+ @media (max-width: 768px) {
+ .includes-section { padding: 56px 20px; }
+ .includes-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+ .include-more { opacity: 1; }
+ }
+ @media (max-width: 480px) {
+ .includes-grid { grid-template-columns: 1fr; }
+ .pmodal { padding: 28px 20px; }
+ }
+
+ /* ─── HOW TO USE ─── */
+ .how-section {
+ background: var(--white);
+ padding: 80px 48px;
+ text-align: center;
+ }
+
+ .how-section h2 {
+ font-family: 'Outfit', sans-serif;
+ font-size: 2rem;
+ font-weight: 700;
+ margin-bottom: 8px;
+ }
+
+ .how-sub {
+ font-size: 0.88rem;
+ color: var(--gray);
+ margin-bottom: 48px;
+ }
+
+ /* ─── STEPPER INTERACTIVO ─── */
+ .how-stepper { max-width: 620px; margin: 0 auto; }
+
+ .how-track {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; margin-bottom: 48px; position: relative;
+ }
+ .how-track-line {
+  position: absolute; height: 2px; background: #e0e0de;
+  left: 72px; right: 72px; top: 50%; transform: translateY(-50%); z-index: 0;
+ }
+ .how-track-fill {
+  position: absolute; height: 2px; background: #111111;
+  left: 72px; top: 50%; transform: translateY(-50%);
+  z-index: 1; transition: width 0.4s ease; width: 0%;
+ }
+ .how-dot {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: #ebebea; border: 2px solid #d8d8d5;
+  color: #aaa; font-family: 'Outfit', sans-serif;
+  font-size: 0.88rem; font-weight: 700; cursor: pointer;
+  transition: all 0.25s; z-index: 2; position: relative;
+  margin: 0 36px; flex-shrink: 0;
+ }
+ .how-dot.active { background: #111111; border-color: #111111; color: white; }
+ .how-dot.done { background: #444444; border-color: #444444; color: white; }
+ .how-dot.done::after {
+  content: '✓'; position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; color: white;
+ }
+ .how-dot.done span { display: none; }
+
+ .how-steps-wrapper { min-height: 200px; margin-bottom: 36px; }
+ .how-step-item { display: none; }
+ .how-step-item.active { display: block; animation: stepIn 0.35s ease both; }
+ .how-step-item.back { display: block; animation: stepBack 0.35s ease both; }
+ @keyframes stepIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+ }
+ @keyframes stepBack {
+  from { opacity: 0; transform: translateX(-24px); }
+  to { opacity: 1; transform: translateX(0); }
+ }
+
+ .how-step-tag {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: #999; margin-bottom: 14px;
+ }
+ .how-step-title {
+  font-family: 'Outfit', sans-serif; font-size: 1.9rem; font-weight: 700;
+  color: #111111; margin-bottom: 16px; line-height: 1.15;
+ }
+ .how-step-text {
+  font-size: 0.9rem; color: #6b6b6b; line-height: 1.78;
+  max-width: 480px; margin: 0 auto 20px;
+ }
+ .how-step-badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: #444; background: #ebebea; padding: 5px 14px; border-radius: 20px;
+ }
+
+ .how-nav { display: flex; justify-content: center; gap: 14px; align-items: center; }
+ .how-btn {
+  border: 2px solid #111111; border-radius: 10px;
+  padding: 12px 28px; font-family: 'Outfit', sans-serif;
+  font-size: 0.88rem; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; letter-spacing: 0.03em;
+ }
+ .how-btn-prev { background: white; color: #111111; }
+ .how-btn-prev:hover:not(:disabled) { background: #111111; color: white; }
+ .how-btn-prev:disabled { opacity: 0.28; cursor: default; border-color: #bbb; color: #bbb; }
+ .how-btn-next { background: #111111; color: white; }
+ .how-btn-next:hover { background: #000; }
+
+ .how-step-counter { font-size: 0.78rem; color: #aaa; font-weight: 500; min-width: 60px; text-align: center; }
+
+ @media (max-width: 600px) {
+  .how-dot { width: 40px; height: 40px; margin: 0 20px; font-size: 0.8rem; }
+  .how-track-line { left: 50px; right: 50px; }
+  .how-track-fill { left: 50px; }
+  .how-step-title { font-size: 1.5rem; }
+ }
+
+ /* ─── REVIEWS ─── */
+ .reviews-section {
+ padding: 80px 48px;
+ max-width: 1100px;
+ margin: 0 auto;
+ }
+
+ .reviews-section h2 {
+ font-family: 'Outfit', sans-serif;
+ font-size: 2rem;
+ font-weight: 700;
+ text-align: center;
+ margin-bottom: 8px;
+ }
+
+ .reviews-stars {
+ text-align: center;
+ margin-bottom: 32px;
+ }
+
+ .reviews-stars .stars { font-size: 1.4rem; }
+
+ .reviews-stars p {
+ font-size: 0.82rem;
+ color: var(--gray);
+ margin-top: 4px;
+ }
+
+ .rating-bars {
+ background: var(--white);
+ border-radius: 16px;
+ padding: 24px;
+ margin-bottom: 40px;
+ max-width: 400px;
+ margin-left: auto;
+ margin-right: auto;
+ }
+
+ .rating-row {
+ display: flex;
+ align-items: center;
+ gap: 12px;
+ margin-bottom: 8px;
+ }
+
+ .rating-label {
+ font-size: 0.78rem;
+ color: var(--gray);
+ width: 20px;
+ text-align: right;
+ }
+
+ .rating-bar-bg {
+ flex: 1;
+ height: 8px;
+ background: var(--cream2);
+ border-radius: 4px;
+ overflow: hidden;
+ }
+
+ .rating-bar-fill {
+ height: 100%;
+ background: var(--coral);
+ border-radius: 4px;
+ }
+
+ .rating-pct {
+ font-size: 0.75rem;
+ color: var(--gray);
+ width: 28px;
+ }
+
+ .reviews-grid {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 20px;
+ }
+
+ .review-card {
+ background: var(--white);
+ border-radius: 16px;
+ padding: 24px;
+ position: relative;
+ }
+
+ .review-header {
+ display: flex;
+ justify-content: space-between;
+ align-items: flex-start;
+ margin-bottom: 12px;
+ }
+
+ .review-verified {
+ font-size: 0.65rem;
+ color: var(--green);
+ display: flex;
+ align-items: center;
+ gap: 4px;
+ font-weight: 500;
+ }
+
+ .review-stars { font-size: 0.85rem; color: #111111; }
+
+ .review-title {
+ font-weight: 600;
+ font-size: 0.88rem;
+ margin-bottom: 8px;
+ }
+
+ .review-text {
+ font-size: 0.82rem;
+ color: var(--gray);
+ line-height: 1.65;
+ margin-bottom: 12px;
+ }
+
+ .review-meta {
+ font-size: 0.7rem;
+ color: var(--gray-light);
+ display: flex;
+ justify-content: space-between;
+ }
+
+ .btn-reviews {
+ display: block;
+ margin: 32px auto 0;
+ background: none;
+ border: 2px solid var(--coral);
+ color: var(--coral);
+ padding: 12px 32px;
+ border-radius: 24px;
+ font-family: 'Outfit', sans-serif;
+ font-size: 0.85rem;
+ font-weight: 500;
+ cursor: pointer;
+ transition: all 0.2s;
+ }
+ .btn-reviews:hover { background: var(--coral); color: white; }
 
  /* ─── CTA FINAL ─── */
  .cta-final {
@@ -770,6 +1228,16 @@
  position: relative;
  overflow: hidden;
  }
+
+ .cta-final::before {
+ content: '';
+ position: absolute;
+ font-size: 20rem;
+ color: rgba(255,255,255,0.04);
+ top: -60px;
+ left: -60px;
+ }
+
  .cta-final h2 {
  font-family: 'Outfit', sans-serif;
  font-size: 2.2rem;
@@ -777,6 +1245,7 @@
  color: white;
  margin-bottom: 12px;
  }
+
  .cta-final p {
  color: rgba(255,255,255,0.85);
  font-size: 0.9rem;
@@ -784,6 +1253,7 @@
  margin: 0 auto 32px;
  line-height: 1.7;
  }
+
  .btn-cta-final {
  background: white;
  color: var(--coral);
@@ -809,6 +1279,7 @@
  color: rgba(255,255,255,0.6);
  padding: 48px;
  }
+
  .footer-top {
  display: flex;
  flex-direction: column;
@@ -817,10 +1288,24 @@
  margin-bottom: 40px;
  text-align: center;
  }
+
+ .footer-logo {
+ width: 52px; height: 52px;
+ border: 2px solid rgba(255,255,255,0.3);
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-weight: 700;
+ font-size: 0.9rem;
+ color: white;
+ }
+
  .footer-tagline {
  font-size: 0.75rem;
  letter-spacing: 0.1em;
  }
+
  .footer-links {
  display: grid;
  grid-template-columns: repeat(3, 1fr);
@@ -829,6 +1314,7 @@
  border-top: 1px solid rgba(255,255,255,0.1);
  padding-top: 40px;
  }
+
  .footer-col h4 {
  color: white;
  font-size: 0.78rem;
@@ -837,6 +1323,7 @@
  text-transform: uppercase;
  margin-bottom: 16px;
  }
+
  .footer-col a {
  display: block;
  color: rgba(255,255,255,0.5);
@@ -846,6 +1333,7 @@
  transition: color 0.2s;
  }
  .footer-col a:hover { color: white; }
+
  .payment-methods {
  display: flex;
  justify-content: center;
@@ -855,6 +1343,16 @@
  border-top: 1px solid rgba(255,255,255,0.1);
  padding-top: 24px;
  }
+
+ .payment-badge {
+ background: rgba(255,255,255,0.1);
+ border-radius: 6px;
+ padding: 5px 11px;
+ font-size: 0.68rem;
+ color: rgba(255,255,255,0.6);
+ font-weight: 500;
+ }
+
  .pm-label { font-size: 0.7rem; color: rgba(255,255,255,0.35); margin-right: 2px; }
  .pm-card {
  background: white;
@@ -870,6 +1368,7 @@
  }
  .pm-card:hover { opacity: 1; }
  .pm-card svg { display: block; }
+
  .footer-social-row { display: flex; gap: 12px; margin-top: 8px; }
  .footer-col a.social-btn {
  width: 38px; height: 38px; border-radius: 50%;
@@ -897,10 +1396,10 @@
  .nav-brand-sub { display: none; }
  .nav-wa span { display: none; }
  .nav-wa {
- width: 40px; height: 40px; padding: 0;
- border-radius: 50%;
- display: flex; align-items: center; justify-content: center;
- box-shadow: 0 3px 10px rgba(37,211,102,0.35);
+  width: 40px; height: 40px; padding: 0;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 10px rgba(37,211,102,0.35);
  }
  .nav-wa svg { width: 18px; height: 18px; }
 
@@ -910,13 +1409,19 @@
  gap: 20px;
  }
  .hero-img {
- aspect-ratio: 1219/1290;
- border-radius: 16px;
- box-shadow: none;
- background: #f8f8f6;
- margin: 0 -4px;
+  aspect-ratio: 4/3;
+  border-radius: 16px;
+  box-shadow: none;
+  background: #f8f8f6;
+  margin: 0 -4px;
  }
- .hero-img img { padding: 0; }
+ .hero-img img { padding: 8px; }
+
+ .how-section { padding: 56px 20px; }
+ .steps-grid { grid-template-columns: repeat(2, 1fr); }
+
+ .reviews-section { padding: 56px 20px; }
+ .reviews-grid { grid-template-columns: 1fr; }
 
  .cta-final { padding: 56px 20px; }
  .cta-final h2 { font-size: 1.6rem; }
@@ -932,34 +1437,195 @@
  from { opacity: 0; transform: translateY(20px); }
  to { opacity: 1; transform: translateY(0); }
  }
- .hero-right > * { animation: fadeUp 0.6s ease both; }
+
+ .hero-right > * {
+ animation: fadeUp 0.6s ease both;
+ }
  .hero-right h1 { animation-delay: 0.1s; }
+ .stars-row { animation-delay: 0.2s; }
  .benefits-list { animation-delay: 0.3s; }
  .quantity-options { animation-delay: 0.4s; }
  .btn-buy { animation-delay: 0.5s; }
+
+ /* ─── TEMA BLANCO ELEGANTE ─── */
+
+ /* Nav limpio */
+ nav {
+  background: #ffffff;
+  border-bottom: 1px solid #f0f0ee;
+  box-shadow: 0 1px 20px rgba(0,0,0,0.06);
+ }
+
+ /* Hero image */
+ .hero-img { background: #f8f8f6; }
+
+ /* Secciones alternadas sutilmente */
+ .ing-section { background: #f7f7f5; }
+ .ing-card {
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.055);
+  border: 1px solid #f0f0ee;
+ }
+ .ing-card:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.10); border-color: #e6e6e3; }
+
+ .includes-section { background: #ffffff; }
+ .include-card {
+  background: #f7f7f5;
+  border: 1px solid transparent;
+ }
+ .include-card--featured { background: #f0f0f0; border-color: #cccccc; }
+ .include-card--gift { border: 2px dashed #111111; background: #fafafa; }
+ .include-card:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.09); border-color: #cccccc; }
+
+ .how-section { background: #f7f7f5; }
+
+ .envio-section { background: #ffffff; }
+ .envio-row {
+  background: #f7f7f5;
+  border: 1px solid #f0f0ee;
+ }
+
+ .faq-section { background: #f7f7f5; }
+
+ .reviews-section { background: #ffffff; }
+ .review-card {
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.055);
+  border: 1px solid #f0f0ee;
+ }
+ .rating-bars {
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.055);
+  border: 1px solid #f0f0ee;
+ }
+
+ /* Cards de cantidad más elegantes */
+ .qty-option {
+  background: #ffffff;
+  border: 1.5px solid #ebebea;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+ }
+ .qty-option:hover { border-color: #999; box-shadow: 0 2px 12px rgba(0,0,0,0.09); }
+ .qty-option.selected {
+  background: #f5f5f5;
+  border-color: #111111;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.10);
+ }
+
+ /* Payment box más limpio */
+ .payment-box { background: #f7f7f5; border: 1.5px solid #ebebea; }
+
+ /* Sección how-to steps */
+ .step-num { box-shadow: 0 3px 10px rgba(224,122,95,0.3); }
+
+ /* Floating CTA blanca limpia */
+ .floating-cta { background: #ffffff; box-shadow: 0 -2px 20px rgba(0,0,0,0.08); }
+
+ /* Proof strip levemente diferente */
+ .proof-strip { background: #111111; }
+
+ /* Separador más sutil en FAQ */
+ .faq-item { border-bottom-color: #ebebea; }
+
+ /* ─── BLANCO Y NEGRO: eliminar todos los colores ─── */
+ .stock-badge { background: #f5f5f5; border-color: #d0d0d0; color: #111111; }
+ .stock-dot { background: #111111; }
+ .guarantee-box { background: #f7f7f5; border-color: #d8d8d5; }
+ .guarantee-text strong { color: #111111; }
+ .guarantee-text span { color: var(--gray); }
+ .benefit-check { background: #111111; }
+ .step-num { background: #111111; box-shadow: none; }
+ .envio-step-icon { background: #f0f0ee; }
+ .envio-time { background: #ebebea; color: #111111; }
+ .envio-footer { background: #f5f5f5; border-color: #d0d0d0; color: #111111; }
+ .review-verified { color: #555555; }
+ .qty-shipping { color: #555555; }
+ .pmodal-nota { background: #f7f7f5; border-color: #d8d8d5; color: #333333; }
+ .pmodal-tag.green { color: #111111; border-color: #bbbbbb; background: #f5f5f5; }
+ .payment-box { background: #f7f7f5; border-color: #e0e0de; }
+ .reviews-stars .stars { color: #111111; }
+ .stars-row .stars { color: #111111; }
+ .rating-bars { background: #ffffff; box-shadow: 0 2px 12px rgba(0,0,0,0.055); border: 1px solid #f0f0ee; }
+
+ /* ─── ENVÍO REDISEÑADO ─── */
+ .envio-section { background: #ffffff; padding: 80px 48px; }
+ .envio-inner { max-width: 960px; margin: 0 auto; }
+ .envio-section h2 { text-align: center; margin-bottom: 8px; }
+ .envio-steps {
+  display: grid;
+  grid-template-columns: 1fr 72px 1fr 72px 1fr;
+  align-items: start;
+  margin: 48px 0 44px;
+ }
+ .envio-step { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+ .envio-step-icon {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: #f5f5f5; border: 2px solid #e8e8e5;
+  display: flex; align-items: center; justify-content: center;
+ }
+ .envio-connector {
+  display: flex; align-items: flex-start; justify-content: center; padding-top: 36px;
+ }
+ .envio-connector::after {
+  content: ''; display: block; width: 42px; height: 1.5px; background: #d0d0cc;
+ }
+ .envio-step-title { font-size: 0.9rem; font-weight: 700; color: var(--dark); }
+ .envio-step-desc { font-size: 0.78rem; color: var(--gray); line-height: 1.6; max-width: 200px; }
+ .envio-tiempos-title { text-align: center; font-size: 1rem; font-weight: 600; color: var(--dark); margin-bottom: 20px; }
+ .envio-row { background: #f7f7f5; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #f0f0ee; }
+ .envio-row-info { display: flex; align-items: center; gap: 10px; }
+ .envio-row-info svg { flex-shrink: 0; opacity: 0.4; }
+ .envio-region { font-size: 0.85rem; font-weight: 500; color: var(--dark); }
+ .envio-time { font-size: 0.78rem; font-weight: 600; color: #444; background: #ebebea; padding: 3px 12px; border-radius: 20px; }
+ .envio-row--free { background: #111111; border-color: #111111; }
+ .envio-row--free .envio-region { color: #ffffff; }
+ .envio-row--free .envio-row-info svg { stroke: #ffffff; opacity: 0.7; }
+ .envio-time-free { font-size: 0.78rem; font-weight: 700; color: #111111; background: #ffffff; padding: 3px 14px; border-radius: 20px; letter-spacing: 0.06em; }
+ .envio-footer { display: flex; align-items: center; gap: 10px; justify-content: center; background: #f7f7f5; border: 1px solid #e8e8e5; border-radius: 12px; padding: 16px 20px; font-size: 0.82rem; color: #555; margin-top: 20px; }
+ .envio-footer svg { flex-shrink: 0; opacity: 0.45; }
+ .envio-dispatch-note { display: flex; align-items: center; gap: 8px; background: #111111; color: #ffffff; border-radius: 10px; padding: 11px 18px; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.02em; margin-bottom: 16px; }
+ .envio-dispatch-note svg { flex-shrink: 0; opacity: 0.8; }
+ .envio-dispatch-note strong { font-weight: 700; }
+ @media (max-width: 768px) {
+  .envio-section { padding: 56px 20px; }
+  .envio-steps { grid-template-columns: 1fr; gap: 28px; }
+  .envio-connector { display: none; }
+  .envio-grid { grid-template-columns: 1fr; }
+ }
  </style>
+ <!-- Firebase SDK (sincronización en tiempo real) -->
+ <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 </head>
 <body id="top">
 
  <!-- BARRA SCROLLING -->
  <div class="announce-bar">
  <div class="announce-track">
- ENVÍO GRATIS EN 2 Y 3 UNIDADES
- <span class="announce-sep">•</span>
- PAGO 100% SEGURO CON MERCADOPAGO
- <span class="announce-sep">•</span>
- 30 DÍAS DE GARANTÍA
- <span class="announce-sep">•</span>
+ ENVÍO GRATIS A TODO EL PAÍS
+ <span class="announce-sep"></span>
  RESULTADOS DESDE LA PRIMERA SEMANA
- <span class="announce-sep">•</span>
+ <span class="announce-sep"></span>
  SIN FORMOL NI SULFATOS
- <span class="announce-sep">•</span>
- ENVÍO GRATIS EN 2 Y 3 UNIDADES
- <span class="announce-sep">•</span>
+ <span class="announce-sep"></span>
+ +2.244 CLIENTAS SATISFECHAS
+ <span class="announce-sep"></span>
  PAGO 100% SEGURO CON MERCADOPAGO
- <span class="announce-sep">•</span>
+ <span class="announce-sep"></span>
  30 DÍAS DE GARANTÍA
- <span class="announce-sep">•</span>
+ <span class="announce-sep"></span>
+ ENVÍO GRATIS A TODO EL PAÍS
+ <span class="announce-sep"></span>
+ RESULTADOS DESDE LA PRIMERA SEMANA
+ <span class="announce-sep"></span>
+ SIN FORMOL NI SULFATOS
+ <span class="announce-sep"></span>
+ +2.244 CLIENTAS SATISFECHAS
+ <span class="announce-sep"></span>
+ PAGO 100% SEGURO CON MERCADOPAGO
+ <span class="announce-sep"></span>
+ 30 DÍAS DE GARANTÍA
+ <span class="announce-sep"></span>
  </div>
  </div>
 
@@ -972,8 +1638,8 @@
  </button>
  <div class="nav-menu-dropdown" id="navMenuDropdown">
  <span class="nav-menu-label">Nuestros productos</span>
- <a href="combo-biotina.html">Combo Biotina</a>
- <a href="biotina-pura.html" class="active">Biotina Pura</a>
+ <a href="combo-biotina.html" class="active">Combo Biotina</a>
+ <a href="biotina-pura.html">Biotina Pura</a>
  <a href="shampoo-crema/">Dúo Shampoo + Crema</a>
  </div>
  </div>
@@ -986,7 +1652,7 @@
  </div>
  </a>
  <div class="nav-right">
- <a href="https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20la%20Biotina%20Pura%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F" class="nav-wa">
+ <a href="https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20el%20Combo%20Biotina%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F" class="nav-wa">
  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
  <span>WhatsApp</span>
  </a>
@@ -996,7 +1662,7 @@
  <!-- HERO -->
  <div class="hero">
  <div class="hero-img">
- <img src="biotina-pura-producto.jpg" alt="Biotina Pura PG — Spray de 500ml" />
+ <img src="combo-productos-v2.jpg" alt="Combo Biotina PG — Shampoo, Acondicionador y Biotina Pura + Ampolla Plex de regalo" />
  </div>
 
  <div class="hero-right">
@@ -1004,8 +1670,15 @@
  <span class="stock-dot"></span>
  Stock disponible · Envío hoy
  </div>
- <h1>Biotina Pura® | Menos caída, activá el crecimiento desde la raíz.</h1>
- <p class="combo-composition">Spray de 500ml · Fórmula concentrada de Biotina B7</p>
+ <h1>Combo Biotina® | Menos caída, recuperá tu cabello de forma natural.</h1>
+
+ <p class="combo-composition">Shampoo + Acondicionador + Biotina Pura</p>
+ <div class="gift-highlight"><span>🎁</span> + Ampolla Plex de regalo</div>
+
+ <div class="stars-row">
+ <span class="stars"></span>
+ <a href="#resenas" class="stars-text stars-link">4.8 · 2.244 reseñas</a>
+ </div>
 
  <ul class="benefits-list">
  <li>
@@ -1014,11 +1687,11 @@
  </li>
  <li>
  <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
- <span><strong>Estimula el crecimiento</strong> de pelo nuevo.</span>
+ <span><strong>Estimula el crecimiento</strong> y fortalece la raíz.</span>
  </li>
  <li>
  <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
- <span><strong>Fortalece desde el cuero cabelludo.</strong></span>
+ <span><strong>Activa pelitos nuevos</strong> en zonas debilitadas.</span>
  </li>
  <li>
  <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
@@ -1026,62 +1699,64 @@
  </li>
  </ul>
 
+ <div class="promo-tag">¡Llevá más, pagá menos!</div>
+
  <div class="quantity-options">
- <div class="qty-option" onclick="selectQty(this, 1)" data-price="30000">
- <span class="qty-count">1 unidad</span>
+ <div class="qty-option" onclick="selectQty(this, '$43.000', 1)" data-price="43000">
+ <span class="qty-count">1 producto</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
  <div class="qty-info">
  <strong>Lleva 1</strong>
  <span>Tratamiento 1 mes</span>
- <span class="qty-shipping-paid"> + $5.000 envío a domicilio</span>
+ <span class="qty-shipping"> Envío gratis incluido</span>
+ <span class="qty-gift">🎁 Incluye Ampolla Plex de regalo</span>
  </div>
  </div>
  <div class="qty-price">
- <span class="price-old">$ 33.300 <span class="discount-badge">-25%</span></span>
- <span class="price-now">$ 25.000</span>
+ <span class="price-now">$ 43.000</span>
  </div>
  </div>
 
- <div class="qty-option popular" onclick="selectQty(this, 2)" data-price="45000">
- <span class="qty-count">2 unidades</span>
+ <div class="qty-option popular" onclick="selectQty(this, '$80.000', 2)" data-price="80000">
+ <span class="qty-count">2 productos</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
  <div class="qty-info">
  <strong>Lleva 2</strong>
  <span>Tratamiento 2 meses</span>
- <span class="qty-shipping-free">🚚 Envío gratis incluido</span>
+ <span class="qty-shipping"> Envío gratis incluido</span>
+ <span class="qty-gift">🎁 Incluye Ampolla Plex de regalo</span>
  </div>
  </div>
  <div class="qty-price">
- <span class="price-old">$ 60.000 <span class="discount-badge">-25%</span></span>
- <span class="price-now">$ 45.000</span>
+ <span class="price-now">$ 80.000</span>
  </div>
  </div>
 
- <div class="qty-option best" onclick="selectQty(this, 3)" data-price="60000">
- <span class="qty-count">3 unidades</span>
+ <div class="qty-option best" onclick="selectQty(this, '$100.000', 3)" data-price="100000">
+ <span class="qty-count">3 productos</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
  <div class="qty-info">
  <strong>Lleva 3</strong>
  <span>Tratamiento 3 meses</span>
- <span class="qty-shipping-free">🚚 Envío gratis incluido</span>
+ <span class="qty-shipping"> Envío gratis incluido</span>
+ <span class="qty-gift">🎁 Incluye Ampolla Plex de regalo</span>
  </div>
  </div>
  <div class="qty-price">
- <span class="price-old">$ 80.000 <span class="discount-badge">-25%</span></span>
- <span class="price-now">$ 60.000</span>
+ <span class="price-now">$ 100.000</span>
  </div>
  </div>
  </div>
 
- <p id="envioNota" style="text-align:center; font-size:0.82rem; font-weight:600; color:var(--green); margin-bottom:12px;">
- Envío a domicilio $5.000 en pedidos de 1 unidad
+ <p style="text-align:center; font-size:0.82rem; font-weight:600; color:var(--green); margin-bottom:12px;">
+ Envío gratis a todo el país
  </p>
 
  <button class="btn-buy" id="buyBtn" onclick="openModal()">
- COMPRAR AHORA · $30.000 — ENVÍO $5.000
+ COMPRAR AHORA · $43.000 — ENVÍO GRATIS
  </button>
 
  <!-- MÉTODOS DE PAGO -->
@@ -1103,7 +1778,7 @@
  </div>
  </div>
 
- <a href="https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20la%20Biotina%20Pura%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F" class="btn-wa-alt">
+ <a href="https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20el%20Combo%20Biotina%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F" class="btn-wa-alt">
  <svg width="18" height="18" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
  Consultar por WhatsApp
  </a>
@@ -1135,182 +1810,331 @@
 
  <!-- PROOF STRIP -->
  <div class="proof-strip">
- <div style="text-align:center"><div class="proof-num">500ml</div><div class="proof-label">fórmula concentrada</div></div>
+ <div style="text-align:center"><div class="proof-num">+2.244</div><div class="proof-label">clientas felices</div></div>
+ <div style="text-align:center"><div class="proof-num">4.8</div><div class="proof-label">calificación promedio</div></div>
+ <div style="text-align:center"><div class="proof-num">3 semanas</div><div class="proof-label">para ver resultados</div></div>
  <div style="text-align:center"><div class="proof-num">0%</div><div class="proof-label">formol ni sulfatos</div></div>
- <div style="text-align:center"><div class="proof-num">Diario</div><div class="proof-label">modo de aplicación</div></div>
- <div style="text-align:center"><div class="proof-num">Gratis</div><div class="proof-label">envío en 2 y 3 unidades</div></div>
  </div>
 
- <!-- BENEFICIOS -->
+ <!-- QUÉ INCLUYE -->
+ <div class="includes-section">
+ <h2>¿Qué incluye el combo?</h2>
+ <p class="how-sub">3 productos que trabajan en conjunto para un tratamiento completo, + un regalo especial.</p>
+ <div class="includes-grid">
+
+ <div class="include-card" onclick="openProduct(0)" role="button">
+ <div class="include-badge">500ml</div>
+ <div class="include-icon"></div>
+ <h3>Shampoo de Biotina</h3>
+ <p>Limpieza profunda que fortalece desde la raíz. Formulado con biotina activa para reducir la caída, estimular el crecimiento y dejar el cabello más denso y saludable desde la primera lavada. Sin formol ni sulfatos agresivos. Apto uso diario para todo tipo de cabello.</p>
+ <span class="include-tag">USO DIARIO</span>
+ <span class="include-more">Ver más →</span>
+ </div>
+
+ <div class="include-card" onclick="openProduct(1)" role="button">
+ <div class="include-badge">500ml</div>
+ <div class="include-icon"></div>
+ <h3>Acondicionador de Biotina</h3>
+ <p>Hidratación y reparación profunda de medios a puntas. Su fórmula con biotina activa sella la cutícula, elimina el frizz y deja el cabello suave, manejable y con brillo natural. Sin formol ni sulfatos. Apto uso diario.</p>
+ <span class="include-tag">USO DIARIO</span>
+ <span class="include-more">Ver más →</span>
+ </div>
+
+ <div class="include-card include-card--featured" onclick="openProduct(2)" role="button">
+ <div class="include-badge">250ml</div>
+ <div class="include-icon"></div>
+ <h3>Biotina Pura en Spray</h3>
+ <p>El corazón del combo. Biotina concentrada en spray de aplicación directa sobre el cuero cabelludo. Actúa donde realmente importa: en el folículo piloso, estimulando el crecimiento de pelitos nuevos y frenando la caída. No requiere enjuague.</p>
+ <span class="include-tag">USO DIARIO · NO ENJUAGAR</span>
+ <span class="include-more">Ver más →</span>
+ </div>
+
+ <div class="include-card include-card--gift" onclick="openProduct(3)" role="button">
+ <div class="include-gift-ribbon">🎁 De regalo</div>
+ <div class="include-badge">60ml</div>
+ <div class="include-icon"></div>
+ <h3>Ampolla Plex + Biotina</h3>
+ <p>Tratamiento intensivo semanal para recuperar el cabello dañado, teñido o debilitado. Repara la fibra capilar desde adentro, fortalece y reduce la quebradura. Mezclá con la crema de tratamiento, aplicá de medios a puntas y dejá actuar.</p>
+ <span class="include-tag">USO SEMANAL</span>
+ <span class="include-more">Ver más →</span>
+ </div>
+
+ </div>
+ </div>
+
+ <!-- INGREDIENTES ACTIVOS -->
  <div class="ing-section">
- <h2>¿Por qué funciona?</h2>
- <p class="how-sub" style="font-size:0.88rem;color:var(--gray);margin-bottom:0;">Una fórmula simple, pensada para actuar donde realmente importa.</p>
+ <h2>Ingredientes activos</h2>
+ <p class="how-sub">Una fórmula pensada para resultados reales.</p>
  <div class="ing-grid">
  <div class="ing-card">
- <div class="ing-icon">💧</div>
+ <div class="ing-icon"></div>
  <h3 class="ing-name">Biotina B7</h3>
- <p class="ing-benefit">Vitamina esencial que activa el folículo piloso y estimula el crecimiento de pelo nuevo.</p>
+ <p class="ing-desc">Vitamina esencial que activa el folículo piloso y estimula el crecimiento de pelo nuevo.</p>
  </div>
  <div class="ing-card">
- <div class="ing-icon">🍃</div>
- <h3 class="ing-name">Reduce la caída</h3>
- <p class="ing-benefit">Actúa desde la raíz para frenar la caída de forma progresiva y constante.</p>
+ <div class="ing-icon"></div>
+ <h3 class="ing-name">Keratina Hidrolizada</h3>
+ <p class="ing-desc">Repara la fibra capilar desde adentro, reduce la quebradura y aporta brillo duradero.</p>
  </div>
  <div class="ing-card">
- <div class="ing-icon">🌱</div>
- <h3 class="ing-name">Estimula el crecimiento</h3>
- <p class="ing-benefit">Activa folículos debilitados para favorecer la aparición de pelo nuevo.</p>
+ <div class="ing-icon"></div>
+ <h3 class="ing-name">Pantenol</h3>
+ <p class="ing-desc">Pro-vitamina B5 que hidrata en profundidad y fortalece la estructura del cabello.</p>
  </div>
  <div class="ing-card">
- <div class="ing-icon">🛡️</div>
- <h3 class="ing-name">Fortalece el cuero cabelludo</h3>
- <p class="ing-benefit">Nutre la base del cabello para una fibra más resistente y saludable.</p>
+ <div class="ing-icon"></div>
+ <h3 class="ing-name">Extracto de Bambú</h3>
+ <p class="ing-desc">Rico en sílice, nutre el cuero cabelludo y le da elasticidad y densidad al pelo.</p>
  </div>
  <div class="ing-card">
- <div class="ing-icon">✔️</div>
- <h3 class="ing-name">Sin formol ni sulfatos</h3>
- <p class="ing-benefit">Fórmula suave, apta para uso diario en todo tipo de cabello.</p>
- </div>
- </div>
-
- <div class="resultados-note">
- <div class="r-item">
- <span>📅</span>
- <div><strong>Semana 1</strong><span>Notás menos caída</span></div>
- </div>
- <div class="r-item">
- <span>🌿</span>
- <div><strong>Semana 3 a 6</strong><span>Pelo nuevo visible con uso constante</span></div>
+ <div class="ing-icon">️</div>
+ <h3 class="ing-name">Vitamina E</h3>
+ <p class="ing-desc">Antioxidante que protege el folículo del daño oxidativo y prolonga la vida del pelo.</p>
  </div>
  </div>
  </div>
 
- <!-- CÓMO SE USA -->
- <div class="envio-section" style="background:#f7f7f5;">
- <div class="envio-inner">
- <h2>¿Cómo se usa?</h2>
- <p class="how-sub" style="text-align:center;font-size:0.88rem;color:var(--gray);margin-bottom:0;">Una rutina simple, todos los días.</p>
+ <!-- HOW TO USE -->
+ <div class="how-section">
+  <h2>¿Cómo se usa?</h2>
+  <p class="how-sub">Una rutina simple, resultados visibles.</p>
 
- <div class="envio-steps">
- <div class="envio-step">
- <div class="envio-step-icon">
- <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 22v-4M4 12H2M22 12h-2"/><circle cx="12" cy="12" r="6"/></svg>
- </div>
- <h3 class="envio-step-title">Aplicá</h3>
- <p class="envio-step-desc">Sobre el cuero cabelludo limpio y seco, en toda la zona a tratar.</p>
- </div>
- <div class="envio-connector"></div>
- <div class="envio-step">
- <div class="envio-step-icon">
- <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 00-9.33-5M6 16a6 6 0 009.33 5"/><circle cx="12" cy="12" r="9"/></svg>
- </div>
- <h3 class="envio-step-title">Masajeá</h3>
- <p class="envio-step-desc">Con las yemas de los dedos durante 1 minuto para activar la circulación.</p>
- </div>
- <div class="envio-connector"></div>
- <div class="envio-step">
- <div class="envio-step-icon">
- <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
- </div>
- <h3 class="envio-step-title">No enjuagues</h3>
- <p class="envio-step-desc">Dejá que absorba solo. Usalo todos los días para mejores resultados.</p>
- </div>
- </div>
- </div>
- </div>
+  <div class="how-stepper">
+   <!-- Barra de progreso -->
+   <div class="how-track">
+    <div class="how-track-line"></div>
+    <div class="how-track-fill" id="howTrackFill"></div>
+    <button class="how-dot active" id="how-dot-0" onclick="howGoTo(0)"><span>1</span></button>
+    <button class="how-dot" id="how-dot-1" onclick="howGoTo(1)"><span>2</span></button>
+    <button class="how-dot" id="how-dot-2" onclick="howGoTo(2)"><span>3</span></button>
+    <button class="how-dot" id="how-dot-3" onclick="howGoTo(3)"><span>4</span></button>
+   </div>
 
- <!-- ENVÍO -->
- <div class="envio-section">
- <div class="envio-inner">
- <h2>¿Cómo llega tu pedido?</h2>
- <p class="how-sub" style="text-align:center;font-size:0.88rem;color:var(--gray);margin-bottom:32px;">Despachamos a todo el país el mismo día si pedís antes de las 14hs.</p>
+   <!-- Contenido de cada paso -->
+   <div class="how-steps-wrapper">
+    <div class="how-step-item active" id="how-step-0">
+     <div class="how-step-tag">Paso 1 de 4 — Todos los días</div>
+     <h3 class="how-step-title">Shampoo de Biotina</h3>
+     <p class="how-step-text">Lavá el cabello con el shampoo de biotina. Masajeá el cuero cabelludo con las yemas de los dedos durante 2–3 minutos para activar la circulación. Enjuagá con agua tibia.</p>
+     <span class="how-step-badge">Uso diario · 500 ml</span>
+    </div>
+    <div class="how-step-item" id="how-step-1">
+     <div class="how-step-tag">Paso 2 de 4 — Todos los días</div>
+     <h3 class="how-step-title">Acondicionador</h3>
+     <p class="how-step-text">Aplicá la crema acondicionadora de medios a puntas, evitando la raíz. Dejá actuar 3 minutos para hidratar y suavizar la fibra. Enjuagá con agua fría para sellar el brillo.</p>
+     <span class="how-step-badge">Uso diario · 500 ml</span>
+    </div>
+    <div class="how-step-item" id="how-step-2">
+     <div class="how-step-tag">Paso 3 de 4 — 2 veces por semana</div>
+     <h3 class="how-step-title">Ampolla Plex + Biotina</h3>
+     <p class="how-step-text">Mezclá con la crema de tratamiento y aplicá de medios a puntas sobre el cabello húmedo. Dejá actuar 5–10 minutos. Enjuagá. Repara la fibra y reduce la quebradura desde la primera aplicación.</p>
+     <span class="how-step-badge">Tratamiento intensivo · 60 ml · Uso semanal</span>
+    </div>
+    <div class="how-step-item" id="how-step-3">
+     <div class="how-step-tag">Paso 4 de 4 — Todos los días</div>
+     <h3 class="how-step-title">Biotina Pura en Spray</h3>
+     <p class="how-step-text">Aplicá el spray directamente en el cuero cabelludo limpio y seco. Masajeá suavemente con las yemas de los dedos. No enjuagar. Estimula el crecimiento de pelitos nuevos desde el folículo.</p>
+     <span class="how-step-badge">No enjuagar · 250 ml · Uso diario</span>
+    </div>
+   </div>
 
- <hr class="envio-divider" />
- <p class="envio-tiempos-title">Tiempos de entrega estimados</p>
- <div class="envio-dispatch-note">
- <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
- Pedidos confirmados antes de las <strong>14hs</strong> se despachan el mismo día
- </div>
-
- <div class="envio-grid">
- <div class="envio-row">
- <div class="envio-row-info">
- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
- <span class="envio-region">AMBA</span>
- </div>
- <span class="envio-time">2–4 días hábiles</span>
- </div>
- <div class="envio-row">
- <div class="envio-row-info">
- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
- <span class="envio-region">Interior del país</span>
- </div>
- <span class="envio-time">4–6 días hábiles</span>
- </div>
- <div class="envio-row">
- <div class="envio-row-info">
- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
- <span class="envio-region">Patagonia</span>
- </div>
- <span class="envio-time">6–9 días hábiles</span>
- </div>
- <div class="envio-row envio-row--free">
- <div class="envio-row-info">
- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/></svg>
- <span class="envio-region">Costo de envío (2 y 3 unidades)</span>
- </div>
- <span class="envio-time-free">GRATIS</span>
- </div>
- <div class="envio-row">
- <div class="envio-row-info">
- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/></svg>
- <span class="envio-region">Costo de envío (1 unidad)</span>
- </div>
- <span class="envio-time">$ 5.000</span>
- </div>
- </div>
-
- <div class="envio-footer">
- <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
- Enviamos por Correo Argentino — entrega a domicilio o sucursal a tu elección
- </div>
- </div>
+   <!-- Navegación -->
+   <div class="how-nav">
+    <button class="how-btn how-btn-prev" id="how-prev" onclick="howPrev()" disabled>← Anterior</button>
+    <span class="how-step-counter" id="how-counter">1 / 4</span>
+    <button class="how-btn how-btn-next" id="how-next" onclick="howNext()">Siguiente →</button>
+   </div>
+  </div>
  </div>
 
  <!-- FAQ -->
  <div class="faq-section">
  <h2>Preguntas frecuentes</h2>
  <div class="faq-item">
+ <button class="faq-q" onclick="toggleFaq(this)">¿Cuándo voy a ver resultados? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">La mayoría de las clientas notan menos caída en la primera semana. El crecimiento visible de pelo nuevo se nota entre la semana 3 y 6 con uso constante.</div>
+ </div>
+ <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Sirve para todo tipo de cabello? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Sí, la fórmula es apta para todo tipo de cabello: liso, ondulado, rizado, teñido o con procesos químicos. No contiene formol ni sulfatos.</div>
+ <div class="faq-a">Sí, está formulado para todo tipo de cabello: liso, ondulado, rizado, teñido o tratado químicamente. Sin formol ni sulfatos, apto uso diario.</div>
  </div>
  <div class="faq-item">
- <button class="faq-q" onclick="toggleFaq(this)">¿Hay que enjuagar el producto? <span class="faq-arrow">+</span></button>
- <div class="faq-a">No. Se aplica directo sobre el cuero cabelludo limpio y seco, se masajea suave, y no se enjuaga. Dejá que absorba solo.</div>
+ <button class="faq-q" onclick="toggleFaq(this)">¿Cómo llega el envío? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">Despachamos por Correo Argentino a todo el país con envío rápido. Te enviamos el número de seguimiento por WhatsApp cuando despachamos.</div>
  </div>
  <div class="faq-item">
- <button class="faq-q" onclick="toggleFaq(this)">¿Cada cuánto lo tengo que usar? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Es de uso diario. La constancia es la clave: se recomienda aplicarlo todos los días para ver resultados desde la semana 3.</div>
- </div>
- <div class="faq-item">
- <button class="faq-q" onclick="toggleFaq(this)">¿Cuánto tarda en llegar mi pedido? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Si confirmás tu pedido antes de las 14hs lo despachamos ese mismo día. Después llega entre 2 y 9 días hábiles según tu zona. El envío es gratis en pedidos de 2 y 3 unidades; en pedidos de 1 unidad tiene un costo de $5.000.</div>
+ <button class="faq-q" onclick="toggleFaq(this)">¿Puedo pagar en cuotas? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">Aceptamos tarjeta de crédito, débito, efectivo y dinero en cuenta a través de MercadoPago.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Qué pasa si no me gusta el producto? <span class="faq-arrow">+</span></button>
  <div class="faq-a">Tu compra está 100% protegida. Si no quedás satisfecha te devolvemos el dinero sin preguntas. Contactanos por WhatsApp y lo resolvemos en el día.</div>
  </div>
- <div class="faq-item">
- <button class="faq-q" onclick="toggleFaq(this)">¿Qué métodos de pago aceptan? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Aceptamos tarjeta de crédito, débito, efectivo y dinero en cuenta a través de MercadoPago.</div>
  </div>
+
+ <!-- ENVÍO DETALLADO -->
+ <div class="envio-section">
+ <div class="envio-inner">
+  <h2>¿Cómo llega tu pedido?</h2>
+  <p class="how-sub">Despachamos a todo el país el mismo día si pedís antes de las 14hs.</p>
+
+  <div class="envio-steps">
+   <div class="envio-step">
+    <div class="envio-step-icon">
+     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+    </div>
+    <h3 class="envio-step-title">Preparamos tu pedido</h3>
+    <p class="envio-step-desc">Pedidos con pago confirmado antes de las 14hs los despachamos ese mismo día.</p>
+   </div>
+   <div class="envio-connector"></div>
+   <div class="envio-step">
+    <div class="envio-step-icon">
+     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+    </div>
+    <h3 class="envio-step-title">Lo despachamos</h3>
+    <p class="envio-step-desc">Enviamos por Correo Argentino y te mandamos el número de seguimiento por WhatsApp.</p>
+   </div>
+   <div class="envio-connector"></div>
+   <div class="envio-step">
+    <div class="envio-step-icon">
+     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </div>
+    <h3 class="envio-step-title">Llega a tu puerta</h3>
+    <p class="envio-step-desc">Tu combo llega directo a la dirección que nos diste. Podés rastrearlo en tiempo real.</p>
+   </div>
+  </div>
+
+  <hr class="envio-divider" />
+  <p class="envio-tiempos-title">Tiempos de entrega estimados</p>
+  <div class="envio-dispatch-note">
+   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+   Pedidos confirmados antes de las <strong>14hs</strong> se despachan el mismo día
+  </div>
+
+  <div class="envio-grid">
+   <div class="envio-row">
+    <div class="envio-row-info">
+     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+     <span class="envio-region">AMBA</span>
+    </div>
+    <span class="envio-time">2–4 días hábiles</span>
+   </div>
+   <div class="envio-row">
+    <div class="envio-row-info">
+     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+     <span class="envio-region">Interior del país</span>
+    </div>
+    <span class="envio-time">4–6 días hábiles</span>
+   </div>
+   <div class="envio-row">
+    <div class="envio-row-info">
+     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+     <span class="envio-region">Patagonia</span>
+    </div>
+    <span class="envio-time">6–9 días hábiles</span>
+   </div>
+   <div class="envio-row envio-row--free">
+    <div class="envio-row-info">
+     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/></svg>
+     <span class="envio-region">Costo de envío</span>
+    </div>
+    <span class="envio-time-free">GRATIS</span>
+   </div>
+  </div>
+
+  <div class="envio-footer">
+   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+   Enviamos por Correo Argentino — entrega a domicilio o sucursal a tu elección
+  </div>
+ </div>
+ </div>
+
+ <!-- REVIEWS -->
+ <div class="reviews-section" id="resenas">
+ <h2>Más de 2.244 clientas felices</h2>
+ <div class="reviews-stars">
+ <div class="stars"></div>
+ <p>4.8 de 5 estrellas</p>
+ </div>
+
+ <div class="rating-bars">
+ <div class="rating-row">
+ <span class="rating-label">5</span>
+ <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:88%"></div></div>
+ <span class="rating-pct">88%</span>
+ </div>
+ <div class="rating-row">
+ <span class="rating-label">4</span>
+ <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:9%"></div></div>
+ <span class="rating-pct">9%</span>
+ </div>
+ <div class="rating-row">
+ <span class="rating-label">3</span>
+ <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:2%"></div></div>
+ <span class="rating-pct">2%</span>
+ </div>
+ <div class="rating-row">
+ <span class="rating-label">2</span>
+ <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:1%"></div></div>
+ <span class="rating-pct">1%</span>
+ </div>
+ <div class="rating-row">
+ <span class="rating-label">1</span>
+ <div class="rating-bar-bg"><div class="rating-bar-fill" style="width:0%"></div></div>
+ <span class="rating-pct">0%</span>
+ </div>
+ </div>
+
+ <div class="reviews-grid">
+ <div class="review-card">
+ <div class="review-header">
+ <span class="review-stars"></span>
+ <span class="review-verified"> Verificado</span>
+ </div>
+ <div class="review-title">El mejor tratamiento que probé</div>
+ <p class="review-text">Se me cae muchísimo el pelo y en 1 mes ya noté la diferencia. Estoy fascinada con los resultados. Lo recomiendo 100%.</p>
+ <div class="review-meta">
+ <span>Carla P.</span>
+ <span>hace 2 semanas</span>
+ </div>
+ </div>
+
+ <div class="review-card">
+ <div class="review-header">
+ <span class="review-stars"></span>
+ <span class="review-verified"> Verificado</span>
+ </div>
+ <div class="review-title">¡Pelo nuevo!</div>
+ <p class="review-text">Me están saliendo pelitos nuevos en la coronilla. No lo podía creer. Llevo 6 semanas usándolo todos los días.</p>
+ <div class="review-meta">
+ <span>Daniela P.</span>
+ <span>hace 1 mes</span>
+ </div>
+ </div>
+
+ <div class="review-card">
+ <div class="review-header">
+ <span class="review-stars"></span>
+ <span class="review-verified"> Verificado</span>
+ </div>
+ <div class="review-title">Salvó mi pelo post-parto</div>
+ <p class="review-text">Después de tener a mi bebé se me caía a mechones. Con la biotina pura mejoré un montón en muy poco tiempo.</p>
+ <div class="review-meta">
+ <span>Luciana M.</span>
+ <span>hace 3 semanas</span>
+ </div>
+ </div>
+ </div>
+
+ <button class="btn-reviews">Ver todas las reseñas</button>
  </div>
 
  <!-- CTA FINAL -->
  <div class="cta-final">
  <h2>Empezá hoy tu tratamiento</h2>
  <p>Resultados visibles desde la primera semana. Sin formol, sin sulfatos, sin efectos secundarios.</p>
- <a href="#" onclick="openModal(); return false;" class="btn-cta-final">Lleva 1 · $30.000 — Envío $5.000</a>
+ <a href="#" onclick="openModal(); return false;" class="btn-cta-final">Lleva 1 · $43.000 — Envío gratis </a>
  </div>
 
  <!-- MODAL FORMULARIO -->
@@ -1318,7 +2142,7 @@
  <div class="modal">
  <button class="modal-close" onclick="closeModal()">×</button>
  <h3>¡Un paso más! </h3>
- <p class="modal-sub">Completá tus datos para coordinar el envío. Tu pedido: <span id="modalProducto">Biotina Pura x1 + envío — $30.000</span></p>
+ <p class="modal-sub">Completá tus datos para coordinar el envío. Tu pedido: <span id="modalProducto">Combo Biotina x2 — $62.000</span></p>
 
  <div class="form-section-title">Datos personales</div>
  <div class="form-row">
@@ -1422,7 +2246,7 @@
  </div>
  <div class="footer-col">
  <h4>Contacto</h4>
- <a href="https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20la%20Biotina%20Pura%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F" class="footer-icon-link">
+ <a href="https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20el%20Combo%20Biotina%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F" class="footer-icon-link">
  <svg width="13" height="13" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
  WhatsApp
  </a>
@@ -1464,6 +2288,28 @@
  <p>© 2025 Productos Capilares PG · Todos los derechos reservados</p>
  </div>
  </footer>
+
+ <!-- MODAL PRODUCTO -->
+ <div class="pmodal-overlay" id="pmodalOverlay" onclick="closeProductOutside(event)">
+ <div class="pmodal">
+ <button class="pmodal-close" onclick="closeProduct()">×</button>
+ <div class="pmodal-header">
+ <div class="pmodal-icon" id="pmIcon"></div>
+ <div>
+ <h2 id="pmName"></h2>
+ <span class="pmodal-ml" id="pmMl"></span>
+ </div>
+ </div>
+ <span class="pmodal-tag" id="pmTag"></span>
+ <p class="pmodal-desc" id="pmDesc"></p>
+ <div class="pmodal-section">Beneficios principales</div>
+ <ul class="pmodal-list" id="pmBeneficios"></ul>
+ <div class="pmodal-section">Cómo usarlo</div>
+ <ol class="pmodal-steps" id="pmUso"></ol>
+ <div class="pmodal-nota" id="pmNota"></div>
+ <button class="pmodal-buy" onclick="closeProduct(); openModal()">Comprar ahora →</button>
+ </div>
+ </div>
 
  <!-- MODAL POLÍTICA DE PRIVACIDAD -->
  <div class="modal-overlay" id="modalPrivacidad" onclick="closeLegalOutside(event, 'privacidad')">
@@ -1518,15 +2364,20 @@
  <!-- FLOATING CTA MOBILE -->
  <div class="floating-cta">
  <button class="floating-cta-btn" id="floatingBtn" onclick="openModal()">
- COMPRAR AHORA · $30.000 — ENVÍO $5.000
+ COMPRAR AHORA · $43.000 — ENVÍO GRATIS
  </button>
  </div>
 
- <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
- <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
  <script>
- // ─── FIREBASE CONFIG (mismo proyecto que index.html — comparte el panel admin) ──
- const FIREBASE_ENABLED = true;
+ // ─── FIREBASE CONFIG ──────────────────────────────────────────────────────
+ // Para activar la sincronización en tiempo real con el panel admin:
+ // 1. Crear un proyecto en https://console.firebase.google.com
+ // 2. Agregar una app web → copiar el objeto firebaseConfig
+ // 3. Habilitar Firestore Database (modo producción)
+ // 4. Pegar las reglas del comentario en admin.html y publicarlas
+ // 5. Completar FIREBASE_CONFIG y cambiar FIREBASE_ENABLED a true
+ const FIREBASE_ENABLED = true; // ← cambiar a true después de configurar
+
  const FIREBASE_CONFIG = {
  apiKey: 'AIzaSyB2lipjGfqeV6gmKRw4vZEnzFHQsF1JxnQ',
  authDomain: 'biotina-pg.firebaseapp.com',
@@ -1535,43 +2386,46 @@
  messagingSenderId: '167629017281',
  appId: '1:167629017281:web:def9e7b08c390b40d04440'
  };
+
  if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
  firebase.initializeApp(FIREBASE_CONFIG);
  }
+ // ─────────────────────────────────────────────────────────────────────────
 
  // ─── CONFIGURACIÓN ────────────────────────────────────────────────────────
+ // WhatsApp (formato internacional sin + ni espacios)
  const WA_NUMERO = '5491124838177';
 
- // Links de pago de MercadoPago (Link de pago, montos fijos) — fallback
- // estático que se usa solo si la Cloud Function de pago dinámico falla.
- const MP_URL_1 = 'https://mpago.la/2aCHP53'; // ← 1 unidad + envío, $30.000
- const MP_URL_2 = 'https://mpago.la/2w2KZs5'; // ← 2 unidades $45.000
- const MP_URL_3 = 'https://mpago.la/1MPCQga'; // ← 3 unidades $60.000
+ // Links de MercadoPago — reemplazá cada uno con tu link real de preferencia
+ // Ejemplo: 'https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=XXXXX'
+ const MP_URL_1 = 'https://mpago.li/1Fog13g'; // ← 1 combo $43.000
+ const MP_URL_2 = 'https://mpago.la/1uazNyQ'; // ← 2 combos $80.000
+ const MP_URL_3 = 'https://mpago.la/1puHY2A'; // ← 3 combos $100.000
+ // ─────────────────────────────────────────────────────────────────────────
 
+ // ─── CONFIRMACIÓN AUTOMÁTICA DE PAGOS (Cloud Function + webhook MercadoPago) ──
+ // Poné esto en true recién después de desplegar functions/ con `firebase deploy`
+ // y configurar el secret MP_ACCESS_TOKEN. Mientras esté en false, el checkout
+ // sigue usando los links fijos de arriba sin ningún cambio.
  const MP_AUTO_CONFIRM_ENABLED = true;
  const CLOUD_FN_CREAR_PREFERENCIA = 'https://us-central1-biotina-pg.cloudfunctions.net/crearPreferencia';
- // 1 unidad ahora suma $5.000 de envío a domicilio ($25.000 + $5.000 = $30.000).
- // 2 y 3 unidades siguen con envío gratis.
- const PRECIOS_NUM = { 1: 30000, 2: 45000, 3: 60000 };
+ const PRECIOS_NUM = { 1: 43000, 2: 80000, 3: 100000 };
+ // ─────────────────────────────────────────────────────────────────────────
 
  const precios = {
- 1: { label: 'Biotina Pura x1 + envío — $30.000', mp: MP_URL_1 },
- 2: { label: 'Biotina Pura x2 — $45.000', mp: MP_URL_2 },
- 3: { label: 'Biotina Pura x3 — $60.000', mp: MP_URL_3 }
+ 1: { label: 'Combo Biotina x1 — $43.000', mp: MP_URL_1 },
+ 2: { label: 'Combo Biotina x2 — $80.000', mp: MP_URL_2 },
+ 3: { label: 'Combo Biotina x3 — $100.000', mp: MP_URL_3 }
  };
  let selectedQty = 1;
 
-
- function selectQty(el, qty) {
+ function selectQty(el, price, qty) {
  document.querySelectorAll('.qty-option').forEach(o => o.classList.remove('selected'));
  el.classList.add('selected');
  selectedQty = qty;
- const prices = { 1: '30.000', 2: '45.000', 3: '60.000' };
- const envioTxt = { 1: 'ENVÍO $5.000', 2: 'ENVÍO GRATIS', 3: 'ENVÍO GRATIS' };
- document.getElementById('buyBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ${envioTxt[qty]}`;
- document.getElementById('floatingBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ${envioTxt[qty]}`;
- const nota = document.getElementById('envioNota');
- if (nota) nota.textContent = qty === 1 ? 'Envío a domicilio $5.000 en pedidos de 1 unidad' : 'Envío gratis a todo el país';
+ const prices = { 1: '43.000', 2: '80.000', 3: '100.000' };
+ document.getElementById('buyBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
+ document.getElementById('floatingBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
  }
 
  function openModal() {
@@ -1608,6 +2462,7 @@
  });
  if (!valido) { alert('Por favor completá todos los campos obligatorios.'); return; }
 
+ // Guardar datos
  const datos = {};
  campos.forEach(id => { datos[id] = document.getElementById(id).value; });
  datos.producto = precios[selectedQty].label;
@@ -1633,6 +2488,12 @@
  body: JSON.stringify(datos),
  }).catch(e => console.warn('Aviso WhatsApp no disponible:', e));
 
+ // Datos que viajan siempre: sean guardados en localStorage o en Firestore,
+ // formStatus/timestamp permiten que "Formularios completados" y "Carritos
+ // abandonados" en el admin vean este pedido sin importar si el pago
+ // después se aprueba, rechaza o queda abandonado. Sumamos precio/fbp/fbc/
+ // event_source_url para poder mandar un Purchase por CAPI bien "matcheado"
+ // cuando MercadoPago confirme el pago, y para la página de "gracias".
  const nowTs = Date.now();
  const datosTracking = Object.assign({}, datos, {
  precio: PRECIOS_NUM[selectedQty],
@@ -1641,6 +2502,7 @@
  event_source_url: location.href,
  });
 
+ // Guardar en localStorage (siempre, como respaldo, y para la página de "gracias")
  const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
  pedidos.push({ ...datosTracking, formStatus: 'pendiente', timestamp: nowTs });
  localStorage.setItem('pedidos', JSON.stringify(pedidos));
@@ -1654,12 +2516,14 @@
 
  function irAlSiguientePaso() {
  if (mpListo) {
+ // Redirigir a MercadoPago
  window.location.href = mpUrl;
  } else {
+ // Fallback: enviar pedido completo por WhatsApp
  const d = datos;
  const dir = `${d.calle} ${d.numero}${d.piso ? ' ' + d.piso : ''}, ${d.localidad} (${d.cp}), ${d.provincia}`;
  const msg = encodeURIComponent(
- ` *Nuevo pedido — Biotina Pura PG*\n\n` +
+ ` *Nuevo pedido — Biotina PG*\n\n` +
  ` *Datos del comprador*\n` +
  `Nombre: ${d.nombre} ${d.apellido}\n` +
  `Teléfono: ${d.telefono}\n` +
@@ -1675,6 +2539,11 @@
  }
  }
 
+ // Si logramos crear un pago dinámico en MercadoPago (vía Cloud Function),
+ // ese link reemplaza al link fijo — permite que el webhook identifique
+ // exactamente qué pedido pagó cada cliente, confirme el estado solo, y le
+ // pasa a MercadoPago los datos del comprador (nombre, email, teléfono) para
+ // que el checkout llegue precargado.
  async function crearPagoDinamico(docId) {
  if (!MP_AUTO_CONFIRM_ENABLED || !docId || !mpListo) {
  console.warn('Pago dinámico: no se intenta ->', { MP_AUTO_CONFIRM_ENABLED, docId, mpListo });
@@ -1699,6 +2568,10 @@
  }
 
  if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
+ // Esperamos a que el guardado en Firestore termine (con un tope) antes de
+ // navegar. Si redirigimos de inmediato, el navegador corta la petición a
+ // mitad de camino al cambiar de página y el pedido nunca llega a la base de
+ // datos — así es como se perdían clientes con pagos rechazados o abandonados.
  // El tope está en 6s (no 2.5s) porque el primer write de Firestore de la
  // sesión suele tardar más por el handshake del canal — con 2.5s el timeout
  // le ganaba la carrera casi siempre y el pago dinámico nunca llegaba ni a
@@ -1716,6 +2589,9 @@
  if (!docRef) {
  console.warn('Pago dinámico: no hay docRef (Firestore falló o tardó más que el tope) -> uso link fijo');
  } else {
+ // Guardamos el id real del pedido junto a los datos en localStorage: la
+ // página de "gracias" lo usa como event_id del Purchase para deduplicar
+ // con el que ya mandamos por CAPI desde el webhook de MercadoPago.
  try {
  const ult = JSON.parse(localStorage.getItem('ultimoPedido') || '{}');
  ult.pedidoId = docRef.id;
@@ -1761,6 +2637,174 @@
  if (e.target === document.getElementById(id)) closeLegal(tipo);
  }
 
+ // ─── MODAL PRODUCTOS ──────────────────────────────────────────────────────
+ const PRODUCTS = [
+ {
+ icon: '', ml: '500ml', name: 'Shampoo de Biotina',
+ tag: 'USO DIARIO', tagClass: 'coral',
+ desc: 'Limpieza profunda formulada con biotina activa para reducir la caída, estimular el crecimiento y fortalecer el cabello desde la raíz. Sin formol ni sulfatos agresivos. Apto para uso diario en todo tipo de cabello.',
+ beneficios: [
+ 'Reduce notablemente la caída desde la primera lavada',
+ 'Estimula el crecimiento capilar con biotina activa',
+ 'Fortalece el cabello desde la raíz',
+ 'Apto para cabello teñido, rizado, liso u ondulado',
+ 'Sin formol · Sin sulfatos agresivos · Sin parabenos',
+ ],
+ uso: [
+ 'Mojá bien el cabello con agua tibia.',
+ 'Aplicá el shampoo y masajeá el cuero cabelludo con las yemas de los dedos durante 2-3 minutos.',
+ 'Enjuagá completamente con agua.',
+ 'Podés repetir si es necesario.',
+ ],
+ nota: ' Podés usarlo todos los días. La fórmula suave no reseca el cuero cabelludo.',
+ },
+ {
+ icon: '', ml: '500ml', name: 'Acondicionador de Biotina',
+ tag: 'USO DIARIO', tagClass: 'coral',
+ desc: 'Acondicionador de biotina activa que hidrata en profundidad, sella la cutícula, elimina el frizz y deja el cabello suave, manejable y con brillo natural. Sin formol ni sulfatos. Apto para uso diario.',
+ beneficios: [
+ 'Sella la cutícula y elimina el frizz de forma duradera',
+ 'Hidratación profunda de medios a puntas',
+ 'Deja el cabello suave, sedoso y con brillo',
+ 'Facilita el peinado y reduce los nudos',
+ 'Sin formol · Sin sulfatos',
+ ],
+ uso: [
+ 'Después del shampoo, exprimí el exceso de agua del cabello.',
+ 'Aplicá de medios a puntas (evitá el cuero cabelludo).',
+ 'Dejá actuar 3 a 5 minutos.',
+ 'Enjuagá con agua fría para potenciar el brillo.',
+ ],
+ nota: ' No aplicar directamente en el cuero cabelludo para no obstruir los folículos pilosos.',
+ },
+ {
+ icon: '', ml: '250ml', name: 'Biotina Pura en Spray',
+ tag: 'USO DIARIO · NO ENJUAGAR', tagClass: 'green',
+ desc: 'El corazón del combo. Biotina concentrada en spray de aplicación directa sobre el cuero cabelludo. Actúa donde realmente importa: en el folículo piloso, estimulando el crecimiento de pelitos nuevos y frenando la caída. No requiere enjuague.',
+ beneficios: [
+ 'Activa el folículo piloso directamente en la raíz',
+ 'Estimula el crecimiento de pelitos nuevos en zonas debilitadas',
+ 'Frena la caída de forma progresiva',
+ 'Absorción rápida, no deja residuo ni aplasta el cabello',
+ 'No requiere enjuague — ideal para usar en cualquier momento',
+ ],
+ uso: [
+ 'Aplicá sobre el cuero cabelludo seco o semihúmedo.',
+ 'Separar el cabello en secciones para llegar bien a la raíz.',
+ 'Dar 2-3 pulverizaciones por zona.',
+ 'Masajear suavemente con las yemas de los dedos durante 1 minuto.',
+ 'No enjuagar. Dejá que absorba solo.',
+ ],
+ nota: '⭐ Este es el producto más importante del combo. La constancia diaria es la clave para ver resultados desde la semana 3.',
+ },
+ {
+ icon: '', ml: '60ml', name: 'Ampolla Plex + Biotina',
+ tag: 'USO SEMANAL', tagClass: 'coral',
+ desc: 'Tratamiento intensivo semanal para recuperar el cabello dañado, teñido o debilitado. Repara la fibra capilar desde adentro, fortalece y reduce la quebradura. El complemento perfecto para el tratamiento completo.',
+ beneficios: [
+ 'Repara la fibra capilar dañada o teñida en profundidad',
+ 'Reduce la quebradura y el cabello partido',
+ 'Fortalece el cabello desde adentro hacia afuera',
+ 'Ideal para cabello sometido a procesos químicos (decoloración, alaciados)',
+ 'Resultados visibles desde la primera aplicación',
+ ],
+ uso: [
+ 'Mezclá el contenido de la ampolla con tu crema de tratamiento habitual.',
+ 'Aplicá de medios a puntas sobre cabello húmedo (no en la raíz).',
+ 'Cubrí con una bolsa de plástico o gorro de ducha para potenciar el efecto.',
+ 'Dejá actuar 15 a 20 minutos.',
+ 'Enjuagá completamente con agua tibia.',
+ ],
+ nota: ' Usarlo 1 vez por semana es suficiente. No sobredosificar.',
+ },
+ ];
+
+ function openProduct(idx) {
+ const p = PRODUCTS[idx];
+ document.getElementById('pmIcon').textContent = p.icon;
+ document.getElementById('pmName').textContent = p.name;
+ document.getElementById('pmMl').textContent = p.ml;
+ document.getElementById('pmDesc').textContent = p.desc;
+ document.getElementById('pmNota').textContent = p.nota;
+ document.getElementById('pmTag').textContent = p.tag;
+ document.getElementById('pmTag').className = 'pmodal-tag ' + p.tagClass;
+ document.getElementById('pmBeneficios').innerHTML = p.beneficios.map(b => `<li>${b}</li>`).join('');
+ document.getElementById('pmUso').innerHTML = p.uso.map((u, i) =>
+ `<li><span class="pmodal-step-num">${i+1}</span><span>${u}</span></li>`).join('');
+ document.getElementById('pmodalOverlay').classList.add('active');
+ document.body.style.overflow = 'hidden';
+ }
+
+ function closeProduct() {
+ document.getElementById('pmodalOverlay').classList.remove('active');
+ document.body.style.overflow = '';
+ }
+
+ function closeProductOutside(e) {
+ if (e.target === document.getElementById('pmodalOverlay')) closeProduct();
+ }
+ // ─────────────────────────────────────────────────────────────────────────
+
+ // ─── STEPPER CÓMO SE USA ───
+ let howCurrent = 0;
+ const HOW_TOTAL = 4;
+
+ function howUpdateFill() {
+  const pct = howCurrent === 0 ? 0 : (howCurrent / (HOW_TOTAL - 1)) * 100;
+  document.getElementById('howTrackFill').style.width = `calc(${pct}% * (100% - 144px) / 100)`;
+ }
+
+ function howGoTo(idx, isBack) {
+  // Quitar activo del paso actual
+  const prevItem = document.getElementById(`how-step-${howCurrent}`);
+  prevItem.classList.remove('active', 'back');
+  document.getElementById(`how-dot-${howCurrent}`).classList.remove('active');
+  if (howCurrent < idx) document.getElementById(`how-dot-${howCurrent}`).classList.add('done');
+
+  // Desmarcar "done" si volvemos atrás
+  if (isBack) {
+   for (let i = idx; i < HOW_TOTAL; i++) {
+    document.getElementById(`how-dot-${i}`).classList.remove('done');
+   }
+  }
+
+  howCurrent = idx;
+
+  // Activar nuevo paso
+  const newItem = document.getElementById(`how-step-${howCurrent}`);
+  newItem.classList.remove('active', 'back');
+  void newItem.offsetWidth; // reflow para reiniciar animación
+  newItem.classList.add(isBack ? 'back' : 'active');
+  document.getElementById(`how-dot-${howCurrent}`).classList.add('active');
+
+  // Botones
+  document.getElementById('how-prev').disabled = howCurrent === 0;
+  const nextBtn = document.getElementById('how-next');
+  nextBtn.textContent = howCurrent === HOW_TOTAL - 1 ? '↺ Volver al inicio' : 'Siguiente →';
+
+  // Contador
+  document.getElementById('how-counter').textContent = `${howCurrent + 1} / ${HOW_TOTAL}`;
+
+  // Línea de progreso
+  const fillPct = howCurrent / (HOW_TOTAL - 1) * 100;
+  document.getElementById('howTrackFill').style.width = fillPct + '%';
+ }
+
+ function howNext() {
+  if (howCurrent === HOW_TOTAL - 1) { howGoTo(0, true); }
+  else { howGoTo(howCurrent + 1, false); }
+ }
+ function howPrev() {
+  if (howCurrent > 0) howGoTo(howCurrent - 1, true);
+ }
+
+ // Seleccionar "2 combos" por defecto sin hacer scroll
+ selectQty(document.querySelector('.qty-option[data-price="43000"]'), '$43.000', 1);
+
+ // Asegurar que la página arranque desde arriba
+ history.scrollRestoration = 'manual';
+ window.scrollTo(0, 0);
+
  // ─── VUELTA DE MERCADOPAGO (?pago=aprobado|pendiente|rechazado&pid=...) ────
  // Hoy esto no se manejaba: el cliente volvía del pago y caía en la home sin
  // ningún aviso. Además de la UX, es el único lugar donde el pixel del
@@ -1784,6 +2828,7 @@
  if (!pago) return;
  const pid = params.get('pid');
 
+ // Limpiamos la URL para que un refresh no vuelva a disparar el Purchase.
  history.replaceState({}, '', location.pathname);
 
  let ultimo = null;
@@ -1817,9 +2862,10 @@
  })();
  </script>
 
- <!-- WhatsApp flotante -->
- <a href="https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20la%20Biotina%20Pura%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F" class="wa-fab" target="_blank" aria-label="WhatsApp">
- <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+ <!-- FLOATING WA BUTTON -->
+ <a class="wa-fab" href="https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20el%20Combo%20Biotina%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F" target="_blank" aria-label="Consultar por WhatsApp">
+ <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+ <span class="wa-fab-tooltip">Consultar por WhatsApp</span>
  </a>
 
 </body>
