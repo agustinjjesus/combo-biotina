@@ -347,7 +347,7 @@
         <select id="statsPeriodo" onchange="setStatsPeriodo(this.value)"
           style="border:2px solid var(--cream2);border-radius:8px;padding:6px 10px;font-family:'Outfit',sans-serif;font-size:0.8rem;font-weight:600;color:var(--dark);background:white;">
           <option value="mes">Este mes</option>
-          <option value="todo">Todo el tiempo</option>
+          <option value="todo" selected>Todo el tiempo</option>
         </select>
       </div>
       <div class="stats-grid">
@@ -949,7 +949,7 @@
     }
 
     function loadData() {
-      const periodo = window._statsPeriodo || document.getElementById('statsPeriodo')?.value || 'mes';
+      const periodo = window._statsPeriodo || document.getElementById('statsPeriodo')?.value || 'todo';
       let ventasHoy = 0, ventasPeriodo = 0, ingresosPeriodo = 0, gananciaPeriodo = 0, abandoned = 0;
       let gananciaMesActual = 0; // siempre el mes en curso — la usa "Distribución de ganancias", que es un presupuesto mensual y no debería moverse con el selector de período de más arriba.
       const porProducto = {};
