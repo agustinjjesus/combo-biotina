@@ -961,6 +961,66 @@
  .btn-reviews:hover { background: var(--coral); color: white; }
  @media (max-width: 768px) { .reviews-section { padding: 56px 20px; } .reviews-grid { grid-template-columns: 1fr; } }
 
+ /* ─── FICHA DEL PRODUCTO ─── */
+ .includes-section { background: var(--white); padding: 80px 48px; text-align: center; }
+ .includes-section h2 { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+ .includes-grid { max-width: 1060px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+ .includes-grid--single { grid-template-columns: 1fr; max-width: 460px; }
+ .include-card {
+ background: var(--cream); border-radius: 16px; padding: 28px 22px; text-align: left;
+ display: flex; flex-direction: column; gap: 10px; position: relative;
+ cursor: pointer; transition: transform 0.22s ease, box-shadow 0.22s ease;
+ }
+ .include-card--featured { background: #fdf5f2; border: 2px solid var(--coral-light); }
+ .include-badge {
+ position: absolute; top: 16px; right: 16px; background: var(--dark); color: white;
+ font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 8px;
+ }
+ .include-icon { font-size: 1.6rem; }
+ .include-card h3 { font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--dark); line-height: 1.2; }
+ .include-card p { font-size: 0.8rem; color: var(--gray); line-height: 1.7; flex: 1; }
+ .include-tag {
+ font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+ color: var(--coral); border: 1px solid var(--coral-light); border-radius: 20px; padding: 4px 10px;
+ align-self: flex-start;
+ }
+ .include-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,0.10); }
+ .include-card:hover .include-more { opacity: 1; }
+ .include-more {
+ font-size: 0.7rem; font-weight: 600; color: var(--coral); letter-spacing: 0.06em; text-transform: uppercase;
+ margin-top: auto; padding-top: 10px; opacity: 0; transition: opacity 0.2s;
+ }
+ @media (max-width: 768px) {
+ .includes-section { padding: 56px 20px; }
+ .include-more { opacity: 1; }
+ }
+ @media (max-width: 480px) { .includes-grid { grid-template-columns: 1fr; } .pmodal { padding: 28px 20px; } }
+
+ /* ─── MODAL PRODUCTO ─── */
+ .pmodal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1100; align-items: center; justify-content: center; padding: 20px; }
+ .pmodal-overlay.active { display: flex; }
+ .pmodal { background: white; border-radius: 24px; padding: 40px 36px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; animation: modalIn 0.3s ease; position: relative; }
+ .pmodal-close { position: absolute; top: 16px; right: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999; line-height: 1; }
+ .pmodal-close:hover { color: var(--dark); }
+ .pmodal-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+ .pmodal-icon { font-size: 2.4rem; line-height: 1; }
+ .pmodal-header h2 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--dark); line-height: 1.2; }
+ .pmodal-ml { display: inline-block; background: var(--dark); color: white; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; padding: 3px 8px; border-radius: 6px; margin-top: 4px; }
+ .pmodal-tag { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; border-radius: 20px; padding: 4px 12px; display: inline-block; margin-bottom: 16px; align-self: flex-start; }
+ .pmodal-tag.coral { color: var(--coral); border: 1px solid var(--coral-light); }
+ .pmodal-tag.green { color: var(--green); border: 1px solid #b2dfc0; background: #f0faf4; }
+ .pmodal-desc { font-size: 0.85rem; color: var(--gray); line-height: 1.75; margin-bottom: 20px; }
+ .pmodal-section { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--cream2); }
+ .pmodal-list { list-style: none; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+ .pmodal-list li { font-size: 0.83rem; color: var(--dark); display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+ .pmodal-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--coral); flex-shrink: 0; margin-top: 6px; }
+ .pmodal-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+ .pmodal-steps li { font-size: 0.83rem; color: var(--dark); display: flex; gap: 12px; align-items: flex-start; line-height: 1.5; }
+ .pmodal-step-num { width: 22px; height: 22px; background: var(--coral); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; flex-shrink: 0; }
+ .pmodal-nota { background: #f0faf4; border: 1px solid #c3e6cb; border-radius: 10px; padding: 12px 14px; font-size: 0.78rem; color: var(--green); line-height: 1.6; }
+ .pmodal-buy { margin-top: 24px; width: 100%; background: var(--coral); color: white; border: none; padding: 15px; border-radius: 12px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+ .pmodal-buy:hover { background: var(--coral-dark); }
+
  /* ─── ANIMATIONS ─── */
  @keyframes fadeUp {
  from { opacity: 0; transform: translateY(20px); }
@@ -1178,6 +1238,24 @@
  <div style="text-align:center"><div class="proof-num">0%</div><div class="proof-label">formol ni sulfatos</div></div>
  <div style="text-align:center"><div class="proof-num">Diario</div><div class="proof-label">modo de aplicación</div></div>
  <div style="text-align:center"><div class="proof-num">Gratis</div><div class="proof-label">envío a todo el país</div></div>
+ </div>
+
+ <!-- FICHA DEL PRODUCTO -->
+ <div class="includes-section">
+ <h2>Conocé el producto en detalle</h2>
+ <p class="how-sub">Toda la información que necesitás antes de comprar.</p>
+ <div class="includes-grid includes-grid--single">
+
+ <div class="include-card include-card--featured" onclick="openProduct(0)" role="button">
+ <div class="include-badge">250ml</div>
+ <div class="include-icon"></div>
+ <h3>Biotina Pura en Spray</h3>
+ <p>Biotina concentrada en spray de aplicación directa sobre el cuero cabelludo. Actúa donde realmente importa: en el folículo piloso, estimulando el crecimiento de pelitos nuevos y frenando la caída. No requiere enjuague.</p>
+ <span class="include-tag">USO DIARIO · NO ENJUAGAR</span>
+ <span class="include-more">Ver más →</span>
+ </div>
+
+ </div>
  </div>
 
  <!-- BENEFICIOS -->
@@ -1577,6 +1655,28 @@
  </div>
  </footer>
 
+ <!-- MODAL PRODUCTO -->
+ <div class="pmodal-overlay" id="pmodalOverlay" onclick="closeProductOutside(event)">
+ <div class="pmodal">
+ <button class="pmodal-close" onclick="closeProduct()">×</button>
+ <div class="pmodal-header">
+ <div class="pmodal-icon" id="pmIcon"></div>
+ <div>
+ <h2 id="pmName"></h2>
+ <span class="pmodal-ml" id="pmMl"></span>
+ </div>
+ </div>
+ <span class="pmodal-tag" id="pmTag"></span>
+ <p class="pmodal-desc" id="pmDesc"></p>
+ <div class="pmodal-section">Beneficios principales</div>
+ <ul class="pmodal-list" id="pmBeneficios"></ul>
+ <div class="pmodal-section">Cómo usarlo</div>
+ <ol class="pmodal-steps" id="pmUso"></ol>
+ <div class="pmodal-nota" id="pmNota"></div>
+ <button class="pmodal-buy" onclick="closeProduct(); openModal()">Comprar ahora →</button>
+ </div>
+ </div>
+
  <!-- MODAL POLÍTICA DE PRIVACIDAD -->
  <div class="modal-overlay" id="modalPrivacidad" onclick="closeLegalOutside(event, 'privacidad')">
  <div class="modal" style="max-width:640px;">
@@ -1837,6 +1937,55 @@
  } else {
  irAlSiguientePaso();
  }
+ }
+
+ // ─── MODAL PRODUCTO ───────────────────────────────────────────────────────
+ const PRODUCTS = [
+ {
+ icon: '', ml: '250ml', name: 'Biotina Pura en Spray',
+ tag: 'USO DIARIO · NO ENJUAGAR', tagClass: 'green',
+ desc: 'Biotina concentrada en spray de aplicación directa sobre el cuero cabelludo. Actúa donde realmente importa: en el folículo piloso, estimulando el crecimiento de pelitos nuevos y frenando la caída. No requiere enjuague.',
+ beneficios: [
+ 'Activa el folículo piloso directamente en la raíz',
+ 'Estimula el crecimiento de pelitos nuevos en zonas debilitadas',
+ 'Frena la caída de forma progresiva',
+ 'Absorción rápida, no deja residuo ni aplasta el cabello',
+ 'No requiere enjuague — ideal para usar en cualquier momento',
+ ],
+ uso: [
+ 'Aplicá sobre el cuero cabelludo seco o semihúmedo.',
+ 'Separar el cabello en secciones para llegar bien a la raíz.',
+ 'Dar 2-3 pulverizaciones por zona.',
+ 'Masajear suavemente con las yemas de los dedos durante 1 minuto.',
+ 'No enjuagar. Dejá que absorba solo.',
+ ],
+ nota: '⭐ La constancia diaria es la clave para ver resultados desde la semana 3.',
+ },
+ ];
+
+ function openProduct(idx) {
+ const p = PRODUCTS[idx];
+ document.getElementById('pmIcon').textContent = p.icon;
+ document.getElementById('pmName').textContent = p.name;
+ document.getElementById('pmMl').textContent = p.ml;
+ document.getElementById('pmDesc').textContent = p.desc;
+ document.getElementById('pmNota').textContent = p.nota;
+ document.getElementById('pmTag').textContent = p.tag;
+ document.getElementById('pmTag').className = 'pmodal-tag ' + p.tagClass;
+ document.getElementById('pmBeneficios').innerHTML = p.beneficios.map(b => `<li>${b}</li>`).join('');
+ document.getElementById('pmUso').innerHTML = p.uso.map((u, i) =>
+ `<li><span class="pmodal-step-num">${i+1}</span><span>${u}</span></li>`).join('');
+ document.getElementById('pmodalOverlay').classList.add('active');
+ document.body.style.overflow = 'hidden';
+ }
+
+ function closeProduct() {
+ document.getElementById('pmodalOverlay').classList.remove('active');
+ document.body.style.overflow = '';
+ }
+
+ function closeProductOutside(e) {
+ if (e.target === document.getElementById('pmodalOverlay')) closeProduct();
  }
 
  function toggleFaq(btn) {
