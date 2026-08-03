@@ -1288,17 +1288,13 @@
  </div>
  <div class="form-row">
  <div class="form-group">
- <label>DNI</label>
- <input type="text" id="dni" placeholder="12345678" required />
- </div>
- <div class="form-group">
  <label>Teléfono</label>
  <input type="tel" id="telefono" placeholder="11 1234-5678" required />
- </div>
  </div>
  <div class="form-group">
  <label>Email</label>
  <input type="email" id="email" placeholder="maria@email.com" required />
+ </div>
  </div>
 
  <div class="form-section-title">Dirección de entrega</div>
@@ -1432,7 +1428,7 @@
  <p class="modal-sub">Última actualización: Mayo 2025</p>
  <div style="font-size:0.83rem; color:#444; line-height:1.85; max-height:60vh; overflow-y:auto; padding-right:8px;">
  <p style="margin-bottom:14px"><strong>1. Información que recopilamos</strong><br>
- Cuando realizás una compra en nuestro sitio, recopilamos datos personales como nombre, apellido, DNI, teléfono, email y dirección de entrega. Esta información es necesaria para procesar tu pedido y coordinar el envío.</p>
+ Cuando realizás una compra en nuestro sitio, recopilamos datos personales como nombre, apellido, teléfono, email y dirección de entrega. Esta información es necesaria para procesar tu pedido y coordinar el envío.</p>
  <p style="margin-bottom:14px"><strong>2. Uso de la información</strong><br>
  Los datos que nos proporcionás se utilizan exclusivamente para: procesar y enviar tu pedido, comunicarnos con vos sobre el estado de tu compra, y mejorar nuestros servicios. No vendemos ni compartimos tu información personal con terceros, salvo los necesarios para efectuar el envío (Correo Argentino).</p>
  <p style="margin-bottom:14px"><strong>3. Protección de datos</strong><br>
@@ -1551,8 +1547,8 @@
  }
 
  function confirmarCompra() {
- const campos = ['nombre','apellido','dni','telefono','email','calle','numero','piso','cp','localidad','provincia'];
- const obligatorios = ['nombre','apellido','dni','telefono','email','calle','numero','cp','localidad','provincia'];
+ const campos = ['nombre','apellido','telefono','email','calle','numero','piso','cp','localidad','provincia'];
+ const obligatorios = ['nombre','apellido','telefono','email','calle','numero','cp','localidad','provincia'];
  let valido = true;
  obligatorios.forEach(id => {
  const el = document.getElementById(id);
@@ -1572,7 +1568,7 @@
  // Mismo event_id en los dos para que Meta deduplique en vez de contar doble.
  const icEventId = genEventId();
  const icCustomData = { content_name: precios[selectedQty].label, content_type: 'product', currency: 'ARS', value: PRECIOS_NUM[selectedQty] };
- const icUserData = { em: datos.email, ph: fbNormalizePhone(datos.telefono), fn: datos.nombre, ln: datos.apellido, ct: datos.localidad, st: datos.provincia, zp: datos.cp, external_id: datos.dni };
+ const icUserData = { em: datos.email, ph: fbNormalizePhone(datos.telefono), fn: datos.nombre, ln: datos.apellido, ct: datos.localidad, st: datos.provincia, zp: datos.cp };
  if (typeof fbq === 'function') {
  fbq('set', 'userData', Object.assign({ country: 'ar' }, icUserData));
  fbq('track', 'InitiateCheckout', icCustomData, { eventID: icEventId });
@@ -1615,7 +1611,6 @@
  ` *Nuevo pedido — Biotina PG*\n\n` +
  ` *Datos del comprador*\n` +
  `Nombre: ${d.nombre} ${d.apellido}\n` +
- `DNI: ${d.dni}\n` +
  `Teléfono: ${d.telefono}\n` +
  `Email: ${d.email}\n\n` +
  ` *Pedido*\n` +
@@ -1759,7 +1754,7 @@
  fbq('track', 'Purchase', purchaseData, { eventID: eventId });
  sendCapiEvent('Purchase', eventId, purchaseData, ultimo ? {
  em: ultimo.email, ph: fbNormalizePhone(ultimo.telefono), fn: ultimo.nombre, ln: ultimo.apellido,
- ct: ultimo.localidad, st: ultimo.provincia, zp: ultimo.cp, external_id: ultimo.dni,
+ ct: ultimo.localidad, st: ultimo.provincia, zp: ultimo.cp,
  } : {});
  }
  mostrarBannerPago('✅ ¡Pago aprobado! Gracias por tu compra' + (ultimo && ultimo.producto ? ' de ' + ultimo.producto : '') + '. Te contactamos por WhatsApp con el seguimiento del envío.', '#e8f5ee', '#1e6640');
