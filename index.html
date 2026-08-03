@@ -135,6 +135,55 @@
  transition: all 0.2s;
  }
  .nav-wa:hover { background: var(--dark); color: white; }
+ .nav-menu-btn {
+ background: none; border: none; cursor: pointer; padding: 6px;
+ display: flex; align-items: center; color: var(--dark);
+ }
+
+ /* ─── DRAWER MENÚ ─── */
+ .drawer-overlay {
+ display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+ z-index: 1200;
+ }
+ .drawer-overlay.open { display: block; }
+ .drawer {
+ position: fixed; top: 0; left: 0; bottom: 0; width: min(360px, 86vw);
+ background: var(--white); z-index: 1201; padding: 26px 24px;
+ transform: translateX(-100%); transition: transform 0.3s ease;
+ overflow-y: auto; display: flex; flex-direction: column;
+ }
+ .drawer.open { transform: translateX(0); }
+ .drawer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+ .drawer-brand { display: flex; align-items: center; gap: 10px; }
+ .drawer-brand img { height: 32px; width: auto; }
+ .drawer-brand-name { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; display: block; }
+ .drawer-brand-sub { font-size: 0.64rem; color: var(--gray); display: block; }
+ .drawer-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--dark); line-height: 1; }
+ .drawer-badge {
+ background: var(--cream); border-radius: 12px; padding: 14px 16px; margin-bottom: 22px;
+ }
+ .drawer-badge-stars { display: flex; align-items: center; gap: 8px; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid var(--cream2); }
+ .drawer-badge-stars .stars { color: #111111; font-size: 0.95rem; }
+ .drawer-badge-stars strong { font-size: 0.85rem; }
+ .drawer-badge-stars span { font-size: 0.75rem; color: var(--gray); }
+ .drawer-badge-ship { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: #3d7a4f; }
+ .drawer-badge-ship svg { width: 18px; height: 18px; stroke: #3d7a4f; flex-shrink: 0; }
+ .drawer-links { display: flex; flex-direction: column; }
+ .drawer-links a {
+ padding: 15px 2px; border-bottom: 1px solid var(--cream2);
+ font-size: 1.02rem; font-weight: 500; color: var(--dark);
+ }
+ .drawer-links a:hover { color: var(--gray); }
+ .drawer-spacer { flex: 1; min-height: 24px; }
+ .btn-drawer-buy {
+ display: block; text-align: center; background: var(--dark); color: white;
+ padding: 15px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; margin-bottom: 18px;
+ }
+ .drawer-ig {
+ display: flex; align-items: center; justify-content: center; gap: 8px;
+ font-size: 0.8rem; color: var(--gray); font-weight: 500;
+ }
+ .drawer-ig svg { width: 17px; height: 17px; stroke: var(--gray); }
 
  .hub-hero { text-align: center; padding: 72px 6vw 32px; max-width: 760px; margin: 0 auto; }
  .hub-hero-eyebrow {
@@ -222,7 +271,7 @@
  }
  </style>
 </head>
-<body>
+<body id="top">
 
  <!-- BARRA SCROLLING -->
  <div class="announce-bar">
@@ -243,6 +292,9 @@
  </div>
 
  <nav>
+ <button class="nav-menu-btn" onclick="openDrawer()" aria-label="Abrir menú">
+ <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+ </button>
  <a href="index.html" class="nav-brand" aria-label="Ir al inicio">
  <img src="logo-pg.png" alt="PG Productos Capilares" />
  <span>
@@ -255,6 +307,48 @@
  <span>WhatsApp</span>
  </a>
  </nav>
+
+ <!-- DRAWER MENÚ -->
+ <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+ <div class="drawer" id="drawer">
+ <div class="drawer-head">
+ <div class="drawer-brand">
+ <img src="logo-pg.png" alt="PG Productos Capilares" />
+ <span>
+ <span class="drawer-brand-name">PRODUCTOS CAPILARES PG</span>
+ <span class="drawer-brand-sub">Cosmética capilar profesional</span>
+ </span>
+ </div>
+ <button class="drawer-close" onclick="closeDrawer()" aria-label="Cerrar menú">×</button>
+ </div>
+
+ <div class="drawer-badge">
+ <div class="drawer-badge-stars">
+ <span class="stars">★★★★★</span>
+ <strong>4.8/5</strong>
+ <span>+4.000 reseñas</span>
+ </div>
+ <div class="drawer-badge-ship">
+ <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="14" height="12"/><polygon points="15 8 19 8 22 11 22 16 15 16 15 8"/><circle cx="5.5" cy="18.5" r="2.2"/><circle cx="18.5" cy="18.5" r="2.2"/></svg>
+ Envío gratis a todo el país
+ </div>
+ </div>
+
+ <div class="drawer-links">
+ <a href="#top" onclick="closeDrawer()">Inicio</a>
+ <a href="#por-que-elegirnos" onclick="closeDrawer()">Por qué elegirnos</a>
+ <a href="#resenas" onclick="closeDrawer()">Reseñas</a>
+ <a href="#productos" onclick="closeDrawer()">Productos</a>
+ </div>
+
+ <div class="drawer-spacer"></div>
+
+ <a href="#productos" class="btn-drawer-buy" onclick="closeDrawer()">Ver tratamientos</a>
+ <a href="https://www.instagram.com/productoscapilares.pg_" target="_blank" class="drawer-ig">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+ @productoscapilares.pg_
+ </a>
+ </div>
 
  <div class="hub-hero">
  <div class="hub-hero-eyebrow">Cuidado capilar con Biotina · Envío gratis a todo el país</div>
@@ -299,7 +393,7 @@
  </div>
 
  <!-- POR QUÉ ELEGIRNOS -->
- <div class="why-section">
+ <div class="why-section" id="por-que-elegirnos">
  <div class="why-grid">
  <div class="why-item">
  <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s7 8.2 7 13a7 7 0 0 1-14 0c0-4.8 7-13 7-13z"/></svg>
@@ -325,7 +419,7 @@
  </div>
 
  <!-- RESEÑAS -->
- <div class="hub-reviews">
+ <div class="hub-reviews" id="resenas">
  <div class="hub-reviews-head">
  <span class="stars">★★★★★</span>
  <p>Más de 4.000 clientas en todo el país</p>
@@ -357,6 +451,19 @@
  <a class="wa-fab" href="https://wa.me/5491124838177?text=Hola!%20Quiero%20saber%20m%C3%A1s%20sobre%20sus%20productos%20%F0%9F%8C%BF" target="_blank" aria-label="Consultar por WhatsApp">
  <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
  </a>
+
+ <script>
+ function openDrawer() {
+ document.getElementById('drawer').classList.add('open');
+ document.getElementById('drawerOverlay').classList.add('open');
+ document.body.style.overflow = 'hidden';
+ }
+ function closeDrawer() {
+ document.getElementById('drawer').classList.remove('open');
+ document.getElementById('drawerOverlay').classList.remove('open');
+ document.body.style.overflow = '';
+ }
+ </script>
 
 </body>
 </html>
