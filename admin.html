@@ -914,9 +914,14 @@
         return;
       }
 
+      // Precio/comisión/costo/ganancia solo se cuentan en pagos confirmados de
+      // verdad — un carrito o un formulario sin pagar no generó ni un peso, así
+      // que no puede sumar a la ganancia aunque tengamos identificado el
+      // producto que estaba mirando.
       let tPrecio = 0, tMP = 0, tCosto = 0, tEnvio = 0, tGanancia = 0;
       rows.forEach(p => {
-        if (p._c) { tPrecio += p._c.precio; tMP += p._c.mp; tCosto += p._c.costo; tEnvio += p._c.envio; tGanancia += p._c.ganancia; }
+        const esVenta = p._st === 'confirmado' || p._fst === 'aprobado';
+        if (p._c && esVenta) { tPrecio += p._c.precio; tMP += p._c.mp; tCosto += p._c.costo; tEnvio += p._c.envio; tGanancia += p._c.ganancia; }
       });
 
       const opts = (selected) => Object.entries(STATUS_CFG).map(([v, l]) =>
@@ -925,7 +930,8 @@
 
       tbody.innerHTML = rows.map(p => {
         const nombre = `${p.nombre} ${p.apellido}`.trim() || '—';
-        const c      = p._c;
+        const esVenta = p._st === 'confirmado' || p._fst === 'aprobado';
+        const c      = esVenta ? p._c : null;
         const waMsg  = encodeURIComponent(`Hola ${p.nombre || ''}! Vi que estuviste viendo nuestro Combo Biotina 🌿 ¿Te puedo ayudar a completar tu pedido? Tenemos envío gratis a todo el país 📦`);
         const waTel  = waLinkCliente(p.telefono);
         const safeId = p.id.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
@@ -962,8 +968,9 @@
         </tr>`;
       }).join('');
 
+      const ventasCount = rows.filter(p => p._st === 'confirmado' || p._fst === 'aprobado').length;
       tfoot.innerHTML = `<tr>
-        <td colspan="4" style="color:var(--gray);font-style:italic">TOTAL — ${rows.length} registro${rows.length !== 1 ? 's' : ''}</td>
+        <td colspan="4" style="color:var(--gray);font-style:italic">TOTAL — ${rows.length} registro${rows.length !== 1 ? 's' : ''} (${ventasCount} venta${ventasCount !== 1 ? 's' : ''} confirmada${ventasCount !== 1 ? 's' : ''})</td>
         <td class="td-r">${fmt(tPrecio)}</td>
         <td class="td-r td-mp">${fmt(tMP)}</td>
         <td class="td-r">${fmt(tCosto)}</td>
