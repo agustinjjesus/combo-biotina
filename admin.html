@@ -942,7 +942,13 @@
 
       pedidosCache.forEach(p => {
         const combo = p._c;
-        if (p._st === 'confirmado' && combo) {
+        // Cuenta como venta si "status" dice confirmado O si "formStatus" dice
+        // aprobado — son dos campos que deberían ir siempre sincronizados
+        // (saveFormStatus y el webhook de MercadoPago los actualizan juntos),
+        // pero pedidos marcados "Aprobado" a mano antes de esa sincronización
+        // se quedaron con status viejo. Con el OR quedan bien sin tener que
+        // re-tocarlos uno por uno.
+        if ((p._st === 'confirmado' || p._fst === 'aprobado') && combo) {
           if (isToday(p.fecha))     ventasHoy++;
           if (isThisMonth(p.fecha)) {
             ventasMes++; ingresosMes += combo.precio; gananciaMes += combo.ganancia;
@@ -953,7 +959,7 @@
             porProducto[fam].ganancia += combo.ganancia;
           }
         }
-        if (p._st === 'abandonado') abandoned++;
+        if (p._st === 'abandonado' && p._fst !== 'aprobado') abandoned++;
       });
 
       document.getElementById('sHoy').textContent       = ventasHoy;
