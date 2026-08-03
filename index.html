@@ -136,9 +136,46 @@
  }
  .nav-wa:hover { background: var(--dark); color: white; }
 
- .hub-hero { text-align: center; padding: 56px 6vw 24px; max-width: 720px; margin: 0 auto; }
- .hub-hero h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; margin-bottom: 12px; }
- .hub-hero p { color: var(--gray); font-size: 0.95rem; }
+ .hub-hero { text-align: center; padding: 72px 6vw 32px; max-width: 760px; margin: 0 auto; }
+ .hub-hero-eyebrow {
+ font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+ color: var(--gray); margin-bottom: 18px;
+ }
+ .hub-hero h1 {
+ font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; line-height: 1.18; margin-bottom: 20px;
+ letter-spacing: -0.01em;
+ }
+ .hub-hero h1 .accent { color: var(--gold); }
+ .hub-hero p { color: var(--gray); font-size: 1rem; max-width: 520px; margin: 0 auto 32px; }
+ .btn-hero {
+ display: inline-block; background: var(--dark); color: white;
+ padding: 15px 34px; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+ transition: opacity 0.2s;
+ }
+ .btn-hero:hover { opacity: 0.85; }
+
+ /* ─── POR QUÉ ELEGIRNOS ─── */
+ .why-section { background: var(--cream); padding: 56px 6vw; }
+ .why-grid {
+ display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px;
+ max-width: 1100px; margin: 0 auto; text-align: center;
+ }
+ @media (max-width: 900px) { .why-grid { grid-template-columns: repeat(2, 1fr); gap: 32px 20px; } }
+ .why-item svg { width: 26px; height: 26px; margin-bottom: 12px; stroke: var(--dark); }
+ .why-item h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
+ .why-item p { font-size: 0.76rem; color: var(--gray); line-height: 1.5; }
+
+ /* ─── RESEÑAS ─── */
+ .hub-reviews { padding: 64px 6vw; max-width: 1100px; margin: 0 auto; }
+ .hub-reviews-head { text-align: center; margin-bottom: 36px; }
+ .hub-reviews-head .stars { color: #111111; font-size: 1.1rem; display: block; margin-bottom: 6px; }
+ .hub-reviews-head p { font-size: 0.82rem; color: var(--gray); }
+ .hub-reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+ @media (max-width: 900px) { .hub-reviews-grid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; } }
+ .hub-review-card { background: var(--cream); border-radius: 16px; padding: 22px; }
+ .hub-review-card .stars { color: #111111; font-size: 0.85rem; display: block; margin-bottom: 10px; }
+ .hub-review-card p { font-size: 0.85rem; color: var(--dark); line-height: 1.6; margin-bottom: 12px; }
+ .hub-review-card span { font-size: 0.72rem; color: var(--gray); font-weight: 600; }
 
  .product-grid {
  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
@@ -170,14 +207,6 @@
  transition: opacity 0.2s;
  }
  .btn-ver:hover { opacity: 0.85; }
-
- .hub-trust {
- display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
- padding: 0 6vw 60px; text-align: center;
- }
- .hub-trust-item { max-width: 160px; }
- .hub-trust-item .ic { font-size: 1.4rem; margin-bottom: 6px; }
- .hub-trust-item span { font-size: 0.75rem; color: var(--gray); font-weight: 600; display: block; }
 
  footer {
  border-top: 1px solid var(--cream2); padding: 28px 6vw; text-align: center;
@@ -228,11 +257,13 @@
  </nav>
 
  <div class="hub-hero">
- <h1>Elegí el tratamiento ideal para tu cabello</h1>
- <p>Fórmulas con biotina activa, sin formol ni sulfatos. Envío a todo el país y pago seguro con MercadoPago.</p>
+ <div class="hub-hero-eyebrow">Cuidado capilar con Biotina · Envío gratis a todo el país</div>
+ <h1>La caída de cabello<br />no se disimula: <span class="accent">se frena</span>.</h1>
+ <p>Fórmulas con Biotina activa, sin formol ni sulfatos, pensadas para fortalecer el cabello desde la raíz. Elegí el tratamiento que mejor se adapte a tu rutina.</p>
+ <a href="#productos" class="btn-hero">Ver los tratamientos</a>
  </div>
 
- <div class="product-grid">
+ <div class="product-grid" id="productos">
  <div class="product-card">
  <div class="product-card-img"><img src="combo-productos-home.jpg" alt="Combo Biotina PG" /></div>
  <div class="product-card-body">
@@ -267,10 +298,55 @@
  </div>
  </div>
 
- <div class="hub-trust">
- <div class="hub-trust-item"><div class="ic">🚚</div><span>Envío a todo el país</span></div>
- <div class="hub-trust-item"><div class="ic">🔒</div><span>Pago seguro con MercadoPago</span></div>
- <div class="hub-trust-item"><div class="ic">✅</div><span>30 días de garantía</span></div>
+ <!-- POR QUÉ ELEGIRNOS -->
+ <div class="why-section">
+ <div class="why-grid">
+ <div class="why-item">
+ <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s7 8.2 7 13a7 7 0 0 1-14 0c0-4.8 7-13 7-13z"/></svg>
+ <h4>Biotina activa</h4>
+ <p>Fórmulas pensadas para fortalecer el cabello desde la raíz.</p>
+ </div>
+ <div class="why-item">
+ <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9"/></svg>
+ <h4>Sin formol ni sulfatos</h4>
+ <p>Apto para todo tipo de cabello, incluso el más sensible.</p>
+ </div>
+ <div class="why-item">
+ <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="14" height="12"/><polygon points="15 8 19 8 22 11 22 16 15 16 15 8"/><circle cx="5.5" cy="18.5" r="2.2"/><circle cx="18.5" cy="18.5" r="2.2"/></svg>
+ <h4>Envío a todo el país</h4>
+ <p>Despachamos por Correo Argentino, gratis en todos los productos.</p>
+ </div>
+ <div class="why-item">
+ <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.4 8.5-8 10-4.6-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4.5"/></svg>
+ <h4>Pago 100% seguro</h4>
+ <p>Comprás protegida con MercadoPago, con garantía de satisfacción.</p>
+ </div>
+ </div>
+ </div>
+
+ <!-- RESEÑAS -->
+ <div class="hub-reviews">
+ <div class="hub-reviews-head">
+ <span class="stars">★★★★★</span>
+ <p>Más de 4.000 clientas en todo el país</p>
+ </div>
+ <div class="hub-reviews-grid">
+ <div class="hub-review-card">
+ <span class="stars">★★★★★</span>
+ <p>"En un mes ya noté menos caída. Uso la Biotina Pura todos los días y se nota la diferencia."</p>
+ <span>Carla P. — Biotina Pura</span>
+ </div>
+ <div class="hub-review-card">
+ <span class="stars">★★★★★</span>
+ <p>"El combo completo cambió mi pelo. Más denso, con brillo, y el envío llegó rapidísimo."</p>
+ <span>Daniela P. — Combo Biotina</span>
+ </div>
+ <div class="hub-review-card">
+ <span class="stars">★★★★★</span>
+ <p>"Se acabó el frizz con el shampoo y el acondicionador. Lo uso a diario y no me reseca el pelo."</p>
+ <span>Sofía R. — Dúo Shampoo + Crema</span>
+ </div>
+ </div>
  </div>
 
  <footer>
