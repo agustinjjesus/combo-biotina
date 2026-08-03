@@ -343,6 +343,13 @@
     <div class="admin-body">
 
       <!-- STATS -->
+      <div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:10px;">
+        <select id="statsPeriodo" onchange="setStatsPeriodo(this.value)"
+          style="border:2px solid var(--cream2);border-radius:8px;padding:6px 10px;font-family:'Outfit',sans-serif;font-size:0.8rem;font-weight:600;color:var(--dark);background:white;">
+          <option value="mes">Este mes</option>
+          <option value="todo">Todo el tiempo</option>
+        </select>
+      </div>
       <div class="stats-grid">
         <div class="stat-card c-coral">
           <div class="stat-label">Ventas hoy</div>
@@ -350,17 +357,17 @@
           <div class="stat-sub">pedidos confirmados hoy</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Ventas del mes</div>
+          <div class="stat-label" id="lblVentasMes">Ventas del mes</div>
           <div class="stat-value" id="sMes">0</div>
           <div class="stat-sub">pedidos confirmados</div>
         </div>
         <div class="stat-card c-blue">
-          <div class="stat-label">Ingresos brutos del mes</div>
+          <div class="stat-label" id="lblIngresosMes">Ingresos brutos del mes</div>
           <div class="stat-value" id="sIngresos">$0</div>
           <div class="stat-sub">precio de venta total</div>
         </div>
         <div class="stat-card c-green">
-          <div class="stat-label">Ganancia neta del mes</div>
+          <div class="stat-label" id="lblGananciaMes">Ganancia neta del mes</div>
           <div class="stat-value" id="sGanancia">$0</div>
           <div class="stat-sub">después de todos los costos</div>
         </div>
@@ -375,7 +382,7 @@
       <div class="dist-section">
         <div class="dist-header">
           <div>
-            <div class="dist-title">🧴 Ganancias por producto (este mes)</div>
+            <div class="dist-title" id="lblProdPeriodo">🧴 Ganancias por producto (este mes)</div>
             <p class="dist-sub">Pedidos confirmados del mes, agrupados por producto</p>
           </div>
         </div>
@@ -936,8 +943,15 @@
     }
 
     /* ── STATS ───────────────────────────────────────────────────────── */
+    function setStatsPeriodo(val) {
+      window._statsPeriodo = val;
+      loadData();
+    }
+
     function loadData() {
-      let ventasHoy = 0, ventasMes = 0, ingresosMes = 0, gananciaMes = 0, abandoned = 0;
+      const periodo = window._statsPeriodo || document.getElementById('statsPeriodo')?.value || 'mes';
+      let ventasHoy = 0, ventasPeriodo = 0, ingresosPeriodo = 0, gananciaPeriodo = 0, abandoned = 0;
+      let gananciaMesActual = 0; // siempre el mes en curso — la usa "Distribución de ganancias", que es un presupuesto mensual y no debería moverse con el selector de período de más arriba.
       const porProducto = {};
 
       pedidosCache.forEach(p => {
@@ -950,8 +964,10 @@
         // re-tocarlos uno por uno.
         if ((p._st === 'confirmado' || p._fst === 'aprobado') && combo) {
           if (isToday(p.fecha))     ventasHoy++;
-          if (isThisMonth(p.fecha)) {
-            ventasMes++; ingresosMes += combo.precio; gananciaMes += combo.ganancia;
+          if (isThisMonth(p.fecha)) gananciaMesActual += combo.ganancia;
+
+          if (periodo === 'todo' || isThisMonth(p.fecha)) {
+            ventasPeriodo++; ingresosPeriodo += combo.precio; gananciaPeriodo += combo.ganancia;
             const fam = combo.familia || 'Otro';
             if (!porProducto[fam]) porProducto[fam] = { pedidos: 0, ingresos: 0, ganancia: 0 };
             porProducto[fam].pedidos++;
@@ -963,12 +979,18 @@
       });
 
       document.getElementById('sHoy').textContent       = ventasHoy;
-      document.getElementById('sMes').textContent       = ventasMes;
-      document.getElementById('sIngresos').textContent  = fmt(ingresosMes);
-      document.getElementById('sGanancia').textContent  = fmt(gananciaMes);
+      document.getElementById('sMes').textContent       = ventasPeriodo;
+      document.getElementById('sIngresos').textContent  = fmt(ingresosPeriodo);
+      document.getElementById('sGanancia').textContent  = fmt(gananciaPeriodo);
       document.getElementById('sAbandoned').textContent = abandoned;
+
+      document.getElementById('lblVentasMes').textContent   = periodo === 'todo' ? 'Ventas totales' : 'Ventas del mes';
+      document.getElementById('lblIngresosMes').textContent = periodo === 'todo' ? 'Ingresos brutos totales' : 'Ingresos brutos del mes';
+      document.getElementById('lblGananciaMes').textContent = periodo === 'todo' ? 'Ganancia neta total' : 'Ganancia neta del mes';
+      document.getElementById('lblProdPeriodo').textContent = periodo === 'todo' ? '🧴 Ganancias por producto (histórico)' : '🧴 Ganancias por producto (este mes)';
+
       renderProductos(porProducto);
-      renderDistribucion(gananciaMes);
+      renderDistribucion(gananciaMesActual);
 
       renderTable();
       loadFormularios();
