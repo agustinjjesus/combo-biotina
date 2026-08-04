@@ -269,6 +269,46 @@
  display: flex; align-items: center; justify-content: center;
  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
  }
+
+ /* ─── HISTORIA / ANTES Y DESPUÉS ─── */
+ .story-section { padding: 72px 6vw 56px; max-width: 760px; margin: 0 auto; text-align: center; }
+ .story-section h2 { font-size: clamp(1.5rem, 3.4vw, 2rem); font-weight: 700; margin-bottom: 14px; }
+ .story-intro { font-size: 0.92rem; color: var(--gray); line-height: 1.75; margin-bottom: 32px; }
+ .story-text { font-size: 0.92rem; color: var(--gray); line-height: 1.75; margin-top: 20px; max-width: 620px; margin-left: auto; margin-right: auto; }
+
+ .ba-slider {
+ position: relative; width: 100%; max-width: 620px; margin: 0 auto;
+ aspect-ratio: 1024 / 559; border-radius: 18px; overflow: hidden;
+ box-shadow: 0 12px 40px rgba(0,0,0,0.12); cursor: ew-resize; user-select: none;
+ -webkit-user-select: none; touch-action: pan-y;
+ }
+ .ba-img {
+ position: absolute; inset: 0; width: 100%; height: 100%;
+ object-fit: cover; pointer-events: none;
+ }
+ .ba-after { z-index: 1; }
+ .ba-before { z-index: 2; clip-path: inset(0 50% 0 0); }
+ .ba-label {
+ position: absolute; top: 14px; z-index: 3;
+ background: rgba(17,17,17,0.72); color: white;
+ font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
+ padding: 5px 10px; border-radius: 20px; pointer-events: none;
+ }
+ .ba-label-left { left: 14px; }
+ .ba-label-right { right: 14px; }
+ .ba-handle {
+ position: absolute; top: 0; bottom: 0; left: 50%; z-index: 4;
+ width: 3px; background: white; transform: translateX(-50%);
+ box-shadow: 0 0 0 1px rgba(0,0,0,0.15); pointer-events: none;
+ }
+ .ba-handle-knob {
+ position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+ width: 40px; height: 40px; border-radius: 50%; background: var(--dark);
+ display: flex; align-items: center; justify-content: center; gap: 1px;
+ box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+ }
+ .story-caption { font-size: 0.72rem; color: var(--gray-light); margin-top: 14px; }
+ @media (max-width: 640px) { .story-section { padding: 48px 20px 40px; } }
  </style>
 </head>
 <body id="top">
@@ -337,6 +377,7 @@
  <div class="drawer-links">
  <a href="#top" onclick="closeDrawer()">Inicio</a>
  <a href="#por-que-elegirnos" onclick="closeDrawer()">Por qué elegirnos</a>
+ <a href="#historias" onclick="closeDrawer()">Historias</a>
  <a href="#resenas" onclick="closeDrawer()">Reseñas</a>
  <a href="#productos" onclick="closeDrawer()">Productos</a>
  </div>
@@ -418,6 +459,28 @@
  </div>
  </div>
 
+ <!-- HISTORIA / ANTES Y DESPUÉS -->
+ <div class="story-section" id="historias">
+ <h2>¿Te pasó esto alguna vez?</h2>
+ <p class="story-intro">Mirarte al espejo y notar la raíz más visible, menos volumen, la sensación de que se cae más de lo normal. No estás sola: es una de las consultas más comunes sobre el cabello, y también una de las que más afecta la seguridad de una mujer.</p>
+
+ <div class="ba-slider" id="baSlider">
+ <img src="historia-despues.jpg" alt="Resultado con constancia en el tratamiento" class="ba-img ba-after" draggable="false" />
+ <img src="historia-antes.jpg" alt="Caída y menor densidad capilar" class="ba-img ba-before" draggable="false" />
+ <span class="ba-label ba-label-left">ANTES</span>
+ <span class="ba-label ba-label-right">DESPUÉS</span>
+ <div class="ba-handle">
+ <div class="ba-handle-knob">
+ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+ <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+ </div>
+ </div>
+ </div>
+ <p class="story-caption">Imagen ilustrativa. Deslizá para ver la diferencia que puede hacer un tratamiento constante.</p>
+
+ <p class="story-text">Con aplicación diaria (sin saltear ninguna) y una fórmula pensada para actuar en la raíz, se puede trabajar para recuperar densidad y confianza — de a poco, con constancia, no de la noche a la mañana.</p>
+ </div>
+
  <!-- RESEÑAS -->
  <div class="hub-reviews" id="resenas">
  <div class="hub-reviews-head">
@@ -463,6 +526,32 @@
  document.getElementById('drawerOverlay').classList.remove('open');
  document.body.style.overflow = '';
  }
+
+ // ─── SLIDER ANTES/DESPUÉS ───────────────────────────────────────────────
+ (function initBaSlider() {
+ const slider = document.getElementById('baSlider');
+ if (!slider) return;
+ const before = slider.querySelector('.ba-before');
+ const handle = slider.querySelector('.ba-handle');
+ let dragging = false;
+
+ function setPos(clientX) {
+ const rect = slider.getBoundingClientRect();
+ let pct = ((clientX - rect.left) / rect.width) * 100;
+ pct = Math.max(0, Math.min(100, pct));
+ before.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+ handle.style.left = pct + '%';
+ }
+
+ slider.addEventListener('pointerdown', (e) => {
+ dragging = true;
+ slider.setPointerCapture(e.pointerId);
+ setPos(e.clientX);
+ });
+ slider.addEventListener('pointermove', (e) => { if (dragging) setPos(e.clientX); });
+ slider.addEventListener('pointerup', () => { dragging = false; });
+ slider.addEventListener('pointercancel', () => { dragging = false; });
+ })();
  </script>
 
 </body>
