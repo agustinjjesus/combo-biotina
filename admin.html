@@ -1031,6 +1031,7 @@
 
     /* ── FORMULARIOS COMPLETADOS / CARRITOS ABANDONADOS ────────────────── */
     const FORM_STATUS_CFG = {
+      carrito_iniciado: '🛒 Carrito iniciado (sin enviar)',
       pendiente:    'Pendiente ⏳',
       aprobado:     'Aprobado ✅',
       rechazado:    'Rechazado ❌',
@@ -1126,12 +1127,13 @@
              <p>Todavía no se registraron formularios completados.</p>
            </div></td></tr>`;
 
-      // Carritos abandonados — Pendiente / Sin confirmar hace más de 2hs
+      // Carritos abandonados — Pendiente / Sin confirmar / Carrito iniciado (sin
+      // enviar el formulario) hace más de 2hs
       const now = Date.now();
       const abandoned = pedidosCache
         .filter(p => {
           const st = p._fst || 'pendiente';
-          if (st !== 'pendiente' && st !== 'sinconfirmar') return false;
+          if (st !== 'pendiente' && st !== 'sinconfirmar' && st !== 'carrito_iniciado') return false;
           return p.timestamp && (now - p.timestamp) > ABANDONED_MS;
         })
         .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
