@@ -134,6 +134,31 @@
     @media (max-width: 900px) { .dist-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .dist-grid { grid-template-columns: 1fr; } }
 
+    /* ── VISITAS Y EMBUDO ───────────────────────────────────────── */
+    .visits-chart {
+      display: flex; align-items: flex-end; gap: 6px;
+      height: 120px; margin-bottom: 4px; padding-top: 18px;
+    }
+    .visits-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+    .visits-bar { width: 100%; max-width: 26px; background: var(--coral-light); border-radius: 4px 4px 0 0; min-height: 2px; transition: height 0.3s; }
+    .visits-bar-val { font-size: 0.62rem; color: var(--gray); font-weight: 700; }
+    .visits-bar-day { font-size: 0.58rem; color: var(--gray-light); white-space: nowrap; }
+    .visits-empty { text-align: center; padding: 30px 10px; color: var(--gray); font-size: 0.82rem; }
+
+    .funnel-row { display: flex; align-items: stretch; gap: 8px; margin-top: 22px; flex-wrap: wrap; }
+    .funnel-step {
+      flex: 1; min-width: 130px; background: var(--cream); border-radius: 12px;
+      padding: 16px 12px; text-align: center;
+    }
+    .funnel-step-label { font-size: 0.66rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--gray); margin-bottom: 8px; }
+    .funnel-step-value { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
+    .funnel-step-pct { font-size: 0.74rem; color: var(--coral-dark); font-weight: 600; margin-top: 4px; }
+    .funnel-arrow { display: flex; align-items: center; justify-content: center; color: var(--gray-light); font-size: 1.2rem; padding: 0 2px; }
+    @media (max-width: 700px) {
+      .funnel-row { flex-direction: column; }
+      .funnel-arrow { transform: rotate(90deg); padding: 2px 0; }
+    }
+
     /* ── FORM SECTION ───────────────────────────────────────────── */
     .form-section { background: white; border-radius: 14px; margin-bottom: 28px; overflow: hidden; }
 
@@ -352,6 +377,19 @@
           <div class="stat-value" id="sAbandoned">0</div>
           <div class="stat-sub">pendientes de contacto</div>
         </div>
+      </div>
+
+      <!-- VISITAS Y EMBUDO DE CONVERSIÓN -->
+      <div class="dist-section">
+        <div class="dist-header">
+          <div>
+            <div class="dist-title" id="lblVisitasPeriodo">👀 Visitas y embudo de conversión</div>
+            <p class="dist-sub">Visitas a la web (últimos 14 días) y cuántas terminan en carrito, formulario y venta</p>
+          </div>
+        </div>
+        <div class="visits-chart" id="visitsChart"></div>
+        <div class="dist-grid" id="visitsByPageGrid" style="margin-top:18px;"></div>
+        <div class="funnel-row" id="funnelRow"></div>
       </div>
 
       <!-- GANANCIAS POR PRODUCTO -->
@@ -575,6 +613,12 @@
     //          allow create: if request.resource.data.keys().hasAll(['nombre','producto','fecha']);
     //          allow read, update, delete: if true;
     //        }
+    //        // Contador de visitas (lo escribe la Cloud Function trackVisit con
+    //        // permisos de administrador; el panel solo necesita poder leerlo).
+    //        match /estadisticas/{fecha} {
+    //          allow read: if true;
+    //          allow write: if false;
+    //        }
     //      }
     //    }
     // 5. Completar FIREBASE_CONFIG con los valores reales y cambiar FIREBASE_ENABLED a true
@@ -597,6 +641,7 @@
 
     /* ── DATA CACHE ─────────────────────────────────────────────────── */
     let pedidosCache = [];
+    let statsCache = [];
 
     /* ── AUTH ────────────────────────────────────────────────────────── */
     if (sessionStorage.getItem('adminAuth') === 'ok') showPanel();
@@ -628,6 +673,7 @@
       if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
         document.getElementById('syncBadge').style.display = 'inline-block';
         setupFirestoreListener();
+        setupStatsListener();
       } else {
         loadFromLocalStorage();
       }
@@ -675,6 +721,119 @@
           console.warn('Firestore listener error:', err);
           loadFromLocalStorage();
         });
+    }
+
+    /* ── ESTADÍSTICAS DE VISITAS ─────────────────────────────────────── */
+    // Colección aparte (`estadisticas`, un doc por día) que llena la Cloud
+    // Function trackVisit — no depende de ningún token de Meta, así que
+    // funciona aunque el CAPI todavía no esté configurado.
+    function setupStatsListener() {
+      firebase.firestore()
+        .collection('estadisticas')
+        .orderBy(firebase.firestore.FieldPath.documentId(), 'desc')
+        .limit(60)
+        .onSnapshot(snapshot => {
+          statsCache = snapshot.docs.map(doc => {
+            const d = doc.data();
+            return {
+              fecha:       doc.id,
+              visitas:     d.visitas || 0,
+              home:        d.visitas_home || 0,
+              combo:       d.visitas_combo || 0,
+              biotinaPura: d.visitas_biotinaPura || 0,
+              duo:         d.visitas_duo || 0,
+            };
+          }).sort((a, b) => a.fecha.localeCompare(b.fecha)); // ascendente para el gráfico
+          renderVisitas();
+        }, err => {
+          console.warn('Firestore stats listener error (revisá las reglas de "estadisticas"):', err);
+        });
+    }
+
+    function isThisMonthISO(fechaISO) {
+      if (!fechaISO) return false;
+      const now = new Date();
+      const [y, m] = fechaISO.split('-').map(Number);
+      return y === now.getFullYear() && m === now.getMonth() + 1;
+    }
+
+    function renderVisitas() {
+      const chartEl    = document.getElementById('visitsChart');
+      const pageGridEl = document.getElementById('visitsByPageGrid');
+      const funnelEl   = document.getElementById('funnelRow');
+      const lbl        = document.getElementById('lblVisitasPeriodo');
+      if (!chartEl) return;
+
+      const periodo = window._statsPeriodo || document.getElementById('statsPeriodo')?.value || 'todo';
+      lbl.textContent = periodo === 'todo' ? '👀 Visitas y embudo de conversión (histórico)' : '👀 Visitas y embudo de conversión (este mes)';
+
+      // El gráfico siempre muestra la tendencia de los últimos 14 días,
+      // sin importar el período elegido para el embudo (un gráfico de 1
+      // solo día si hoy es el 1° del mes no serviría de nada).
+      const ultimos = statsCache.slice(-14);
+      if (!ultimos.length) {
+        chartEl.innerHTML = `<div class="visits-empty">Todavía no hay datos de visitas — van a empezar a aparecer a medida que entren visitantes a la web.</div>`;
+      } else {
+        const max = Math.max(1, ...ultimos.map(d => d.visitas));
+        chartEl.innerHTML = ultimos.map(d => {
+          const h = Math.max(2, Math.round((d.visitas / max) * 100));
+          const [, m, dd] = d.fecha.split('-');
+          return `
+            <div class="visits-bar-wrap" title="${d.fecha}: ${d.visitas} visitas">
+              <div class="visits-bar-val">${d.visitas}</div>
+              <div class="visits-bar" style="height:${h}px"></div>
+              <div class="visits-bar-day">${dd}/${m}</div>
+            </div>`;
+        }).join('');
+      }
+
+      // Desglose por página + embudo, respetando el selector de período.
+      const statsPeriodo = periodo === 'todo' ? statsCache : statsCache.filter(d => isThisMonthISO(d.fecha));
+      const t = statsPeriodo.reduce((acc, d) => {
+        acc.visitas += d.visitas; acc.home += d.home; acc.combo += d.combo;
+        acc.biotinaPura += d.biotinaPura; acc.duo += d.duo;
+        return acc;
+      }, { visitas: 0, home: 0, combo: 0, biotinaPura: 0, duo: 0 });
+
+      const PAGINAS = [
+        { key: 'home',        emoji: '🏠', label: 'Home' },
+        { key: 'combo',       emoji: '🌿', label: 'Combo Biotina' },
+        { key: 'biotinaPura', emoji: '💧', label: 'Biotina Pura' },
+        { key: 'duo',         emoji: '🧴', label: 'Dúo Shampoo + Crema' },
+      ];
+      pageGridEl.innerHTML = PAGINAS.map(p => `
+        <div class="dist-card">
+          <div class="dist-card-emoji">${p.emoji}</div>
+          <div class="dist-card-label">${p.label}</div>
+          <div class="prod-stat-row"><span>Visitas</span><strong>${t[p.key]}</strong></div>
+        </div>
+      `).join('');
+
+      // Embudo: Visitas → Carritos iniciados → Formularios completos → Ventas
+      // confirmadas. Carritos/formularios/ventas usan la misma lógica de
+      // período que ya usa loadData() (campo `fecha` en formato es-AR).
+      const pedidosPeriodo = pedidosCache.filter(p => periodo === 'todo' || isThisMonth(p.fecha));
+      const carritos    = pedidosPeriodo.length;
+      const formularios = pedidosPeriodo.filter(p => (p._fst || 'pendiente') !== 'carrito_iniciado').length;
+      const ventas       = pedidosPeriodo.filter(p => p._st === 'confirmado' || p._fst === 'aprobado').length;
+      const visitasTotal = t.visitas;
+
+      const pct = (num, den) => den > 0 ? `${Math.round((num / den) * 1000) / 10}%` : '—';
+
+      const steps = [
+        { label: 'Visitas',               value: visitasTotal, pct: null },
+        { label: 'Carritos iniciados',     value: carritos,     pct: pct(carritos, visitasTotal) },
+        { label: 'Formularios completos',  value: formularios,  pct: pct(formularios, carritos) },
+        { label: 'Ventas confirmadas',     value: ventas,       pct: pct(ventas, formularios) },
+      ];
+      funnelEl.innerHTML = steps.map((s, i) => `
+        ${i > 0 ? '<div class="funnel-arrow">→</div>' : ''}
+        <div class="funnel-step">
+          <div class="funnel-step-label">${s.label}</div>
+          <div class="funnel-step-value">${s.value}</div>
+          ${s.pct ? `<div class="funnel-step-pct">${s.pct}</div>` : ''}
+        </div>
+      `).join('');
     }
 
     /* ── LOCALSTORAGE FALLBACK ───────────────────────────────────────── */
@@ -885,6 +1044,7 @@
       document.getElementById('lblProdPeriodo').textContent = periodo === 'todo' ? '🧴 Ganancias por producto (histórico)' : '🧴 Ganancias por producto (este mes)';
 
       renderProductos(porProducto);
+      renderVisitas();
 
       renderTable();
       loadFormularios();

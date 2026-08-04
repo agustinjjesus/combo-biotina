@@ -35,6 +35,7 @@
  // paralelo al pixel del browser, con el mismo event_id, para que Meta
  // deduplique y suba el Event Match Quality (IP real, resiste ad-blockers). ──
  const CAPI_ENDPOINT = 'https://us-central1-biotina-pg.cloudfunctions.net/capiEvent';
+ const TRACK_VISIT_ENDPOINT = 'https://us-central1-biotina-pg.cloudfunctions.net/trackVisit';
  function fbGetCookie(name) {
  const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
  return m ? decodeURIComponent(m[1]) : null;
@@ -88,6 +89,16 @@
  const vcData = { content_name: 'Combo Biotina', content_type: 'product', currency: 'ARS', value: 43000 };
  fbq('track', 'ViewContent', vcData, { eventID: vcEventId });
  sendCapiEvent('ViewContent', vcEventId, vcData);
+
+ // Contador simple de visitas por día para el panel admin (no depende de Meta).
+ try {
+ fetch(TRACK_VISIT_ENDPOINT, {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ page: 'combo' }),
+ keepalive: true,
+ }).catch(function(){});
+ } catch (e) {}
  </script>
  <noscript><img height="1" width="1" style="display:none"
  src="https://www.facebook.com/tr?id=914585307701969&ev=PageView&noscript=1"

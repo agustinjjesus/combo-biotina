@@ -30,6 +30,7 @@
  fbq('init', '914585307701969', { external_id: fbAnonId() });
 
  const CAPI_ENDPOINT = 'https://us-central1-biotina-pg.cloudfunctions.net/capiEvent';
+ const TRACK_VISIT_ENDPOINT = 'https://us-central1-biotina-pg.cloudfunctions.net/trackVisit';
  function fbGetCookie(name) {
  const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
  return m ? decodeURIComponent(m[1]) : null;
@@ -68,6 +69,16 @@
  const pvEventId = genEventId();
  fbq('track', 'PageView', {}, { eventID: pvEventId });
  sendCapiEvent('PageView', pvEventId, {});
+
+ // Contador simple de visitas por día para el panel admin (no depende de Meta).
+ try {
+ fetch(TRACK_VISIT_ENDPOINT, {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ page: 'home' }),
+ keepalive: true,
+ }).catch(function(){});
+ } catch (e) {}
  </script>
  <noscript><img height="1" width="1" style="display:none"
  src="https://www.facebook.com/tr?id=914585307701969&ev=PageView&noscript=1"

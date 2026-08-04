@@ -149,6 +149,44 @@ exports.capiEvent = onRequest({ secrets: [META_CAPI_TOKEN], region: 'us-central1
   }
 });
 
+// Páginas válidas para el contador por-página. Cualquier otro valor de
+// `page` recibido se ignora (solo se suma el total del día).
+const VISIT_PAGES = ['home', 'combo', 'biotinaPura', 'duo'];
+
+function fechaArgentina() {
+  // Fecha del día en horario de Argentina (UTC-3, sin horario de verano),
+  // como YYYY-MM-DD, para usar como ID del documento diario.
+  const ahora = new Date(Date.now() - 3 * 60 * 60 * 1000);
+  return ahora.toISOString().slice(0, 10);
+}
+
+/**
+ * POST /trackVisit
+ * body: { page: 'home' | 'combo' | 'biotinaPura' | 'duo' }
+ * Contador simple de visitas por día y por página, para el panel admin.
+ * No depende de ningún secret (Meta CAPI incluido) para poder funcionar
+ * aunque esa parte todavía no esté configurada.
+ */
+exports.trackVisit = onRequest({ region: 'us-central1' }, async (req, res) => {
+  applyCors(req, res);
+  if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
+  if (req.method !== 'POST') { res.status(405).json({ error: 'Método no permitido.' }); return; }
+
+  try {
+    const { page } = req.body || {};
+    const fecha = fechaArgentina();
+    const update = { visitas: admin.firestore.FieldValue.increment(1) };
+    if (VISIT_PAGES.includes(page)) {
+      update[`visitas_${page}`] = admin.firestore.FieldValue.increment(1);
+    }
+    await db.collection('estadisticas').doc(fecha).set(update, { merge: true });
+    res.status(200).json({ ok: true });
+  } catch (e) {
+    logger.error('trackVisit error', e);
+    res.status(200).json({ ok: false }); // no bloquear al cliente por un error nuestro
+  }
+});
+
 async function enviarEmail({ to, subject, html }) {
   try {
     const resp = await fetch('https://api.resend.com/emails', {
