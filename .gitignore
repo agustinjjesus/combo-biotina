@@ -1,0 +1,4 @@
+# Herramientas locales del agente (Higgsfield skills) — no son parte del sitio
+.agents/
+.claude/
+skills-lock.json
