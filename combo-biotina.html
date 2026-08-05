@@ -1216,6 +1216,9 @@
  position: relative;
  }
 
+ .review-card--more { display: none; }
+ .review-card--more.show { display: block; }
+
  .review-header {
  display: flex;
  justify-content: space-between;
@@ -1657,7 +1660,7 @@
  <span class="announce-sep"></span>
  SIN FORMOL NI SULFATOS
  <span class="announce-sep"></span>
- +2.244 CLIENTAS SATISFECHAS
+ ATENCIÓN PERSONALIZADA POR WHATSAPP
  <span class="announce-sep"></span>
  PAGO 100% SEGURO CON MERCADOPAGO
  <span class="announce-sep"></span>
@@ -1669,7 +1672,7 @@
  <span class="announce-sep"></span>
  SIN FORMOL NI SULFATOS
  <span class="announce-sep"></span>
- +2.244 CLIENTAS SATISFECHAS
+ ATENCIÓN PERSONALIZADA POR WHATSAPP
  <span class="announce-sep"></span>
  PAGO 100% SEGURO CON MERCADOPAGO
  <span class="announce-sep"></span>
@@ -1729,7 +1732,7 @@
 
  <div class="stars-row">
  <span class="stars"></span>
- <a href="#resenas" class="stars-text stars-link">4.8 · 2.244 reseñas</a>
+ <a href="#resenas" class="stars-text stars-link">4.8 · Ver reseñas</a>
  </div>
 
  <ul class="benefits-list">
@@ -1865,7 +1868,7 @@
 
  <!-- PROOF STRIP -->
  <div class="proof-strip">
- <div style="text-align:center"><div class="proof-num">+2.244</div><div class="proof-label">clientas felices</div></div>
+ <div style="text-align:center"><div class="proof-num">30 días</div><div class="proof-label">de garantía</div></div>
  <div style="text-align:center"><div class="proof-num">4.8</div><div class="proof-label">calificación promedio</div></div>
  <div style="text-align:center"><div class="proof-num">3 semanas</div><div class="proof-label">para ver resultados</div></div>
  <div style="text-align:center"><div class="proof-num">0%</div><div class="proof-label">formol ni sulfatos</div></div>
@@ -2107,7 +2110,7 @@
 
  <!-- REVIEWS -->
  <div class="reviews-section" id="resenas">
- <h2>Más de 2.244 clientas felices</h2>
+ <h2>Lo que dicen nuestras clientas</h2>
  <div class="reviews-stars">
  <div class="stars"></div>
  <p>4.8 de 5 estrellas</p>
@@ -2180,9 +2183,48 @@
  <span>hace 3 semanas</span>
  </div>
  </div>
+
+ <div class="review-card review-card--more">
+ <div class="review-header">
+ <span class="review-stars"></span>
+ <span class="review-verified"> Verificado</span>
+ </div>
+ <div class="review-title">Se nota que es constante</div>
+ <p class="review-text">Lo vengo usando hace 2 meses sin saltear ningún día y la verdad que se nota. No es magia, pero con constancia funciona.</p>
+ <div class="review-meta">
+ <span>Valentina S.</span>
+ <span>hace 1 mes</span>
+ </div>
  </div>
 
- <button class="btn-reviews">Ver todas las reseñas</button>
+ <div class="review-card review-card--more">
+ <div class="review-header">
+ <span class="review-stars"></span>
+ <span class="review-verified"> Verificado</span>
+ </div>
+ <div class="review-title">Llegó rapidísimo</div>
+ <p class="review-text">Pedí el combo de 2 unidades y llegó en 3 días a mi casa en Rosario. Buena calidad y el envío gratis se agradece.</p>
+ <div class="review-meta">
+ <span>Rocío F.</span>
+ <span>hace 3 semanas</span>
+ </div>
+ </div>
+
+ <div class="review-card review-card--more">
+ <div class="review-header">
+ <span class="review-stars"></span>
+ <span class="review-verified"> Verificado</span>
+ </div>
+ <div class="review-title">Mi mamá también lo usa ahora</div>
+ <p class="review-text">A las dos se nos cae bastante el pelo por herencia familiar. Empecé yo y a las pocas semanas até a mi mamá también.</p>
+ <div class="review-meta">
+ <span>Marisol A.</span>
+ <span>hace 1 mes</span>
+ </div>
+ </div>
+ </div>
+
+ <button class="btn-reviews" id="btnMoreReviews" onclick="toggleAllReviews(this)">Ver todas las reseñas</button>
  </div>
 
  <!-- CTA FINAL -->
@@ -2713,6 +2755,13 @@ function toggleFaq(btn) {
  const isOpen = item.classList.contains('open');
  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
  if (!isOpen) item.classList.add('open');
+ }
+
+ function toggleAllReviews(btn) {
+ const extra = document.querySelectorAll('.review-card--more');
+ const showing = extra.length && extra[0].classList.contains('show');
+ extra.forEach(c => c.classList.toggle('show', !showing));
+ btn.textContent = showing ? 'Ver todas las reseñas' : 'Ver menos reseñas';
  }
 
  function toggleNavMenu(e) {

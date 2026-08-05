@@ -1030,6 +1030,8 @@
  .rating-pct { font-size: 0.75rem; color: var(--gray); width: 28px; }
  .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
  .review-card { background: var(--white); border-radius: 16px; padding: 24px; position: relative; border: 1px solid var(--cream2); }
+ .review-card--more { display: none; }
+ .review-card--more.show { display: block; }
  .review-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
  .review-verified { font-size: 0.65rem; color: var(--green); display: flex; align-items: center; gap: 4px; font-weight: 500; }
  .review-stars { font-size: 0.85rem; color: #111111; }
@@ -1129,7 +1131,7 @@
 
  <div class="stars-row">
  <span class="stars">★★★★★</span>
- <a href="#resenas" class="stars-text stars-link">4.8 · 2.244 reseñas</a>
+ <a href="#resenas" class="stars-text stars-link">4.8 · Ver reseñas</a>
  </div>
 
  <ul class="benefits-list">
@@ -1453,7 +1455,7 @@
 
  <!-- REVIEWS -->
  <div class="reviews-section" id="resenas">
- <h2>Más de 2.244 clientas felices</h2>
+ <h2>Lo que dicen nuestras clientas</h2>
  <div class="reviews-stars">
  <div class="stars">★★★★★</div>
  <p>4.8 de 5 estrellas</p>
@@ -1526,9 +1528,48 @@
  <span>hace 3 semanas</span>
  </div>
  </div>
+
+ <div class="review-card review-card--more">
+ <div class="review-header">
+ <span class="review-stars">★★★★★</span>
+ <span class="review-verified"> Verificado</span>
+ </div>
+ <div class="review-title">Ideal para pelo teñido</div>
+ <p class="review-text">Tengo el pelo con color y no me lo reseca para nada. Quedó mucho más manejable al peinar.</p>
+ <div class="review-meta">
+ <span>Camila V.</span>
+ <span>hace 2 semanas</span>
+ </div>
  </div>
 
- <button class="btn-reviews">Ver todas las reseñas</button>
+ <div class="review-card review-card--more">
+ <div class="review-header">
+ <span class="review-stars">★★★★★</span>
+ <span class="review-verified"> Verificado</span>
+ </div>
+ <div class="review-title">Rinde muchísimo</div>
+ <p class="review-text">Con poquita cantidad hace espuma y me duró más de lo que pensaba. El olor es rico y suave, no empalaga.</p>
+ <div class="review-meta">
+ <span>Julieta H.</span>
+ <span>hace 1 mes</span>
+ </div>
+ </div>
+
+ <div class="review-card review-card--more">
+ <div class="review-header">
+ <span class="review-stars">★★★★★</span>
+ <span class="review-verified"> Verificado</span>
+ </div>
+ <div class="review-title">Combo perfecto para uso diario</div>
+ <p class="review-text">Los uso todos los días desde hace un mes y medio y mi pelo dejó de sentirse tan reseco en las puntas.</p>
+ <div class="review-meta">
+ <span>Brenda L.</span>
+ <span>hace 3 semanas</span>
+ </div>
+ </div>
+ </div>
+
+ <button class="btn-reviews" id="btnMoreReviews" onclick="toggleAllReviews(this)">Ver todas las reseñas</button>
  </div>
 
  <!-- CTA FINAL -->
@@ -2090,6 +2131,13 @@
  const isOpen = item.classList.contains('open');
  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
  if (!isOpen) item.classList.add('open');
+ }
+
+ function toggleAllReviews(btn) {
+ const extra = document.querySelectorAll('.review-card--more');
+ const showing = extra.length && extra[0].classList.contains('show');
+ extra.forEach(c => c.classList.toggle('show', !showing));
+ btn.textContent = showing ? 'Ver todas las reseñas' : 'Ver menos reseñas';
  }
 
  function openLegal(tipo) {
