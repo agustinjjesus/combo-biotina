@@ -337,7 +337,7 @@
  object-fit: cover; pointer-events: none;
  }
  .ba-after { z-index: 1; }
- .ba-before { z-index: 2; clip-path: inset(0 0% 0 0); transition: clip-path 0.7s ease; }
+ .ba-before { z-index: 2; clip-path: inset(0 0 0 0%); transition: clip-path 0.7s ease; }
  .ba-label {
  position: absolute; top: 14px; z-index: 3;
  background: rgba(17,17,17,0.72); color: white;
@@ -347,7 +347,7 @@
  .ba-label-left { left: 14px; }
  .ba-label-right { right: 14px; }
  .ba-handle {
- position: absolute; top: 0; bottom: 0; left: 100%; z-index: 4;
+ position: absolute; top: 0; bottom: 0; left: 0%; z-index: 4;
  width: 3px; background: white; transform: translateX(-50%);
  box-shadow: 0 0 0 1px rgba(0,0,0,0.15); pointer-events: none;
  transition: left 0.7s ease;
@@ -685,16 +685,16 @@
  const toggleLabel = document.getElementById('baToggleLabel');
  const toggleArrow = document.getElementById('baToggleArrow');
  let dragging = false;
- let pos = 100;
+ let pos = 0;
 
  function setPos(pct) {
  pos = Math.max(0, Math.min(100, pct));
- before.style.clipPath = `inset(0 ${100 - pos}% 0 0)`;
+ before.style.clipPath = `inset(0 0 0 ${pos}%)`;
  handle.style.left = pos + '%';
  }
 
  function syncButton() {
- const showingAfter = pos < 50;
+ const showingAfter = pos > 50;
  toggleLabel.textContent = showingAfter ? 'Ver antes' : 'Ver después';
  toggleArrow.style.transform = showingAfter ? 'rotate(180deg)' : 'rotate(0deg)';
  }
