@@ -524,7 +524,7 @@
  }
 
  .qty-option.popular::before {
- content: 'MÁS VENDIDO';
+ content: 'MÁS ELEGIDO';
  position: absolute;
  top: -10px;
  left: 50%;
@@ -645,6 +645,13 @@
  margin-left: 6px;
  vertical-align: middle;
  text-decoration: none;
+ }
+
+ .qty-value-note {
+ display: block;
+ font-size: 0.68rem;
+ color: var(--gray);
+ margin-top: 3px;
  }
 
  .qty-count {
@@ -1162,7 +1169,7 @@
  </ul>
 
  <div class="quantity-options">
- <div class="qty-option" onclick="selectQty(this, 1)" data-price="30000">
+ <div class="qty-option" onclick="selectQty(this, 1)" data-price="35000">
  <span class="qty-count">1 unidad</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
@@ -1173,8 +1180,9 @@
  </div>
  </div>
  <div class="qty-price">
- <span class="price-old">$ 40.000 <span class="discount-badge">-25%</span></span>
- <span class="price-now">$ 30.000</span>
+ <span class="price-old">$ 47.000 <span class="discount-badge">-25%</span></span>
+ <span class="price-now">$ 35.000</span>
+ <span class="qty-value-note">Ideal para probar</span>
  </div>
  </div>
 
@@ -1191,6 +1199,7 @@
  <div class="qty-price">
  <span class="price-old">$ 60.000 <span class="discount-badge">-25%</span></span>
  <span class="price-now">$ 45.000</span>
+ <span class="qty-value-note">El más elegido — mejor relación precio por unidad</span>
  </div>
  </div>
 
@@ -1207,6 +1216,7 @@
  <div class="qty-price">
  <span class="price-old">$ 80.000 <span class="discount-badge">-25%</span></span>
  <span class="price-now">$ 60.000</span>
+ <span class="qty-value-note">Máximo ahorro</span>
  </div>
  </div>
  </div>
@@ -1216,7 +1226,7 @@
  </p>
 
  <button class="btn-buy" id="buyBtn" onclick="openModal()">
- COMPRAR AHORA · $30.000 — ENVÍO GRATIS
+ COMPRAR AHORA · $35.000 — ENVÍO GRATIS
  </button>
 
  <!-- MÉTODOS DE PAGO -->
@@ -1575,7 +1585,7 @@
  <div class="cta-final">
  <h2>Empezá hoy tu tratamiento</h2>
  <p>Resultados visibles desde la primera semana. Sin formol, sin sulfatos, sin efectos secundarios.</p>
- <a href="#" onclick="openModal(); return false;" class="btn-cta-final">Lleva 1 · $30.000 — Envío gratis</a>
+ <a href="#" onclick="openModal(); return false;" class="btn-cta-final">Lleva 1 · $35.000 — Envío gratis</a>
  </div>
 
  <!-- MODAL FORMULARIO -->
@@ -1583,7 +1593,7 @@
  <div class="modal">
  <button class="modal-close" onclick="closeModal()">×</button>
  <h3>¡Un paso más! </h3>
- <p class="modal-sub">Completá tus datos para coordinar el envío. Tu pedido: <span id="modalProducto">Biotina Pura x1 — $30.000</span></p>
+ <p class="modal-sub">Completá tus datos para coordinar el envío. Tu pedido: <span id="modalProducto">Biotina Pura x1 — $35.000</span></p>
 
  <div class="form-section-title">Datos personales</div>
  <div class="form-row">
@@ -1805,7 +1815,7 @@
  <!-- FLOATING CTA MOBILE -->
  <div class="floating-cta">
  <button class="floating-cta-btn" id="floatingBtn" onclick="openModal()">
- COMPRAR AHORA · $30.000 — ENVÍO GRATIS
+ COMPRAR AHORA · $35.000 — ENVÍO GRATIS
  </button>
  </div>
 
@@ -1831,17 +1841,20 @@
 
  // Links de pago de MercadoPago (Link de pago, montos fijos) — fallback
  // estático que se usa solo si la Cloud Function de pago dinámico falla.
- const MP_URL_1 = 'https://mpago.la/2aCHP53'; // ← 1 unidad + envío, $30.000
+ // ⚠️ MP_URL_1 todavía cobra $30.000 — es un link estático de MercadoPago
+ // con el monto fijo en $30.000, hay que generar uno nuevo por $35.000 desde
+ // la cuenta de MercadoPago y reemplazar esta URL (no lo puedo hacer yo).
+ const MP_URL_1 = 'https://mpago.la/2aCHP53'; // ← 1 unidad + envío, $30.000 (desactualizado, ver nota arriba)
  const MP_URL_2 = 'https://mpago.la/2w2KZs5'; // ← 2 unidades $45.000
  const MP_URL_3 = 'https://mpago.la/1MPCQga'; // ← 3 unidades $60.000
 
  const MP_AUTO_CONFIRM_ENABLED = true;
  const CLOUD_FN_CREAR_PREFERENCIA = 'https://us-central1-biotina-pg.cloudfunctions.net/crearPreferencia';
- // 1 unidad se muestra a $30.000 con envío gratis (precio final, todo incluido).
- const PRECIOS_NUM = { 1: 30000, 2: 45000, 3: 60000 };
+ // 1 unidad se muestra a $35.000 con envío gratis (precio final, todo incluido).
+ const PRECIOS_NUM = { 1: 35000, 2: 45000, 3: 60000 };
 
  const precios = {
- 1: { label: 'Biotina Pura x1 — $30.000', mp: MP_URL_1 },
+ 1: { label: 'Biotina Pura x1 — $35.000', mp: MP_URL_1 },
  2: { label: 'Biotina Pura x2 — $45.000', mp: MP_URL_2 },
  3: { label: 'Biotina Pura x3 — $60.000', mp: MP_URL_3 }
  };
@@ -1893,7 +1906,7 @@
  document.querySelectorAll('.qty-option').forEach(o => o.classList.remove('selected'));
  el.classList.add('selected');
  selectedQty = qty;
- const prices = { 1: '30.000', 2: '45.000', 3: '60.000' };
+ const prices = { 1: '35.000', 2: '45.000', 3: '60.000' };
  document.getElementById('buyBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
  document.getElementById('floatingBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
  }
