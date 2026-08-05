@@ -4,6 +4,19 @@
  <meta charset="UTF-8" />
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
  <title>Productos Capilares PG | Elegí tu tratamiento</title>
+ <meta name="description" content="Tratamientos capilares con Biotina: Combo Biotina, Biotina Pura en spray y Dúo Shampoo + Acondicionador. Envío gratis a todo el país y pago seguro con MercadoPago." />
+ <link rel="canonical" href="https://productoscapilarespg.com/" />
+ <meta property="og:type" content="website" />
+ <meta property="og:locale" content="es_AR" />
+ <meta property="og:site_name" content="Productos Capilares PG" />
+ <meta property="og:title" content="Productos Capilares PG | Elegí tu tratamiento" />
+ <meta property="og:description" content="Tratamientos capilares con Biotina: Combo Biotina, Biotina Pura en spray y Dúo Shampoo + Acondicionador. Envío gratis a todo el país y pago seguro con MercadoPago." />
+ <meta property="og:image" content="https://productoscapilarespg.com/combo-productos-home.jpg" />
+ <meta property="og:url" content="https://productoscapilarespg.com/" />
+ <meta name="twitter:card" content="summary_large_image" />
+ <meta name="twitter:title" content="Productos Capilares PG | Elegí tu tratamiento" />
+ <meta name="twitter:description" content="Tratamientos capilares con Biotina: Combo Biotina, Biotina Pura en spray y Dúo Shampoo + Acondicionador. Envío gratis a todo el país." />
+ <meta name="twitter:image" content="https://productoscapilarespg.com/combo-productos-home.jpg" />
  <link rel="icon" type="image/x-icon" href="favicon.ico" />
  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -273,6 +286,31 @@
  font-size: 0.75rem; color: var(--gray);
  }
  footer a { font-weight: 600; color: var(--dark); }
+ footer .footer-legal { margin-top: 8px; }
+ footer .footer-legal a { font-weight: 500; margin: 0 6px; }
+
+ /* ─── MODAL LEGAL ─── */
+ .modal-overlay {
+ display: none; position: fixed; inset: 0;
+ background: rgba(0,0,0,0.6); z-index: 1000;
+ align-items: center; justify-content: center; padding: 20px;
+ }
+ .modal-overlay.active { display: flex; }
+ .modal {
+ background: white; border-radius: 20px;
+ padding: 36px 32px; width: 100%; max-width: 520px;
+ max-height: 90vh; overflow-y: auto;
+ animation: modalIn 0.3s ease; position: relative;
+ }
+ @keyframes modalIn {
+ from { opacity:0; transform:translateY(20px) scale(0.97); }
+ to { opacity:1; transform:translateY(0) scale(1); }
+ }
+ .modal-close { position:absolute; top:16px; right:20px; background:none; border:none; font-size:1.4rem; cursor:pointer; color:#999; }
+ .modal-close:hover { color:var(--dark); }
+ .modal h3 { font-family:'Outfit',sans-serif; font-size:1.4rem; font-weight:700; margin-bottom:6px; color:var(--dark); }
+ .modal-sub { font-size:0.82rem; color:var(--gray); margin-bottom:24px; }
+ @media (max-width:540px) { .modal { padding:28px 20px; } }
 
  .wa-fab {
  position: fixed; bottom: 20px; right: 20px; z-index: 999;
@@ -536,7 +574,61 @@
  <footer>
  <p>© 2026 Productos Capilares PG · Pablo Podestá, Buenos Aires</p>
  <p style="margin-top:6px">¿Dudas? Escribinos por <a href="https://wa.me/5491124838177" target="_blank">WhatsApp</a></p>
+ <p class="footer-legal">
+ <a href="#" onclick="openLegal('privacidad'); return false;">Política de Privacidad</a> ·
+ <a href="#" onclick="openLegal('terminos'); return false;">Términos y Condiciones</a>
+ </p>
  </footer>
+
+ <!-- MODAL POLÍTICA DE PRIVACIDAD -->
+ <div class="modal-overlay" id="modalPrivacidad" onclick="closeLegalOutside(event, 'privacidad')">
+ <div class="modal" style="max-width:640px;">
+ <button class="modal-close" onclick="closeLegal('privacidad')">×</button>
+ <h3>Política de Privacidad</h3>
+ <p class="modal-sub">Última actualización: Mayo 2025</p>
+ <div style="font-size:0.83rem; color:#444; line-height:1.85; max-height:60vh; overflow-y:auto; padding-right:8px;">
+ <p style="margin-bottom:14px"><strong>1. Información que recopilamos</strong><br>
+ Cuando realizás una compra en nuestro sitio, recopilamos datos personales como nombre, apellido, teléfono, email y dirección de entrega. Esta información es necesaria para procesar tu pedido y coordinar el envío.</p>
+ <p style="margin-bottom:14px"><strong>2. Uso de la información</strong><br>
+ Los datos que nos proporcionás se utilizan exclusivamente para: procesar y enviar tu pedido, comunicarnos con vos sobre el estado de tu compra, y mejorar nuestros servicios. No vendemos ni compartimos tu información personal con terceros, salvo los necesarios para efectuar el envío (Correo Argentino).</p>
+ <p style="margin-bottom:14px"><strong>3. Protección de datos</strong><br>
+ Tu información es almacenada de forma segura. Implementamos medidas técnicas y organizativas para proteger tus datos contra accesos no autorizados. Los pagos son procesados de forma segura por MercadoPago, que cuenta con sus propias políticas de seguridad y privacidad.</p>
+ <p style="margin-bottom:14px"><strong>4. Tus derechos</strong><br>
+ De acuerdo con la Ley 25.326 de Protección de Datos Personales de Argentina, tenés derecho a acceder, rectificar y suprimir tus datos personales. Para ejercer estos derechos podés contactarnos por WhatsApp.</p>
+ <p style="margin-bottom:14px"><strong>5. Cookies</strong><br>
+ Nuestro sitio puede utilizar cookies para mejorar tu experiencia de navegación y para fines estadísticos. Podés configurar tu navegador para rechazarlas, aunque esto podría afectar algunas funcionalidades del sitio.</p>
+ <p style="margin-bottom:14px"><strong>6. Contacto</strong><br>
+ Si tenés alguna consulta sobre esta política podés contactarnos por WhatsApp o por Instagram.</p>
+ </div>
+ </div>
+ </div>
+
+ <!-- MODAL TÉRMINOS Y CONDICIONES -->
+ <div class="modal-overlay" id="modalTerminos" onclick="closeLegalOutside(event, 'terminos')">
+ <div class="modal" style="max-width:640px;">
+ <button class="modal-close" onclick="closeLegal('terminos')">×</button>
+ <h3>Términos y Condiciones</h3>
+ <p class="modal-sub">Última actualización: Mayo 2025</p>
+ <div style="font-size:0.83rem; color:#444; line-height:1.85; max-height:60vh; overflow-y:auto; padding-right:8px;">
+ <p style="margin-bottom:14px"><strong>1. Aceptación</strong><br>
+ Al realizar una compra en este sitio, aceptás estos términos y condiciones en su totalidad. Si no estás de acuerdo con alguno de ellos, te pedimos que no realices la compra.</p>
+ <p style="margin-bottom:14px"><strong>2. Productos</strong><br>
+ Todos los productos ofrecidos son cosméticos capilares de uso externo. Los resultados pueden variar según el tipo de cabello y la constancia en el uso. No reemplazamos tratamientos médicos. Si tenés alguna condición de salud, consultá con un profesional antes de usar el producto.</p>
+ <p style="margin-bottom:14px"><strong>3. Precios y pagos</strong><br>
+ Los precios están expresados en pesos argentinos (ARS) e incluyen IVA. El pago se realiza a través de MercadoPago, que acepta tarjetas de crédito, débito, efectivo y dinero en cuenta. Los precios pueden modificarse sin previo aviso.</p>
+ <p style="margin-bottom:14px"><strong>4. Envíos</strong><br>
+ Los envíos se realizan por Correo Argentino a todo el país. El costo de envío se informa al momento de la compra. Los plazos de entrega son estimativos y pueden variar según la provincia. No nos hacemos responsables por demoras atribuibles al servicio postal.</p>
+ <p style="margin-bottom:14px"><strong>5. Cambios y devoluciones</strong><br>
+ Si el producto llega dañado o con defectos de fabricación, lo reemplazamos sin costo. Para solicitar un cambio tenés hasta 10 días desde la recepción del pedido, contactándonos por WhatsApp con foto del producto. No se aceptan devoluciones de productos abiertos o usados salvo que presenten defectos.</p>
+ <p style="margin-bottom:14px"><strong>6. Garantía de satisfacción</strong><br>
+ Si no quedás conforme con el producto podés contactarnos y evaluamos cada caso de forma personalizada. Nuestro compromiso es que quedes satisfecha con tu compra.</p>
+ <p style="margin-bottom:14px"><strong>7. Responsabilidad</strong><br>
+ No nos responsabilizamos por el uso inadecuado del producto. Antes de usar, leé las instrucciones en el envase y realizá una prueba de alergia en una pequeña zona de piel.</p>
+ <p style="margin-bottom:14px"><strong>8. Contacto</strong><br>
+ Para cualquier consulta podés comunicarte con nosotros por WhatsApp o por Instagram. Respondemos en el día en horario comercial.</p>
+ </div>
+ </div>
+ </div>
 
  <a class="wa-fab" href="https://wa.me/5491124838177?text=Hola!%20Quiero%20saber%20m%C3%A1s%20sobre%20sus%20productos%20%F0%9F%8C%BF" target="_blank" aria-label="Consultar por WhatsApp">
  <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -552,6 +644,19 @@
  document.getElementById('drawer').classList.remove('open');
  document.getElementById('drawerOverlay').classList.remove('open');
  document.body.style.overflow = '';
+ }
+
+ function openLegal(tipo) {
+ document.getElementById(tipo === 'privacidad' ? 'modalPrivacidad' : 'modalTerminos').classList.add('active');
+ document.body.style.overflow = 'hidden';
+ }
+ function closeLegal(tipo) {
+ document.getElementById(tipo === 'privacidad' ? 'modalPrivacidad' : 'modalTerminos').classList.remove('active');
+ document.body.style.overflow = '';
+ }
+ function closeLegalOutside(e, tipo) {
+ const id = tipo === 'privacidad' ? 'modalPrivacidad' : 'modalTerminos';
+ if (e.target === document.getElementById(id)) closeLegal(tipo);
  }
 
  // ─── SLIDER ANTES/DESPUÉS ───────────────────────────────────────────────
