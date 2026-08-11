@@ -1850,10 +1850,11 @@
 
  // Links de pago de MercadoPago (Link de pago, montos fijos) — fallback
  // estático que se usa solo si la Cloud Function de pago dinámico falla.
- // ⚠️ MP_URL_1 todavía cobra $30.000 — es un link estático de MercadoPago
- // con el monto fijo en $30.000, hay que generar uno nuevo por $35.000 desde
- // la cuenta de MercadoPago y reemplazar esta URL (no lo puedo hacer yo).
- const MP_URL_1 = 'https://mpago.la/2aCHP53'; // ← 1 unidad + envío, $30.000 (desactualizado, ver nota arriba)
+ // MP_URL_1 permite hasta 2 cuotas sin interés (el negocio absorbe ese
+ // costo, no el comprador) — si se prefiere que el comprador pague el
+ // interés en cuotas, o eliminar cuotas del todo, hay que ajustarlo desde
+ // el panel de MercadoPago (esa opción no existe en "Link de pago").
+ const MP_URL_1 = 'https://mpago.li/1pgvrn9'; // ← 1 unidad, $35.000
  const MP_URL_2 = 'https://mpago.la/2w2KZs5'; // ← 2 unidades $45.000
  const MP_URL_3 = 'https://mpago.la/1MPCQga'; // ← 3 unidades $60.000
 
