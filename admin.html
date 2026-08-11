@@ -228,15 +228,26 @@
       font-family: 'Outfit', sans-serif; font-size: 0.7rem; font-weight: 600;
       cursor: pointer; outline: none; -webkit-appearance: none; appearance: none;
     }
-    .s-confirmado { background: #e8f5ee; color: #1e6640; }
-    .s-abandonado { background: #fff3cd; color: #856404; }
-    .s-contactado { background: #dbeafe; color: #1d4ed8; }
-    .s-cerrado    { background: #fef0ec; color: var(--coral-dark); }
+    .s-confirmado    { background: #e8f5ee; color: #1e6640; }
+    .s-abandonado    { background: #fff3cd; color: #856404; }
+    .s-contactado    { background: #dbeafe; color: #1d4ed8; }
+    .s-no_interesado { background: #fde2e1; color: #b3261e; }
+    .s-cerrado       { background: #fef0ec; color: var(--coral-dark); }
 
     .fst-pendiente     { background: #fff3cd; color: #856404; }
     .fst-aprobado      { background: #e8f5ee; color: #1e6640; }
     .fst-rechazado     { background: #fef0ec; color: var(--coral-dark); }
     .fst-sinconfirmar  { background: #f3f4f6; color: #6b7280; }
+
+    /* ── COLOR DE FILA SEGÚN ESTADO (para distinguir de un vistazo) ──── */
+    tbody tr.row-confirmado    { background: #f0faf4; }
+    tbody tr.row-confirmado:hover    { background: #e4f5ea; }
+    tbody tr.row-cerrado       { background: #f0faf4; }
+    tbody tr.row-cerrado:hover       { background: #e4f5ea; }
+    tbody tr.row-contactado    { background: #f2f2f0; }
+    tbody tr.row-contactado:hover    { background: #e8e8e5; }
+    tbody tr.row-no_interesado { background: #fdf0ef; }
+    tbody tr.row-no_interesado:hover { background: #fbe3e1; }
 
     /* ── SECCIONES NUEVAS (Formularios / Abandonados) ─────────────── */
     .section-divider {
@@ -456,6 +467,7 @@
                 <option value="confirmado">Pago confirmado ✅</option>
                 <option value="abandonado">Abandonó carrito ⚠️</option>
                 <option value="contactado">Contactado 📞</option>
+                <option value="no_interesado">Dijo que no ❌</option>
                 <option value="cerrado">Cerrado por WA 💬</option>
               </select>
             </div>
@@ -475,6 +487,7 @@
             <option value="confirmado">Pago confirmado ✅</option>
             <option value="abandonado">Abandonó carrito ⚠️</option>
             <option value="contactado">Contactado 📞</option>
+            <option value="no_interesado">Dijo que no ❌</option>
             <option value="cerrado">Cerrado por WA 💬</option>
           </select>
         </div>
@@ -599,10 +612,11 @@
     };
 
     const STATUS_CFG = {
-      confirmado: 'Pago confirmado ✅',
-      abandonado: 'Abandonó carrito ⚠️',
-      contactado: 'Contactado 📞',
-      cerrado:    'Cerrado por WhatsApp 💬',
+      confirmado:    'Pago confirmado ✅',
+      abandonado:    'Abandonó carrito ⚠️',
+      contactado:    'Contactado 📞',
+      no_interesado: 'Dijo que no ❌',
+      cerrado:       'Cerrado por WhatsApp 💬',
     };
 
     // ─── FIREBASE CONFIG ────────────────────────────────────────────────────
@@ -1106,7 +1120,7 @@
         const waTel  = waLinkCliente(p.telefono);
         const safeId = p.id.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
-        return `<tr>
+        return `<tr class="row-${p._st}">
           <td class="td-name">${nombre}</td>
           <td class="td-phone">${p.telefono || '—'}</td>
           <td>${p.provincia || '—'}</td>
