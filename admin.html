@@ -90,7 +90,7 @@
 
     /* ── STATS ──────────────────────────────────────────────────── */
     .stats-grid {
-      display: grid; grid-template-columns: repeat(5, 1fr);
+      display: grid; grid-template-columns: repeat(6, 1fr);
       gap: 16px; margin-bottom: 32px;
     }
     .stat-card    { background: white; border-radius: 14px; padding: 20px 18px; }
@@ -356,6 +356,11 @@
           <div class="stat-label">Ventas hoy</div>
           <div class="stat-value" id="sHoy">0</div>
           <div class="stat-sub">pedidos confirmados hoy</div>
+        </div>
+        <div class="stat-card c-warn">
+          <div class="stat-label">Carritos hoy</div>
+          <div class="stat-value" id="sCarritosHoy">0</div>
+          <div class="stat-sub">carritos/formularios nuevos hoy</div>
         </div>
         <div class="stat-card">
           <div class="stat-label" id="lblVentasMes">Ventas del mes</div>
@@ -1006,11 +1011,15 @@
 
     function loadData() {
       const periodo = window._statsPeriodo || document.getElementById('statsPeriodo')?.value || 'todo';
-      let ventasHoy = 0, ventasPeriodo = 0, ingresosPeriodo = 0, gananciaPeriodo = 0, abandoned = 0;
+      let ventasHoy = 0, carritosHoy = 0, ventasPeriodo = 0, ingresosPeriodo = 0, gananciaPeriodo = 0, abandoned = 0;
       const porProducto = {};
 
       pedidosCache.forEach(p => {
         const combo = p._c;
+        // Cualquier pedido/carrito guardado hoy, sin importar si llegó a
+        // confirmar el pago o no — para saber de un vistazo si hubo
+        // actividad nueva en el día (aunque no se haya convertido en venta).
+        if (isToday(p.fecha)) carritosHoy++;
         // Cuenta como venta si "status" dice confirmado O si "formStatus" dice
         // aprobado — son dos campos que deberían ir siempre sincronizados
         // (saveFormStatus y el webhook de MercadoPago los actualizan juntos),
@@ -1033,6 +1042,7 @@
       });
 
       document.getElementById('sHoy').textContent       = ventasHoy;
+      document.getElementById('sCarritosHoy').textContent = carritosHoy;
       document.getElementById('sMes').textContent       = ventasPeriodo;
       document.getElementById('sIngresos').textContent  = fmt(ingresosPeriodo);
       document.getElementById('sGanancia').textContent  = fmt(gananciaPeriodo);
