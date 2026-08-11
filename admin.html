@@ -499,6 +499,8 @@
             <tr>
               <th>Nombre</th>
               <th>Teléfono</th>
+              <th>Estado</th>
+              <th>Fecha</th>
               <th>Provincia</th>
               <th>Producto</th>
               <th class="th-r">Precio venta</th>
@@ -506,8 +508,6 @@
               <th class="th-r">Costo producto</th>
               <th class="th-r">Costo envío</th>
               <th class="th-r">Ganancia neta</th>
-              <th>Estado</th>
-              <th>Fecha</th>
               <th>WhatsApp</th>
               <th>Acción</th>
             </tr>
@@ -1123,13 +1123,6 @@
         return `<tr class="row-${p._st}">
           <td class="td-name">${nombre}</td>
           <td class="td-phone">${p.telefono || '—'}</td>
-          <td>${p.provincia || '—'}</td>
-          <td>${p.producto || (c ? `Combo x${c.qty}` : '—')}</td>
-          <td class="td-r">${c ? fmt(c.precio) : '—'}</td>
-          <td class="td-r td-mp">${c ? fmt(c.mp) : '—'}</td>
-          <td class="td-r">${c ? fmt(c.costo) : '—'}</td>
-          <td class="td-r">${c && c.envio ? fmt(c.envio) : '—'}</td>
-          <td class="td-r td-gain">${c ? fmt(c.ganancia) : '—'}</td>
           <td>
             <select class="status-sel s-${p._st}"
               onchange="saveStatus('${safeId}',this.value);this.className='status-sel s-'+this.value">
@@ -1137,6 +1130,13 @@
             </select>
           </td>
           <td class="td-date">${p.fecha || '—'}</td>
+          <td>${p.provincia || '—'}</td>
+          <td>${p.producto || (c ? `Combo x${c.qty}` : '—')}</td>
+          <td class="td-r">${c ? fmt(c.precio) : '—'}</td>
+          <td class="td-r td-mp">${c ? fmt(c.mp) : '—'}</td>
+          <td class="td-r">${c ? fmt(c.costo) : '—'}</td>
+          <td class="td-r">${c && c.envio ? fmt(c.envio) : '—'}</td>
+          <td class="td-r td-gain">${c ? fmt(c.ganancia) : '—'}</td>
           <td>
             ${waTel ? `<a href="https://wa.me/${waTel}?text=${waMsg}" target="_blank" class="btn-wa">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
@@ -1154,13 +1154,13 @@
 
       const ventasCount = rows.filter(p => p._st === 'confirmado' || p._fst === 'aprobado').length;
       tfoot.innerHTML = `<tr>
-        <td colspan="4" style="color:var(--gray);font-style:italic">TOTAL — ${rows.length} registro${rows.length !== 1 ? 's' : ''} (${ventasCount} venta${ventasCount !== 1 ? 's' : ''} confirmada${ventasCount !== 1 ? 's' : ''})</td>
+        <td colspan="6" style="color:var(--gray);font-style:italic">TOTAL — ${rows.length} registro${rows.length !== 1 ? 's' : ''} (${ventasCount} venta${ventasCount !== 1 ? 's' : ''} confirmada${ventasCount !== 1 ? 's' : ''})</td>
         <td class="td-r">${fmt(tPrecio)}</td>
         <td class="td-r td-mp">${fmt(tMP)}</td>
         <td class="td-r">${fmt(tCosto)}</td>
         <td class="td-r">${fmt(tEnvio)}</td>
         <td class="td-r td-gain">${fmt(tGanancia)}</td>
-        <td colspan="4"></td>
+        <td colspan="2"></td>
       </tr>`;
     }
 
