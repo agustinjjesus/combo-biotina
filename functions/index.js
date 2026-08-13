@@ -1,4 +1,5 @@
 const { onRequest } = require('firebase-functions/v2/https');
+const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { defineSecret } = require('firebase-functions/params');
 const logger = require('firebase-functions/logger');
 const admin = require('firebase-admin');
@@ -25,6 +26,10 @@ const ADMIN_EMAIL = 'productopg@gmail.com';
 // extra; para enviar desde un dominio propio (ej. pedidos@productoscapilarespg.com)
 // hay que verificarlo en Resend y cambiar esta constante.
 const FROM_EMAIL = 'Biotina PG <onboarding@resend.dev>';
+
+// Número de WhatsApp del negocio, para el link "reclamar descuento" del
+// email de carrito abandonado.
+const WA_NUMERO = '5491124838177';
 
 // Dominios desde los que se permite llamar a crearPreferencia (la landing).
 const ALLOWED_ORIGINS = [
@@ -451,3 +456,95 @@ exports.mpWebhook = onRequest({ secrets: [MP_ACCESS_TOKEN, RESEND_API_KEY], regi
     res.status(200).send('error-logged');
   }
 });
+
+// ─── RECUPERO DE CARRITOS ABANDONADOS ──────────────────────────────────────
+// Mismo criterio de "abandonado" que usa el panel admin: un pedido en
+// formStatus pendiente/sinconfirmar/carrito_iniciado hace más de 2hs.
+const ABANDONED_MS = 2 * 60 * 60 * 1000;
+// No mandamos el email a carritos de hace más de 14 días — evita un envío
+// masivo de descuentos a pedidos viejos la primera vez que se despliega esto.
+const MAX_AGE_MS = 14 * 24 * 60 * 60 * 1000;
+// Monto fijo de descuento, chico a propósito para no enseñarle al cliente a
+// abandonar el carrito a propósito. Se coordina a mano por WhatsApp — los
+// links de pago de MercadoPago son de monto fijo, no soportan cupones.
+const DESCUENTO_ABANDONO = 5000;
+
+function precioDePedido(pedido) {
+  if (typeof pedido.precio === 'number' && pedido.precio > 0) return pedido.precio;
+  const m = String(pedido.producto || '').match(/\$([0-9.]+)/);
+  return m ? parseInt(m[1].replace(/\./g, ''), 10) : 0;
+}
+
+function timestampDePedido(pedido) {
+  if (pedido.createdAt && pedido.createdAt.toMillis) return pedido.createdAt.toMillis();
+  if (typeof pedido.timestamp === 'number') return pedido.timestamp;
+  return 0;
+}
+
+/**
+ * Corre cada hora. Busca carritos abandonados (sin pagar hace más de 2hs,
+ * no más de 14 días) que todavía no recibieron el email de recupero, y les
+ * ofrece un descuento chico con vencimiento de 48hs para que vuelvan a
+ * completar la compra. El descuento se reclama y coordina por WhatsApp — acá
+ * no se aplica solo, es el equipo el que ajusta el monto al pasar los datos
+ * de pago.
+ */
+exports.recordatorioCarritoAbandonado = onSchedule(
+  { schedule: 'every 60 minutes', region: 'us-central1', secrets: [RESEND_API_KEY] },
+  async () => {
+    const ahora = Date.now();
+
+    let snap;
+    try {
+      snap = await db.collection('pedidos')
+        .where('formStatus', 'in', ['pendiente', 'sinconfirmar', 'carrito_iniciado'])
+        .get();
+    } catch (e) {
+      logger.error('recordatorioCarritoAbandonado: error leyendo pedidos', e);
+      return;
+    }
+
+    for (const doc of snap.docs) {
+      const pedido = doc.data();
+      if (pedido.recoveryEmailSent) continue;
+      if (!pedido.email) continue;
+
+      const ts = timestampDePedido(pedido);
+      if (!ts) continue;
+      const edad = ahora - ts;
+      if (edad < ABANDONED_MS || edad > MAX_AGE_MS) continue;
+
+      const precio = precioDePedido(pedido);
+      const precioConDescuento = Math.max(0, precio - DESCUENTO_ABANDONO);
+      const nombre = pedido.nombre || '';
+      const producto = pedido.producto || 'tu pedido';
+
+      const waMsg = encodeURIComponent(
+        `Hola! Vi el mail de mi carrito (${producto}) y quiero aprovechar el descuento de $${DESCUENTO_ABANDONO.toLocaleString('es-AR')} antes de que venza 🙌`
+      );
+      const waLink = `https://wa.me/${WA_NUMERO}?text=${waMsg}`;
+
+      try {
+        await enviarEmail({
+          to: pedido.email,
+          subject: `Te guardamos $${DESCUENTO_ABANDONO.toLocaleString('es-AR')} de descuento (válido 48hs)`,
+          html: `
+            <p>Hola ${nombre}!</p>
+            <p>Vimos que empezaste tu compra de <strong>${producto}</strong> pero no llegaste a terminarla.</p>
+            <p>Como queremos que la aproveches, te guardamos <strong>$${DESCUENTO_ABANDONO.toLocaleString('es-AR')} de descuento</strong>
+            ${precio ? ` — quedaría en <strong>$${precioConDescuento.toLocaleString('es-AR')}</strong> en vez de $${precio.toLocaleString('es-AR')}` : ''},
+            válido por las próximas 48 horas.</p>
+            <p><a href="${waLink}" style="display:inline-block;background:#111;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600;">Reclamar mi descuento por WhatsApp</a></p>
+            <p style="color:#888;font-size:13px;">Si el botón no funciona, escribinos por WhatsApp al ${WA_NUMERO.replace('549', '+54 9 ')} mencionando este mail.</p>
+          `,
+        });
+        await doc.ref.update({
+          recoveryEmailSent: true,
+          recoveryEmailSentAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      } catch (e) {
+        logger.error('recordatorioCarritoAbandonado: error en pedido ' + doc.id, e);
+      }
+    }
+  }
+);
