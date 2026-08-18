@@ -1,1 +1,451 @@
-{"updatedAt": "2026-07-24T17:25:29.788Z", "createdAt": "2026-07-22T18:18:07.678Z", "id": "oMo5TGXahoTkUpFl", "name": "Resumen diario de ventas", "description": null, "active": true, "isArchived": false, "nodes": [{"parameters": {"rule": {"interval": [{"field": "cronExpression", "expression": "0 22 * * *"}]}, "timezone": "America/Argentina/Buenos_Aires"}, "id": "c1000000-0000-0000-0000-000000000001", "name": "Todos los dias 22hs (ART)", "type": "n8n-nodes-base.scheduleTrigger", "typeVersion": 1.2, "position": [0, 0]}, {"parameters": {"httpMethod": "GET", "path": "resumen-diario", "responseMode": "onReceived", "options": {}}, "id": "c1000000-0000-0000-0000-000000000002", "name": "Disparo manual", "type": "n8n-nodes-base.webhook", "typeVersion": 2, "position": [0, 180], "webhookId": "resumen-diario-bot-pg"}, {"parameters": {"operation": "executeQuery", "query": "SELECT session_id, role, content FROM chat_history WHERE session_id !~ '^__' AND created_at >= date_trunc('day', now() AT TIME ZONE 'America/Argentina/Buenos_Aires') AT TIME ZONE 'America/Argentina/Buenos_Aires' ORDER BY session_id, created_at", "options": {}}, "id": "c1000000-0000-0000-0000-000000000003", "name": "Traer conversaciones del dia", "type": "n8n-nodes-base.postgres", "typeVersion": 2.4, "position": [220, 90], "credentials": {"postgres": {"id": "cDyIo0T2342kI0Qh", "name": "Postgres account 2"}}, "alwaysOutputData": true}, {"parameters": {"jsCode": "return [{ json: {} }];"}, "id": "c1000000-0000-0000-0000-000000000006", "name": "Reducir a un item", "type": "n8n-nodes-base.code", "typeVersion": 2, "position": [440, 90]}, {"parameters": {"operation": "executeQuery", "query": "SELECT replace(session_id, '__ad_source__:', '') AS session_id FROM chat_history WHERE session_id LIKE '__ad_source__:%' AND created_at >= date_trunc('day', now() AT TIME ZONE 'America/Argentina/Buenos_Aires') AT TIME ZONE 'America/Argentina/Buenos_Aires'", "options": {}}, "id": "c1000000-0000-0000-0000-000000000007", "name": "Traer origenes de anuncio del dia", "type": "n8n-nodes-base.postgres", "typeVersion": 2.4, "position": [550, 90], "credentials": {"postgres": {"id": "cDyIo0T2342kI0Qh", "name": "Postgres account 2"}}, "alwaysOutputData": true}, {"parameters": {"jsCode": "const rows = $('Traer conversaciones del dia').all().map(i => i.json);\nconst adSessions = new Set($input.all().map(i => i.json.session_id));\n\nconst bySession = {};\nfor (const r of rows) {\n  if (!bySession[r.session_id]) bySession[r.session_id] = [];\n  bySession[r.session_id].push({ role: r.role, content: r.content });\n}\n\n// Biotina Pura - precios por cantidad y costo real (costo de producto +\n// envio por pedido, el envio no se multiplica por unidad)\nconst UNIDADES_POR_MONTO = { 35000: 1, 45000: 2, 60000: 3 };\nconst COSTO_PRODUCTO_UNIT = 3500;\nconst COSTO_ENVIO_POR_PEDIDO = 10000;\n// Fallback para conversaciones viejas del Combo Biotina (precio fijo, ya\n// no se vende, pero puede quedar alguna en el dia de la migracion)\nconst PRECIO_FALLBACK = 43000;\nconst COSTO_FALLBACK = 10000;\n\nfunction gananciaDeVenta(monto) {\n  const unidades = UNIDADES_POR_MONTO[monto];\n  if (unidades) return monto - (COSTO_PRODUCTO_UNIT * unidades + COSTO_ENVIO_POR_PEDIDO);\n  return monto - COSTO_FALLBACK;\n}\n\n// Numeros del dueno y del equipo (Dolores) - no son clientes reales, se\n// excluyen aunque hayan entrado marcados como origen de anuncio (pruebas)\nconst EXCLUDED_NUMBERS = new Set(['TU_NUMERO_PERSONAL_AQUI', 'NUMERO_DOLORES_AQUI']);\n\nlet totalConversaciones = 0;\nlet ventasCerradas = 0;\nlet facturacion = 0;\nlet ganancia = 0;\n\nfor (const [sessionId, msgs] of Object.entries(bySession)) {\n  if (!adSessions.has(sessionId)) continue; // solo conversaciones iniciadas por un anuncio hoy\n  const numberOnly = sessionId.split('@')[0];\n  if (EXCLUDED_NUMBERS.has(numberOnly)) continue;\n  totalConversaciones++;\n  const paymentMsg = msgs.find(m => m.role === 'assistant' && (m.content.includes('CBU: 3840200500000054291199') || m.content.includes('Alias: productoscapilarespg')));\n  const sentReceipt = msgs.some(m => m.role === 'user' && m.content.includes('Imagen recibida'));\n  if (paymentMsg && sentReceipt) {\n    ventasCerradas++;\n    const montoMatch = paymentMsg.content.match(/\\$\\s?([\\d.]+)/);\n    const monto = montoMatch ? parseInt(montoMatch[1].replace(/\\./g, ''), 10) : PRECIO_FALLBACK;\n    facturacion += monto;\n    ganancia += gananciaDeVenta(monto);\n  }\n}\n\nconst conversionPct = totalConversaciones > 0 ? ((ventasCerradas / totalConversaciones) * 100).toFixed(1) : '0.0';\nconst fmt = n => n.toLocaleString('es-AR');\n\nconst hoy = new Date().toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', day: '2-digit', month: '2-digit', year: 'numeric' });\n\nlet text = `\\u{1F4C5} Resumen del dia (${hoy})\\n\\n`;\ntext += `\\u{1F4AC} Conversaciones desde anuncios: ${totalConversaciones}\\n`;\ntext += `\\u{1F6D2} Ventas cerradas: ${ventasCerradas}\\n`;\ntext += `\\u{1F4C8} Conversion: ${conversionPct}%\\n`;\nif (ventasCerradas > 0) {\n  text += `\\u{1F4B0} Facturacion: $${fmt(facturacion)}\\n`;\n  text += `\\u{2705} Ganancia neta: $${fmt(ganancia)}`;\n} else {\n  text += `\\u{1F4B0} Sin ventas cerradas hoy.`;\n}\n\nreturn [{ json: { text } }];\n"}, "id": "c1000000-0000-0000-0000-000000000004", "name": "Calcular resumen del dia", "type": "n8n-nodes-base.code", "typeVersion": 2, "position": [660, 90]}, {"parameters": {"method": "POST", "url": "http://bot_evolution:8080/message/sendText/pg", "sendHeaders": true, "headerParameters": {"parameters": [{"name": "content-type", "value": "application/json"}]}, "sendBody": true, "specifyBody": "json", "jsonBody": "={{ JSON.stringify({\n  number: 'TU_NUMERO_PERSONAL_AQUI@s.whatsapp.net',\n  text: $json.text\n}) }}", "options": {"timeout": 30000}, "authentication": "genericCredentialType", "genericAuthType": "httpHeaderAuth"}, "id": "c1000000-0000-0000-0000-000000000005", "name": "Enviar resumen", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [880, 90], "credentials": {"httpHeaderAuth": {"id": "aJOTrB9KcVsbm5Zq", "name": "Evolution apikey"}}, "onError": "continueErrorOutput"}], "connections": {"Todos los dias 22hs (ART)": {"main": [[{"node": "Traer conversaciones del dia", "type": "main", "index": 0}]]}, "Disparo manual": {"main": [[{"node": "Traer conversaciones del dia", "type": "main", "index": 0}]]}, "Traer conversaciones del dia": {"main": [[{"node": "Reducir a un item", "type": "main", "index": 0}]]}, "Reducir a un item": {"main": [[{"node": "Traer origenes de anuncio del dia", "type": "main", "index": 0}]]}, "Traer origenes de anuncio del dia": {"main": [[{"node": "Calcular resumen del dia", "type": "main", "index": 0}]]}, "Calcular resumen del dia": {"main": [[{"node": "Enviar resumen", "type": "main", "index": 0}]]}}, "settings": {"executionOrder": "v1", "errorWorkflow": "paPVYhKtE3AU7IJA"}, "staticData": {"node:Todos los dias 22hs (ART)": {"recurrenceRules": [null], "recurrenceRuleSignatures": [null]}}, "meta": null, "nodeGroups": [], "pinData": null, "versionId": "37a4bf2f-9faf-416d-898f-600f9ab11405", "activeVersionId": "37a4bf2f-9faf-416d-898f-600f9ab11405", "versionCounter": 5, "triggerCount": 2, "sourceWorkflowId": null, "shared": [{"updatedAt": "2026-07-22T18:18:07.726Z", "createdAt": "2026-07-22T18:18:07.726Z", "role": "workflow:owner", "workflowId": "oMo5TGXahoTkUpFl", "projectId": "njSpU2qWpmtNfG0o", "project": {"updatedAt": "2026-07-21T17:19:17.421Z", "createdAt": "2026-07-21T17:15:17.503Z", "id": "njSpU2qWpmtNfG0o", "name": "Agustin Jesus Gamarra <agustin_ii_gamarra@hotmail.com>", "type": "personal", "icon": null, "description": null, "customTelemetryTags": [], "creatorId": "4720c3cf-67b1-4b23-bc9a-1bfa69f363a7"}}], "tags": [], "activeVersion": {"updatedAt": "2026-07-24T17:25:29.790Z", "createdAt": "2026-07-24T17:25:29.790Z", "versionId": "37a4bf2f-9faf-416d-898f-600f9ab11405", "workflowId": "oMo5TGXahoTkUpFl", "nodes": [{"parameters": {"rule": {"interval": [{"field": "cronExpression", "expression": "0 22 * * *"}]}, "timezone": "America/Argentina/Buenos_Aires"}, "id": "c1000000-0000-0000-0000-000000000001", "name": "Todos los dias 22hs (ART)", "type": "n8n-nodes-base.scheduleTrigger", "typeVersion": 1.2, "position": [0, 0]}, {"parameters": {"httpMethod": "GET", "path": "resumen-diario", "responseMode": "onReceived", "options": {}}, "id": "c1000000-0000-0000-0000-000000000002", "name": "Disparo manual", "type": "n8n-nodes-base.webhook", "typeVersion": 2, "position": [0, 180], "webhookId": "resumen-diario-bot-pg"}, {"parameters": {"operation": "executeQuery", "query": "SELECT session_id, role, content FROM chat_history WHERE session_id !~ '^__' AND created_at >= date_trunc('day', now() AT TIME ZONE 'America/Argentina/Buenos_Aires') AT TIME ZONE 'America/Argentina/Buenos_Aires' ORDER BY session_id, created_at", "options": {}}, "id": "c1000000-0000-0000-0000-000000000003", "name": "Traer conversaciones del dia", "type": "n8n-nodes-base.postgres", "typeVersion": 2.4, "position": [220, 90], "credentials": {"postgres": {"id": "cDyIo0T2342kI0Qh", "name": "Postgres account 2"}}, "alwaysOutputData": true}, {"parameters": {"jsCode": "return [{ json: {} }];"}, "id": "c1000000-0000-0000-0000-000000000006", "name": "Reducir a un item", "type": "n8n-nodes-base.code", "typeVersion": 2, "position": [440, 90]}, {"parameters": {"operation": "executeQuery", "query": "SELECT replace(session_id, '__ad_source__:', '') AS session_id FROM chat_history WHERE session_id LIKE '__ad_source__:%' AND created_at >= date_trunc('day', now() AT TIME ZONE 'America/Argentina/Buenos_Aires') AT TIME ZONE 'America/Argentina/Buenos_Aires'", "options": {}}, "id": "c1000000-0000-0000-0000-000000000007", "name": "Traer origenes de anuncio del dia", "type": "n8n-nodes-base.postgres", "typeVersion": 2.4, "position": [550, 90], "credentials": {"postgres": {"id": "cDyIo0T2342kI0Qh", "name": "Postgres account 2"}}, "alwaysOutputData": true}, {"parameters": {"jsCode": "const rows = $('Traer conversaciones del dia').all().map(i => i.json);\nconst adSessions = new Set($input.all().map(i => i.json.session_id));\n\nconst bySession = {};\nfor (const r of rows) {\n  if (!bySession[r.session_id]) bySession[r.session_id] = [];\n  bySession[r.session_id].push({ role: r.role, content: r.content });\n}\n\nconst PRECIO = 43000;\nconst COSTO = 10000;\nconst GANANCIA_UNIT = PRECIO - COSTO;\n\n// Numeros del dueno y del equipo (Dolores) - no son clientes reales, se\n// excluyen aunque hayan entrado marcados como origen de anuncio (pruebas)\nconst EXCLUDED_NUMBERS = new Set(['TU_NUMERO_PERSONAL_AQUI', 'NUMERO_DOLORES_AQUI']);\n\nlet totalConversaciones = 0;\nlet ventasCerradas = 0;\n\nfor (const [sessionId, msgs] of Object.entries(bySession)) {\n  if (!adSessions.has(sessionId)) continue; // solo conversaciones iniciadas por un anuncio hoy\n  const numberOnly = sessionId.split('@')[0];\n  if (EXCLUDED_NUMBERS.has(numberOnly)) continue;\n  totalConversaciones++;\n  const gotPaymentInfo = msgs.some(m => m.role === 'assistant' && m.content.includes('Alias: productoscapilarespg'));\n  const sentReceipt = msgs.some(m => m.role === 'user' && m.content.includes('Imagen recibida'));\n  if (gotPaymentInfo && sentReceipt) ventasCerradas++;\n}\n\nconst conversionPct = totalConversaciones > 0 ? ((ventasCerradas / totalConversaciones) * 100).toFixed(1) : '0.0';\nconst facturacion = ventasCerradas * PRECIO;\nconst ganancia = ventasCerradas * GANANCIA_UNIT;\nconst fmt = n => n.toLocaleString('es-AR');\n\nconst hoy = new Date().toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', day: '2-digit', month: '2-digit', year: 'numeric' });\n\nlet text = `\\u{1F4C5} Resumen del dia (${hoy})\\n\\n`;\ntext += `\\u{1F4AC} Conversaciones desde anuncios: ${totalConversaciones}\\n`;\ntext += `\\u{1F6D2} Ventas cerradas: ${ventasCerradas}\\n`;\ntext += `\\u{1F4C8} Conversion: ${conversionPct}%\\n`;\nif (ventasCerradas > 0) {\n  text += `\\u{1F4B0} Facturacion: $${fmt(facturacion)}\\n`;\n  text += `\\u{2705} Ganancia neta: $${fmt(ganancia)}`;\n} else {\n  text += `\\u{1F4B0} Sin ventas cerradas hoy.`;\n}\n\nreturn [{ json: { text } }];\n"}, "id": "c1000000-0000-0000-0000-000000000004", "name": "Calcular resumen del dia", "type": "n8n-nodes-base.code", "typeVersion": 2, "position": [660, 90]}, {"parameters": {"method": "POST", "url": "http://bot_evolution:8080/message/sendText/pg", "sendHeaders": true, "headerParameters": {"parameters": [{"name": "content-type", "value": "application/json"}]}, "sendBody": true, "specifyBody": "json", "jsonBody": "={{ JSON.stringify({\n  number: 'TU_NUMERO_PERSONAL_AQUI@s.whatsapp.net',\n  text: $json.text\n}) }}", "options": {"timeout": 30000}, "authentication": "genericCredentialType", "genericAuthType": "httpHeaderAuth"}, "id": "c1000000-0000-0000-0000-000000000005", "name": "Enviar resumen", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [880, 90], "credentials": {"httpHeaderAuth": {"id": "aJOTrB9KcVsbm5Zq", "name": "Evolution apikey"}}, "onError": "continueErrorOutput"}], "connections": {"Todos los dias 22hs (ART)": {"main": [[{"node": "Traer conversaciones del dia", "type": "main", "index": 0}]]}, "Disparo manual": {"main": [[{"node": "Traer conversaciones del dia", "type": "main", "index": 0}]]}, "Traer conversaciones del dia": {"main": [[{"node": "Reducir a un item", "type": "main", "index": 0}]]}, "Reducir a un item": {"main": [[{"node": "Traer origenes de anuncio del dia", "type": "main", "index": 0}]]}, "Traer origenes de anuncio del dia": {"main": [[{"node": "Calcular resumen del dia", "type": "main", "index": 0}]]}, "Calcular resumen del dia": {"main": [[{"node": "Enviar resumen", "type": "main", "index": 0}]]}}, "nodeGroups": [], "authors": "Agustin Jesus Gamarra", "name": null, "description": null, "autosaved": false, "workflowPublishHistory": [{"createdAt": "2026-07-24T17:25:29.899Z", "id": 89, "workflowId": "oMo5TGXahoTkUpFl", "versionId": "37a4bf2f-9faf-416d-898f-600f9ab11405", "event": "activated", "userId": "4720c3cf-67b1-4b23-bc9a-1bfa69f363a7"}, {"createdAt": "2026-07-24T17:25:29.865Z", "id": 88, "workflowId": "oMo5TGXahoTkUpFl", "versionId": "37a4bf2f-9faf-416d-898f-600f9ab11405", "event": "deactivated", "userId": "4720c3cf-67b1-4b23-bc9a-1bfa69f363a7"}]}}
+{
+  "name": "Resumen diario de ventas",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 22 * * *"
+            }
+          ]
+        },
+        "timezone": "America/Argentina/Buenos_Aires"
+      },
+      "id": "c1000000-0000-0000-0000-000000000001",
+      "name": "Todos los dias 22hs (ART)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "resumen-diario",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "c1000000-0000-0000-0000-000000000002",
+      "name": "Disparo manual",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        180
+      ],
+      "webhookId": "resumen-diario-bot-pg"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT session_id, role, content FROM chat_history WHERE session_id !~ '^__' AND created_at >= date_trunc('day', now() AT TIME ZONE 'America/Argentina/Buenos_Aires') AT TIME ZONE 'America/Argentina/Buenos_Aires' ORDER BY session_id, created_at",
+        "options": {}
+      },
+      "id": "c1000000-0000-0000-0000-000000000003",
+      "name": "Traer conversaciones del dia",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        220,
+        90
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: {} }];"
+      },
+      "id": "c1000000-0000-0000-0000-000000000006",
+      "name": "Reducir a un item",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        90
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT replace(session_id, '__ad_source__:', '') AS session_id FROM chat_history WHERE session_id LIKE '__ad_source__:%' AND created_at >= date_trunc('day', now() AT TIME ZONE 'America/Argentina/Buenos_Aires') AT TIME ZONE 'America/Argentina/Buenos_Aires'",
+        "options": {}
+      },
+      "id": "c1000000-0000-0000-0000-000000000007",
+      "name": "Traer origenes de anuncio del dia",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [
+        550,
+        90
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $('Traer conversaciones del dia').all().map(i => i.json);\nconst adSessions = new Set($input.all().map(i => i.json.session_id));\n\nconst bySession = {};\nfor (const r of rows) {\n  if (!bySession[r.session_id]) bySession[r.session_id] = [];\n  bySession[r.session_id].push({ role: r.role, content: r.content });\n}\n\n// Biotina Pura - precios por cantidad y costo real (costo de producto +\n// envio por pedido, el envio no se multiplica por unidad)\nconst UNIDADES_POR_MONTO = { 35000: 1, 45000: 2, 60000: 3 };\nconst COSTO_PRODUCTO_UNIT = 3500;\nconst COSTO_ENVIO_POR_PEDIDO = 10000;\n// Fallback para conversaciones viejas del Combo Biotina (precio fijo, ya\n// no se vende, pero puede quedar alguna en el dia de la migracion)\nconst PRECIO_FALLBACK = 43000;\nconst COSTO_FALLBACK = 10000;\n\nfunction gananciaDeVenta(monto) {\n  const unidades = UNIDADES_POR_MONTO[monto];\n  if (unidades) return monto - (COSTO_PRODUCTO_UNIT * unidades + COSTO_ENVIO_POR_PEDIDO);\n  return monto - COSTO_FALLBACK;\n}\n\n// Numeros del dueno y del equipo (Dolores) - no son clientes reales, se\n// excluyen aunque hayan entrado marcados como origen de anuncio (pruebas)\nconst EXCLUDED_NUMBERS = new Set(['5491140377694', '5491161558641']);\n\nlet totalConversaciones = 0;\nlet ventasCerradas = 0;\nlet facturacion = 0;\nlet ganancia = 0;\n\nfor (const [sessionId, msgs] of Object.entries(bySession)) {\n  if (!adSessions.has(sessionId)) continue; // solo conversaciones iniciadas por un anuncio hoy\n  const numberOnly = sessionId.split('@')[0];\n  if (EXCLUDED_NUMBERS.has(numberOnly)) continue;\n  totalConversaciones++;\n  const paymentMsg = msgs.find(m => m.role === 'assistant' && (m.content.includes('CBU: 3840200500000054291199') || m.content.includes('Alias: productoscapilarespg')));\n  const sentReceipt = msgs.some(m => m.role === 'user' && m.content.includes('Imagen recibida'));\n  if (paymentMsg && sentReceipt) {\n    ventasCerradas++;\n    const montoMatch = paymentMsg.content.match(/\\$\\s?([\\d.]+)/);\n    const monto = montoMatch ? parseInt(montoMatch[1].replace(/\\./g, ''), 10) : PRECIO_FALLBACK;\n    facturacion += monto;\n    ganancia += gananciaDeVenta(monto);\n  }\n}\n\nconst conversionPct = totalConversaciones > 0 ? ((ventasCerradas / totalConversaciones) * 100).toFixed(1) : '0.0';\nconst fmt = n => n.toLocaleString('es-AR');\n\nconst hoy = new Date().toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', day: '2-digit', month: '2-digit', year: 'numeric' });\n\nlet text = `\\u{1F4C5} Resumen del dia (${hoy})\\n\\n`;\ntext += `\\u{1F4AC} Conversaciones desde anuncios: ${totalConversaciones}\\n`;\ntext += `\\u{1F6D2} Ventas cerradas: ${ventasCerradas}\\n`;\ntext += `\\u{1F4C8} Conversion: ${conversionPct}%\\n`;\nif (ventasCerradas > 0) {\n  text += `\\u{1F4B0} Facturacion: $${fmt(facturacion)}\\n`;\n  text += `\\u{2705} Ganancia neta: $${fmt(ganancia)}`;\n} else {\n  text += `\\u{1F4B0} Sin ventas cerradas hoy.`;\n}\n\nreturn [{ json: { text } }];\n"
+      },
+      "id": "c1000000-0000-0000-0000-000000000004",
+      "name": "Calcular resumen del dia",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        90
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://bot_evolution:8080/message/sendText/pg",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_NUMERO_PERSONAL_AQUI@s.whatsapp.net',\n  text: $json.text\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "c1000000-0000-0000-0000-000000000005",
+      "name": "Enviar resumen",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        90
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $('Traer conversaciones del dia').all().map(i => i.json);\nconst adSessions = new Set($input.all().map(i => i.json.session_id));\n\nconst EXCLUDED_NUMBERS = new Set(['5491140377694', '5491161558641']);\n\nconst bySession = {};\nfor (const r of rows) {\n  if (!bySession[r.session_id]) bySession[r.session_id] = [];\n  bySession[r.session_id].push({ role: r.role, content: r.content });\n}\n\nconst conversaciones = [];\nfor (const [sessionId, msgs] of Object.entries(bySession)) {\n  if (!adSessions.has(sessionId)) continue;\n  const numberOnly = sessionId.split('@')[0];\n  if (EXCLUDED_NUMBERS.has(numberOnly)) continue;\n  const userMsgs = msgs.filter(m => m.role === 'user').map(m => m.content);\n  if (userMsgs.length === 0) continue;\n  conversaciones.push({ numero: numberOnly.slice(-4), mensajes: userMsgs });\n}\n\nif (conversaciones.length === 0) {\n  return [{ json: { skip: true, prompt: '' } }];\n}\n\nconst listado = conversaciones.map((c, i) =>\n  `Conversacion ${i + 1} (termina en ...${c.numero}):\\n` + c.mensajes.map(m => '- ' + m).join('\\n')\n).join('\\n\\n');\n\nconst prompt = `Sos un analista que evalua la calidad de los leads que llegan por WhatsApp desde anuncios de Meta Ads de un negocio que vende Biotina Pura (spray para caida de pelo). Te paso todas las conversaciones de HOY que empezaron desde un anuncio (solo los mensajes del cliente, no las respuestas del bot).\n\nClasificalas en:\n- Contenido real: el cliente cuenta su problema de pelo (caida, quiebre, no crece, etc), pregunta precio, ubicacion, forma de pago, o cualquier cosa relacionada con comprar\n- Solo saludo: unicamente mando el mensaje automatico de WhatsApp Ads sin agregar nada mas\n- Baja calidad: parece spam, cuenta de negocio ajena, broma, o claramente no es un cliente real\n\nAdemas marca especificamente los casos que esten MUY cerca de cerrar la venta (ya dieron todos los datos de envio, dijeron que van a transferir, o son clientes que ya compraron antes y quieren repetir).\n\nEscribi un reporte corto en espanol rioplatense, tono directo tipo WhatsApp (como si se lo mandaras al dueno del negocio), con esta estructura aproximada (adaptala a los numeros reales, no inventes datos que no esten en las conversaciones):\n\nResultado: [dato de calidad general en una linea]\n\n- X de Y (Z%) escribieron contenido real...\n- N casos ya estan cerca de cerrar: [detalle breve de cada uno]\n- N de Y solo mandaron el saludo...\n- N caso(s) de baja calidad si los hay: [detalle breve]\n\nEn criollo: [conclusion de 1-2 lineas]\n\nIMPORTANTE: no uses formato markdown (nada de asteriscos, numerales ni guiones bajos), es texto plano para mandar directo por WhatsApp - los guiones de lista simples estan bien. Se breve, es un reporte diario.\n\nConversaciones de hoy:\n\n${listado}`;\n\nreturn [{ json: { prompt, skip: false } }];"
+      },
+      "id": "q1000000-0000-0000-0000-000000000001",
+      "name": "Preparar prompt calidad",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.skip }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "q1000000-0000-0000-0000-000000000002",
+      "name": "Hay conversaciones para analizar",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  model: 'claude-sonnet-5',\n  max_tokens: 2048,\n  messages: [{ role: 'user', content: $json.prompt }]\n}) }}",
+        "options": {
+          "timeout": 60000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "onError": "continueRegularOutput"
+      },
+      "id": "q1000000-0000-0000-0000-000000000003",
+      "name": "Analizar calidad (Claude API)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        180
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CttncV9hSaBQiESj",
+          "name": "Anthropic x-api-key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const resp = $json;\nlet text = '';\ntry {\n  const block = (resp.content || []).find(b => b.type === 'text');\n  text = block ? block.text.trim() : '';\n} catch (e) {\n  text = '';\n}\nreturn [{ json: { text } }];"
+      },
+      "id": "q1000000-0000-0000-0000-000000000004",
+      "name": "Extraer texto calidad",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.text }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "q1000000-0000-0000-0000-000000000005",
+      "name": "Hay texto",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1540,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://bot_evolution:8080/message/sendText/pg",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_NUMERO_PERSONAL_AQUI@s.whatsapp.net',\n  text: $json.text\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "q1000000-0000-0000-0000-000000000006",
+      "name": "Enviar analisis calidad",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1760,
+        180
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Todos los dias 22hs (ART)": {
+      "main": [
+        [
+          {
+            "node": "Traer conversaciones del dia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Disparo manual": {
+      "main": [
+        [
+          {
+            "node": "Traer conversaciones del dia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Traer conversaciones del dia": {
+      "main": [
+        [
+          {
+            "node": "Reducir a un item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reducir a un item": {
+      "main": [
+        [
+          {
+            "node": "Traer origenes de anuncio del dia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Traer origenes de anuncio del dia": {
+      "main": [
+        [
+          {
+            "node": "Calcular resumen del dia",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Preparar prompt calidad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular resumen del dia": {
+      "main": [
+        [
+          {
+            "node": "Enviar resumen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar prompt calidad": {
+      "main": [
+        [
+          {
+            "node": "Hay conversaciones para analizar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hay conversaciones para analizar": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Analizar calidad (Claude API)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analizar calidad (Claude API)": {
+      "main": [
+        [
+          {
+            "node": "Extraer texto calidad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer texto calidad": {
+      "main": [
+        [
+          {
+            "node": "Hay texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hay texto": {
+      "main": [
+        [
+          {
+            "node": "Enviar analisis calidad",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "paPVYhKtE3AU7IJA"
+  }
+}
