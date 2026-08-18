@@ -1120,7 +1120,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_NUMERO_PERSONAL_AQUI@s.whatsapp.net',\n  text: '🟢 NUEVA VENTA\\n\\n'\n    + 'Cliente: +' + $json.number + ' (' + ($json.pushName || 'sin nombre') + ')\\n'\n    + 'Producto: ' + ($json.orderData.producto || '-') + '\\n'\n    + 'Precio: ' + ($json.orderData.precio || '-') + '\\n\\n'\n    + 'Nombre y apellido: ' + ($json.orderData.nombre_apellido || '-') + '\\n'\n    + 'DNI: ' + ($json.orderData.dni || '-') + '\\n'\n    + 'Dirección: ' + ($json.orderData.direccion || '-') + '\\n'\n    + 'Localidad: ' + ($json.orderData.localidad || '-') + '\\n'\n    + 'CP: ' + ($json.orderData.cp || '-') + '\\n'\n    + 'Provincia: ' + ($json.orderData.provincia || '-') + '\\n'\n    + 'Teléfono: ' + ($json.orderData.telefono || '-') + '\\n'\n    + 'Email: ' + ($json.orderData.email || '-')\n}) }}",
+        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_NUMERO_PERSONAL_AQUI@s.whatsapp.net',\n  text: '🟢 NUEVA VENTA\\n\\n'\n    + 'Cliente: +' + $json.number + ' (' + ($json.pushName || 'sin nombre') + ')\\n'\n    + 'Producto: ' + ($json.orderData.producto || '-') + '\\n'\n    + 'Precio: ' + ($json.orderData.precio || '-') + '\\n\\n'\n    + 'Nombre y apellido: ' + ($json.orderData.nombre_apellido || '-') + '\\n'\n    + 'Dirección: ' + ($json.orderData.direccion || '-') + '\\n'\n    + 'Localidad: ' + ($json.orderData.localidad || '-') + '\\n'\n    + 'CP: ' + ($json.orderData.cp || '-') + '\\n'\n    + 'Provincia: ' + ($json.orderData.provincia || '-') + '\\n'\n    + 'Teléfono: ' + ($json.orderData.telefono || '-') + '\\n'\n    + 'Email: ' + ($json.orderData.email || '-')\n}) }}",
         "options": {
           "timeout": 30000
         },
