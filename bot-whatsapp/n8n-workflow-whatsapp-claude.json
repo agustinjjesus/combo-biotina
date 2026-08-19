@@ -20,7 +20,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Filtra eventos de Evolution API (MESSAGES_UPSERT)\n// - Detecta comandos de administracion (\"parar\"/\"seguir\") escritos en el\n//   grupo de escalamiento del equipo\n// - Detecta respuestas manuales del equipo (mensajes propios directos a\n//   un cliente) para que el bot no pierda el contexto de la conversacion\n// - Separa audios de texto para el resto de los clientes\nconst body = $json.body ?? $json;\nconst data = body.data;\n\nif (!data || !data.key) {\n  return [];\n}\n\nconst remoteJid = String(data.key.remoteJid);\nconst isGroup = remoteJid.endsWith('@g.us');\nconst msg = data.message || {};\nconst text = (msg.conversation || msg.extendedTextMessage?.text || '').trim();\n\nif (data.key.fromMe) {\n  if (isGroup) {\n    // Mensajes propios del bot en el grupo (avisos, confirmaciones) - se ignoran\n    return [];\n  }\n  // Alguien del equipo le escribio manualmente al cliente desde el telefono\n  // conectado. Lo guardamos en el historial para que el bot no pierda el\n  // contexto, aunque esta respuesta no la haya generado la IA.\n  if (!text) return [];\n  return [{\n    json: {\n      type: 'human_reply',\n      sessionId: remoteJid,\n      text,\n      instance: body.instance,\n      messageId: data.key.id\n    }\n  }];\n}\n\nif (isGroup) {\n  const escalationGroup = 'TU_GRUPO_JID_AQUI@g.us';\n  if (remoteJid === escalationGroup) {\n    const normalized = text.trim().toLowerCase()\n      .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '') // saca tildes (pará -> para)\n      .replace(/[!.,?¡¿]/g, '') // saca puntuacion en cualquier posicion\n      .replace(/\\s+/g, ' ')\n      .trim();\n    const m = normalized.match(/^(parar|para|frenar|frena|stop|seguir|segui|continuar|reanudar)(?:\\s+(.+))?$/);\n    if (m) {\n      const stopWords = ['parar', 'para', 'frenar', 'frena', 'stop'];\n      const command = stopWords.includes(m[1]) ? 'paused' : 'active';\n      const rawNumber = (m[2] || '').trim();\n      let targetNumber = null;\n      let numberOk = true;\n      if (rawNumber) {\n        // Acepta el numero tal cual se copia de WhatsApp (con +, espacios,\n        // guiones) - se queda solo con los digitos\n        const digitsOnly = rawNumber.replace(/\\D/g, '');\n        if (digitsOnly.length >= 6 && digitsOnly.length <= 15) {\n          targetNumber = digitsOnly;\n        } else {\n          numberOk = false;\n        }\n      }\n      if (numberOk) {\n        return [{\n          json: {\n            type: 'admin_command',\n            command,\n            scope: targetNumber ? 'customer' : 'global',\n            targetNumber,\n            instance: body.instance,\n            messageId: data.key.id\n          }\n        }];\n      }\n    }\n  }\n  // Cualquier otro mensaje de grupo (o texto sin reconocer en el grupo del equipo) se ignora\n  return [];\n}\n\nconst isAudio = !!(msg.audioMessage || msg.pttMessage);\nconst isImage = !!(msg.imageMessage);\nconst caption = msg.imageMessage?.caption || '';\nconst finalText = text || caption.trim();\n\nif (!isAudio && !isImage && !finalText) {\n  return [];\n}\n\n// Meta marca el primer mensaje de una conversacion iniciada desde un\n// anuncio de Facebook/Instagram (click-to-WhatsApp) con este campo\nconst isFromAd = !!(data.contextInfo && data.contextInfo.conversionSource);\n\nreturn [{\n  json: {\n    type: 'customer_message',\n    sessionId: remoteJid,\n    number: remoteJid.split('@')[0],\n    text: finalText,\n    instance: body.instance,\n    pushName: data.pushName || '',\n    isAudio,\n    isImage,\n    isFromAd,\n    messageId: data.key.id\n  }\n}];\n"
+        "jsCode": "// Filtra eventos de Evolution API (MESSAGES_UPSERT)\n// - Detecta comandos de administracion (\"parar\"/\"seguir\") escritos en el\n//   grupo de escalamiento del equipo\n// - Detecta respuestas manuales del equipo (mensajes propios directos a\n//   un cliente) para que el bot no pierda el contexto de la conversacion\n// - Separa audios de texto para el resto de los clientes\nconst body = $json.body ?? $json;\nconst data = body.data;\n\nif (!data || !data.key) {\n  return [];\n}\n\nconst remoteJid = String(data.key.remoteJid);\nconst isGroup = remoteJid.endsWith('@g.us');\nconst msg = data.message || {};\nconst text = (msg.conversation || msg.extendedTextMessage?.text || '').trim();\n\nif (data.key.fromMe) {\n  if (isGroup) {\n    // Mensajes propios del bot en el grupo (avisos, confirmaciones) - se ignoran\n    return [];\n  }\n  // Alguien del equipo le escribio manualmente al cliente desde el telefono\n  // conectado. Lo guardamos en el historial para que el bot no pierda el\n  // contexto, aunque esta respuesta no la haya generado la IA.\n  if (!text) return [];\n  return [{\n    json: {\n      type: 'human_reply',\n      sessionId: remoteJid,\n      text,\n      instance: body.instance,\n      messageId: data.key.id\n    }\n  }];\n}\n\nif (isGroup) {\n  const escalationGroup = '120363410624881924@g.us';\n  if (remoteJid === escalationGroup) {\n    const normalized = text.trim().toLowerCase()\n      .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '') // saca tildes (pará -> para)\n      .replace(/[!.,?¡¿]/g, '') // saca puntuacion en cualquier posicion\n      .replace(/\\s+/g, ' ')\n      .trim();\n    const m = normalized.match(/^(parar|para|frenar|frena|stop|seguir|segui|continuar|reanudar)(?:\\s+(.+))?$/);\n    if (m) {\n      const stopWords = ['parar', 'para', 'frenar', 'frena', 'stop'];\n      const command = stopWords.includes(m[1]) ? 'paused' : 'active';\n      const rawNumber = (m[2] || '').trim();\n      let targetNumber = null;\n      let numberOk = true;\n      if (rawNumber) {\n        // Acepta el numero tal cual se copia de WhatsApp (con +, espacios,\n        // guiones) - se queda solo con los digitos\n        const digitsOnly = rawNumber.replace(/\\D/g, '');\n        if (digitsOnly.length >= 6 && digitsOnly.length <= 15) {\n          targetNumber = digitsOnly;\n        } else {\n          numberOk = false;\n        }\n      }\n      if (numberOk) {\n        return [{\n          json: {\n            type: 'admin_command',\n            command,\n            scope: targetNumber ? 'customer' : 'global',\n            targetNumber,\n            instance: body.instance,\n            messageId: data.key.id\n          }\n        }];\n      }\n    }\n  }\n  // Cualquier otro mensaje de grupo (o texto sin reconocer en el grupo del equipo) se ignora\n  return [];\n}\n\nconst isAudio = !!(msg.audioMessage || msg.pttMessage);\nconst isImage = !!(msg.imageMessage);\nconst caption = msg.imageMessage?.caption || '';\nconst finalText = text || caption.trim();\n\nif (!isAudio && !isImage && !finalText) {\n  return [];\n}\n\n// Meta marca el primer mensaje de una conversacion iniciada desde un\n// anuncio de Facebook/Instagram (click-to-WhatsApp) con este campo\nconst isFromAd = !!(data.contextInfo && data.contextInfo.conversionSource);\n\nreturn [{\n  json: {\n    type: 'customer_message',\n    sessionId: remoteJid,\n    number: remoteJid.split('@')[0],\n    text: finalText,\n    instance: body.instance,\n    pushName: data.pushName || '',\n    isAudio,\n    isImage,\n    isFromAd,\n    messageId: data.key.id\n  }\n}];\n"
       },
       "id": "a1000000-0000-0000-0000-000000000002",
       "name": "Filtrar y extraer",
@@ -72,7 +72,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: '🔊 Audio de WhatsApp recibido de +' + $json.number + ' (' + ($json.pushName || 'sin nombre') + '). No se puede procesar automaticamente - respondé manual.'\n}) }}",
+        "jsonBody": "={{ JSON.stringify({\n  number: '120363410624881924@g.us',\n  text: '🔊 Audio de WhatsApp recibido de +' + $json.number + ' (' + ($json.pushName || 'sin nombre') + '). No se puede procesar automaticamente - respondé manual.'\n}) }}",
         "options": {
           "timeout": 30000
         },
@@ -303,7 +303,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: '⚠️ Escalar conversacion\\nCliente: +' + $json.number + ' (' + ($json.pushName || 'sin nombre') + ')\\nMotivo: ' + ($json.escalationReason || 'sin especificar') + '\\n\\nUltimo mensaje: ' + $json.text\n}) }}",
+        "jsonBody": "={{ JSON.stringify({\n  number: '120363410624881924@g.us',\n  text: '⚠️ Escalar conversacion\\nCliente: +' + $json.number + ' (' + ($json.pushName || 'sin nombre') + ')\\nMotivo: ' + ($json.escalationReason || 'sin especificar') + '\\n\\nUltimo mensaje: ' + $json.text\n}) }}",
         "options": {
           "timeout": 30000
         },
@@ -424,7 +424,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: (() => {\n    const d = $('Es comando admin').first().json;\n    const paused = d.command === 'paused';\n    if (d.scope === 'customer') {\n      return paused\n        ? '⏸️ Bot pausado SOLO para +' + d.targetNumber + '. Sigue respondiendo normal a los demás clientes. Escribí \"seguir ' + d.targetNumber + '\" cuando termines.'\n        : '▶️ Bot reanudado para +' + d.targetNumber + '.';\n    }\n    return paused\n      ? '⏸️ Bot pausado. No le va a responder a los clientes hasta que alguien escriba \"seguir\" en este grupo.'\n      : '▶️ Bot reanudado. Ya vuelve a responder a los clientes normalmente.';\n  })()\n}) }}",
+        "jsonBody": "={{ JSON.stringify({\n  number: '120363410624881924@g.us',\n  text: (() => {\n    const d = $('Es comando admin').first().json;\n    const paused = d.command === 'paused';\n    if (d.scope === 'customer') {\n      return paused\n        ? '⏸️ Bot pausado SOLO para +' + d.targetNumber + '. Sigue respondiendo normal a los demás clientes. Escribí \"seguir ' + d.targetNumber + '\" cuando termines.'\n        : '▶️ Bot reanudado para +' + d.targetNumber + '.';\n    }\n    return paused\n      ? '⏸️ Bot pausado. No le va a responder a los clientes hasta que alguien escriba \"seguir\" en este grupo.'\n      : '▶️ Bot reanudado. Ya vuelve a responder a los clientes normalmente.';\n  })()\n}) }}",
         "options": {
           "timeout": 30000
         },
@@ -474,7 +474,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: '📎 Posible comprobante de pago recibido de +' + $json.number + ' (' + ($json.pushName || 'sin nombre') + (($json.text || '').trim() ? ') con el mensaje: \"' + $json.text.trim() + '\"' : ')') + '. Revisar y confirmar manualmente.'\n}) }}",
+        "jsonBody": "={{ JSON.stringify({\n  number: '120363410624881924@g.us',\n  text: '📎 Comprobante de pago recibido de +' + $json.number + ' (' + ($json.pushName || 'sin nombre') + (($json.text || '').trim() ? ') con el mensaje: \"' + $json.text.trim() + '\"' : ')') + '. Revisar y confirmar manualmente.'\n}) }}",
         "options": {
           "timeout": 30000
         },
@@ -486,8 +486,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        660,
-        320
+        1540,
+        400
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -599,7 +599,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: '⚠️ Falló la respuesta automática a +' + $('Filtrar y extraer').first().json.number + ' (' + ($('Filtrar y extraer').first().json.pushName || 'sin nombre') + ').\\n\\n'\n    + 'Mensaje del cliente: \"' + $('Filtrar y extraer').first().json.text + '\"'\n    + '\\n\\nError: ' + ($json.friendlyMessage || 'falló la llamada a Claude')\n    + '\\n\\nRespondé manual, el cliente no recibió nada.'\n}) }}",
+        "jsonBody": "={{ JSON.stringify({\n  number: '120363410624881924@g.us',\n  text: '⚠️ Falló la respuesta automática a +' + $('Filtrar y extraer').first().json.number + ' (' + ($('Filtrar y extraer').first().json.pushName || 'sin nombre') + ').\\n\\n'\n    + 'Mensaje del cliente: \"' + $('Filtrar y extraer').first().json.text + '\"'\n    + '\\n\\nError: ' + ($json.friendlyMessage || 'falló la llamada a Claude')\n    + '\\n\\nRespondé manual, el cliente no recibió nada.'\n}) }}",
         "options": {
           "timeout": 30000
         },
@@ -636,7 +636,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_GRUPO_JID_AQUI@g.us',\n  text: '⚠️ Se generó respuesta para +' + $('Filtrar y extraer').first().json.number + ' (' + ($('Filtrar y extraer').first().json.pushName || 'sin nombre') + ') pero falló el envío por WhatsApp.\\n\\n'\n    + 'Mensaje que no llegó: \"' + ($json.text || '') + '\"'\n    + '\\n\\nRevisá y respondé manual.'\n}) }}",
+        "jsonBody": "={{ JSON.stringify({\n  number: '120363410624881924@g.us',\n  text: '⚠️ Se generó respuesta para +' + $('Filtrar y extraer').first().json.number + ' (' + ($('Filtrar y extraer').first().json.pushName || 'sin nombre') + ') pero falló el envío por WhatsApp.\\n\\n'\n    + 'Mensaje que no llegó: \"' + ($json.text || '') + '\"'\n    + '\\n\\nRevisá y respondé manual.'\n}) }}",
         "options": {
           "timeout": 30000
         },
@@ -701,7 +701,7 @@
         "operation": "executeQuery",
         "query": "INSERT INTO chat_history (session_id, role, content) VALUES ($1, 'user', $2)",
         "options": {
-          "queryReplacement": "={{ [ $json.sessionId, '[Imagen recibida - posible comprobante de pago]' + ($json.text ? ' - texto: ' + $json.text : '') ] }}"
+          "queryReplacement": "={{ [ $json.sessionId, ($json.isReceipt ? '[Comprobante de pago recibido]' : '[Imagen recibida - no es un comprobante de pago]') + ($json.text ? ' - texto: ' + $json.text : '') ] }}"
         }
       },
       "id": "a1000000-0000-0000-0000-000000000032",
@@ -709,7 +709,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.4,
       "position": [
-        660,
+        1320,
         240
       ],
       "credentials": {
@@ -1120,7 +1120,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({\n  number: 'TU_NUMERO_PERSONAL_AQUI@s.whatsapp.net',\n  text: '🟢 NUEVA VENTA\\n\\n'\n    + 'Cliente: +' + $json.number + ' (' + ($json.pushName || 'sin nombre') + ')\\n'\n    + 'Producto: ' + ($json.orderData.producto || '-') + '\\n'\n    + 'Precio: ' + ($json.orderData.precio || '-') + '\\n\\n'\n    + 'Nombre y apellido: ' + ($json.orderData.nombre_apellido || '-') + '\\n'\n    + 'Dirección: ' + ($json.orderData.direccion || '-') + '\\n'\n    + 'Localidad: ' + ($json.orderData.localidad || '-') + '\\n'\n    + 'CP: ' + ($json.orderData.cp || '-') + '\\n'\n    + 'Provincia: ' + ($json.orderData.provincia || '-') + '\\n'\n    + 'Teléfono: ' + ($json.orderData.telefono || '-') + '\\n'\n    + 'Email: ' + ($json.orderData.email || '-')\n}) }}",
+        "jsonBody": "={{ JSON.stringify({\n  number: '5491140377694@s.whatsapp.net',\n  text: '🟢 NUEVA VENTA\\n\\n'\n    + 'Cliente: +' + $json.number + ' (' + ($json.pushName || 'sin nombre') + ')\\n'\n    + 'Producto: ' + ($json.orderData.producto || '-') + '\\n'\n    + 'Precio: ' + ($json.orderData.precio || '-') + '\\n\\n'\n    + 'Nombre y apellido: ' + ($json.orderData.nombre_apellido || '-') + '\\n'\n    + 'Dirección: ' + ($json.orderData.direccion || '-') + '\\n'\n    + 'Localidad: ' + ($json.orderData.localidad || '-') + '\\n'\n    + 'CP: ' + ($json.orderData.cp || '-') + '\\n'\n    + 'Provincia: ' + ($json.orderData.provincia || '-') + '\\n'\n    + 'Teléfono: ' + ($json.orderData.telefono || '-') + '\\n'\n    + 'Email: ' + ($json.orderData.email || '-')\n}) }}",
         "options": {
           "timeout": 30000
         },
@@ -1141,6 +1141,112 @@
           "name": "Evolution apikey"
         }
       }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://bot_evolution:8080/chat/getBase64FromMediaMessage/{{ $json.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ message: { key: { id: $json.messageId } } }) }}",
+        "options": {
+          "timeout": 20000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "c1000000-0000-0000-0000-000000000001",
+      "name": "Descargar imagen",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        320
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'claude-haiku-4-5', max_tokens: 200, messages: [{ role: 'user', content: [ { type: 'image', source: { type: 'base64', media_type: $json.mimetype || 'image/jpeg', data: $json.base64 } }, { type: 'text', text: 'Esta imagen es una captura de pantalla o foto de un comprobante de transferencia bancaria o pago (Mercado Pago, home banking, etc), mostrando datos como monto, CBU/alias, fecha u operacion? Respondé solo con el JSON pedido.' } ] }], output_config: { format: { type: 'json_schema', schema: { type: 'object', properties: { is_receipt: { type: 'boolean', description: 'true si la imagen es claramente un comprobante de transferencia o pago, false si es cualquier otra cosa (foto de pelo, producto, dni, meme, etc)' } }, required: ['is_receipt'], additionalProperties: false } } } }) }}",
+        "options": {
+          "timeout": 20000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "c1000000-0000-0000-0000-000000000002",
+      "name": "Clasificar imagen",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        320
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CttncV9hSaBQiESj",
+          "name": "Anthropic x-api-key"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Clasifica si la imagen que mando el cliente es realmente un comprobante\n// de pago (y no una foto random) usando vision de Claude. Si algo fallo\n// (no se pudo descargar la imagen, la API de Claude no respondio bien),\n// se usa el comportamiento anterior por seguridad: se trata como posible\n// comprobante y se avisa al equipo, para no perder nunca un pago real.\nconst ctx = $('Solo imagen').item.json;\nconst resp = $json;\nlet isReceipt = true;\n\ntry {\n  const textBlock = (resp.content || []).find(b => b.type === 'text');\n  const raw = textBlock ? textBlock.text : '';\n  const parsed = JSON.parse(raw);\n  if (typeof parsed.is_receipt === 'boolean') {\n    isReceipt = parsed.is_receipt;\n  }\n} catch (e) {\n  isReceipt = true;\n}\n\nreturn [{ json: { ...ctx, isReceipt } }];"
+      },
+      "id": "c1000000-0000-0000-0000-000000000003",
+      "name": "Interpretar clasificación",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Deja pasar solo si Claude clasifico la imagen como comprobante real\nif (!$json.isReceipt) return [];\nreturn [{ json: $json }];"
+      },
+      "id": "c1000000-0000-0000-0000-000000000004",
+      "name": "Solo si es comprobante real",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        400
+      ]
     }
   ],
   "connections": {
@@ -1371,12 +1477,7 @@
       "main": [
         [
           {
-            "node": "Notificar comprobante recibido",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Registrar imagen recibida",
+            "node": "Descargar imagen",
             "type": "main",
             "index": 0
           }
@@ -1678,6 +1779,55 @@
         [
           {
             "node": "Notificar venta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar imagen": {
+      "main": [
+        [
+          {
+            "node": "Clasificar imagen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clasificar imagen": {
+      "main": [
+        [
+          {
+            "node": "Interpretar clasificación",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interpretar clasificación": {
+      "main": [
+        [
+          {
+            "node": "Registrar imagen recibida",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Solo si es comprobante real",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Solo si es comprobante real": {
+      "main": [
+        [
+          {
+            "node": "Notificar comprobante recibido",
             "type": "main",
             "index": 0
           }
