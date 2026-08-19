@@ -61,7 +61,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const rows = $input.all().map(i => i.json);\n\nfunction extraerMonto(msg) {\n  if (!msg) return null;\n  const m = msg.match(/\\$\\s?([\\d.]+)/);\n  return m ? parseInt(m[1].replace(/\\./g, ''), 10) : null;\n}\n\nconst UNIDADES_POR_MONTO = { 35000: '1 unidad', 45000: '2 unidades', 60000: '3 unidades' };\n\nfunction fmtFecha(iso) {\n  return new Date(iso).toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });\n}\n\nconst lineas = rows.map((r, i) => {\n  const numero = r.session_id.split('@')[0];\n  const monto = extraerMonto(r.payment_msg);\n  const detalle = monto ? `$${monto.toLocaleString('es-AR')} (${UNIDADES_POR_MONTO[monto] || 'monto no estandar'})` : 'monto no quedo claro, preguntale';\n  return `${i + 1}. +${numero} - ${detalle} - ultima actividad: ${fmtFecha(r.last_at)}`;\n});\n\nlet text = 'Hola mi amor \\u{1FA77} No olvides cuanto te amo, hasta el gzn.\\n\\n';\nif (lineas.length === 0) {\n  text += 'Hoy no hay clientes pendientes de seguimiento, todos al dia \\u{1F389}';\n} else {\n  text += `Estos son los clientes con pedido pendiente de seguimiento (${lineas.length}):\\n\\n` + lineas.join('\\n');\n}\n\nreturn [{ json: { text } }];\n"
+        "jsCode": "const rows = $input.all().map(i => i.json);\n\nfunction extraerMonto(msg) {\n  if (!msg) return null;\n  const m = msg.match(/\\$\\s?([\\d.]+)/);\n  return m ? parseInt(m[1].replace(/\\./g, ''), 10) : null;\n}\n\nconst UNIDADES_POR_MONTO = { 35000: '1 unidad', 45000: '2 unidades', 60000: '3 unidades' };\n\nfunction fmtFecha(iso) {\n  return new Date(iso).toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });\n}\n\nconst lineas = rows.map((r, i) => {\n  const numero = r.session_id.split('@')[0];\n  const monto = extraerMonto(r.payment_msg);\n  const detalle = monto ? `$${monto.toLocaleString('es-AR')} (${UNIDADES_POR_MONTO[monto] || 'monto no estandar'})` : 'monto no quedo claro, preguntale';\n  return `${i + 1}. +${numero} - ${detalle} - ultima actividad: ${fmtFecha(r.last_at)}`;\n});\n\nconst listado = lineas.length === 0\n  ? 'Hoy no hay clientes pendientes de seguimiento, todos al dia \\u{1F389}'\n  : `Estos son los clientes con pedido pendiente de seguimiento (${lineas.length}):\\n\\n` + lineas.join('\\n');\n\nconst textDolores = 'Hola mi amor \\u{1FA77} No olvides cuanto te amo, hasta el gzn.\\n\\n' + listado;\nconst textOwner = '\\u{1F4CB} Seguimiento del dia\\n\\n' + listado;\n\nreturn [{ json: { textDolores, textOwner } }];\n"
       },
       "id": "d1000000-0000-0000-0000-000000000004",
       "name": "Armar mensaje",
@@ -87,7 +87,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({\n  number: '5491161558641@s.whatsapp.net',\n  text: $json.text\n}) }}",
+        "jsonBody": "={{ JSON.stringify({\n  number: '5491161558641@s.whatsapp.net',\n  text: $json.textDolores\n}) }}",
         "options": {
           "timeout": 30000
         },
@@ -101,6 +101,43 @@
       "position": [
         780,
         80
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aJOTrB9KcVsbm5Zq",
+          "name": "Evolution apikey"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://bot_evolution:8080/message/sendText/pg",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  number: '5491140377694@s.whatsapp.net',\n  text: $json.textOwner\n}) }}",
+        "options": {
+          "timeout": 30000
+        },
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "d1000000-0000-0000-0000-000000000006",
+      "name": "Enviar al dueño",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        780,
+        240
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -149,6 +186,11 @@
         [
           {
             "node": "Enviar a Dolores",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Enviar al dueño",
             "type": "main",
             "index": 0
           }
