@@ -7,14 +7,14 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "0 10 * * *"
+              "expression": "30 9 * * *"
             }
           ]
         },
         "timezone": "America/Argentina/Buenos_Aires"
       },
       "id": "d1000000-0000-0000-0000-000000000001",
-      "name": "Todos los dias 10hs (ART)",
+      "name": "Todos los dias 9.30hs (ART)",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
@@ -148,17 +148,6 @@
     }
   ],
   "connections": {
-    "Todos los dias 10hs (ART)": {
-      "main": [
-        [
-          {
-            "node": "Traer pedidos pendientes",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Disparo manual": {
       "main": [
         [
@@ -191,6 +180,17 @@
           },
           {
             "node": "Enviar al dueño",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Todos los dias 9.30hs (ART)": {
+      "main": [
+        [
+          {
+            "node": "Traer pedidos pendientes",
             "type": "main",
             "index": 0
           }
