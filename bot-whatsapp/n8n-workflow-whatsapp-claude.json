@@ -1247,6 +1247,42 @@
         1320,
         400
       ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT role, content FROM chat_history WHERE session_id = $1 ORDER BY id DESC LIMIT 3",
+        "options": {
+          "queryReplacement": "={{ [ $('Combinar id mensaje').first().json.sessionId ] }}"
+        }
+      },
+      "id": "e1000000-0000-0000-0000-000000000001",
+      "name": "Buscar mensajes repetidos",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1160,
+        160
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "cDyIo0T2342kI0Qh",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Detecta si el cliente mando exactamente el mismo mensaje que ya\n// contestamos hace instantes (ej: lo tipeo dos veces sin querer, o\n// penso que no se envio). En ese caso no vale la pena generar una\n// respuesta nueva - repetir todo el discurso de nuevo se ve como spam.\n// Se necesitan las ultimas 3 filas (mas nueva primero): la actual (user),\n// la respuesta que ya le dimos (assistant), y el mensaje anterior (user)\n// con el mismo texto exacto.\nconst ctx = $('Combinar id mensaje').first().json;\nconst rows = $input.all().map(i => i.json);\n\nif (rows.length === 3) {\n  const [actual, anterior, previoUser] = rows;\n  const mismoTexto = (actual.content || '').trim() === (previoUser.content || '').trim();\n  if (\n    actual.role === 'user' &&\n    anterior.role === 'assistant' &&\n    previoUser.role === 'user' &&\n    mismoTexto\n  ) {\n    return [];\n  }\n}\n\nreturn [{ json: ctx }];\n"
+      },
+      "id": "e1000000-0000-0000-0000-000000000002",
+      "name": "Es mensaje repetido",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        160
+      ]
     }
   ],
   "connections": {
@@ -1767,7 +1803,7 @@
       "main": [
         [
           {
-            "node": "Preparar lock",
+            "node": "Buscar mensajes repetidos",
             "type": "main",
             "index": 0
           }
@@ -1828,6 +1864,28 @@
         [
           {
             "node": "Notificar comprobante recibido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar mensajes repetidos": {
+      "main": [
+        [
+          {
+            "node": "Es mensaje repetido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es mensaje repetido": {
+      "main": [
+        [
+          {
+            "node": "Preparar lock",
             "type": "main",
             "index": 0
           }
