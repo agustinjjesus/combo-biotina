@@ -48,7 +48,7 @@
  // paralelo al pixel del browser, con el mismo event_id, para que Meta
  // deduplique y suba el Event Match Quality (IP real, resiste ad-blockers). ──
  const CAPI_ENDPOINT = 'https://us-central1-biotina-pg.cloudfunctions.net/capiEvent';
- const TRACK_VISIT_ENDPOINT = 'https://us-central1-biotina-pg.cloudfunctions.net/trackVisit';
+ const TRACK_VISIT_ENDPOINT = 'https://biotina-trackvisit.productopg.workers.dev/';
  function fbGetCookie(name) {
  const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
  return m ? decodeURIComponent(m[1]) : null;
