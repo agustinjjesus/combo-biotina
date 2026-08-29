@@ -135,29 +135,33 @@
     @media (max-width: 480px) { .dist-grid { grid-template-columns: 1fr; } }
 
     /* ── VISITAS Y EMBUDO ───────────────────────────────────────── */
-    .visits-chart {
-      display: flex; align-items: flex-end; gap: 6px;
-      height: 120px; margin-bottom: 4px; padding-top: 18px;
+    .visits-chart { margin-bottom: 4px; }
+    .visits-bars {
+      display: flex; align-items: flex-end; gap: 5px;
+      height: 92px; border-bottom: 1px solid var(--cream2);
     }
-    .visits-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
-    .visits-bar { width: 100%; max-width: 26px; background: var(--coral-light); border-radius: 4px 4px 0 0; min-height: 2px; transition: height 0.3s; }
-    .visits-bar-val { font-size: 0.62rem; color: var(--gray); font-weight: 700; }
-    .visits-bar-day { font-size: 0.58rem; color: var(--gray-light); white-space: nowrap; }
+    .visits-col { flex: 0 0 24px; display: flex; justify-content: center; }
+    .visits-bar { width: 14px; background: var(--coral-light); border-radius: 3px 3px 0 0; min-height: 2px; transition: height 0.3s; }
+    .visits-bar.is-peak { background: var(--coral); }
+    .visits-axis { display: flex; gap: 5px; margin-top: 6px; }
+    .visits-bar-day { flex: 0 0 24px; text-align: center; font-size: 0.6rem; color: var(--gray-light); white-space: nowrap; }
     .visits-empty { text-align: center; padding: 30px 10px; color: var(--gray); font-size: 0.82rem; }
 
-    .funnel-row { display: flex; align-items: stretch; gap: 8px; margin-top: 22px; flex-wrap: wrap; }
-    .funnel-step {
-      flex: 1; min-width: 130px; background: var(--cream); border-radius: 12px;
-      padding: 16px 12px; text-align: center;
-    }
-    .funnel-step-label { font-size: 0.66rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--gray); margin-bottom: 8px; }
-    .funnel-step-value { font-size: 1.5rem; font-weight: 700; color: var(--dark); }
-    .funnel-step-pct { font-size: 0.74rem; color: var(--coral-dark); font-weight: 600; margin-top: 4px; }
-    .funnel-arrow { display: flex; align-items: center; justify-content: center; color: var(--gray-light); font-size: 1.2rem; padding: 0 2px; }
-    @media (max-width: 700px) {
-      .funnel-row { flex-direction: column; }
-      .funnel-arrow { transform: rotate(90deg); padding: 2px 0; }
-    }
+    .page-bar-list { margin-top: 22px; display: flex; flex-direction: column; gap: 12px; }
+    .page-bar-row { display: grid; grid-template-columns: 140px 1fr 40px; align-items: center; gap: 12px; }
+    .page-bar-label { font-size: 0.8rem; font-weight: 600; color: var(--dark); }
+    .page-bar-track { height: 8px; border-radius: 4px; background: var(--cream); overflow: hidden; }
+    .page-bar-fill { height: 100%; border-radius: 4px; background: var(--coral); }
+    .page-bar-value { font-size: 0.85rem; font-weight: 700; color: var(--dark); text-align: right; }
+    @media (max-width: 560px) { .page-bar-row { grid-template-columns: 96px 1fr 32px; gap: 8px; } }
+
+    .funnel-row { display: flex; flex-direction: column; gap: 14px; margin-top: 26px; }
+    .funnel-step-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+    .funnel-step-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray); }
+    .funnel-step-value { font-size: 1rem; font-weight: 700; color: var(--dark); }
+    .funnel-step-pct { font-size: 0.72rem; color: var(--gray-light); font-weight: 600; margin-left: 6px; }
+    .funnel-track { height: 10px; border-radius: 5px; background: var(--cream); overflow: hidden; }
+    .funnel-fill { height: 100%; border-radius: 5px; background: var(--coral); transition: width 0.3s; }
 
     /* ── FORM SECTION ───────────────────────────────────────────── */
     .form-section { background: white; border-radius: 14px; margin-bottom: 28px; overflow: hidden; }
@@ -399,12 +403,12 @@
       <div class="dist-section">
         <div class="dist-header">
           <div>
-            <div class="dist-title" id="lblVisitasPeriodo">👀 Visitas y embudo de conversión</div>
+            <div class="dist-title" id="lblVisitasPeriodo">Visitas y embudo de conversión</div>
             <p class="dist-sub">Visitas a la web (últimos 14 días) y cuántas terminan en carrito, formulario y venta</p>
           </div>
         </div>
         <div class="visits-chart" id="visitsChart"></div>
-        <div class="dist-grid" id="visitsByPageGrid" style="margin-top:18px;"></div>
+        <div class="page-bar-list" id="visitsByPageGrid"></div>
         <div class="funnel-row" id="funnelRow"></div>
       </div>
 
@@ -784,26 +788,37 @@
       if (!chartEl) return;
 
       const periodo = window._statsPeriodo || document.getElementById('statsPeriodo')?.value || 'todo';
-      lbl.textContent = periodo === 'todo' ? '👀 Visitas y embudo de conversión (histórico)' : '👀 Visitas y embudo de conversión (este mes)';
+      lbl.textContent = periodo === 'todo' ? 'Visitas y embudo de conversión (histórico)' : 'Visitas y embudo de conversión (este mes)';
 
       // El gráfico siempre muestra la tendencia de los últimos 14 días,
       // sin importar el período elegido para el embudo (un gráfico de 1
-      // solo día si hoy es el 1° del mes no serviría de nada).
-      const ultimos = statsCache.slice(-14);
-      if (!ultimos.length) {
+      // solo día si hoy es el 1° del mes no serviría de nada). Se rellenan
+      // los días sin visitas dentro de esa ventana para que las barras
+      // queden parejas en vez de amontonadas.
+      if (!statsCache.length) {
         chartEl.innerHTML = `<div class="visits-empty">Todavía no hay datos de visitas — van a empezar a aparecer a medida que entren visitantes a la web.</div>`;
       } else {
-        const max = Math.max(1, ...ultimos.map(d => d.visitas));
-        chartEl.innerHTML = ultimos.map(d => {
-          const h = Math.max(2, Math.round((d.visitas / max) * 100));
-          const [, m, dd] = d.fecha.split('-');
-          return `
-            <div class="visits-bar-wrap" title="${d.fecha}: ${d.visitas} visitas">
-              <div class="visits-bar-val">${d.visitas}</div>
-              <div class="visits-bar" style="height:${h}px"></div>
-              <div class="visits-bar-day">${dd}/${m}</div>
-            </div>`;
+        const porFecha = new Map(statsCache.map(d => [d.fecha, d]));
+        const primerFecha = statsCache[0].fecha;
+        const dias = [];
+        for (let i = 13; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const fecha = d.toISOString().slice(0, 10);
+          if (fecha < primerFecha) continue;
+          dias.push(porFecha.get(fecha) || { fecha, visitas: 0 });
+        }
+        const max = Math.max(1, ...dias.map(d => d.visitas));
+        const bars = dias.map(d => {
+          const h = Math.max(2, Math.round((d.visitas / max) * 84));
+          const peak = d.visitas === max && max > 0;
+          return `<div class="visits-col"><div class="visits-bar${peak ? ' is-peak' : ''}" style="height:${h}px" title="${d.fecha}: ${d.visitas} visitas"></div></div>`;
         }).join('');
+        const axis = dias.map(d => {
+          const [, m, dd] = d.fecha.split('-');
+          return `<div class="visits-bar-day">${dd}/${m}</div>`;
+        }).join('');
+        chartEl.innerHTML = `<div class="visits-bars">${bars}</div><div class="visits-axis">${axis}</div>`;
       }
 
       // Desglose por página + embudo, respetando el selector de período.
@@ -815,18 +830,22 @@
       }, { visitas: 0, home: 0, combo: 0, biotinaPura: 0, duo: 0 });
 
       const PAGINAS = [
-        { key: 'home',        emoji: '🏠', label: 'Home' },
-        { key: 'combo',       emoji: '🌿', label: 'Combo Biotina' },
-        { key: 'biotinaPura', emoji: '💧', label: 'Biotina Pura' },
-        { key: 'duo',         emoji: '🧴', label: 'Dúo Shampoo + Crema' },
+        { key: 'home',        label: 'Home' },
+        { key: 'combo',       label: 'Combo Biotina' },
+        { key: 'biotinaPura', label: 'Biotina Pura' },
+        { key: 'duo',         label: 'Dúo Shampoo + Crema' },
       ];
-      pageGridEl.innerHTML = PAGINAS.map(p => `
-        <div class="dist-card">
-          <div class="dist-card-emoji">${p.emoji}</div>
-          <div class="dist-card-label">${p.label}</div>
-          <div class="prod-stat-row"><span>Visitas</span><strong>${t[p.key]}</strong></div>
-        </div>
-      `).join('');
+      const maxPagina = Math.max(1, ...PAGINAS.map(p => t[p.key]));
+      pageGridEl.innerHTML = PAGINAS
+        .slice()
+        .sort((a, b) => t[b.key] - t[a.key])
+        .map(p => `
+          <div class="page-bar-row">
+            <div class="page-bar-label">${p.label}</div>
+            <div class="page-bar-track"><div class="page-bar-fill" style="width:${Math.round((t[p.key] / maxPagina) * 100)}%"></div></div>
+            <div class="page-bar-value">${t[p.key]}</div>
+          </div>
+        `).join('');
 
       // Embudo: Visitas → Carritos iniciados → Formularios completos → Ventas
       // confirmadas. Carritos/formularios/ventas usan la misma lógica de
@@ -845,12 +864,14 @@
         { label: 'Formularios completos',  value: formularios,  pct: pct(formularios, carritos) },
         { label: 'Ventas confirmadas',     value: ventas,       pct: pct(ventas, formularios) },
       ];
-      funnelEl.innerHTML = steps.map((s, i) => `
-        ${i > 0 ? '<div class="funnel-arrow">→</div>' : ''}
+      const maxStep = Math.max(1, visitasTotal);
+      funnelEl.innerHTML = steps.map(s => `
         <div class="funnel-step">
-          <div class="funnel-step-label">${s.label}</div>
-          <div class="funnel-step-value">${s.value}</div>
-          ${s.pct ? `<div class="funnel-step-pct">${s.pct}</div>` : ''}
+          <div class="funnel-step-top">
+            <span class="funnel-step-label">${s.label}</span>
+            <span><span class="funnel-step-value">${s.value}</span>${s.pct ? `<span class="funnel-step-pct">${s.pct}</span>` : ''}</span>
+          </div>
+          <div class="funnel-track"><div class="funnel-fill" style="width:${Math.round((s.value / maxStep) * 100)}%"></div></div>
         </div>
       `).join('');
     }
