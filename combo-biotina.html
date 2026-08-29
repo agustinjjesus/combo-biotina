@@ -745,6 +745,53 @@
  }
 
  /* ─── BUY BUTTON ─── */
+ /* ─── CUOTAS + ENVÍO + TIMELINE DE ENTREGA (estilo marketplace) ─── */
+ .checkout-cuotas {
+ font-size: 0.85rem; color: var(--green); font-weight: 600;
+ margin-bottom: 14px;
+ }
+ .checkout-shipping-box {
+ display: flex; align-items: center; gap: 12px;
+ border: 1.5px solid var(--cream2); border-radius: 12px;
+ padding: 12px 14px; margin-bottom: 18px;
+ }
+ .shipping-carrier-badge {
+ background: var(--dark); color: white; font-size: 0.68rem; font-weight: 700;
+ letter-spacing: 0.03em; padding: 6px 10px; border-radius: 6px; flex-shrink: 0;
+ white-space: nowrap;
+ }
+ .shipping-info { flex: 1; min-width: 0; }
+ .shipping-info strong { display: block; font-size: 0.85rem; }
+ .shipping-info span { font-size: 0.72rem; color: var(--gray); }
+ .shipping-price { text-align: right; flex-shrink: 0; }
+ .shipping-free { display: block; color: var(--green); font-weight: 700; font-size: 0.9rem; }
+ .shipping-old { display: block; color: var(--gray-light); text-decoration: line-through; font-size: 0.75rem; }
+
+ .delivery-timeline {
+ display: flex; justify-content: space-between; align-items: flex-start;
+ position: relative; margin: 24px 0 20px; padding: 0 6px;
+ }
+ .delivery-timeline::before {
+ content: ''; position: absolute; top: 19px; left: 12%; right: 12%;
+ height: 2px; background: var(--cream2); z-index: 0;
+ }
+ .delivery-step {
+ position: relative; z-index: 1; display: flex; flex-direction: column;
+ align-items: center; text-align: center; flex: 1;
+ }
+ .delivery-icon {
+ width: 38px; height: 38px; border-radius: 50%; background: var(--green);
+ color: white; display: flex; align-items: center; justify-content: center;
+ margin-bottom: 8px;
+ }
+ .delivery-date { font-size: 0.78rem; font-weight: 700; color: var(--dark); }
+ .delivery-label { font-size: 0.68rem; color: var(--gray); margin-top: 2px; }
+ .delivery-label .hoy { color: var(--coral); font-weight: 700; }
+ @media (max-width: 480px) {
+ .delivery-label { font-size: 0.62rem; }
+ .shipping-carrier-badge { font-size: 0.6rem; padding: 5px 7px; }
+ }
+
  .btn-buy {
  width: 100%;
  background: var(--coral);
@@ -1809,6 +1856,20 @@
  </div>
  </div>
 
+ <p class="checkout-cuotas" id="cuotasLine">3 cuotas sin interés de $14.333 · $717 por día</p>
+
+ <div class="checkout-shipping-box">
+ <span class="shipping-carrier-badge">CORREO ARGENTINO</span>
+ <div class="shipping-info">
+ <strong>Envío seguro</strong>
+ <span>Con número de seguimiento</span>
+ </div>
+ <div class="shipping-price">
+ <span class="shipping-free">GRATIS</span>
+ <span class="shipping-old">$ 9.000</span>
+ </div>
+ </div>
+
  <p style="text-align:center; font-size:0.82rem; font-weight:600; color:var(--green); margin-bottom:12px;">
  Envío gratis a todo el país
  </p>
@@ -1816,6 +1877,30 @@
  <button class="btn-buy" id="buyBtn" onclick="openModal()">
  COMPRAR AHORA · $43.000 — ENVÍO GRATIS
  </button>
+
+ <div class="delivery-timeline">
+ <div class="delivery-step">
+ <div class="delivery-icon">
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+ </div>
+ <div class="delivery-date" id="deliveryDate1">—</div>
+ <div class="delivery-label">Compra <span class="hoy">HOY</span></div>
+ </div>
+ <div class="delivery-step">
+ <div class="delivery-icon">
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+ </div>
+ <div class="delivery-date" id="deliveryDate2">—</div>
+ <div class="delivery-label">Envío en camino</div>
+ </div>
+ <div class="delivery-step">
+ <div class="delivery-icon">
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+ </div>
+ <div class="delivery-date" id="deliveryDate3">—</div>
+ <div class="delivery-label">Entrega</div>
+ </div>
+ </div>
 
  <!-- MÉTODOS DE PAGO -->
  <div class="payment-box">
@@ -2564,7 +2649,35 @@
  const prices = { 1: '43.000', 2: '80.000', 3: '100.000' };
  document.getElementById('buyBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
  document.getElementById('floatingBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
+ updateCuotasLine(PRECIOS_NUM[qty]);
  }
+
+ // ─── CUOTAS + TIMELINE DE ENTREGA ───────────────────────────────────────
+ function updateCuotasLine(precio) {
+ const cuota = Math.round(precio / 3);
+ const porDia = Math.round(precio / 60);
+ const el = document.getElementById('cuotasLine');
+ if (el) el.textContent = `3 cuotas sin interés de $${cuota.toLocaleString('es-AR')} · $${porDia.toLocaleString('es-AR')} por día`;
+ }
+
+ function initDeliveryTimeline() {
+ const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+ const fmt = d => `${d.getDate()} ${meses[d.getMonth()]}`;
+ const hoy = new Date();
+ const envio = new Date(hoy); envio.setDate(hoy.getDate() + 2);
+ const entregaIni = new Date(hoy); entregaIni.setDate(hoy.getDate() + 4);
+ const entregaFin = new Date(hoy); entregaFin.setDate(hoy.getDate() + 6);
+ const d1 = document.getElementById('deliveryDate1');
+ const d2 = document.getElementById('deliveryDate2');
+ const d3 = document.getElementById('deliveryDate3');
+ if (d1) d1.textContent = fmt(hoy);
+ if (d2) d2.textContent = fmt(envio);
+ if (d3) d3.textContent = `${fmt(entregaIni)} - ${fmt(entregaFin)}`;
+ }
+ document.addEventListener('DOMContentLoaded', () => {
+ initDeliveryTimeline();
+ updateCuotasLine(PRECIOS_NUM[selectedQty]);
+ });
 
  function openModal() {
  document.getElementById('modalProducto').textContent = precios[selectedQty].label;
