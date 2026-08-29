@@ -812,23 +812,34 @@
  text-align: center; margin-bottom: 8px;
  }
  .envio-inner { max-width: 960px; margin: 0 auto; }
- .envio-steps {
- display: grid;
- grid-template-columns: 1fr 72px 1fr 72px 1fr;
- align-items: start;
- margin: 48px 0 44px;
- }
- .envio-step { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
- .envio-step-icon {
- width: 72px; height: 72px; border-radius: 50%;
- background: #f5f5f5; border: 2px solid #e8e8e5;
- display: flex; align-items: center; justify-content: center;
- }
- .envio-step-number { font-size: 1.6rem; font-weight: 800; color: #1a1a1a; line-height: 1; }
- .envio-connector { display: flex; align-items: flex-start; justify-content: center; padding-top: 36px; }
- .envio-connector::after { content: ''; display: block; width: 42px; height: 1.5px; background: #d0d0cc; }
- .envio-step-title { font-size: 0.9rem; font-weight: 700; color: var(--dark); }
- .envio-step-desc { font-size: 0.78rem; color: var(--gray); line-height: 1.6; max-width: 200px; }
+ .how-sub { font-size: 0.88rem; color: var(--gray); margin-bottom: 48px; text-align: center; }
+ .how-stepper { max-width: 620px; margin: 0 auto; text-align: center; }
+ .how-track { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 48px; position: relative; }
+ .how-track-line { position: absolute; height: 2px; background: #e0e0de; left: 72px; right: 72px; top: 50%; transform: translateY(-50%); z-index: 0; }
+ .how-track-fill { position: absolute; height: 2px; background: #111111; left: 72px; top: 50%; transform: translateY(-50%); z-index: 1; transition: width 0.4s ease; width: 0%; }
+ .how-dot { width: 48px; height: 48px; border-radius: 50%; background: #ebebea; border: 2px solid #d8d8d5; color: #aaa; font-family: 'Outfit', sans-serif; font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: all 0.25s; z-index: 2; position: relative; margin: 0 36px; flex-shrink: 0; }
+ .how-dot.active { background: #111111; border-color: #111111; color: white; }
+ .how-dot.done { background: #444444; border-color: #444444; color: white; }
+ .how-dot.done::after { content: '✓'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: white; }
+ .how-dot.done span { display: none; }
+ .how-steps-wrapper { min-height: 200px; margin-bottom: 36px; }
+ .how-step-item { display: none; }
+ .how-step-item.active { display: block; animation: stepIn 0.35s ease both; }
+ .how-step-item.back { display: block; animation: stepBack 0.35s ease both; }
+ @keyframes stepIn { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+ @keyframes stepBack { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: translateX(0); } }
+ .how-step-tag { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #999; margin-bottom: 14px; }
+ .how-step-title { font-family: 'Outfit', sans-serif; font-size: 1.9rem; font-weight: 700; color: #111111; margin-bottom: 16px; line-height: 1.15; }
+ .how-step-text { font-size: 0.9rem; color: #6b6b6b; line-height: 1.78; max-width: 480px; margin: 0 auto 20px; }
+ .how-step-badge { display: inline-block; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #444; background: #ebebea; padding: 5px 14px; border-radius: 20px; }
+ .how-nav { display: flex; justify-content: center; gap: 14px; align-items: center; }
+ .how-btn { border: 2px solid #111111; border-radius: 10px; padding: 12px 28px; font-family: 'Outfit', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; letter-spacing: 0.03em; }
+ .how-btn-prev { background: white; color: #111111; }
+ .how-btn-prev:hover:not(:disabled) { background: #111111; color: white; }
+ .how-btn-prev:disabled { opacity: 0.28; cursor: default; border-color: #bbb; color: #bbb; }
+ .how-btn-next { background: #111111; color: white; }
+ .how-btn-next:hover { background: #000; }
+ .how-step-counter { font-size: 0.78rem; color: #aaa; font-weight: 500; min-width: 60px; text-align: center; }
  .envio-divider { border: none; border-top: 1px solid var(--cream2); margin: 0 0 32px; }
  .envio-tiempos-title { text-align: center; font-size: 1rem; font-weight: 600; color: var(--dark); margin-bottom: 20px; }
  .envio-dispatch-note { display: flex; align-items: center; gap: 8px; background: #111111; color: #ffffff; border-radius: 10px; padding: 11px 18px; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.02em; margin-bottom: 16px; }
@@ -848,9 +859,11 @@
  .envio-footer svg { flex-shrink: 0; opacity: 0.45; }
  @media (max-width: 768px) {
  .envio-section { padding: 56px 20px; }
- .envio-steps { grid-template-columns: 1fr; gap: 28px; }
- .envio-connector { display: none; }
  .envio-grid { grid-template-columns: 1fr; }
+ .how-dot { width: 40px; height: 40px; margin: 0 20px; font-size: 0.8rem; }
+ .how-track-line { left: 50px; right: 50px; }
+ .how-track-fill { left: 50px; }
+ .how-step-title { font-size: 1.5rem; }
  }
 
  /* ─── CTA FINAL ─── */
@@ -1442,31 +1455,42 @@
  <div class="envio-section" style="background:#f7f7f5;">
  <div class="envio-inner">
  <h2>¿Cómo se usa?</h2>
- <p class="how-sub" style="text-align:center;font-size:0.88rem;color:var(--gray);margin-bottom:0;">Una rutina simple, todos los días.</p>
+ <p class="how-sub">Una rutina simple, todos los días.</p>
 
- <div class="envio-steps">
- <div class="envio-step">
- <div class="envio-step-icon">
- <span class="envio-step-number">1</span>
+ <div class="how-stepper">
+ <div class="how-track">
+ <div class="how-track-line"></div>
+ <div class="how-track-fill" id="howTrackFill"></div>
+ <button class="how-dot active" id="how-dot-0" onclick="howGoTo(0)"><span>1</span></button>
+ <button class="how-dot" id="how-dot-1" onclick="howGoTo(1)"><span>2</span></button>
+ <button class="how-dot" id="how-dot-2" onclick="howGoTo(2)"><span>3</span></button>
  </div>
- <h3 class="envio-step-title">Aplicá</h3>
- <p class="envio-step-desc">Sobre el cuero cabelludo limpio y seco, en toda la zona a tratar.</p>
+
+ <div class="how-steps-wrapper">
+ <div class="how-step-item active" id="how-step-0">
+ <div class="how-step-tag">Paso 1 de 3 — Todos los días</div>
+ <h3 class="how-step-title">Aplicá</h3>
+ <p class="how-step-text">Aplicá el spray directamente sobre el cuero cabelludo limpio y seco, en toda la zona a tratar.</p>
+ <span class="how-step-badge">Uso diario · 500 ml</span>
  </div>
- <div class="envio-connector"></div>
- <div class="envio-step">
- <div class="envio-step-icon">
- <span class="envio-step-number">2</span>
+ <div class="how-step-item" id="how-step-1">
+ <div class="how-step-tag">Paso 2 de 3 — Todos los días</div>
+ <h3 class="how-step-title">Masajeá</h3>
+ <p class="how-step-text">Con las yemas de los dedos durante 1 minuto para activar la circulación.</p>
+ <span class="how-step-badge">Activa la circulación</span>
  </div>
- <h3 class="envio-step-title">Masajeá</h3>
- <p class="envio-step-desc">Con las yemas de los dedos durante 1 minuto para activar la circulación.</p>
+ <div class="how-step-item" id="how-step-2">
+ <div class="how-step-tag">Paso 3 de 3 — Todos los días</div>
+ <h3 class="how-step-title">No enjuagues</h3>
+ <p class="how-step-text">Dejá que absorba solo. Usalo todos los días para mejores resultados.</p>
+ <span class="how-step-badge">No enjuagar · 500 ml</span>
  </div>
- <div class="envio-connector"></div>
- <div class="envio-step">
- <div class="envio-step-icon">
- <span class="envio-step-number">3</span>
  </div>
- <h3 class="envio-step-title">No enjuagues</h3>
- <p class="envio-step-desc">Dejá que absorba solo. Usalo todos los días para mejores resultados.</p>
+
+ <div class="how-nav">
+ <button class="how-btn how-btn-prev" id="how-prev" onclick="howPrev()" disabled>← Anterior</button>
+ <span class="how-step-counter" id="how-counter">1 / 3</span>
+ <button class="how-btn how-btn-next" id="how-next" onclick="howNext()">Siguiente →</button>
  </div>
  </div>
  </div>
@@ -2324,6 +2348,48 @@
  mostrarBannerPago('⚠️ El pago no se pudo procesar. Podés intentar de nuevo o escribirnos por WhatsApp.', '#fde8e8', '#9b2c2c');
  }
  })();
+
+ // ─── STEPPER CÓMO SE USA ───
+ let howCurrent = 0;
+ const HOW_TOTAL = 3;
+
+ function howGoTo(idx, isBack) {
+ const prevItem = document.getElementById(`how-step-${howCurrent}`);
+ prevItem.classList.remove('active', 'back');
+ document.getElementById(`how-dot-${howCurrent}`).classList.remove('active');
+ if (howCurrent < idx) document.getElementById(`how-dot-${howCurrent}`).classList.add('done');
+
+ if (isBack) {
+ for (let i = idx; i < HOW_TOTAL; i++) {
+ document.getElementById(`how-dot-${i}`).classList.remove('done');
+ }
+ }
+
+ howCurrent = idx;
+
+ const newItem = document.getElementById(`how-step-${howCurrent}`);
+ newItem.classList.remove('active', 'back');
+ void newItem.offsetWidth;
+ newItem.classList.add(isBack ? 'back' : 'active');
+ document.getElementById(`how-dot-${howCurrent}`).classList.add('active');
+
+ document.getElementById('how-prev').disabled = howCurrent === 0;
+ const nextBtn = document.getElementById('how-next');
+ nextBtn.textContent = howCurrent === HOW_TOTAL - 1 ? '↺ Volver al inicio' : 'Siguiente →';
+
+ document.getElementById('how-counter').textContent = `${howCurrent + 1} / ${HOW_TOTAL}`;
+
+ const fillPct = howCurrent / (HOW_TOTAL - 1) * 100;
+ document.getElementById('howTrackFill').style.width = fillPct + '%';
+ }
+
+ function howNext() {
+ if (howCurrent === HOW_TOTAL - 1) { howGoTo(0, true); }
+ else { howGoTo(howCurrent + 1, false); }
+ }
+ function howPrev() {
+ if (howCurrent > 0) howGoTo(howCurrent - 1, true);
+ }
  </script>
 
  <!-- WhatsApp flotante -->
