@@ -746,11 +746,7 @@
  }
 
  /* ─── BUY BUTTON ─── */
- /* ─── CUOTAS + ENVÍO + TIMELINE DE ENTREGA (estilo marketplace) ─── */
- .checkout-cuotas {
- font-size: 0.85rem; color: var(--green); font-weight: 600;
- margin-bottom: 14px;
- }
+ /* ─── ENVÍO + TIMELINE DE ENTREGA (estilo marketplace) ─── */
  .checkout-shipping-box {
  display: flex; align-items: center; gap: 12px;
  border: 1.5px solid var(--cream2); border-radius: 12px;
@@ -1857,8 +1853,6 @@
  </div>
  </div>
 
- <p class="checkout-cuotas" id="cuotasLine">3 cuotas sin interés de $14.333 · $717 por día</p>
-
  <div class="checkout-shipping-box">
  <span class="shipping-carrier-badge">CORREO ARGENTINO</span>
  <div class="shipping-info">
@@ -2650,17 +2644,9 @@
  const prices = { 1: '43.000', 2: '80.000', 3: '100.000' };
  document.getElementById('buyBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
  document.getElementById('floatingBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
- updateCuotasLine(PRECIOS_NUM[qty]);
  }
 
- // ─── CUOTAS + TIMELINE DE ENTREGA ───────────────────────────────────────
- function updateCuotasLine(precio) {
- const cuota = Math.round(precio / 3);
- const porDia = Math.round(precio / 60);
- const el = document.getElementById('cuotasLine');
- if (el) el.textContent = `3 cuotas sin interés de $${cuota.toLocaleString('es-AR')} · $${porDia.toLocaleString('es-AR')} por día`;
- }
-
+ // ─── TIMELINE DE ENTREGA ─────────────────────────────────────────────────
  function initDeliveryTimeline() {
  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
  const fmt = d => `${d.getDate()} ${meses[d.getMonth()]}`;
@@ -2677,7 +2663,6 @@
  }
  document.addEventListener('DOMContentLoaded', () => {
  initDeliveryTimeline();
- updateCuotasLine(PRECIOS_NUM[selectedQty]);
  });
 
  function openModal() {
