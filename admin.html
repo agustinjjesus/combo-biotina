@@ -90,7 +90,7 @@
 
     /* ── STATS ──────────────────────────────────────────────────── */
     .stats-grid {
-      display: grid; grid-template-columns: repeat(6, 1fr);
+      display: grid; grid-template-columns: repeat(7, 1fr);
       gap: 16px; margin-bottom: 32px;
     }
     .stat-card    { background: white; border-radius: 14px; padding: 20px 18px; }
@@ -374,6 +374,11 @@
         </select>
       </div>
       <div class="stats-grid">
+        <div class="stat-card c-blue">
+          <div class="stat-label">Visitas hoy</div>
+          <div class="stat-value" id="sVisitasHoy">0</div>
+          <div class="stat-sub">gente que entró a la web hoy</div>
+        </div>
         <div class="stat-card c-coral">
           <div class="stat-label">Ventas hoy</div>
           <div class="stat-value" id="sHoy">0</div>
@@ -802,6 +807,13 @@
       // solo día si hoy es el 1° del mes no serviría de nada). Se rellenan
       // los días sin visitas dentro de esa ventana para que las barras
       // queden parejas en vez de amontonadas.
+      const hoyISO = new Date().toISOString().slice(0, 10);
+      const visitasHoyEl = document.getElementById('sVisitasHoy');
+      if (visitasHoyEl) {
+        const statsHoy = statsCache.find(d => d.fecha === hoyISO);
+        visitasHoyEl.textContent = statsHoy ? statsHoy.visitas : 0;
+      }
+
       if (!statsCache.length) {
         chartEl.innerHTML = `<div class="visits-empty">Todavía no hay datos de visitas — van a empezar a aparecer a medida que entren visitantes a la web.</div>`;
       } else {
