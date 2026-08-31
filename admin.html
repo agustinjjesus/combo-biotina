@@ -138,9 +138,10 @@
     .visits-chart { margin-bottom: 4px; }
     .visits-bars {
       display: flex; align-items: flex-end; gap: 5px;
-      height: 92px; border-bottom: 1px solid var(--cream2);
+      height: 106px; border-bottom: 1px solid var(--cream2);
     }
-    .visits-col { flex: 0 0 24px; display: flex; justify-content: center; }
+    .visits-col { flex: 0 0 24px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+    .visits-bar-val { font-size: 0.6rem; color: var(--gray); font-weight: 700; margin-bottom: 3px; }
     .visits-bar { width: 14px; background: var(--coral-light); border-radius: 3px 3px 0 0; min-height: 2px; transition: height 0.3s; }
     .visits-bar.is-peak { background: var(--coral); }
     .visits-axis { display: flex; gap: 5px; margin-top: 6px; }
@@ -809,9 +810,9 @@
         }
         const max = Math.max(1, ...dias.map(d => d.visitas));
         const bars = dias.map(d => {
-          const h = Math.max(2, Math.round((d.visitas / max) * 84));
+          const h = Math.max(2, Math.round((d.visitas / max) * 70));
           const peak = d.visitas === max && max > 0;
-          return `<div class="visits-col"><div class="visits-bar${peak ? ' is-peak' : ''}" style="height:${h}px" title="${d.fecha}: ${d.visitas} visitas"></div></div>`;
+          return `<div class="visits-col"><div class="visits-bar-val">${d.visitas}</div><div class="visits-bar${peak ? ' is-peak' : ''}" style="height:${h}px" title="${d.fecha}: ${d.visitas} visitas"></div></div>`;
         }).join('');
         const axis = dias.map(d => {
           const [, m, dd] = d.fecha.split('-');
