@@ -272,6 +272,21 @@
  }
  .product-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
  .product-card p { font-size: 0.82rem; color: var(--gray); margin-bottom: 16px; flex: 1; }
+
+ /* ─── CUÁL ELIJO ─── */
+ .guide-section { background: var(--white); padding: 8px 6vw 64px; }
+ .guide-section h2 { font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 700; text-align: center; margin-bottom: 8px; }
+ .guide-sub { text-align: center; font-size: 0.86rem; color: var(--gray); margin-bottom: 32px; }
+ .guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1100px; margin: 0 auto; }
+ .guide-card { border: 1.5px solid var(--cream2); border-radius: 16px; padding: 26px 20px; text-align: center; background: var(--cream); }
+ .guide-card--highlight { border: 2px solid var(--dark); }
+ .guide-icon { width: 48px; height: 48px; border-radius: 50%; background: var(--white); border: 1.5px solid var(--cream2); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+ .guide-tag { display: inline-block; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+ .guide-card h3 { font-size: 1.02rem; font-weight: 700; margin-bottom: 8px; color: var(--dark); }
+ .guide-card p { font-size: 0.8rem; color: var(--gray); line-height: 1.55; margin-bottom: 18px; }
+ .guide-link { display: inline-block; background: var(--dark); color: white; padding: 10px 20px; border-radius: 9px; font-size: 0.8rem; font-weight: 600; text-decoration: none; transition: opacity 0.2s; }
+ .guide-link:hover { opacity: 0.85; }
+ @media (max-width: 900px) { .guide-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; } }
  .product-card-price { font-size: 0.78rem; color: var(--gray); margin-bottom: 14px; }
  .product-card-price strong { color: var(--dark); font-size: 1.05rem; }
  .btn-ver {
@@ -489,6 +504,35 @@
  <p>Limpieza profunda e hidratación diaria con biotina activa. Fortalece el cabello desde la raíz, sin formol ni sulfatos.</p>
  <div class="product-card-price">Desde <strong>$32.000</strong></div>
  <a href="shampoo-crema/" class="btn-ver">Ver producto →</a>
+ </div>
+ </div>
+ </div>
+
+ <!-- CUÁL ELIJO -->
+ <div class="guide-section" id="cual-elijo">
+ <h2>¿Cuál elijo?</h2>
+ <p class="guide-sub">Si no sabés por dónde arrancar, esto te ayuda a decidir.</p>
+ <div class="guide-grid">
+ <div class="guide-card">
+ <div class="guide-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg></div>
+ <span class="guide-tag">Recién notás la caída</span>
+ <h3>Biotina Pura</h3>
+ <p>Empezá con el spray de uso diario, directo en la raíz. Ideal si es tu primer tratamiento.</p>
+ <a href="biotina-pura.html" class="guide-link">Ver Biotina Pura →</a>
+ </div>
+ <div class="guide-card guide-card--highlight">
+ <div class="guide-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
+ <span class="guide-tag">Querés la rutina completa</span>
+ <h3>Combo Biotina</h3>
+ <p>Shampoo + acondicionador + ampolla + spray. El tratamiento más completo para resultados más rápidos.</p>
+ <a href="combo-biotina.html" class="guide-link">Ver Combo Biotina →</a>
+ </div>
+ <div class="guide-card">
+ <div class="guide-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="14" r="3"/><circle cx="15" cy="9" r="4"/><circle cx="17" cy="17" r="2"/></svg></div>
+ <span class="guide-tag">Buscás mantenimiento diario</span>
+ <h3>Dúo Shampoo + Acondicionador</h3>
+ <p>Limpieza e hidratación de uso diario con biotina activa, para cuidar el cabello en el día a día.</p>
+ <a href="shampoo-crema/" class="guide-link">Ver el Dúo →</a>
  </div>
  </div>
  </div>
