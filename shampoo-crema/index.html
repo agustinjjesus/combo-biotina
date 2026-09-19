@@ -1697,7 +1697,7 @@
  <div class="modal">
  <button class="modal-close" onclick="closeModal()">×</button>
  <h3>¡Un paso más! </h3>
- <p class="modal-sub">Completá tus datos para coordinar el envío. Tu pedido: <span id="modalProducto">Dúo Shampoo + Acondicionador x1 — $32.000</span></p>
+ <p class="modal-sub">Dejanos tus datos y seguí al pago. La dirección te la pedimos después por WhatsApp. Tu pedido: <span id="modalProducto">Dúo Shampoo + Acondicionador x1 — $32.000</span></p>
 
  <div class="upsell-card">
  <span class="upsell-card-tag">Antes de continuar</span>
@@ -1705,90 +1705,27 @@
  <a href="combo-biotina.html" target="_blank" class="upsell-card-btn">Ver el Combo completo →</a>
  </div>
 
- <div class="form-section-title">Datos personales</div>
- <div class="form-row">
- <div class="form-group">
- <label>Nombre</label>
- <input type="text" id="nombre" placeholder="María" required />
- </div>
- <div class="form-group">
- <label>Apellido</label>
- <input type="text" id="apellido" placeholder="González" required />
- </div>
- </div>
- <div class="form-row">
- <div class="form-group">
- <label>Teléfono</label>
- <input type="tel" id="telefono" placeholder="11 1234-5678" required />
- </div>
- <div class="form-group">
- <label>Email</label>
- <input type="email" id="email" placeholder="maria@email.com" required />
- </div>
- </div>
-
- <div class="form-section-title">Dirección de entrega</div>
- <div class="form-row">
- <div class="form-group">
- <label>Calle</label>
- <input type="text" id="calle" placeholder="Av. Corrientes" required />
- </div>
- <div class="form-group">
- <label>Número</label>
- <input type="text" id="numero" placeholder="1234" required />
- </div>
- </div>
- <div class="form-row">
- <div class="form-group">
- <label>Piso / Depto</label>
- <input type="text" id="piso" placeholder="3° B (opcional)" />
- </div>
- <div class="form-group">
- <label>Código Postal</label>
- <input type="text" id="cp" placeholder="1414" required />
- </div>
- </div>
- <div class="form-group">
- <label>Barrio / Localidad</label>
- <input type="text" id="localidad" placeholder="Palermo" required />
- </div>
- <div class="form-group">
- <label>Provincia</label>
- <select id="provincia" required>
- <option value="">Seleccioná tu provincia</option>
- <option>Buenos Aires (GBA)</option>
- <option>Buenos Aires (interior)</option>
- <option>CABA</option>
- <option>Catamarca</option>
- <option>Chaco</option>
- <option>Chubut</option>
- <option>Córdoba</option>
- <option>Corrientes</option>
- <option>Entre Ríos</option>
- <option>Formosa</option>
- <option>Jujuy</option>
- <option>La Pampa</option>
- <option>La Rioja</option>
- <option>Mendoza</option>
- <option>Misiones</option>
- <option>Neuquén</option>
- <option>Río Negro</option>
- <option>Salta</option>
- <option>San Juan</option>
- <option>San Luis</option>
- <option>Santa Cruz</option>
- <option>Santa Fe</option>
- <option>Santiago del Estero</option>
- <option>Tierra del Fuego</option>
- <option>Tucumán</option>
- </select>
- </div>
+ <div class="form-section-title">Datos de contacto</div>
+              <div class="form-group">
+                <label>Nombre y apellido</label>
+                <input type="text" id="nombre" placeholder="María González" required />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Teléfono</label>
+                  <input type="tel" id="telefono" placeholder="11 1234-5678" required />
+                </div>
+                <div class="form-group">
+                  <label>Email</label>
+                  <input type="email" id="email" placeholder="maria@email.com" required />
+                </div>
+              </div>
 
  <button class="btn-confirm" id="btnConfirmarCompra" onclick="confirmarCompra()">Confirmar y pagar →</button>
  <p style="text-align:center;font-size:0.75rem;color:var(--green);font-weight:600;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px;">
  Pago 100% seguro procesado por MercadoPago
  </p>
- <p class="modal-disclaimer">Tus datos están protegidos y solo se usan para coordinar el envío.</p>
+ <p class="modal-disclaimer">Tus datos están protegidos y solo se usan para coordinar tu pedido.</p>
  </div>
  </div>
 
@@ -2059,8 +1996,8 @@
  }
 
  function confirmarCompra() {
- const campos = ['nombre','apellido','telefono','email','calle','numero','piso','cp','localidad','provincia'];
- const obligatorios = ['nombre','apellido','telefono','email','calle','numero','cp','localidad','provincia'];
+ const campos = ['nombre','telefono','email'];
+        const obligatorios = ['nombre','telefono','email'];
  let valido = true;
  obligatorios.forEach(id => {
  const el = document.getElementById(id);
@@ -2071,6 +2008,11 @@
 
  const datos = {};
  campos.forEach(id => { datos[id] = document.getElementById(id).value; });
+ // El form pide "nombre y apellido" junto para bajar la fricción, pero el
+ // pixel de Meta matchea mejor con fn y ln por separado.
+ const partes = (datos.nombre || '').trim().split(/\s+/);
+ datos.nombre = partes[0] || '';
+ datos.apellido = partes.slice(1).join(' ');
  datos.producto = precios[selectedQty].label;
  datos.fecha = new Date().toLocaleString('es-AR');
 
@@ -2080,7 +2022,7 @@
  // Mismo event_id en los dos para que Meta deduplique en vez de contar doble.
  const icEventId = genEventId();
  const icCustomData = { content_name: precios[selectedQty].label, content_type: 'product', currency: 'ARS', value: PRECIOS_NUM[selectedQty] };
- const icUserData = { em: datos.email, ph: fbNormalizePhone(datos.telefono), fn: datos.nombre, ln: datos.apellido, ct: datos.localidad, st: datos.provincia, zp: datos.cp };
+ const icUserData = { em: datos.email, ph: fbNormalizePhone(datos.telefono), fn: datos.nombre, ln: datos.apellido };
  if (typeof fbq === 'function') {
  fbq('set', 'userData', Object.assign({ country: 'ar' }, icUserData));
  fbq('track', 'InitiateCheckout', icCustomData, { eventID: icEventId });
@@ -2118,7 +2060,7 @@
  window.location.href = mpUrl;
  } else {
  const d = datos;
- const dir = `${d.calle} ${d.numero}${d.piso ? ' ' + d.piso : ''}, ${d.localidad} (${d.cp}), ${d.provincia}`;
+ // La dirección se coordina por WhatsApp después del pago.
  const msg = encodeURIComponent(
  ` *Nuevo pedido — Biotina PG*\n\n` +
  ` *Datos del comprador*\n` +
@@ -2127,8 +2069,7 @@
  `Email: ${d.email}\n\n` +
  ` *Pedido*\n` +
  `${d.producto}\n\n` +
- ` *Dirección de entrega*\n` +
- `${dir}\n\n` +
+ `_Dirección a coordinar por WhatsApp_\n\n` +
  `Fecha: ${d.fecha}`
  );
  window.open(`https://wa.me/${WA_NUMERO}?text=${msg}`, '_blank');
@@ -2339,13 +2280,12 @@
  if (ultimo && ultimo.email) {
  fbq('set', 'userData', {
  em: ultimo.email, ph: fbNormalizePhone(ultimo.telefono), fn: ultimo.nombre, ln: ultimo.apellido,
- ct: ultimo.localidad, st: ultimo.provincia, zp: ultimo.cp, country: 'ar',
+ country: 'ar',
  });
  }
  fbq('track', 'Purchase', purchaseData, { eventID: eventId });
  sendCapiEvent('Purchase', eventId, purchaseData, ultimo ? {
  em: ultimo.email, ph: fbNormalizePhone(ultimo.telefono), fn: ultimo.nombre, ln: ultimo.apellido,
- ct: ultimo.localidad, st: ultimo.provincia, zp: ultimo.cp,
  } : {});
  }
  mostrarBannerPago('✅ ¡Pago aprobado! Gracias por tu compra' + (ultimo && ultimo.producto ? ' de ' + ultimo.producto : '') + '. Te contactamos por WhatsApp con el seguimiento del envío.', '#e8f5ee', '#1e6640');
