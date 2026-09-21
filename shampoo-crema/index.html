@@ -2322,9 +2322,23 @@
 
  (function handlePaymentReturn() {
  const params = new URLSearchParams(location.search);
- const pago = params.get('pago');
+ // MercadoPago no vuelve con nuestro ?pago=, vuelve con los parámetros
+ // suyos: status (o collection_status) y payment_id. Se aceptan los dos
+ // formatos para que alcance con pegar la URL del sitio tal cual en la
+ // configuración del link de pago, sin tener que agregarle nada.
+ const estadoMp = params.get('status') || params.get('collection_status');
+ const MAPA_MP = {
+   approved: 'aprobado',
+   pending: 'pendiente', in_process: 'pendiente',
+   in_mediation: 'pendiente', authorized: 'pendiente',
+   rejected: 'rechazado', cancelled: 'rechazado',
+   refunded: 'rechazado', charged_back: 'rechazado',
+ };
+ const pago = params.get('pago') || MAPA_MP[estadoMp] || null;
  if (!pago) return;
- const pid = params.get('pid');
+ // El id de pago de MercadoPago sirve de clave de deduplicación: evita
+ // contar dos veces la compra si la clienta recarga la pantalla.
+ const pid = params.get('pid') || params.get('payment_id') || params.get('collection_id');
 
  history.replaceState({}, '', location.pathname);
 
