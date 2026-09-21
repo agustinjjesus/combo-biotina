@@ -1688,7 +1688,12 @@
   .envio-connector { display: none; }
   .envio-grid { grid-template-columns: 1fr; }
  }
- </style>
+     .cuotas-linea {
+      margin: 10px 0 0; text-align: center;
+      font-size: 1rem; font-weight: 600; color: #7E2B42;
+    }
+    .cuotas-linea span { font-weight: 700; }
+</style>
  <!-- Firebase SDK (sincronización en tiempo real) -->
  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
@@ -1872,6 +1877,7 @@
  <button class="btn-buy" id="buyBtn" onclick="irAPagar()">
  COMPRAR AHORA · $43.000 — ENVÍO GRATIS
  </button>
+            <p class="cuotas-linea" id="cuotasLinea"></p>
 
  <div class="delivery-timeline">
  <div class="delivery-step">
@@ -2575,6 +2581,17 @@
  });
  });
 
+        // MercadoPago no muestra las cuotas hasta que la clienta carga la tarjeta,
+        // asi que la promo tiene que estar visible acá, antes de que decida.
+        function actualizarCuotas() {
+          const linea = document.getElementById('cuotasLinea');
+          if (!linea) return;
+          const cuota = Math.round(PRECIOS_NUM[selectedQty] / 3);
+          linea.innerHTML = 'o en <span>3 cuotas sin interés</span> de $' +
+            cuota.toLocaleString('es-AR');
+        }
+        document.addEventListener('DOMContentLoaded', actualizarCuotas);
+
  function selectQty(el, price, qty) {
  document.querySelectorAll('.qty-option').forEach(o => o.classList.remove('selected'));
  el.classList.add('selected');
@@ -2582,6 +2599,7 @@
  const prices = { 1: '43.000', 2: '80.000', 3: '100.000' };
  document.getElementById('buyBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
  document.getElementById('floatingBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
+          actualizarCuotas();
  }
 
  // ─── TIMELINE DE ENTREGA ─────────────────────────────────────────────────
