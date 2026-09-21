@@ -1170,7 +1170,7 @@
  </div>
  </a>
  <div class="nav-right">
- <button class="nav-cart-btn" onclick="openModal()" aria-label="Comprar ahora">
+ <button class="nav-cart-btn" onclick="irAPagar()" aria-label="Comprar ahora">
  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
  </button>
  <a href="https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20el%20D%C3%BAo%20Shampoo%20%2B%20Acondicionador%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F" class="nav-wa">
@@ -1284,7 +1284,7 @@
  Envío gratis a todo el país
  </p>
 
- <button class="btn-buy" id="buyBtn" onclick="openModal()">
+ <button class="btn-buy" id="buyBtn" onclick="irAPagar()">
  COMPRAR AHORA · $32.000 — ENVÍO GRATIS
  </button>
 
@@ -1689,7 +1689,7 @@
  <div class="cta-final">
  <h2>Empezá hoy tu rutina de lavado</h2>
  <p>Resultados visibles desde la primera semana. Sin formol, sin sulfatos, sin efectos secundarios.</p>
- <a href="#" onclick="openModal(); return false;" class="btn-cta-final">Lleva 1 · $32.000 — Envío gratis </a>
+ <a href="#" onclick="irAPagar(); return false;" class="btn-cta-final">Lleva 1 · $32.000 — Envío gratis </a>
  </div>
 
  <!-- MODAL FORMULARIO -->
@@ -1800,7 +1800,7 @@
  <div class="pmodal-section">Cómo usarlo</div>
  <ol class="pmodal-steps" id="pmUso"></ol>
  <div class="pmodal-nota" id="pmNota"></div>
- <button class="pmodal-buy" onclick="closeProduct(); openModal()">Comprar ahora →</button>
+ <button class="pmodal-buy" onclick="closeProduct(); irAPagar()">Comprar ahora →</button>
  </div>
  </div>
 
@@ -1856,7 +1856,7 @@
 
  <!-- FLOATING CTA MOBILE -->
  <div class="floating-cta">
- <button class="floating-cta-btn" id="floatingBtn" onclick="openModal()">
+ <button class="floating-cta-btn" id="floatingBtn" onclick="irAPagar()">
  COMPRAR AHORA · $32.000 — ENVÍO GRATIS
  </button>
  </div>
@@ -1966,6 +1966,58 @@
  document.addEventListener('DOMContentLoaded', () => {
  initDeliveryTimeline();
  });
+
+        // Antes acá se abría un formulario que pedía nombre, teléfono y mail antes
+        // de dejar pagar. Lo abrieron 464 veces en una semana y lo completó nadie:
+        // MercadoPago ya pide esos datos para cobrar, así que se los estábamos
+        // pidiendo dos veces. Ahora el botón lleva derecho a la caja.
+        function irAPagar() {
+          const item = precios[selectedQty];
+          const datos = {
+            content_name: item.label,
+            content_type: 'product',
+            currency: 'ARS',
+            value: PRECIOS_NUM[selectedQty],
+          };
+
+          // El InitiateCheckout se dispara acá porque, sin formulario, iniciar el
+          // pago ES esto: irse a MercadoPago. El matcheo queda anónimo (fbp/fbc,
+          // sin mail ni teléfono), pero el evento pasa a tener volumen real y la
+          // campaña puede salir del aprendizaje. Antes disparaba 5 veces por mes.
+          if (typeof fbq === 'function') {
+            const icEventId = genEventId();
+            fbq('track', 'InitiateCheckout', datos, { eventID: icEventId });
+            // sendCapiEvent usa keepalive, así que el envío sobrevive a la
+            // navegación que viene abajo.
+            sendCapiEvent('InitiateCheckout', icEventId, datos);
+          }
+
+          try {
+            const pendiente = {
+              producto: item.label,
+              precio: PRECIOS_NUM[selectedQty],
+              fecha: new Date().toLocaleString('es-AR'),
+              fbp: fbGetCookie('_fbp'),
+              fbc: fbGetFbc(),
+              event_source_url: location.href,
+              formStatus: 'pendiente',
+              timestamp: Date.now(),
+            };
+            const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
+            pedidos.push(pendiente);
+            localStorage.setItem('pedidos', JSON.stringify(pedidos));
+            localStorage.setItem('ultimoPedido', JSON.stringify(pendiente));
+          } catch (e) {}
+
+          const mpUrl = item.mp;
+          if (mpUrl && !mpUrl.startsWith('MERCADOPAGO_URL')) {
+            window.location.href = mpUrl;
+          } else {
+            // Si a un producto le falta el link de pago, al menos que el botón
+            // no quede muerto: vuelve al formulario viejo.
+            openModal();
+          }
+        }
 
  function openModal() {
  document.getElementById('modalProducto').textContent = precios[selectedQty].label;
