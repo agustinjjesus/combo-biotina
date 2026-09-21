@@ -114,6 +114,10 @@
     border-radius:12px; font-size:1.08rem; font-weight:600;
   }
   .btn.secundario { background:none; color:var(--vino); text-decoration:underline; padding:12px; }
+  .urgente {
+    background:#FFF6E5; border-radius:10px; padding:12px 14px; margin:20px 0 0;
+    font-size:1rem; font-weight:600; color:#8A5A00;
+  }
 </style>
 </head>
 <body>
@@ -123,11 +127,12 @@
     <p id="mensaje">Ya recibimos tu pedido.</p>
     <div class="pedido" id="pedido" hidden></div>
     <ul class="pasos" id="pasos">
-      <li>Te escribimos por WhatsApp para coordinar la direcci&oacute;n de entrega.</li>
-      <li>El env&iacute;o sale dentro de las 48 horas y es gratis.</li>
+      <li>Mandanos tu direcci&oacute;n por WhatsApp para que preparemos el env&iacute;o.</li>
+      <li>Sale dentro de las 48 horas y es gratis.</li>
       <li>Te pasamos el n&uacute;mero de seguimiento de Correo Argentino.</li>
     </ul>
-    <a class="btn" id="whatsapp" href="https://wa.me/5491124838177">Escribinos por WhatsApp</a>
+    <p class="urgente" id="urgente">Sin tu direcci&oacute;n no podemos despachar el pedido.</p>
+    <a class="btn" id="whatsapp" href="https://wa.me/5491124838177">Enviar mi direcci&oacute;n por WhatsApp</a>
     <a class="btn secundario" href="/">Volver a la tienda</a>
   </main>
 
@@ -166,11 +171,31 @@
       $('pedido').hidden = false;
     }
 
+    // El boton de WhatsApp va con el mensaje ya escrito. Cuando ella lo manda,
+    // nos queda su numero: es la unica via que hay para pedirle la direccion,
+    // porque MercadoPago nos da nombre y mail pero no el telefono. Un formulario
+    // aca volveria a poner una pared, aunque sea despues de cobrar.
+    const texto = [
+      'Hola! Acabo de comprar' + (pedido && pedido.producto ? ' ' + pedido.producto : '') + '.',
+      '',
+      'Mi dirección de entrega es:',
+      '',
+      'Nombre y apellido:',
+      'Calle y número:',
+      'Piso / depto:',
+      'Localidad:',
+      'Provincia:',
+      'Código postal:',
+    ].join('\n');
+    $('whatsapp').href = 'https://wa.me/5491124838177?text=' + encodeURIComponent(texto);
+
     if (estado === 'pendiente') {
       $('icono').textContent = '\u23F3';
       $('titulo').textContent = 'Tu pago está pendiente';
-      $('mensaje').textContent = 'Apenas se acredite te avisamos por WhatsApp y preparamos el envío. Si pagaste en Pago Fácil o Rapipago puede demorar hasta 2 días hábiles.';
+      $('mensaje').textContent = 'Apenas se acredite te escribimos por WhatsApp y preparamos el envío. Si pagaste en Pago Fácil o Rapipago puede demorar hasta 2 días hábiles.';
       $('pasos').hidden = true;
+      $('urgente').hidden = true;
+      $('whatsapp').textContent = 'Escribinos por WhatsApp';
       return;
     }
 
@@ -179,6 +204,9 @@
       $('titulo').textContent = 'El pago no se pudo procesar';
       $('mensaje').textContent = 'No se te cobró nada. Podés intentar con otra tarjeta, pagar en efectivo, o escribirnos por WhatsApp y lo resolvemos juntas.';
       $('pasos').hidden = true;
+      $('urgente').hidden = true;
+      $('whatsapp').href = 'https://wa.me/5491124838177';
+      $('whatsapp').textContent = 'Escribinos por WhatsApp';
       return;
     }
 
