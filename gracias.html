@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gracias por tu compra | Productos Capilares PG</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" href="/logo-pg.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+ <script>
+ !function(f,b,e,v,n,t,s)
+ {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+ n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+ if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+ n.queue=[];t=b.createElement(e);t.async=!0;
+ t.src=v;s=b.getElementsByTagName(e)[0];
+ s.parentNode.insertBefore(t,s)}(window, document,'script',
+ 'https://connect.facebook.net/en_US/fbevents.js');
+
+ // ─── Identificador anónimo persistente (mejora el EMQ de eventos previos al
+ // formulario, cuando todavía no sabemos email/teléfono del visitante) ───────
+ function fbAnonId() {
+ let id = localStorage.getItem('_biotina_uid');
+ if (!id) {
+ id = (crypto.randomUUID ? crypto.randomUUID() : 'uid-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+ localStorage.setItem('_biotina_uid', id);
+ }
+ return id;
+ }
+ fbq('init', '914585307701969', { external_id: fbAnonId() });
+
+ // ─── Helpers CAPI — mandan el mismo evento por server (Cloud Function) en
+ // paralelo al pixel del browser, con el mismo event_id, para que Meta
+ // deduplique y suba el Event Match Quality (IP real, resiste ad-blockers). ──
+ const CAPI_ENDPOINT = 'https://biotina-capi.productopg.workers.dev/';
+ const TRACK_VISIT_ENDPOINT = 'https://biotina-trackvisit.productopg.workers.dev/';
+ function fbGetCookie(name) {
+ const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+ return m ? decodeURIComponent(m[1]) : null;
+ }
+ function fbGetFbc() {
+ let fbc = fbGetCookie('_fbc');
+ if (!fbc) {
+ const fbclid = new URLSearchParams(location.search).get('fbclid');
+ if (fbclid) {
+ fbc = `fb.1.${Date.now()}.${fbclid}`;
+ document.cookie = `_fbc=${fbc};max-age=7776000;path=/`;
+ }
+ }
+ return fbc;
+ }
+ function genEventId() {
+ return (crypto.randomUUID ? crypto.randomUUID() : 'ev-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+ }
+ // Misma normalización que hace el server (functions/index.js) antes de
+ // hashear — si no coinciden, el pixel del browser y el CAPI del server
+ // mandan un "ph" distinto para el mismo evento y Meta no puede matchearlos.
+ function fbNormalizePhone(raw) {
+ let d = String(raw || '').replace(/\D/g, '');
+ if (!d) return undefined;
+ if (d.startsWith('54')) return d;
+ d = d.replace(/^0+/, '');
+ return '54' + d;
+ }
+ function sendCapiEvent(eventName, eventId, customData, userDataOverrides) {
+ try {
+ fetch(CAPI_ENDPOINT, {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({
+ event_name: eventName,
+ event_id: eventId,
+ event_source_url: location.href,
+ user_data: Object.assign({ fbp: fbGetCookie('_fbp'), fbc: fbGetFbc(), external_id: fbAnonId() }, userDataOverrides || {}),
+ custom_data: customData || {},
+ }),
+ keepalive: true,
+ }).catch(function(){});
+ } catch (e) {}
+ }
+
+</script>
+<style>
+  :root { --vino:#7E2B42; --crema:#FBF3F0; --texto:#2B2326; --gris:#6E6469; }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:24px 16px; background:var(--crema); color:var(--texto);
+    font-family:'Outfit', system-ui, sans-serif;
+  }
+  .caja {
+    background:#fff; border-radius:20px; padding:40px 28px;
+    max-width:460px; width:100%; text-align:center;
+    box-shadow:0 8px 32px rgba(126,43,66,0.10);
+  }
+  .icono { font-size:3.2rem; line-height:1; margin-bottom:14px; }
+  /* El publico son mujeres de 40 a 65: el cuerpo no baja de 1.05rem. */
+  h1 { font-size:1.7rem; line-height:1.25; margin:0 0 12px; color:var(--vino); }
+  p { font-size:1.05rem; line-height:1.55; margin:0 0 16px; color:var(--gris); }
+  .pedido {
+    background:var(--crema); border-radius:12px; padding:14px 16px; margin:20px 0;
+    font-size:1.05rem; font-weight:600; color:var(--texto);
+  }
+  .pasos { text-align:left; margin:24px 0 8px; padding:0; list-style:none; }
+  .pasos li {
+    font-size:1.02rem; line-height:1.5; color:var(--gris);
+    padding:10px 0 10px 30px; position:relative;
+  }
+  .pasos li::before { content:'\2713'; position:absolute; left:0; top:10px; color:var(--vino); font-weight:700; }
+  .btn {
+    display:block; margin-top:22px; padding:16px 20px;
+    background:var(--vino); color:#fff; text-decoration:none;
+    border-radius:12px; font-size:1.08rem; font-weight:600;
+  }
+  .btn.secundario { background:none; color:var(--vino); text-decoration:underline; padding:12px; }
+</style>
+</head>
+<body>
+  <main class="caja">
+    <div class="icono" id="icono">&#9989;</div>
+    <h1 id="titulo">&iexcl;Gracias por tu compra!</h1>
+    <p id="mensaje">Ya recibimos tu pedido.</p>
+    <div class="pedido" id="pedido" hidden></div>
+    <ul class="pasos" id="pasos">
+      <li>Te escribimos por WhatsApp para coordinar la direcci&oacute;n de entrega.</li>
+      <li>El env&iacute;o sale dentro de las 48 horas y es gratis.</li>
+      <li>Te pasamos el n&uacute;mero de seguimiento de Correo Argentino.</li>
+    </ul>
+    <a class="btn" id="whatsapp" href="https://wa.me/5491124838177">Escribinos por WhatsApp</a>
+    <a class="btn secundario" href="/">Volver a la tienda</a>
+  </main>
+
+<script>
+  (function () {
+    const params = new URLSearchParams(location.search);
+
+    // MercadoPago devuelve el estado en status o en collection_status. Se
+    // acepta tambien el ?pago= propio por si algun link viejo lo trae.
+    const MAPA_MP = {
+      approved: 'aprobado',
+      pending: 'pendiente', in_process: 'pendiente',
+      in_mediation: 'pendiente', authorized: 'pendiente',
+      rejected: 'rechazado', cancelled: 'rechazado',
+      refunded: 'rechazado', charged_back: 'rechazado',
+    };
+    const estadoMp = params.get('status') || params.get('collection_status');
+    const estado = params.get('pago') || MAPA_MP[estadoMp] || null;
+    const pagoId = params.get('pid') || params.get('payment_id') || params.get('collection_id');
+
+    let pedido = null;
+    try { pedido = JSON.parse(localStorage.getItem('ultimoPedido') || 'null'); } catch (e) {}
+
+    // Queda registro de con que parametros vuelve MercadoPago. Si manda a la
+    // clienta de vuelta sin ninguno, esto es lo unico que nos deja saberlo.
+    try {
+      const visitas = JSON.parse(localStorage.getItem('retornosMp') || '[]');
+      visitas.push({ query: location.search, estado: estado, cuando: new Date().toISOString() });
+      localStorage.setItem('retornosMp', JSON.stringify(visitas.slice(-20)));
+    } catch (e) {}
+
+    const $ = function (id) { return document.getElementById(id); };
+
+    if (pedido && pedido.producto) {
+      $('pedido').textContent = pedido.producto;
+      $('pedido').hidden = false;
+    }
+
+    if (estado === 'pendiente') {
+      $('icono').textContent = '\u23F3';
+      $('titulo').textContent = 'Tu pago está pendiente';
+      $('mensaje').textContent = 'Apenas se acredite te avisamos por WhatsApp y preparamos el envío. Si pagaste en Pago Fácil o Rapipago puede demorar hasta 2 días hábiles.';
+      $('pasos').hidden = true;
+      return;
+    }
+
+    if (estado === 'rechazado') {
+      $('icono').textContent = '\u26A0\uFE0F';
+      $('titulo').textContent = 'El pago no se pudo procesar';
+      $('mensaje').textContent = 'No se te cobró nada. Podés intentar con otra tarjeta, pagar en efectivo, o escribirnos por WhatsApp y lo resolvemos juntas.';
+      $('pasos').hidden = true;
+      return;
+    }
+
+    // Solo se dispara Purchase con la aprobacion confirmada por MercadoPago.
+    // Si vuelve sin parametros no se inventa una venta: un Purchase falso le
+    // ensena mal a la campana, que es peor que no tener el dato.
+    if (estado === 'aprobado' && typeof fbq === 'function') {
+      const clave = 'purchaseFired_' + (pagoId || 'sin-id');
+      if (!sessionStorage.getItem(clave)) {
+        sessionStorage.setItem(clave, '1');
+        const eventId = pagoId || genEventId();
+        const datos = { currency: 'ARS', content_type: 'product' };
+        if (pedido) {
+          datos.value = pedido.precio;
+          datos.content_name = pedido.producto;
+        }
+        fbq('track', 'Purchase', datos, { eventID: eventId });
+        sendCapiEvent('Purchase', eventId, datos);
+      }
+    }
+
+    if (!estado) {
+      // Vuelve del pago pero sin decir como fue: se agradece sin afirmar nada.
+      $('mensaje').textContent = 'Si completaste el pago, te escribimos por WhatsApp para coordinar el envío. Si tuviste algún problema, escribinos y lo vemos.';
+    }
+  })();
+</script>
+</body>
+</html>
