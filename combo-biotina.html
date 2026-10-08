@@ -99,7 +99,7 @@
  sendCapiEvent('PageView', pvEventId, {});
 
  const vcEventId = genEventId();
- const vcData = { content_name: 'Combo Biotina', content_type: 'product', currency: 'ARS', value: 43000 };
+ const vcData = { content_name: 'Combo Biotina', content_type: 'product', currency: 'ARS', value: 33000 };
  fbq('track', 'ViewContent', vcData, { eventID: vcEventId });
  sendCapiEvent('ViewContent', vcEventId, vcData);
 
@@ -1811,7 +1811,7 @@
  <div class="promo-tag">¡Llevá más, pagá menos!</div>
 
  <div class="quantity-options">
- <div class="qty-option" onclick="selectQty(this, '$43.000', 1)" data-price="43000">
+ <div class="qty-option" onclick="selectQty(this, '$33.000', 1)" data-price="33000">
  <span class="qty-count">1 producto</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
@@ -1823,13 +1823,13 @@
  </div>
  </div>
  <div class="qty-price">
- <span class="price-old">$ 57.300 <span class="discount-badge">-25%</span></span>
- <span class="price-now">$ 43.000</span>
- <span class="price-cuotas">3 cuotas de $ 14.333</span>
+ <span class="price-old">$ 43.000 <span class="discount-badge">-23%</span></span>
+ <span class="price-now">$ 33.000</span>
+ <span class="price-cuotas">3 cuotas de $ 11.000</span>
  </div>
  </div>
 
- <div class="qty-option popular" onclick="selectQty(this, '$80.000', 2)" data-price="80000">
+ <div class="qty-option popular" onclick="selectQty(this, '$61.000', 2)" data-price="61000">
  <span class="qty-count">2 productos</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
@@ -1841,13 +1841,13 @@
  </div>
  </div>
  <div class="qty-price">
- <span class="price-old">$ 106.700 <span class="discount-badge">-25%</span></span>
- <span class="price-now">$ 80.000</span>
- <span class="price-cuotas">3 cuotas de $ 26.667</span>
+ <span class="price-old">$ 80.000 <span class="discount-badge">-24%</span></span>
+ <span class="price-now">$ 61.000</span>
+ <span class="price-cuotas">3 cuotas de $ 20.333</span>
  </div>
  </div>
 
- <div class="qty-option best" onclick="selectQty(this, '$100.000', 3)" data-price="100000">
+ <div class="qty-option best" onclick="selectQty(this, '$77.000', 3)" data-price="77000">
  <span class="qty-count">3 productos</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
@@ -1859,9 +1859,9 @@
  </div>
  </div>
  <div class="qty-price">
- <span class="price-old">$ 133.300 <span class="discount-badge">-25%</span></span>
- <span class="price-now">$ 100.000</span>
- <span class="price-cuotas">3 cuotas de $ 33.333</span>
+ <span class="price-old">$ 100.000 <span class="discount-badge">-23%</span></span>
+ <span class="price-now">$ 77.000</span>
+ <span class="price-cuotas">3 cuotas de $ 25.667</span>
  </div>
  </div>
  </div>
@@ -1883,7 +1883,7 @@
  </p>
 
  <button class="btn-buy" id="buyBtn" onclick="irAPagar()">
- COMPRAR AHORA · $43.000 — ENVÍO GRATIS
+ COMPRAR AHORA · $33.000 — ENVÍO GRATIS
  </button>
             <p class="cuotas-linea" id="cuotasLinea"></p>
 
@@ -2326,7 +2326,7 @@
  <div class="cta-final">
  <h2>Empezá hoy tu tratamiento</h2>
  <p>Resultados visibles desde la primera semana. Sin formol, sin sulfatos, sin efectos secundarios.</p>
- <a href="#" onclick="irAPagar(); return false;" class="btn-cta-final">Lleva 1 · $43.000 — Envío gratis </a>
+ <a href="#" onclick="irAPagar(); return false;" class="btn-cta-final">Lleva 1 · $33.000 — Envío gratis </a>
  </div>
 
  <!-- MODAL FORMULARIO -->
@@ -2334,7 +2334,7 @@
  <div class="modal">
  <button class="modal-close" onclick="closeModal()">×</button>
  <h3>¡Un paso más! </h3>
- <p class="modal-sub">Dejanos tu nombre y tu WhatsApp y seguí al pago. Por WhatsApp te escribimos para coordinar el envío. Tu pedido: <span id="modalProducto">Combo Biotina x2 — $62.000</span></p>
+ <p class="modal-sub">Dejanos tu nombre y tu WhatsApp y seguí al pago. Por WhatsApp te escribimos para coordinar el envío. Tu pedido: <span id="modalProducto">Combo Biotina x1 — $33.000</span></p>
 
  <div class="form-section-title">Datos de contacto</div>
               <div class="form-group">
@@ -2493,7 +2493,7 @@
  <!-- FLOATING CTA MOBILE -->
  <div class="floating-cta">
  <button class="floating-cta-btn" id="floatingBtn" onclick="irAPagar()">
- COMPRAR AHORA · $43.000 — ENVÍO GRATIS
+ COMPRAR AHORA · $33.000 — ENVÍO GRATIS
  </button>
  </div>
 
@@ -2527,9 +2527,9 @@
 
  // Links de MercadoPago — reemplazá cada uno con tu link real de preferencia
  // Ejemplo: 'https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=XXXXX'
- const MP_URL_1 = 'https://mpago.li/1Fog13g'; // ← 1 combo $43.000
- const MP_URL_2 = 'https://mpago.la/1uazNyQ'; // ← 2 combos $80.000
- const MP_URL_3 = 'https://mpago.la/1puHY2A'; // ← 3 combos $100.000
+ const MP_URL_1 = 'https://mpago.la/1GkoJJp'; // ← 1 combo $33.000
+ const MP_URL_2 = 'https://mpago.la/1WX3K3Y'; // ← 2 combos $61.000
+ const MP_URL_3 = 'https://mpago.la/2J4mMuV'; // ← 3 combos $77.000
  // ─────────────────────────────────────────────────────────────────────────
 
  // ─── CONFIRMACIÓN AUTOMÁTICA DE PAGOS (Cloud Function + webhook MercadoPago) ──
@@ -2538,13 +2538,13 @@
  // sigue usando los links fijos de arriba sin ningún cambio.
  const MP_AUTO_CONFIRM_ENABLED = true;
  const CLOUD_FN_CREAR_PREFERENCIA = 'https://us-central1-biotina-pg.cloudfunctions.net/crearPreferencia';
- const PRECIOS_NUM = { 1: 43000, 2: 80000, 3: 100000 };
+ const PRECIOS_NUM = { 1: 33000, 2: 61000, 3: 77000 };
  // ─────────────────────────────────────────────────────────────────────────
 
  const precios = {
- 1: { label: 'Combo Biotina x1 — $43.000', mp: MP_URL_1 },
- 2: { label: 'Combo Biotina x2 — $80.000', mp: MP_URL_2 },
- 3: { label: 'Combo Biotina x3 — $100.000', mp: MP_URL_3 }
+ 1: { label: 'Combo Biotina x1 — $33.000', mp: MP_URL_1 },
+ 2: { label: 'Combo Biotina x2 — $61.000', mp: MP_URL_2 },
+ 3: { label: 'Combo Biotina x3 — $77.000', mp: MP_URL_3 }
  };
  let selectedQty = 1;
 
@@ -2604,7 +2604,7 @@
  document.querySelectorAll('.qty-option').forEach(o => o.classList.remove('selected'));
  el.classList.add('selected');
  selectedQty = qty;
- const prices = { 1: '43.000', 2: '80.000', 3: '100.000' };
+ const prices = { 1: '33.000', 2: '61.000', 3: '77.000' };
  document.getElementById('buyBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
  document.getElementById('floatingBtn').textContent = `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
           actualizarCuotas();
@@ -3036,7 +3036,7 @@ function toggleFaq(btn) {
  }
 
  // Seleccionar "2 combos" por defecto sin hacer scroll
- selectQty(document.querySelector('.qty-option[data-price="43000"]'), '$43.000', 1);
+ selectQty(document.querySelector('.qty-option[data-price="33000"]'), '$33.000', 1);
 
  // Asegurar que la página arranque desde arriba
  history.scrollRestoration = 'manual';
