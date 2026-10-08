@@ -99,7 +99,7 @@
  sendCapiEvent('PageView', pvEventId, {});
 
  const vcEventId = genEventId();
- const vcData = { content_name: 'Dúo Shampoo + Acondicionador', content_type: 'product', currency: 'ARS', value: 25000 };
+ const vcData = { content_name: 'Dúo Shampoo + Acondicionador', content_type: 'product', currency: 'ARS', value: 20000 };
  fbq('track', 'ViewContent', vcData, { eventID: vcEventId });
  sendCapiEvent('ViewContent', vcEventId, vcData);
 
@@ -1138,7 +1138,7 @@
  <!-- BARRA SCROLLING -->
  <div class="announce-bar">
  <div class="announce-track">
- ENVÍO GRATIS A TODO EL PAÍS
+ ENVÍO GRATIS LLEVANDO 2 O MÁS
  <span class="announce-sep">•</span>
  PAGO 100% SEGURO CON MERCADOPAGO
  <span class="announce-sep">•</span>
@@ -1148,7 +1148,7 @@
  <span class="announce-sep">•</span>
  SIN FORMOL NI SULFATOS
  <span class="announce-sep">•</span>
- ENVÍO GRATIS A TODO EL PAÍS
+ ENVÍO GRATIS LLEVANDO 2 O MÁS
  <span class="announce-sep">•</span>
  PAGO 100% SEGURO CON MERCADOPAGO
  <span class="announce-sep">•</span>
@@ -1199,7 +1199,7 @@
  <div class="hero-right">
  <div class="stock-badge">
  <span class="stock-dot"></span>
- Stock disponible · Envío hoy
+ En stock · Pagando antes de las 14 hs, sale hoy
  </div>
  <h1>Dúo Shampoo + Acondicionador® | Fortalece, repará y cuidá tu cabello.</h1>
  <p class="combo-composition">Shampoo 500ml + Acondicionador 500ml · Fórmula con Biotina activa</p>
@@ -1229,20 +1229,20 @@
  </ul>
 
  <div class="quantity-options">
- <div class="qty-option selected" onclick="selectQty(this, 1)" data-price="25000">
+ <div class="qty-option selected" onclick="selectQty(this, 1)" data-price="27000">
  <span class="qty-count">1 dúo</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
  <div class="qty-info">
  <strong>Lleva 1</strong>
  <span>Tratamiento 1 mes</span>
- <span class="qty-shipping-free"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Envío $5.000 · gratis llevando 2</span>
+ <span class="qty-shipping-free"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Envío $7.000 · gratis llevando 2</span>
  </div>
  </div>
  <div class="qty-price">
  <span class="price-now">$ 20.000</span>
- <span class="price-cuotas">+ $ 5.000 de envío</span>
- <span class="price-cuotas">3 cuotas de $ 8.333</span>
+ <span class="price-cuotas">+ $ 7.000 de envío</span>
+ <span class="price-cuotas">3 cuotas de $ 9.000</span>
  </div>
  </div>
 
@@ -1288,17 +1288,17 @@
  <span>Con número de seguimiento</span>
  </div>
  <div class="shipping-price">
- <span class="shipping-free" id="envioPrecio">$ 5.000</span>
+ <span class="shipping-free" id="envioPrecio">$ 7.000</span>
  <span class="shipping-old" id="envioTachado" style="display:none">$ 10.000</span>
  </div>
  </div>
 
  <p id="envioNota" style="text-align:center; font-size:0.82rem; font-weight:600; color:var(--green); margin-bottom:12px;">
- Envío $5.000 — gratis llevando 2 o más
+ Envío $7.000 — gratis llevando 2 o más
  </p>
 
  <button class="btn-buy" id="buyBtn" onclick="irAPagar()">
- COMPRAR AHORA · $25.000 CON ENVÍO
+ COMPRAR AHORA · $27.000 CON ENVÍO
  </button>
             <p class="cuotas-linea" id="cuotasLinea"></p>
 
@@ -1351,7 +1351,7 @@
  </a>
 
  <div class="guarantee-box">
- <span class="guarantee-icon">️</span>
+ <span class="guarantee-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
  <div class="guarantee-text">
  <strong>Compra protegida</strong>
  <span>Pagás con MercadoPago. Si llega dañado, lo reemplazamos sin costo.</span>
@@ -1380,7 +1380,7 @@
  <div style="text-align:center"><div class="proof-num">2x500ml</div><div class="proof-label">shampoo + acondicionador</div></div>
  <div style="text-align:center"><div class="proof-num">0%</div><div class="proof-label">formol ni sulfatos</div></div>
  <div style="text-align:center"><div class="proof-num">Diario</div><div class="proof-label">apto para uso diario</div></div>
- <div style="text-align:center"><div class="proof-num">Gratis</div><div class="proof-label">envío a todo el país</div></div>
+ <div style="text-align:center"><div class="proof-num">Gratis</div><div class="proof-label">envío llevando 2 o más</div></div>
  </div>
 
  <!-- QUÉ INCLUYE -->
@@ -1515,26 +1515,27 @@
  <div class="envio-grid">
  <div class="envio-row">
  <div class="envio-row-info">
- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
- <span class="envio-region">Envío a todo el país</span>
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+ <span class="envio-region">Correo Argentino a todo el país</span>
  </div>
  </div>
  <div class="envio-row">
  <div class="envio-row-info">
- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
- <span class="envio-region">Empaquetado seguro</span>
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+ <span class="envio-region">Llega en 2 a 9 días hábiles según tu zona</span>
  </div>
  </div>
  <div class="envio-row">
  <div class="envio-row-info">
- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
- <span class="envio-region">Soporte por WhatsApp</span>
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+ <span class="envio-region">Con 1 dúo</span>
  </div>
+ <span class="envio-time">$ 7.000</span>
  </div>
  <div class="envio-row envio-row--free">
  <div class="envio-row-info">
- <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/></svg>
- <span class="envio-region">Envío gratis</span>
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+ <span class="envio-region">Llevando 2 o más</span>
  </div>
  <span class="envio-time-free">GRATIS</span>
  </div>
@@ -1555,28 +1556,48 @@
  <div class="faq-section">
  <h2>Preguntas frecuentes</h2>
  <div class="faq-item">
- <button class="faq-q" onclick="toggleFaq(this)">¿Sirve para todo tipo de cabello? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Sí, la fórmula es apta para todo tipo de cabello: liso, ondulado, rizado, teñido o con procesos químicos. No contiene formol ni sulfatos.</div>
+ <button class="faq-q" onclick="toggleFaq(this)">¿Qué trae el dúo? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">Un Shampoo de Biotina de 500 ml y un Acondicionador de Biotina de 500 ml, para el lavado de todos los días.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Con qué frecuencia se usa? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Los dos son de uso diario. Lavá con el shampoo, aplicá el acondicionador de medios a puntas, y repetí en cada lavado.</div>
+ <div class="faq-a">Los dos son de uso diario. Lavá con el shampoo, aplicá el acondicionador de medios a puntas, dejalo actuar unos minutos y enjuagá.</div>
  </div>
  <div class="faq-item">
- <button class="faq-q" onclick="toggleFaq(this)">¿Necesito también la Ampolla o la Biotina Pura? <span class="faq-arrow">+</span></button>
- <div class="faq-a">No son obligatorias, pero se complementan muy bien. Este dúo cubre la limpieza e hidratación diaria; la Ampolla y la Biotina Pura suman un tratamiento intensivo extra. Las vendemos por separado si querés sumarlas.</div>
+ <button class="faq-q" onclick="toggleFaq(this)">¿Sirve para la caída? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">El dúo cuida el pelo en el lavado. Para la caída, el tratamiento es la Biotina Pura en spray, que se aplica directo en el cuero cabelludo. Se pueden usar juntos.</div>
+ </div>
+ <div class="faq-item">
+ <button class="faq-q" onclick="toggleFaq(this)">¿Sirve para todo tipo de cabello? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">Sí, es apto para todo tipo de cabello: liso, ondulado, rizado, teñido o con procesos químicos.</div>
+ </div>
+ <div class="faq-item">
+ <button class="faq-q" onclick="toggleFaq(this)">¿Lo puedo usar si estoy embarazada o con un tratamiento? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">Es un cosmético de uso externo, pero no reemplaza un tratamiento médico. Si estás embarazada, en lactancia, tomás medicación o tenés alguna condición en el cuero cabelludo, consultalo con tu médico antes de empezar.</div>
+ </div>
+ <div class="faq-item">
+ <button class="faq-q" onclick="toggleFaq(this)">¿Cuánto cuesta el envío? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">Enviamos por Correo Argentino a todo el país, a domicilio o a sucursal. Con 1 dúo el envío cuesta $7.000 y llevando 2 o más es gratis. El precio que ves al elegir la cantidad ya incluye el envío.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Cuánto tarda en llegar mi pedido? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Si confirmás tu pedido antes de las 14hs lo despachamos ese mismo día. Después llega entre 2 y 9 días hábiles según tu zona, con envío gratis a todo el país.</div>
+ <div class="faq-a">Si confirmás el pago antes de las 14 hs, lo despachamos ese mismo día. Después llega entre 2 y 9 días hábiles según tu zona. Te mandamos el número de seguimiento del Correo por WhatsApp para que lo sigas.</div>
+ </div>
+ <div class="faq-item">
+ <button class="faq-q" onclick="toggleFaq(this)">¿Qué formas de pago aceptan? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">Con Mercado Pago podés pagar con tarjeta de crédito en 3 cuotas sin interés, con débito, con dinero en cuenta o en efectivo en Pago Fácil y Rapipago. También podés pagar por transferencia bancaria: escribinos por WhatsApp y te pasamos los datos. En todos los casos el pago se hace antes del envío.</div>
+ </div>
+ <div class="faq-item">
+ <button class="faq-q" onclick="toggleFaq(this)">¿Es seguro comprar? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">Sí. El pago se procesa por Mercado Pago: si pagás con tu cuenta tenés Compra Protegida y, si el pedido no te llega, te devuelven la plata. Te pasamos el seguimiento del Correo por WhatsApp. Somos de Pablo Podestá, Tres de Febrero (Buenos Aires). No tenemos local a la calle: vendemos online y por WhatsApp.</div>
+ </div>
+ <div class="faq-item">
+ <button class="faq-q" onclick="toggleFaq(this)">¿Cómo hago el pedido? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">Elegí la cantidad y tocá Comprar. Dejanos tu nombre y tu WhatsApp y pagá en Mercado Pago. Después te escribimos por WhatsApp para pedirte la dirección de envío. Si preferís, podés hacer todo el pedido directamente por WhatsApp.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Qué pasa si el producto llega dañado? <span class="faq-arrow">+</span></button>
  <div class="faq-a">Lo reemplazamos sin costo. Escribinos por WhatsApp con una foto dentro de los 10 días de recibido y te mandamos otro.</div>
- </div>
- <div class="faq-item">
- <button class="faq-q" onclick="toggleFaq(this)">¿Qué métodos de pago aceptan? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Aceptamos tarjeta de crédito, débito, efectivo y dinero en cuenta a través de MercadoPago.</div>
  </div>
  </div>
 
@@ -1703,7 +1724,7 @@
  <div class="cta-final">
  <h2>Empezá hoy tu rutina de lavado</h2>
  <p>Resultados visibles desde la primera semana. Sin formol, sin sulfatos, sin efectos secundarios.</p>
- <a href="#" onclick="irAPagar(); return false;" class="btn-cta-final">Lleva 1 · $25.000 con envío </a>
+ <a href="#" onclick="irAPagar(); return false;" class="btn-cta-final">Lleva 1 · $27.000 con envío </a>
  </div>
 
  <!-- MODAL FORMULARIO -->
@@ -1711,7 +1732,7 @@
  <div class="modal">
  <button class="modal-close" onclick="closeModal()">×</button>
  <h3>¡Un paso más! </h3>
- <p class="modal-sub">Dejanos tu nombre y tu WhatsApp y seguí al pago. Por WhatsApp te escribimos para coordinar el envío. Tu pedido: <span id="modalProducto">Dúo Shampoo + Acondicionador x1 — $25.000 con envío</span></p>
+ <p class="modal-sub">Dejanos tu nombre y tu WhatsApp y seguí al pago. Por WhatsApp te escribimos para coordinar el envío. Tu pedido: <span id="modalProducto">Dúo Shampoo + Acondicionador x1 — $27.000 con envío</span></p>
 
  
  <div class="form-section-title">Datos de contacto</div>
@@ -1871,7 +1892,7 @@
  <!-- FLOATING CTA MOBILE -->
  <div class="floating-cta">
  <button class="floating-cta-btn" id="floatingBtn" onclick="irAPagar()">
- COMPRAR AHORA · $25.000 CON ENVÍO
+ COMPRAR AHORA · $27.000 CON ENVÍO
  </button>
  </div>
 
@@ -1896,16 +1917,16 @@
  const WA_NUMERO = '5491124838177';
 
  // Links de pago de MercadoPago (Link de pago, montos fijos)
- const MP_URL_1 = 'https://mpago.la/2dpbRqW'; // ← 1 dúo, $25.000 ($20.000 + $5.000 de envío)
+ const MP_URL_1 = 'https://mpago.la/16kcmx4'; // ← 1 dúo, $27.000 ($20.000 + $7.000 de envío)
  const MP_URL_2 = 'https://mpago.la/2ZqrCm3'; // ← 2 dúos $36.000
  const MP_URL_3 = 'https://mpago.la/18T1oDQ'; // ← 3 dúos $47.000
 
  const MP_AUTO_CONFIRM_ENABLED = true;
  const CLOUD_FN_CREAR_PREFERENCIA = 'https://us-central1-biotina-pg.cloudfunctions.net/crearPreferencia';
- const PRECIOS_NUM = { 1: 25000, 2: 36000, 3: 47000 };
+ const PRECIOS_NUM = { 1: 27000, 2: 36000, 3: 47000 };
 
  const precios = {
- 1: { label: 'Dúo Shampoo + Acondicionador x1 — $25.000 con envío', mp: MP_URL_1 },
+ 1: { label: 'Dúo Shampoo + Acondicionador x1 — $27.000 con envío', mp: MP_URL_1 },
  2: { label: 'Dúo Shampoo + Acondicionador x2 — $36.000', mp: MP_URL_2 },
  3: { label: 'Dúo Shampoo + Acondicionador x3 — $47.000', mp: MP_URL_3 }
  };
@@ -1968,17 +1989,17 @@
  document.querySelectorAll('.qty-option').forEach(o => o.classList.remove('selected'));
  el.classList.add('selected');
  selectedQty = qty;
- const prices = { 1: '25.000', 2: '36.000', 3: '47.000' };
- // Con 1 dúo el envío se cobra ($5.000, ya sumado en los $25.000).
- const textoBoton = qty === 1 ? 'COMPRAR AHORA · $25.000 CON ENVÍO' : `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
+ const prices = { 1: '27.000', 2: '36.000', 3: '47.000' };
+ // Con 1 unidad el envío se cobra ($7.000, ya sumado en los $27.000).
+ const textoBoton = qty === 1 ? 'COMPRAR AHORA · $27.000 CON ENVÍO' : `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
  document.getElementById('buyBtn').textContent = textoBoton;
  document.getElementById('floatingBtn').textContent = textoBoton;
  const envioPrecio = document.getElementById('envioPrecio');
  const envioTachado = document.getElementById('envioTachado');
  const envioNota = document.getElementById('envioNota');
- if (envioPrecio) envioPrecio.textContent = qty === 1 ? '$ 5.000' : 'GRATIS';
+ if (envioPrecio) envioPrecio.textContent = qty === 1 ? '$ 7.000' : 'GRATIS';
  if (envioTachado) envioTachado.style.display = qty === 1 ? 'none' : '';
- if (envioNota) envioNota.textContent = qty === 1 ? 'Envío $5.000 — gratis llevando 2 o más' : 'Envío gratis a todo el país';
+ if (envioNota) envioNota.textContent = qty === 1 ? 'Envío $7.000 — gratis llevando 2 o más' : 'Envío gratis a todo el país';
           actualizarCuotas();
  }
 
@@ -2365,12 +2386,12 @@
  em: ultimo.email, ph: fbNormalizePhone(ultimo.telefono), fn: ultimo.nombre, ln: ultimo.apellido,
  } : {});
  }
- mostrarBannerPago('✅ ¡Pago aprobado! Gracias por tu compra' + (ultimo && ultimo.producto ? ' de ' + ultimo.producto : '') + '. Te contactamos por WhatsApp con el seguimiento del envío.', '#e8f5ee', '#1e6640');
+ mostrarBannerPago('¡Pago aprobado! Gracias por tu compra' + (ultimo && ultimo.producto ? ' de ' + ultimo.producto : '') + '. Te contactamos por WhatsApp con el seguimiento del envío.', '#e8f5ee', '#1e6640');
           setTimeout(mostrarUpsellPostCompra, 900);
  } else if (pago === 'pendiente') {
- mostrarBannerPago('⏳ Tu pago está pendiente de confirmación. Te avisamos apenas se acredite.', '#fff3cd', '#856404');
+ mostrarBannerPago('Tu pago está pendiente de confirmación. Te avisamos apenas se acredite.', '#fff3cd', '#856404');
  } else if (pago === 'rechazado') {
- mostrarBannerPago('⚠️ El pago no se pudo procesar. Podés intentar de nuevo o escribirnos por WhatsApp.', '#fde8e8', '#9b2c2c');
+ mostrarBannerPago('El pago no se pudo procesar. Podés intentar de nuevo o escribirnos por WhatsApp.', '#fde8e8', '#9b2c2c');
  }
  })();
 
