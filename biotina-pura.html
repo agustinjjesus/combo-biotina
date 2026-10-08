@@ -1737,22 +1737,22 @@
  <div class="modal">
  <button class="modal-close" onclick="closeModal()">×</button>
  <h3>¡Un paso más! </h3>
- <p class="modal-sub">Dejanos tus datos y seguí al pago. La dirección te la pedimos después por WhatsApp. Tu pedido: <span id="modalProducto">Biotina Pura x3 — $55.000</span></p>
+ <p class="modal-sub">Dejanos tu nombre y tu WhatsApp y seguí al pago. Por WhatsApp te escribimos para coordinar el envío. Tu pedido: <span id="modalProducto">Biotina Pura x3 — $55.000</span></p>
 
  
  <div class="form-section-title">Datos de contacto</div>
               <div class="form-group">
                 <label>Nombre y apellido</label>
-                <input type="text" id="nombre" placeholder="María González" required />
+                <input type="text" id="nombre" placeholder="María González" autocomplete="name" required />
               </div>
               <div class="form-row">
                 <div class="form-group">
-                  <label>Teléfono</label>
-                  <input type="tel" id="telefono" placeholder="11 1234-5678" required />
+                  <label>WhatsApp</label>
+                  <input type="tel" id="telefono" placeholder="11 1234-5678" inputmode="tel" autocomplete="tel" required />
                 </div>
                 <div class="form-group">
-                  <label>Email</label>
-                  <input type="email" id="email" placeholder="maria@email.com" required />
+                  <label>Email (opcional)</label>
+                  <input type="email" id="email" placeholder="maria@email.com" autocomplete="email" />
                 </div>
               </div>
 
@@ -1905,7 +1905,7 @@
  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
  <script>
  // ─── FIREBASE CONFIG (mismo proyecto que index.html — comparte el panel admin) ──
- const FIREBASE_ENABLED = true;
+ const FIREBASE_ENABLED = false; // apagado el 07/10/2026: la colección de pedidos se lee sin login; los datos del formulario van al n8n propio
  const FIREBASE_CONFIG = {
  apiKey: 'AIzaSyB2lipjGfqeV6gmKRw4vZEnzFHQsF1JxnQ',
  authDomain: 'biotina-pg.firebaseapp.com',
@@ -2033,58 +2033,14 @@
  initDeliveryTimeline();
  });
 
-        // Antes acá se abría un formulario que pedía nombre, teléfono y mail antes
-        // de dejar pagar. Lo abrieron 464 veces en una semana y lo completó nadie:
-        // MercadoPago ya pide esos datos para cobrar, así que se los estábamos
-        // pidiendo dos veces. Ahora el botón lleva derecho a la caja.
+        // Desde el 07/10/2026 el botón abre primero el formulario y recién
+        // después lleva a Mercado Pago: una clienta pagó por link sin dejar
+        // teléfono y casi se pierde el pedido. El 21/09 se había sacado un
+        // formulario de 3 datos obligatorios que nadie completaba; este pide
+        // solo nombre y WhatsApp (el mail es opcional).
         function irAPagar() {
-          const item = precios[selectedQty];
-          const datos = {
-            content_name: item.label,
-            content_type: 'product',
-            currency: 'ARS',
-            value: PRECIOS_NUM[selectedQty],
-          };
-
-          // El InitiateCheckout se dispara acá porque, sin formulario, iniciar el
-          // pago ES esto: irse a MercadoPago. El matcheo queda anónimo (fbp/fbc,
-          // sin mail ni teléfono), pero el evento pasa a tener volumen real y la
-          // campaña puede salir del aprendizaje. Antes disparaba 5 veces por mes.
-          if (typeof fbq === 'function') {
-            const icEventId = genEventId();
-            fbq('track', 'InitiateCheckout', datos, { eventID: icEventId });
-            // sendCapiEvent usa keepalive, así que el envío sobrevive a la
-            // navegación que viene abajo.
-            sendCapiEvent('InitiateCheckout', icEventId, datos);
-          }
-
-          try {
-            const pendiente = {
-              producto: item.label,
-              precio: PRECIOS_NUM[selectedQty],
-              fecha: new Date().toLocaleString('es-AR'),
-              fbp: fbGetCookie('_fbp'),
-              fbc: fbGetFbc(),
-              event_source_url: location.href,
-              formStatus: 'pendiente',
-              timestamp: Date.now(),
-            };
-            const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
-            pedidos.push(pendiente);
-            localStorage.setItem('pedidos', JSON.stringify(pedidos));
-            localStorage.setItem('ultimoPedido', JSON.stringify(pendiente));
-          } catch (e) {}
-
-          const mpUrl = item.mp;
-          if (mpUrl && !mpUrl.startsWith('MERCADOPAGO_URL')) {
-            window.location.href = mpUrl;
-          } else {
-            // Si a un producto le falta el link de pago, al menos que el botón
-            // no quede muerto: vuelve al formulario viejo.
-            openModal();
-          }
+          openModal();
         }
-
  function openModal() {
  document.getElementById('modalProducto').textContent = precios[selectedQty].label;
  document.getElementById('modalOverlay').classList.add('active');
@@ -2110,14 +2066,20 @@
 
  function confirmarCompra() {
  const campos = ['nombre','telefono','email'];
-        const obligatorios = ['nombre','telefono','email'];
+        const obligatorios = ['nombre','telefono'];
  let valido = true;
  obligatorios.forEach(id => {
  const el = document.getElementById(id);
  if (!el.value.trim()) { el.style.borderColor = 'var(--coral)'; valido = false; }
  else { el.style.borderColor = ''; }
  });
- if (!valido) { alert('Por favor completá todos los campos obligatorios.'); return; }
+ if (!valido) { alert('Completá tu nombre y tu WhatsApp para seguir.'); return; }
+ const telEl = document.getElementById('telefono');
+ if (telEl.value.replace(/\D/g, '').length < 8) {
+ telEl.style.borderColor = 'var(--coral)';
+ alert('Revisá el WhatsApp: poné la característica y el número, por ejemplo 11 1234-5678.');
+ return;
+ }
 
  const datos = {};
  campos.forEach(id => { datos[id] = document.getElementById(id).value; });
@@ -2135,19 +2097,25 @@
  // Mismo event_id en los dos para que Meta deduplique en vez de contar doble.
  const icEventId = genEventId();
  const icCustomData = { content_name: precios[selectedQty].label, content_type: 'product', currency: 'ARS', value: PRECIOS_NUM[selectedQty] };
- const icUserData = { em: datos.email, ph: fbNormalizePhone(datos.telefono), fn: datos.nombre, ln: datos.apellido };
+ const icUserData = { em: datos.email || undefined, ph: fbNormalizePhone(datos.telefono), fn: datos.nombre, ln: datos.apellido };
  if (typeof fbq === 'function') {
  fbq('set', 'userData', Object.assign({ country: 'ar' }, icUserData));
  fbq('track', 'InitiateCheckout', icCustomData, { eventID: icEventId });
  sendCapiEvent('InitiateCheckout', icEventId, icCustomData, icUserData);
  }
 
- // Aviso de venta por WhatsApp (bot de n8n) — no bloquea el checkout si falla.
- fetch('https://n8n.productoscapilarespg.com/webhook/aviso-venta', {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify(datos),
- }).catch(e => console.warn('Aviso WhatsApp no disponible:', e));
+ // Aviso al grupo de WhatsApp por n8n. sendBeacon sobrevive a la redirección
+ // a Mercado Pago y, al ir como formulario, el navegador no hace preflight.
+ try {
+ const aviso = new URLSearchParams({
+ nombre: datos.nombre, apellido: datos.apellido, telefono: datos.telefono,
+ email: datos.email || '', producto: datos.producto, pagina: location.pathname,
+ });
+ const urlAviso = 'https://n8n.productoscapilarespg.com/webhook/aviso-venta';
+ if (!(navigator.sendBeacon && navigator.sendBeacon(urlAviso, aviso))) {
+ fetch(urlAviso, { method: 'POST', body: aviso, keepalive: true, mode: 'no-cors' }).catch(() => {});
+ }
+ } catch (e) {}
 
  const nowTs = Date.now();
  const datosTracking = Object.assign({}, datos, {
