@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Panel Admin · Biotina PG</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
@@ -15,7 +16,7 @@
       --green:       #3d7a4f;
       --dark:        #1a1a1a;
       --gray:        #6b6b6b;
-      --gray-light:  #c4bdb5;
+      --gray-light:  #a8a097;
       --white:       #ffffff;
     }
 
@@ -24,28 +25,31 @@
 
     /* ── LOGIN ──────────────────────────────────────────────────── */
     .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-
     .login-box {
-      background: white; border-radius: 20px; padding: 48px 40px;
+      background: white; border-radius: 20px; padding: 44px 36px;
       width: 100%; max-width: 400px; text-align: center;
       box-shadow: 0 8px 40px rgba(0,0,0,0.08);
     }
     .login-box img   { height: 68px; width: auto; margin-bottom: 24px; }
     .login-box h2    { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
-    .login-sub       { font-size: 0.82rem; color: var(--gray); margin-bottom: 32px; }
-    .login-error     { display: none; font-size: 0.8rem; color: var(--coral); margin-top: 14px; }
+    .login-sub       { font-size: 0.82rem; color: var(--gray); margin-bottom: 28px; }
+    .login-error     { display: none; font-size: 0.82rem; color: var(--coral-dark); margin-top: 14px; }
+    .login-check     { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--gray); margin: 2px 0 18px; text-align: left; cursor: pointer; }
+    .login-check input { width: 16px; height: 16px; accent-color: var(--coral); }
 
-    /* ── SHARED FIELD ───────────────────────────────────────────── */
+    /* ── CAMPOS ─────────────────────────────────────────────────── */
     .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; text-align: left; }
     .field label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dark); }
-    .field input, .field select {
+    .field input, .field select, .field textarea {
       border: 2px solid var(--cream2); border-radius: 10px; padding: 11px 14px;
-      font-family: 'Outfit', sans-serif; font-size: 0.88rem; color: var(--dark);
-      background: var(--cream); outline: none; transition: border-color 0.2s;
+      font-family: 'Outfit', sans-serif; font-size: 0.9rem; color: var(--dark);
+      background: var(--cream); outline: none; transition: border-color 0.2s; width: 100%;
     }
-    .field input:focus, .field select:focus { border-color: var(--coral); background: white; }
+    .field textarea { resize: vertical; min-height: 44px; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--coral); background: white; }
+    .field-hint { font-size: 0.72rem; color: var(--gray); }
 
-    /* ── BUTTONS ────────────────────────────────────────────────── */
+    /* ── BOTONES ────────────────────────────────────────────────── */
     .btn-primary {
       background: var(--coral); color: white; border: none;
       padding: 14px 24px; border-radius: 12px; width: 100%;
@@ -53,617 +57,535 @@
       cursor: pointer; transition: background 0.2s;
     }
     .btn-primary:hover { background: var(--coral-dark); }
+    .btn-primary:disabled { opacity: 0.6; cursor: wait; }
 
     .btn-dark {
       background: var(--dark); color: white; border: none;
-      padding: 11px 24px; border-radius: 10px;
-      font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 600;
+      padding: 12px 24px; border-radius: 10px;
+      font-family: 'Outfit', sans-serif; font-size: 0.88rem; font-weight: 600;
       cursor: pointer; transition: background 0.2s;
     }
     .btn-dark:hover { background: #333; }
+    .btn-dark:disabled { opacity: 0.6; cursor: wait; }
 
-    .btn-logout {
+    .btn-line {
       background: none; border: 2px solid var(--cream2); color: var(--gray);
-      padding: 8px 18px; border-radius: 8px; font-family: 'Outfit', sans-serif;
-      font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+      padding: 8px 16px; border-radius: 8px; font-family: 'Outfit', sans-serif;
+      font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap;
     }
-    .btn-logout:hover { border-color: var(--coral); color: var(--coral); }
+    .btn-line:hover { border-color: var(--coral); color: var(--coral); }
 
-    /* ── NAV ────────────────────────────────────────────────────── */
-    .admin-nav {
-      background: white; padding: 14px 48px;
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid var(--cream2); position: sticky; top: 0;
-      z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-    }
-    .nav-left    { display: flex; align-items: center; gap: 14px; }
-    .nav-left img { height: 40px; width: auto; }
-    .admin-nav h1 { font-size: 1.2rem; font-weight: 700; }
-    .badge-admin {
-      background: var(--coral); color: white; font-size: 0.58rem;
-      font-weight: 700; letter-spacing: 0.1em; padding: 3px 8px;
-      border-radius: 4px; text-transform: uppercase;
-    }
-
-    /* ── BODY ───────────────────────────────────────────────────── */
-    .admin-body { padding: 36px 48px; max-width: 1500px; margin: 0 auto; }
-
-    /* ── STATS ──────────────────────────────────────────────────── */
-    .stats-grid {
-      display: grid; grid-template-columns: repeat(7, 1fr);
-      gap: 16px; margin-bottom: 32px;
-    }
-    .stat-card    { background: white; border-radius: 14px; padding: 20px 18px; }
-    .stat-label   { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray); margin-bottom: 10px; }
-    .stat-value   { font-size: 2rem; font-weight: 700; line-height: 1; margin-bottom: 4px; }
-    .stat-sub     { font-size: 0.7rem; color: var(--gray-light); }
-    .c-coral .stat-value { color: var(--coral); }
-    .c-green .stat-value { color: var(--green); }
-    .c-blue  .stat-value { color: #1d4ed8; }
-    .c-warn  .stat-value { color: #c08000; }
-
-    /* ── GANANCIAS POR PRODUCTO ──────────────────────────────── */
-    .dist-section {
-      background: white; border-radius: 14px;
-      padding: 22px 24px; margin-bottom: 28px;
-    }
-    .dist-header {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      gap: 16px; margin-bottom: 6px; flex-wrap: wrap;
-    }
-    .dist-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
-    .dist-sub { font-size: 0.78rem; color: var(--gray); margin-bottom: 16px; }
-    .dist-sub strong { color: var(--green); }
-    .dist-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
-    }
-    .dist-card {
-      border: 1.5px solid var(--cream2); border-radius: 12px;
-      padding: 18px 16px;
-    }
-    .dist-card-emoji { font-size: 1.3rem; margin-bottom: 8px; }
-    .dist-card-label { font-size: 0.78rem; font-weight: 600; color: var(--dark); margin-bottom: 10px; line-height: 1.3; }
-    .prod-stat-row {
-      display: flex; align-items: center; justify-content: space-between;
-      font-size: 0.8rem; color: var(--gray); padding: 4px 0;
-      border-top: 1px solid var(--cream2);
-    }
-    .prod-stat-row:first-of-type { border-top: none; }
-    .prod-stat-row strong { color: var(--dark); font-weight: 700; }
-    .prod-stat-ganancia strong { color: var(--green); font-size: 0.95rem; }
-    @media (max-width: 900px) { .dist-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 480px) { .dist-grid { grid-template-columns: 1fr; } }
-
-    /* ── VISITAS Y EMBUDO ───────────────────────────────────────── */
-    .visits-chart { margin-bottom: 4px; }
-    .visits-bars {
-      display: flex; align-items: flex-end; gap: 5px;
-      height: 106px; border-bottom: 1px solid var(--cream2);
-    }
-    .visits-col { flex: 0 0 24px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
-    .visits-bar-val { font-size: 0.6rem; color: var(--gray); font-weight: 700; margin-bottom: 3px; }
-    .visits-bar { width: 14px; background: var(--coral-light); border-radius: 3px 3px 0 0; min-height: 2px; transition: height 0.3s; }
-    .visits-bar.is-peak { background: var(--coral); }
-    .visits-axis { display: flex; gap: 5px; margin-top: 6px; }
-    .visits-bar-day { flex: 0 0 24px; text-align: center; font-size: 0.6rem; color: var(--gray-light); white-space: nowrap; }
-    .visits-empty { text-align: center; padding: 30px 10px; color: var(--gray); font-size: 0.82rem; }
-
-    .page-bar-list { margin-top: 22px; display: flex; flex-direction: column; gap: 12px; }
-    .page-bar-row { display: grid; grid-template-columns: 140px 1fr 40px; align-items: center; gap: 12px; }
-    .page-bar-label { font-size: 0.8rem; font-weight: 600; color: var(--dark); }
-    .page-bar-track { height: 8px; border-radius: 4px; background: var(--cream); overflow: hidden; }
-    .page-bar-fill { height: 100%; border-radius: 4px; background: var(--coral); }
-    .page-bar-value { font-size: 0.85rem; font-weight: 700; color: var(--dark); text-align: right; }
-    @media (max-width: 560px) { .page-bar-row { grid-template-columns: 96px 1fr 32px; gap: 8px; } }
-
-    .funnel-row { display: flex; flex-direction: column; gap: 14px; margin-top: 26px; }
-    .funnel-step-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
-    .funnel-step-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray); }
-    .funnel-step-value { font-size: 1rem; font-weight: 700; color: var(--dark); }
-    .funnel-step-pct { font-size: 0.72rem; color: var(--gray-light); font-weight: 600; margin-left: 6px; }
-    .funnel-track { height: 10px; border-radius: 5px; background: var(--cream); overflow: hidden; }
-    .funnel-fill { height: 100%; border-radius: 5px; background: var(--coral); transition: width 0.3s; }
-
-    /* ── FORM SECTION ───────────────────────────────────────────── */
-    .form-section { background: white; border-radius: 14px; margin-bottom: 28px; overflow: hidden; }
-
-    .form-toggle {
-      width: 100%; display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 22px; background: none; border: none;
-      font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 600;
-      color: var(--dark); cursor: pointer; transition: background 0.2s;
-    }
-    .form-toggle:hover { background: var(--cream); }
-    .form-toggle .arrow { transition: transform 0.3s; color: var(--coral); font-size: 1.1rem; }
-    .form-toggle.open .arrow { transform: rotate(45deg); }
-
-    .form-inner { display: none; padding: 4px 22px 22px; border-top: 1px solid var(--cream2); }
-    .form-inner.open { display: block; }
-
-    .form-grid {
-      display: grid; grid-template-columns: repeat(5, 1fr);
-      gap: 12px; margin: 16px 0;
-    }
-
-    /* ── TABLE ──────────────────────────────────────────────────── */
-    .table-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 14px; flex-wrap: wrap; gap: 10px;
-    }
-    .table-header h2 { font-size: 1.3rem; font-weight: 700; }
-    .table-controls  { display: flex; gap: 8px; flex-wrap: wrap; }
-
-    .input-search, .input-filter {
-      border: 2px solid var(--cream2); border-radius: 10px; padding: 9px 13px;
-      font-family: 'Outfit', sans-serif; font-size: 0.82rem; color: var(--dark);
-      background: white; outline: none; transition: border-color 0.2s;
-    }
-    .input-search { width: 210px; }
-    .input-search:focus, .input-filter:focus { border-color: var(--coral); }
-
-    .table-wrap { background: white; border-radius: 14px; overflow-x: auto; box-shadow: 0 2px 16px rgba(0,0,0,0.04); }
-
-    table { width: 100%; border-collapse: collapse; min-width: 1200px; }
-
-    thead { background: var(--dark); color: white; }
-    thead th {
-      padding: 12px 13px; font-size: 0.62rem; font-weight: 600;
-      letter-spacing: 0.1em; text-transform: uppercase; text-align: left; white-space: nowrap;
-    }
-    thead th.th-r { text-align: right; }
-
-    tbody tr  { border-bottom: 1px solid var(--cream2); transition: background 0.15s; }
-    tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: var(--cream); }
-    tbody td  { padding: 10px 13px; font-size: 0.8rem; vertical-align: middle; white-space: nowrap; }
-
-    tfoot     { border-top: 2px solid var(--dark); background: #f8f4ef; }
-    tfoot td  { padding: 10px 13px; font-size: 0.78rem; font-weight: 700; white-space: nowrap; }
-
-    .td-name  { font-weight: 600; max-width: 130px; overflow: hidden; text-overflow: ellipsis; }
-    .td-phone { color: var(--gray); font-size: 0.77rem; }
-    .td-r     { text-align: right; font-variant-numeric: tabular-nums; }
-    .td-mp    { color: var(--coral); }
-    .td-gain  { color: var(--green); font-weight: 600; }
-    .td-date  { color: var(--gray-light); font-size: 0.72rem; }
-
-    /* ── STATUS SELECT ──────────────────────────────────────────── */
-    .status-sel {
-      border: none; border-radius: 20px; padding: 5px 12px;
-      font-family: 'Outfit', sans-serif; font-size: 0.7rem; font-weight: 600;
-      cursor: pointer; outline: none; -webkit-appearance: none; appearance: none;
-    }
-    .s-confirmado    { background: #e8f5ee; color: #1e6640; }
-    .s-abandonado    { background: #fff3cd; color: #856404; }
-    .s-contactado    { background: #dbeafe; color: #1d4ed8; }
-    .s-no_interesado { background: #fde2e1; color: #b3261e; }
-    .s-cerrado       { background: #fef0ec; color: var(--coral-dark); }
-
-    .fst-pendiente     { background: #fff3cd; color: #856404; }
-    .fst-aprobado      { background: #e8f5ee; color: #1e6640; }
-    .fst-rechazado     { background: #fef0ec; color: var(--coral-dark); }
-    .fst-sinconfirmar  { background: #f3f4f6; color: #6b7280; }
-
-    /* ── COLOR DE FILA SEGÚN ESTADO (para distinguir de un vistazo) ──── */
-    tbody tr.row-confirmado    { background: #f0faf4; }
-    tbody tr.row-confirmado:hover    { background: #e4f5ea; }
-    tbody tr.row-cerrado       { background: #f0faf4; }
-    tbody tr.row-cerrado:hover       { background: #e4f5ea; }
-    tbody tr.row-contactado    { background: #f2f2f0; }
-    tbody tr.row-contactado:hover    { background: #e8e8e5; }
-    tbody tr.row-no_interesado { background: #fdf0ef; }
-    tbody tr.row-no_interesado:hover { background: #fbe3e1; }
-
-    /* ── SECCIONES NUEVAS (Formularios / Abandonados) ─────────────── */
-    .section-divider {
-      border: none; border-top: 2px solid var(--cream2);
-      margin: 48px 0 28px;
-    }
-    .section-title-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
-    .section-title { font-size: 1.3rem; font-weight: 700; }
-    .section-sub   { font-size: 0.82rem; color: var(--gray); margin-bottom: 20px; }
-    .section-count-badge {
-      background: #fff3cd; color: #856404; font-size: 0.72rem; font-weight: 700;
-      padding: 3px 11px; border-radius: 12px;
-    }
-    .section-count-badge.is-alert {
-      background: var(--coral); color: white; animation: badgePulse 1.6s ease-in-out infinite;
-    }
-    @keyframes badgePulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(224,122,95,0.5); }
-      50% { box-shadow: 0 0 0 5px rgba(224,122,95,0); }
-    }
-
-    /* ── WA BUTTON ──────────────────────────────────────────────── */
-    .btn-wa {
+    .btn-wa, .btn-prep, .btn-mini {
       display: inline-flex; align-items: center; gap: 5px;
-      background: #25d366; color: white; border: none; border-radius: 7px;
-      padding: 6px 11px; font-family: 'Outfit', sans-serif;
-      font-size: 0.72rem; font-weight: 600; cursor: pointer;
-      text-decoration: none; transition: background 0.2s; white-space: nowrap;
+      border: none; border-radius: 7px; padding: 6px 10px;
+      font-family: 'Outfit', sans-serif; font-size: 0.72rem; font-weight: 600;
+      cursor: pointer; text-decoration: none; transition: background 0.2s; white-space: nowrap;
     }
+    .btn-wa   { background: #25d366; color: white; }
     .btn-wa:hover { background: #1ebe5a; }
-
-    /* ── PREP BUTTON (enviarme el pedido para preparar) ───────────── */
-    .btn-prep {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: var(--dark); color: white; border: none; border-radius: 7px;
-      padding: 6px 11px; font-family: 'Outfit', sans-serif;
-      font-size: 0.72rem; font-weight: 600; cursor: pointer;
-      text-decoration: none; transition: background 0.2s; white-space: nowrap;
-    }
+    .btn-prep { background: var(--dark); color: white; }
     .btn-prep:hover { background: #333; }
+    .btn-mini { background: var(--cream); color: var(--dark); border: 1.5px solid var(--cream2); }
+    .btn-mini:hover { border-color: var(--coral); color: var(--coral-dark); }
+    .btn-ok   { background: #e8f5ee; color: #1e6640; border: 1.5px solid #cfe9da; }
+    .btn-ok:hover { background: #d6eee0; color: #1e6640; }
 
-    /* ── DELETE BUTTON ──────────────────────────────────────────── */
     .btn-delete {
       display: inline-flex; align-items: center; justify-content: center;
       background: none; border: 1.5px solid var(--cream2); border-radius: 7px;
-      width: 30px; height: 30px; font-size: 0.85rem; cursor: pointer;
-      color: var(--gray); transition: all 0.2s;
+      width: 30px; height: 30px; cursor: pointer; color: var(--gray); transition: all 0.2s;
     }
     .btn-delete:hover { border-color: var(--coral); background: #fef0ec; color: var(--coral-dark); }
+    .acciones { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 
-    /* ── EMPTY STATE ────────────────────────────────────────────── */
-    .empty-state { text-align: center; padding: 56px 20px; }
-    .empty-state p  { font-size: 0.85rem; color: var(--gray); }
+    /* ── NAV ────────────────────────────────────────────────────── */
+    .admin-nav {
+      background: white; padding: 12px 48px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      border-bottom: 1px solid var(--cream2); position: sticky; top: 0;
+      z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .nav-left    { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .nav-left img { height: 38px; width: auto; }
+    .admin-nav h1 { font-size: 1.2rem; font-weight: 700; white-space: nowrap; }
+    .nav-right   { display: flex; gap: 8px; align-items: center; }
+    .sync-info   { font-size: 0.7rem; color: var(--gray-light); white-space: nowrap; }
+
+    /* ── CUERPO ─────────────────────────────────────────────────── */
+    .admin-body { padding: 30px 48px 60px; max-width: 1500px; margin: 0 auto; }
+    .periodo-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .periodo-row h2 { font-size: 1.05rem; font-weight: 700; }
+    .periodo-tabs { display: flex; gap: 4px; background: white; border-radius: 10px; padding: 4px; }
+    .periodo-tabs button {
+      border: none; background: none; padding: 7px 12px; border-radius: 7px; cursor: pointer;
+      font-family: 'Outfit', sans-serif; font-size: 0.78rem; font-weight: 600; color: var(--gray);
+    }
+    .periodo-tabs button.on { background: var(--dark); color: white; }
+
+    /* ── NÚMEROS ────────────────────────────────────────────────── */
+    .stats-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; margin-bottom: 28px; }
+    .stat-card  { background: white; border-radius: 14px; padding: 18px 16px; }
+    .stat-label { font-size: 0.64rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray); margin-bottom: 8px; }
+    .stat-value { font-size: 1.8rem; font-weight: 700; line-height: 1.1; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+    .stat-sub   { font-size: 0.72rem; color: var(--gray-light); }
+    .c-coral .stat-value { color: var(--coral); }
+    .c-green .stat-value { color: var(--green); }
+    .c-blue  .stat-value { color: #1d4ed8; }
+    .c-warn  .stat-value { color: #a86b00; }
+
+    /* ── SECCIONES ──────────────────────────────────────────────── */
+    .dist-section { background: white; border-radius: 14px; padding: 22px 24px; margin-bottom: 24px; }
+    .dist-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+    .dist-sub { font-size: 0.8rem; color: var(--gray); margin-bottom: 16px; }
+    .dist-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .dist-card { border: 1.5px solid var(--cream2); border-radius: 12px; padding: 16px; }
+    .dist-card-label { font-size: 0.82rem; font-weight: 600; margin-bottom: 8px; line-height: 1.3; }
+    .prod-stat-row { display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; color: var(--gray); padding: 4px 0; border-top: 1px solid var(--cream2); }
+    .prod-stat-row:first-of-type { border-top: none; }
+    .prod-stat-row strong { color: var(--dark); font-weight: 700; }
+    .prod-stat-ganancia strong { color: var(--green); }
+
+    .visits-bars { display: flex; align-items: flex-end; gap: 5px; height: 106px; border-bottom: 1px solid var(--cream2); overflow-x: auto; }
+    .visits-col { flex: 0 0 24px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+    .visits-bar-val { font-size: 0.6rem; color: var(--gray); font-weight: 700; margin-bottom: 3px; }
+    .visits-bar { width: 14px; background: var(--coral-light); border-radius: 3px 3px 0 0; min-height: 2px; }
+    .visits-bar.is-peak { background: var(--coral); }
+    .visits-axis { display: flex; gap: 5px; margin-top: 6px; overflow: hidden; }
+    .visits-bar-day { flex: 0 0 24px; text-align: center; font-size: 0.58rem; color: var(--gray-light); white-space: nowrap; }
+    .visits-empty { text-align: center; padding: 30px 10px; color: var(--gray); font-size: 0.82rem; }
+    .page-bar-list { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+    .page-bar-row { display: grid; grid-template-columns: 150px 1fr 48px; align-items: center; gap: 12px; }
+    .page-bar-label { font-size: 0.8rem; font-weight: 600; }
+    .page-bar-track { height: 8px; border-radius: 4px; background: var(--cream); overflow: hidden; }
+    .page-bar-fill { height: 100%; border-radius: 4px; background: var(--coral); }
+    .page-bar-value { font-size: 0.85rem; font-weight: 700; text-align: right; }
+    .funnel-row { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+    .funnel-step-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 5px; }
+    .funnel-step-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray); }
+    .funnel-step-value { font-size: 1rem; font-weight: 700; }
+    .funnel-step-pct { font-size: 0.72rem; color: var(--gray-light); font-weight: 600; margin-left: 6px; }
+    .funnel-track { height: 10px; border-radius: 5px; background: var(--cream); overflow: hidden; }
+    .funnel-fill { height: 100%; border-radius: 5px; background: var(--coral); }
+
+    /* ── FORMULARIO DE VENTA ────────────────────────────────────── */
+    .form-section { background: white; border-radius: 14px; margin-bottom: 28px; overflow: hidden; }
+    .form-toggle {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 22px; background: none; border: none;
+      font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700;
+      color: var(--dark); cursor: pointer;
+    }
+    .form-toggle:hover { background: var(--cream); }
+    .form-toggle .arrow { transition: transform 0.3s; color: var(--coral); font-size: 1.3rem; line-height: 1; }
+    .form-toggle.open .arrow { transform: rotate(45deg); }
+    .form-inner { display: none; padding: 4px 22px 22px; border-top: 1px solid var(--cream2); }
+    .form-inner.open { display: block; }
+    .form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 14px; margin: 16px 0 4px; }
+    .form-grid .span-2 { grid-column: span 2; }
+    .form-aviso { background: #fff7e6; color: #7a5200; border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; margin-top: 14px; display: none; }
+    .form-pie { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .form-calc { font-size: 0.8rem; color: var(--gray); }
+    .form-calc strong { color: var(--green); }
+
+    /* ── TABLAS ─────────────────────────────────────────────────── */
+    .table-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+    .table-header h2 { font-size: 1.3rem; font-weight: 700; }
+    .table-controls  { display: flex; gap: 8px; flex-wrap: wrap; }
+    .input-search, .input-filter {
+      border: 2px solid var(--cream2); border-radius: 10px; padding: 9px 13px;
+      font-family: 'Outfit', sans-serif; font-size: 0.85rem; color: var(--dark);
+      background: white; outline: none;
+    }
+    .input-search { width: 220px; }
+    .input-search:focus, .input-filter:focus { border-color: var(--coral); }
+
+    .table-wrap { background: white; border-radius: 14px; overflow-x: auto; box-shadow: 0 2px 16px rgba(0,0,0,0.04); }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: var(--dark); color: white; }
+    thead th { padding: 12px 12px; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; text-align: left; white-space: nowrap; }
+    thead th.th-r { text-align: right; }
+    tbody tr { border-bottom: 1px solid var(--cream2); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td { padding: 10px 12px; font-size: 0.82rem; vertical-align: middle; }
+    tfoot { border-top: 2px solid var(--dark); background: #f8f4ef; }
+    tfoot td { padding: 10px 12px; font-size: 0.8rem; font-weight: 700; }
+    .td-r { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .td-gain { color: var(--green); font-weight: 600; }
+    .td-date { color: var(--gray); font-size: 0.75rem; white-space: nowrap; }
+    .cli-nombre { font-weight: 600; }
+    .cli-sub { font-size: 0.74rem; color: var(--gray); }
+    .nota { font-size: 0.74rem; color: #7a5200; background: #fff7e6; border-radius: 6px; padding: 2px 7px; display: inline-block; margin-top: 3px; max-width: 260px; }
+    tbody tr.row-a_coordinar { background: #fffaf0; }
+    tbody tr.row-cancelado   { background: #f6f4f2; color: var(--gray); }
+    tbody tr.row-cancelado .td-gain { color: var(--gray-light); text-decoration: line-through; }
+
+    .status-sel, .pago-sel {
+      border: none; border-radius: 20px; padding: 5px 12px;
+      font-family: 'Outfit', sans-serif; font-size: 0.72rem; font-weight: 600;
+      cursor: pointer; outline: none; -webkit-appearance: none; appearance: none;
+    }
+    .pago-sel { background: var(--cream); color: var(--dark); }
+    .s-a_coordinar { background: #fff3cd; color: #856404; }
+    .s-pagado      { background: #e8f5ee; color: #1e6640; }
+    .s-enviado     { background: #dbeafe; color: #1d4ed8; }
+    .s-entregado   { background: #1e6640; color: white; }
+    .s-cancelado   { background: #ece8e3; color: var(--gray); }
+
+    .section-title-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+    .section-title { font-size: 1.3rem; font-weight: 700; }
+    .section-sub   { font-size: 0.82rem; color: var(--gray); margin-bottom: 16px; }
+    .section-count-badge { background: #fff3cd; color: #856404; font-size: 0.72rem; font-weight: 700; padding: 3px 11px; border-radius: 12px; }
+    .section-count-badge.is-alert { background: var(--coral); color: white; }
+    .section-divider { border: none; border-top: 2px solid var(--cream2); margin: 44px 0 26px; }
+
+    .empty-state { text-align: center; padding: 44px 20px; font-size: 0.85rem; color: var(--gray); }
+
+    .clave-box { background: white; border-radius: 14px; padding: 20px 22px; max-width: 520px; }
+    .clave-box .form-grid { grid-template-columns: 1fr 1fr; }
+
+    /* ── AVISOS ─────────────────────────────────────────────────── */
+    .toast {
+      position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(20px);
+      background: var(--dark); color: white; padding: 12px 18px; border-radius: 12px;
+      font-size: 0.85rem; font-weight: 500; opacity: 0; pointer-events: none;
+      transition: all 0.25s; z-index: 300; max-width: calc(100% - 32px); text-align: center;
+    }
+    .toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.error { background: var(--coral-dark); }
 
     /* ── RESPONSIVE ─────────────────────────────────────────────── */
     @media (max-width: 1200px) {
-      .admin-body  { padding: 24px 20px; }
-      .admin-nav   { padding: 14px 20px; }
+      .admin-body  { padding: 22px 20px 50px; }
+      .admin-nav   { padding: 12px 20px; }
       .stats-grid  { grid-template-columns: repeat(3, 1fr); }
-      .form-grid   { grid-template-columns: repeat(3, 1fr); }
     }
-    @media (max-width: 768px) {
-      .stats-grid  { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    @media (max-width: 900px) {
       .form-grid   { grid-template-columns: repeat(2, 1fr); }
-      .table-header { flex-direction: column; align-items: flex-start; }
-      .input-search { width: 100%; }
+      .dist-grid   { grid-template-columns: 1fr; }
+    }
+    /* En el celular cada venta es una tarjeta en vez de una fila */
+    @media (max-width: 760px) {
+      .stats-grid  { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .stat-value  { font-size: 1.45rem; }
       .admin-nav h1 { font-size: 1rem; }
+      .nav-left img, .sync-info { display: none; }
+      .table-header { flex-direction: column; align-items: stretch; }
+      .input-search { width: 100%; flex: 1; }
+      .table-wrap { background: none; box-shadow: none; overflow: visible; }
+      table.tarjetas, table.tarjetas tbody, table.tarjetas tr, table.tarjetas td, table.tarjetas tfoot { display: block; width: 100%; }
+      table.tarjetas thead { display: none; }
+      table.tarjetas tbody tr { background: white; border-radius: 14px; margin-bottom: 10px; padding: 10px 14px; border: none; box-shadow: 0 1px 8px rgba(0,0,0,0.04); }
+      table.tarjetas tbody tr.row-a_coordinar { background: #fffaf0; }
+      table.tarjetas tbody tr.row-cancelado { background: #f6f4f2; }
+      table.tarjetas td { padding: 5px 0; border: none; display: flex; justify-content: space-between; align-items: center; gap: 12px; text-align: right; }
+      table.tarjetas td::before { content: attr(data-label); font-size: 0.64rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); text-align: left; flex-shrink: 0; }
+      table.tarjetas td.td-cliente { display: block; text-align: left; padding-bottom: 8px; border-bottom: 1px solid var(--cream2); margin-bottom: 4px; }
+      table.tarjetas td.td-cliente::before { content: none; }
+      table.tarjetas td.td-acciones { justify-content: flex-end; padding-top: 8px; }
+      table.tarjetas td.td-acciones::before { content: none; }
+      table.tarjetas td.td-vacio { display: block; }
+      table.tarjetas td.td-vacio::before { content: none; }
+      table.tarjetas tfoot tr { background: white; border-radius: 14px; padding: 10px 14px; display: block; }
+      table.tarjetas tfoot td { padding: 3px 0; }
+      table.tarjetas tfoot td:empty { display: none; }
+      .nota { max-width: none; }
     }
     @media (max-width: 480px) {
-      .stats-grid  { grid-template-columns: 1fr 1fr; }
-      .stat-value  { font-size: 1.6rem; }
-      .form-grid   { grid-template-columns: 1fr; }
+      .form-grid, .clave-box .form-grid { grid-template-columns: 1fr; }
+      .form-grid .span-2 { grid-column: auto; }
+      .page-bar-row { grid-template-columns: 100px 1fr 36px; gap: 8px; }
+      .periodo-tabs button { padding: 7px 9px; }
+      .login-box { padding: 36px 24px; }
     }
   </style>
-  <!-- Firebase SDK (sincronización en tiempo real) -->
+  <!-- Firebase: solo para el contador de visitas (colección "estadisticas").
+       Los pedidos y las ventas ya no están en Firebase. -->
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-  <!-- ── LOGIN ───────────────────────────────────────────────────────── -->
-  <div class="login-screen" id="loginScreen">
+  <!-- ── INGRESO ─────────────────────────────────────────────────────── -->
+  <div class="login-screen" id="loginScreen" style="display:none">
     <div class="login-box">
       <img src="logo.png" alt="Biotina PG" onerror="this.style.display='none'" />
-      <h2>Panel Administrativo</h2>
-      <p class="login-sub">Biotina PG · Acceso exclusivo</p>
+      <h2>Panel de Ventas</h2>
+      <p class="login-sub">Productos Capilares PG</p>
       <div class="field">
-        <label>Contraseña</label>
-        <input type="password" id="pwInput" placeholder="••••••••"
-          onkeydown="if(event.key==='Enter') login()" />
+        <label for="pwInput">Contraseña</label>
+        <input type="password" id="pwInput" autocomplete="current-password" onkeydown="if(event.key==='Enter') login()" />
       </div>
-      <button class="btn-primary" onclick="login()">Ingresar →</button>
-      <p class="login-error" id="loginError">Contraseña incorrecta. Intentá de nuevo.</p>
+      <label class="login-check"><input type="checkbox" id="recordar" checked /> Recordarla en este dispositivo</label>
+      <button class="btn-primary" id="btnLogin" onclick="login()">Ingresar</button>
+      <p class="login-error" id="loginError"></p>
     </div>
   </div>
 
   <!-- ── PANEL ────────────────────────────────────────────────────────── -->
   <div id="adminPanel" style="display:none">
 
-    <!-- NAV -->
     <nav class="admin-nav">
       <div class="nav-left">
         <img src="logo.png" alt="Biotina PG" onerror="this.style.display='none'" />
         <h1>Panel de Ventas</h1>
-        <span class="badge-admin">Admin</span>
-        <span id="syncBadge" style="font-size:0.62rem;font-weight:600;letter-spacing:0.08em;padding:3px 8px;border-radius:4px;background:#f0faf4;color:#3d7a4f;display:none">Firebase</span>
+        <span class="sync-info" id="syncInfo"></span>
       </div>
-      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+      <div class="nav-right">
+        <button class="btn-line" onclick="cargar(true)">Actualizar</button>
+        <button class="btn-line" onclick="salir()">Salir</button>
+      </div>
     </nav>
 
     <div class="admin-body">
 
-      <!-- STATS -->
-      <div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:10px;">
-        <select id="statsPeriodo" onchange="setStatsPeriodo(this.value)"
-          style="border:2px solid var(--cream2);border-radius:8px;padding:6px 10px;font-family:'Outfit',sans-serif;font-size:0.8rem;font-weight:600;color:var(--dark);background:white;">
-          <option value="mes">Este mes</option>
-          <option value="todo" selected>Todo el tiempo</option>
-        </select>
+      <!-- NÚMEROS -->
+      <div class="periodo-row">
+        <h2 id="lblPeriodo">Este mes</h2>
+        <div class="periodo-tabs" id="periodoTabs">
+          <button data-p="hoy" onclick="setPeriodo('hoy')">Hoy</button>
+          <button data-p="semana" onclick="setPeriodo('semana')">7 días</button>
+          <button data-p="mes" onclick="setPeriodo('mes')" class="on">Este mes</button>
+          <button data-p="mes_pasado" onclick="setPeriodo('mes_pasado')">Mes pasado</button>
+          <button data-p="todo" onclick="setPeriodo('todo')">Todo</button>
+        </div>
       </div>
       <div class="stats-grid">
-        <div class="stat-card c-blue">
-          <div class="stat-label">Visitas hoy</div>
-          <div class="stat-value" id="sVisitasHoy">0</div>
-          <div class="stat-sub">gente que entró a la web hoy</div>
-        </div>
         <div class="stat-card c-coral">
-          <div class="stat-label">Ventas hoy</div>
-          <div class="stat-value" id="sHoy">0</div>
-          <div class="stat-sub">pedidos confirmados hoy</div>
-        </div>
-        <div class="stat-card c-warn">
-          <div class="stat-label">Carritos hoy</div>
-          <div class="stat-value" id="sCarritosHoy">0</div>
-          <div class="stat-sub">carritos/formularios nuevos hoy</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label" id="lblVentasMes">Ventas del mes</div>
-          <div class="stat-value" id="sMes">0</div>
-          <div class="stat-sub">pedidos confirmados</div>
+          <div class="stat-label">Ventas</div>
+          <div class="stat-value" id="sVentas">0</div>
+          <div class="stat-sub" id="sUnidades">0 frascos o combos</div>
         </div>
         <div class="stat-card c-blue">
-          <div class="stat-label" id="lblIngresosMes">Ingresos brutos del mes</div>
+          <div class="stat-label">Ingresos</div>
           <div class="stat-value" id="sIngresos">$0</div>
-          <div class="stat-sub">precio de venta total</div>
+          <div class="stat-sub">lo cobrado</div>
         </div>
         <div class="stat-card c-green">
-          <div class="stat-label" id="lblGananciaMes">Ganancia neta del mes</div>
+          <div class="stat-label">Ganancia</div>
           <div class="stat-value" id="sGanancia">$0</div>
-          <div class="stat-sub">después de todos los costos</div>
+          <div class="stat-sub">sin contar la publicidad</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ticket promedio</div>
+          <div class="stat-value" id="sTicket">$0</div>
+          <div class="stat-sub">por venta</div>
         </div>
         <div class="stat-card c-warn">
-          <div class="stat-label">Carritos abandonados</div>
-          <div class="stat-value" id="sAbandoned">0</div>
-          <div class="stat-sub">pendientes de contacto</div>
+          <div class="stat-label">A cobrar</div>
+          <div class="stat-value" id="sACobrar">0</div>
+          <div class="stat-sub" id="sACobrarMonto">pagan al recibir</div>
+        </div>
+        <div class="stat-card c-blue">
+          <div class="stat-label">Visitas a la web</div>
+          <div class="stat-value" id="sVisitas">0</div>
+          <div class="stat-sub" id="sVisitasHoy">hoy: 0</div>
         </div>
       </div>
 
-      <!-- VISITAS Y EMBUDO DE CONVERSIÓN -->
+      <!-- POR PRODUCTO -->
       <div class="dist-section">
-        <div class="dist-header">
-          <div>
-            <div class="dist-title" id="lblVisitasPeriodo">Visitas y embudo de conversión</div>
-            <p class="dist-sub">Visitas a la web (últimos 14 días) y cuántas terminan en carrito, formulario y venta</p>
-          </div>
-        </div>
-        <div class="visits-chart" id="visitsChart"></div>
-        <div class="page-bar-list" id="visitsByPageGrid"></div>
-        <div class="funnel-row" id="funnelRow"></div>
-      </div>
-
-      <!-- GANANCIAS POR PRODUCTO -->
-      <div class="dist-section">
-        <div class="dist-header">
-          <div>
-            <div class="dist-title" id="lblProdPeriodo">Ganancias por producto (este mes)</div>
-            <p class="dist-sub">Pedidos confirmados del mes, agrupados por producto</p>
-          </div>
-        </div>
+        <div class="dist-title">Por producto</div>
+        <p class="dist-sub">Ventas cobradas del período. La ganancia descuenta producto, envío por Correo ($9.000) y la comisión de Mercado Pago (6,6%); no descuenta la publicidad.</p>
         <div class="dist-grid" id="prodGrid"></div>
       </div>
 
-
-      <!-- FORM NUEVA VENTA -->
-      <div class="form-section">
+      <!-- CARGAR VENTA -->
+      <div class="form-section" id="formSection">
         <button class="form-toggle" id="formToggle" onclick="toggleForm()">
-          <span>Registrar venta manual</span>
+          <span id="formTitulo">Anotar una venta</span>
           <span class="arrow">+</span>
         </button>
         <div class="form-inner" id="formInner">
           <div class="form-grid">
             <div class="field">
-              <label>Nombre</label>
-              <input type="text" id="fNombre" placeholder="María González" />
-            </div>
-            <div class="field">
-              <label>Teléfono</label>
-              <input type="tel" id="fTel" placeholder="11 1234-5678" />
-            </div>
-            <div class="field">
-              <label>Provincia</label>
-              <select id="fProvincia">
-                <option value="">Seleccioná</option>
-                <option>Buenos Aires (GBA)</option><option>Buenos Aires (interior)</option>
-                <option>CABA</option><option>Catamarca</option><option>Chaco</option>
-                <option>Chubut</option><option>Córdoba</option><option>Corrientes</option>
-                <option>Entre Ríos</option><option>Formosa</option><option>Jujuy</option>
-                <option>La Pampa</option><option>La Rioja</option><option>Mendoza</option>
-                <option>Misiones</option><option>Neuquén</option><option>Río Negro</option>
-                <option>Salta</option><option>San Juan</option><option>San Luis</option>
-                <option>Santa Cruz</option><option>Santa Fe</option>
-                <option>Santiago del Estero</option><option>Tierra del Fuego</option>
-                <option>Tucumán</option>
+              <label for="fFamilia">Producto</label>
+              <select id="fFamilia" onchange="autoPrecio()">
+                <option value="biotina">Biotina Pura</option>
+                <option value="combo">Combo Biotina</option>
+                <option value="duo">Dúo Shampoo + Acondicionador</option>
               </select>
             </div>
             <div class="field">
-              <label>Producto</label>
-              <select id="fProducto">
-                <option value="">Seleccioná combo</option>
-                <option value="43000">Combo x1 — $43.000</option>
-                <option value="80000">Combo x2 — $80.000</option>
-                <option value="100000">Combo x3 — $100.000</option>
+              <label for="fCantidad">Cantidad</label>
+              <select id="fCantidad" onchange="autoPrecio()">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
               </select>
             </div>
             <div class="field">
-              <label>Estado</label>
+              <label for="fPago">Cómo paga</label>
+              <select id="fPago" onchange="autoPago()">
+                <option value="transferencia">Transferencia</option>
+                <option value="mp">Mercado Pago</option>
+                <option value="efectivo">Efectivo al recibir</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="fEntrega">Entrega</label>
+              <select id="fEntrega" onchange="calcForm()">
+                <option value="correo">Correo</option>
+                <option value="en_mano">En mano (zona)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="fPrecio">Total cobrado ($)</label>
+              <input type="number" id="fPrecio" inputmode="numeric" min="0" step="100" oninput="precioTocado = true; calcForm()" />
+              <span class="field-hint" id="fPrecioHint"></span>
+            </div>
+            <div class="field">
+              <label for="fEstado">Estado</label>
               <select id="fEstado">
-                <option value="confirmado">Pago confirmado</option>
-                <option value="abandonado">Abandonó carrito</option>
-                <option value="contactado">Contactado</option>
-                <option value="no_interesado">Dijo que no</option>
-                <option value="cerrado">Cerrado por WA</option>
+                <option value="pagado">Pagado</option>
+                <option value="a_coordinar">A cobrar (paga al recibir)</option>
+                <option value="enviado">Enviado</option>
+                <option value="entregado">Entregado</option>
               </select>
+            </div>
+            <div class="field">
+              <label for="fFecha">Fecha</label>
+              <input type="date" id="fFecha" />
+            </div>
+            <div class="field">
+              <label for="fNombre">Nombre</label>
+              <input type="text" id="fNombre" maxlength="100" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="fTel">WhatsApp</label>
+              <input type="tel" id="fTel" maxlength="25" placeholder="11 1234-5678" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="fLocalidad">Localidad</label>
+              <input type="text" id="fLocalidad" maxlength="80" autocomplete="off" />
+            </div>
+            <div class="field span-2">
+              <label for="fNota">Nota</label>
+              <input type="text" id="fNota" maxlength="500" placeholder="Opcional: dirección, horario, lo que haga falta" autocomplete="off" />
             </div>
           </div>
-          <button class="btn-dark" onclick="addManualSale()">Guardar venta</button>
+          <div class="form-pie">
+            <button class="btn-dark" id="btnGuardar" onclick="guardarVenta()">Guardar venta</button>
+            <button class="btn-line" id="btnCancelarForm" onclick="limpiarForm(); toggleForm(false)">Cancelar</button>
+            <span class="form-calc" id="formCalc"></span>
+          </div>
+          <div class="form-aviso" id="formAviso"></div>
         </div>
       </div>
 
-      <!-- TABLE -->
+      <!-- VENTAS -->
       <div class="table-header">
-        <h2>Clientes</h2>
+        <h2>Ventas</h2>
         <div class="table-controls">
-          <input type="text" class="input-search" id="searchInput"
-            placeholder="Nombre, teléfono..." oninput="renderTable()" />
-          <select class="input-filter" id="filterStatus" onchange="renderTable()">
+          <input type="search" class="input-search" id="searchInput" placeholder="Buscar nombre, teléfono, localidad" oninput="renderVentas()" />
+          <select class="input-filter" id="filterEstado" onchange="renderVentas()">
             <option value="">Todos los estados</option>
-            <option value="confirmado">Pago confirmado</option>
-            <option value="abandonado">Abandonó carrito</option>
-            <option value="contactado">Contactado</option>
-            <option value="no_interesado">Dijo que no</option>
-            <option value="cerrado">Cerrado por WA</option>
+            <option value="a_coordinar">A cobrar</option>
+            <option value="pagado">Pagado</option>
+            <option value="enviado">Enviado</option>
+            <option value="entregado">Entregado</option>
+            <option value="cancelado">Cancelado</option>
           </select>
         </div>
       </div>
-
       <div class="table-wrap">
-        <table>
+        <table class="tarjetas">
           <thead>
             <tr>
-              <th>Nombre</th>
-              <th>Teléfono</th>
-              <th>Estado</th>
               <th>Fecha</th>
-              <th>Provincia</th>
+              <th>Cliente</th>
               <th>Producto</th>
-              <th class="th-r">Precio venta</th>
-              <th class="th-r">Comisión MP</th>
-              <th class="th-r">Costo producto</th>
-              <th class="th-r">Costo envío</th>
-              <th class="th-r">Ganancia neta</th>
-              <th>WhatsApp</th>
-              <th>Acción</th>
+              <th class="th-r">Total</th>
+              <th>Pago</th>
+              <th>Estado</th>
+              <th>Entrega</th>
+              <th class="th-r">Ganancia</th>
+              <th></th>
             </tr>
           </thead>
-          <tbody id="tableBody"></tbody>
-          <tfoot id="tableFoot"></tfoot>
+          <tbody id="ventasBody"></tbody>
+          <tfoot id="ventasFoot"></tfoot>
         </table>
       </div>
 
-      <!-- ═══════════════════════════════════════════════════════════ -->
-      <!-- FORMULARIOS COMPLETADOS                                    -->
-      <!-- ═══════════════════════════════════════════════════════════ -->
+      <!-- FORMULARIOS WEB -->
       <hr class="section-divider" />
-
       <div class="section-title-row">
-        <div class="section-title">Formularios completados</div>
+        <div class="section-title">Formularios de la web sin pago</div>
+        <span class="section-count-badge" id="formulariosCount">0</span>
       </div>
-      <p class="section-sub">Todos los datos que un cliente cargó al tocar "Confirmar y pagar", haya o no confirmado el pago después. Estado inicial: Pendiente.</p>
-
+      <p class="section-sub">Gente que dejó nombre y WhatsApp en la web y se fue a Mercado Pago. Si pagó, tocá "Pagó" y queda como venta; si no, escribile y, si no compra, descartalo.</p>
       <div class="table-wrap">
-        <table>
+        <table class="tarjetas">
           <thead>
             <tr>
-              <th>Nombre</th>
-              <th>DNI</th>
-              <th>Teléfono</th>
-              <th>Email</th>
-              <th>Dirección</th>
-              <th>Combo</th>
               <th>Fecha</th>
-              <th>Estado del pago</th>
-              <th>WhatsApp</th>
-              <th>Acción</th>
+              <th>Cliente</th>
+              <th>Pedido</th>
+              <th></th>
             </tr>
           </thead>
-          <tbody id="formulariosTableBody"></tbody>
+          <tbody id="formulariosBody"></tbody>
         </table>
       </div>
 
-      <!-- ═══════════════════════════════════════════════════════════ -->
-      <!-- CARRITOS ABANDONADOS                                       -->
-      <!-- ═══════════════════════════════════════════════════════════ -->
+      <!-- VISITAS -->
       <hr class="section-divider" />
-
-      <div class="section-title-row">
-        <div class="section-title">Carritos abandonados</div>
-        <span class="section-count-badge" id="abandonedCount">0</span>
+      <div class="dist-section">
+        <div class="dist-title">Visitas a la web</div>
+        <p class="dist-sub">Últimos 14 días, y del período elegido: por página y cuántas terminan en formulario y en venta por la web.</p>
+        <div id="visitsChart"></div>
+        <div class="page-bar-list" id="visitsByPageGrid"></div>
+        <div class="funnel-row" id="funnelRow"></div>
       </div>
-      <p class="section-sub">Formularios en estado Pendiente o Sin confirmar hace más de 45 minutos. Tocá WA para mandarles un mensaje ya redactado antes de que se enfríen.</p>
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>DNI</th>
-              <th>Teléfono</th>
-              <th>Email</th>
-              <th>Dirección</th>
-              <th>Combo</th>
-              <th>Fecha</th>
-              <th>Estado del pago</th>
-              <th>WhatsApp</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody id="abandonedTableBody"></tbody>
-        </table>
+      <!-- CONTRASEÑA -->
+      <hr class="section-divider" />
+      <div class="clave-box">
+        <div class="dist-title">Cambiar la contraseña</div>
+        <p class="dist-sub">La nueva tiene que tener al menos 10 caracteres. En los otros dispositivos va a haber que entrar de nuevo.</p>
+        <div class="form-grid">
+          <div class="field"><label for="clave1">Nueva</label><input type="password" id="clave1" autocomplete="new-password" /></div>
+          <div class="field"><label for="clave2">Repetila</label><input type="password" id="clave2" autocomplete="new-password" /></div>
+        </div>
+        <button class="btn-dark" id="btnClave" onclick="cambiarClave()">Cambiar contraseña</button>
       </div>
 
     </div>
   </div>
 
+  <div class="toast" id="toast"></div>
+
   <script>
     /* ── CONFIG ─────────────────────────────────────────────────────── */
-    const PASSWORD = 'biotina2025';
-    const WA_NUM   = '5491124838177';
-    // Tu número personal, donde querés recibir el pedido completo para preparar el envío.
+    // Las ventas y los formularios viven en la base del bot (Postgres, en el
+    // servidor propio), no en Firebase. Este panel les habla por un webhook de
+    // n8n ("Panel admin - ventas") que controla la contraseña en el servidor:
+    // la contraseña no está escrita en esta página.
+    const API_URL = 'https://n8n.productoscapilarespg.com/webhook/panel-admin';
+    // Tu número personal, donde te mandás el pedido para prepararlo.
     const MI_NUMERO_PREPARACION = '5491140377694';
 
-    const COMBOS = {
-      43000:  { label: 'Combo Biotina x1 — $43.000',  qty: 1, precio: 43000,  mp: 2838, costo: 9888, envio: 9000, ganancia: 21274, familia: 'Combo Biotina' },
-      80000:  { label: 'Combo Biotina x2 — $80.000',  qty: 2, precio: 80000,  mp: 5280, costo: 9888, envio: 9000, ganancia: 55832, familia: 'Combo Biotina' },
-      100000: { label: 'Combo Biotina x3 — $100.000', qty: 3, precio: 100000, mp: 6600, costo: 9888, envio: 9000, ganancia: 74512, familia: 'Combo Biotina' },
-      // Biotina Pura — costos reales que me pasaste: materia prima $1.500 + envase $790 +
-      // etiqueta $1.000 = $3.290 por unidad, más un envío único de $10.000 por pedido
-      // (no por unidad). Ganancia = precio - costo total (sin restar la comisión de
-      // MercadoPago aparte — "mp" queda solo como dato informativo en su columna).
-      // El precio de x1 subió de $25.000 a $30.000 y después a $35.000 (el costo
-      // real de envío que paga el negocio sigue siendo $10.000, sin cambios). Se
-      // dejan las entradas viejas (25000 y 30000) para que los pedidos ya
-      // guardados con esos precios sigan calculando bien su ganancia histórica.
-      25000:  { label: 'Biotina Pura x1 — $25.000', qty: 1, precio: 25000, mp: 1650, costo: 3290, envio: 10000, ganancia: 11710, familia: 'Biotina Pura' },
-      30000:  { label: 'Biotina Pura x1 + envío — $30.000', qty: 1, precio: 30000, mp: 1980, costo: 3290, envio: 10000, ganancia: 16710, familia: 'Biotina Pura' },
-      35000:  { label: 'Biotina Pura x1 — $35.000', qty: 1, precio: 35000, mp: 2310, costo: 3290, envio: 10000, ganancia: 21710, familia: 'Biotina Pura' },
-      45000:  { label: 'Biotina Pura x2 — $45.000', qty: 2, precio: 45000, mp: 2970, costo: 6580, envio: 10000, ganancia: 28420, familia: 'Biotina Pura' },
-      60000:  { label: 'Biotina Pura x3 — $60.000', qty: 3, precio: 60000, mp: 3960, costo: 9870, envio: 10000, ganancia: 40130, familia: 'Biotina Pura' },
-      // Dúo: costo de producción $3.000 por dúo (dato aproximado que me pasó
-      // Agustín el 19/09). Se asume que x2 y x3 escalan lineal, como Biotina
-      // Pura — falta confirmarlo. Envío $10.000 por pedido, igual que Biotina
-      // Pura; ojo que 3 dúos son 6 envases y probablemente pesen más, así que
-      // este número puede quedar corto.
-      // Ganancia = precio − comisión MP − costo − envío.
-      32000:  { label: 'Dúo Shampoo + Acondicionador x1 — $32.000', qty: 1, precio: 32000, mp: 2112, costo: 3000, envio: 10000, ganancia: 16888, familia: 'Dúo Shampoo + Crema' },
-      58000:  { label: 'Dúo Shampoo + Acondicionador x2 — $58.000', qty: 2, precio: 58000, mp: 3828, costo: 6000, envio: 10000, ganancia: 38172, familia: 'Dúo Shampoo + Crema' },
-      75000:  { label: 'Dúo Shampoo + Acondicionador x3 — $75.000', qty: 3, precio: 75000, mp: 4950, costo: 9000, envio: 10000, ganancia: 51050, familia: 'Dúo Shampoo + Crema' },
+    // Precios del 12/10/2026, para completar el total al anotar una venta. El
+    // total se puede corregir a mano (precio viejo ya pasado, descuento, etc.).
+    // Biotina Pura tiene 10% menos por transferencia; el x1 incluye $7.000 de
+    // envío. Combo y Dúo cuestan lo mismo pagando como sea.
+    const PRECIOS = {
+      biotina: { lista: [29000, 44000, 61000], transferencia: [26800, 39600, 54900] },
+      combo:   { lista: [40000, 61000, 77000] },
+      duo:     { lista: [27000, 36000, 47000] },
     };
+    const NOMBRES = { biotina: 'Biotina Pura', combo: 'Combo Biotina', duo: 'Dúo Shampoo + Acond.' };
+    // Para estimar la ganancia (sin la publicidad): costo por unidad, envío que
+    // paga el negocio por pedido y comisión de Mercado Pago "al instante".
+    const COSTO_UNIDAD = { biotina: 2448, combo: 9888, duo: 3000 };
+    const COSTO_ENVIO  = { correo: 9000, en_mano: 0 };
+    const COMISION_MP  = 0.066;
 
-    const STATUS_CFG = {
-      confirmado:    'Pago confirmado',
-      abandonado:    'Abandonó carrito',
-      contactado:    'Contactado',
-      no_interesado: 'Dijo que no',
-      cerrado:       'Cerrado por WhatsApp',
-    };
-
-    // ─── FIREBASE CONFIG ────────────────────────────────────────────────────
-    // Para activar la sincronización en tiempo real:
-    // 1. Ir a https://console.firebase.google.com y crear un proyecto
-    // 2. Agregar una app web → copiar el objeto firebaseConfig
-    // 3. Habilitar Firestore Database (modo producción)
-    // 4. En Reglas de Firestore, pegar estas reglas y publicar:
-    //    rules_version = '2';
-    //    service cloud.firestore {
-    //      match /databases/{database}/documents {
-    //        match /pedidos/{id} {
-    //          allow create: if request.resource.data.keys().hasAll(['nombre','producto','fecha']);
-    //          allow read, update, delete: if true;
-    //        }
-    //        // Contador de visitas (lo escribe la Cloud Function trackVisit con
-    //        // permisos de administrador; el panel solo necesita poder leerlo).
-    //        match /estadisticas/{fecha} {
-    //          allow read: if true;
-    //          allow write: if false;
-    //        }
-    //      }
-    //    }
-    // 5. Completar FIREBASE_CONFIG con los valores reales y cambiar FIREBASE_ENABLED a true
-    // 6. Hacer lo mismo en index.html (mismos valores)
-    const FIREBASE_ENABLED = true; // ← cambiar a true después de configurar
+    const ESTADOS  = { a_coordinar: 'A cobrar', pagado: 'Pagado', enviado: 'Enviado', entregado: 'Entregado', cancelado: 'Cancelado' };
+    const PAGOS    = { mp: 'Mercado Pago', transferencia: 'Transferencia', efectivo: 'Efectivo' };
+    const ENTREGAS = { correo: 'Correo', en_mano: 'En mano' };
+    const ORIGENES = { anuncio: 'WhatsApp · anuncio', directo: 'WhatsApp', web: 'Web', panel: 'Anotada a mano' };
+    const COBRADAS = ['pagado', 'enviado', 'entregado'];
 
     const FIREBASE_CONFIG = {
       apiKey:            'AIzaSyB2lipjGfqeV6gmKRw4vZEnzFHQsF1JxnQ',
@@ -674,715 +596,626 @@
       appId:             '1:167629017281:web:def9e7b08c390b40d04440'
     };
 
-    if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
-      firebase.initializeApp(FIREBASE_CONFIG);
-    }
-    // ────────────────────────────────────────────────────────────────────────
-
-    /* ── DATA CACHE ─────────────────────────────────────────────────── */
-    let pedidosCache = [];
+    /* ── ESTADO ─────────────────────────────────────────────────────── */
+    let clave = '';
+    let ventas = [];
+    let formularios = [];
+    let formulariosFechas = [];
     let statsCache = [];
+    let periodo = 'mes';
+    let precioTocado = false;
+    let pedidoWebEnCurso = null;   // id del formulario web que se está pasando a venta
+    let statsEscuchando = false;
 
-    /* ── AUTH ────────────────────────────────────────────────────────── */
-    if (sessionStorage.getItem('adminAuth') === 'ok') showPanel();
+    /* ── UTILIDADES ─────────────────────────────────────────────────── */
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const fmt = (n) => '$' + Math.round(n || 0).toLocaleString('es-AR');
+    const hoyISO = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
 
-    function login() {
-      if (document.getElementById('pwInput').value === PASSWORD) {
-        sessionStorage.setItem('adminAuth', 'ok');
-        showPanel();
-      } else {
-        const err = document.getElementById('loginError');
-        const inp = document.getElementById('pwInput');
-        err.style.display = 'block';
-        inp.style.borderColor = 'var(--coral)';
-        setTimeout(() => { inp.style.borderColor = ''; }, 2000);
+    function leerGuardada() {
+      try { return localStorage.getItem('panelClave') || sessionStorage.getItem('panelClave') || ''; } catch (e) { return ''; }
+    }
+    function guardarClave(v, recordar) {
+      try {
+        localStorage.removeItem('panelClave'); sessionStorage.removeItem('panelClave');
+        (recordar ? localStorage : sessionStorage).setItem('panelClave', v);
+      } catch (e) {}
+    }
+    function olvidarClave() {
+      try { localStorage.removeItem('panelClave'); sessionStorage.removeItem('panelClave'); sessionStorage.removeItem('adminAuth'); } catch (e) {}
+    }
+
+    let toastTimer;
+    function aviso(texto, error) {
+      const t = $('toast');
+      t.textContent = texto;
+      t.classList.toggle('error', !!error);
+      t.classList.add('on');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('on'), error ? 5000 : 2600);
+    }
+
+    // Número argentino para wa.me: 549 + característica + número (igual que el
+    // workflow que avisa los formularios al grupo).
+    function waNumero(tel) {
+      let wa = String(tel || '').replace(/\D/g, '').replace(/^0+/, '');
+      if (wa.length < 8) return null;
+      if (wa.startsWith('549')) return wa;
+      if (wa.startsWith('54')) return '549' + wa.slice(2);
+      return '549' + (wa.length > 10 ? wa.replace(/^(\d{2,4})15/, '$1') : wa);
+    }
+
+    function fechaCorta(iso) {
+      const d = new Date(iso);
+      if (isNaN(d)) return '';
+      return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' }) + ' ' +
+             d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function enPeriodo(iso, p = periodo) {
+      if (p === 'todo') return true;
+      const d = new Date(iso);
+      if (isNaN(d)) return false;
+      const ahora = new Date();
+      const inicioHoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+      if (p === 'hoy') return d >= inicioHoy;
+      if (p === 'semana') return d >= new Date(inicioHoy.getTime() - 6 * 86400000);
+      if (p === 'mes') return d >= new Date(ahora.getFullYear(), ahora.getMonth(), 1);
+      if (p === 'mes_pasado') return d >= new Date(ahora.getFullYear(), ahora.getMonth() - 1, 1) && d < new Date(ahora.getFullYear(), ahora.getMonth(), 1);
+      return true;
+    }
+    function enPeriodoISO(fecha) {   // "2026-10-12" (visitas)
+      return enPeriodo(fecha + 'T12:00:00');
+    }
+
+    function cuentas(v) {
+      const precio = v.precio_ars || 0;
+      const costo  = (COSTO_UNIDAD[v.familia] || 0) * (v.cantidad || 1);
+      const envio  = COSTO_ENVIO[v.entrega] ?? COSTO_ENVIO.correo;
+      const mp     = v.pago === 'mp' ? Math.round(precio * COMISION_MP) : 0;
+      return { precio, costo, envio, mp, ganancia: precio - costo - envio - mp };
+    }
+
+    /* ── SERVIDOR ───────────────────────────────────────────────────── */
+    async function llamar(accion, datos, conClave) {
+      const body = new URLSearchParams({ clave: conClave || clave, accion, datos: JSON.stringify(datos || {}) });
+      const r = await fetch(API_URL, { method: 'POST', body });
+      if (!r.ok) throw new Error('El servidor respondió ' + r.status);
+      return r.json();
+    }
+    // Igual que llamar(), pero si la contraseña dejó de valer vuelve al ingreso.
+    async function api(accion, datos) {
+      const j = await llamar(accion, datos);
+      if (!j.ok && (j.error === 'clave' || j.error === 'bloqueado')) {
+        salir(j.error === 'bloqueado' ? 'Demasiados intentos con contraseña equivocada. Esperá 15 minutos.' : 'La contraseña cambió. Ingresá con la nueva.');
+        throw new Error('sin acceso');
+      }
+      return j;
+    }
+
+    /* ── INGRESO ────────────────────────────────────────────────────── */
+    function errorLogin(texto) {
+      const e = $('loginError');
+      e.textContent = texto;
+      e.style.display = texto ? 'block' : 'none';
+    }
+
+    async function login() {
+      const v = $('pwInput').value.trim();
+      if (!v) return;
+      const btn = $('btnLogin');
+      btn.disabled = true; btn.textContent = 'Entrando...';
+      errorLogin('');
+      try {
+        const j = await llamar('listar', {}, v);
+        if (j.ok) {
+          clave = v;
+          guardarClave(v, $('recordar').checked);
+          $('pwInput').value = '';
+          recibir(j);
+          mostrarPanel();
+        } else if (j.error === 'bloqueado') {
+          errorLogin('Demasiados intentos con contraseña equivocada. Esperá 15 minutos y probá de nuevo.');
+        } else {
+          errorLogin('Contraseña incorrecta.');
+        }
+      } catch (e) {
+        errorLogin('No se pudo conectar con el servidor. Revisá internet y probá de nuevo.');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Ingresar';
       }
     }
 
-    function logout() {
-      sessionStorage.removeItem('adminAuth');
-      document.getElementById('adminPanel').style.display  = 'none';
-      document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('pwInput').value             = '';
-      document.getElementById('loginError').style.display  = 'none';
+    function salir(motivo) {
+      clave = '';
+      olvidarClave();
+      ventas = []; formularios = [];
+      $('adminPanel').style.display = 'none';
+      $('loginScreen').style.display = 'flex';
+      errorLogin(typeof motivo === 'string' ? motivo : '');
     }
 
-    function showPanel() {
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('adminPanel').style.display  = 'block';
-      if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
-        document.getElementById('syncBadge').style.display = 'inline-block';
-        setupFirestoreListener();
-        setupStatsListener();
-      } else {
-        loadFromLocalStorage();
+    function mostrarPanel() {
+      $('loginScreen').style.display = 'none';
+      $('adminPanel').style.display = 'block';
+      if (!$('fFecha').value) limpiarForm();
+      escucharVisitas();
+    }
+
+    /* ── DATOS ──────────────────────────────────────────────────────── */
+    function recibir(j) {
+      ventas = (j.ventas || []).map(v => Object.assign(v, { familia: v.familia || 'biotina', cantidad: v.cantidad || 1 }));
+      formularios = j.formularios || [];
+      formulariosFechas = j.formularios_fechas || [];
+      $('syncInfo').textContent = 'actualizado ' + new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+      renderTodo();
+    }
+
+    async function cargar(conAviso) {
+      try {
+        recibir(await api('listar'));
+        if (conAviso) aviso('Actualizado');
+      } catch (e) {
+        if (e.message !== 'sin acceso') aviso('No se pudo actualizar: ' + e.message, true);
       }
     }
 
-    /* ── FORM TOGGLE ─────────────────────────────────────────────────── */
-    function toggleForm() {
-      const inner  = document.getElementById('formInner');
-      const toggle = document.getElementById('formToggle');
-      const open   = inner.classList.toggle('open');
-      toggle.classList.toggle('open', open);
+    function renderTodo() {
+      renderNumeros();
+      renderProductos();
+      renderVentas();
+      renderFormularios();
+      renderVisitas();
     }
 
-    /* ── FIREBASE LISTENER ───────────────────────────────────────────── */
-    function setupFirestoreListener() {
-      firebase.firestore()
-        .collection('pedidos')
-        .orderBy('createdAt', 'asc')
-        .onSnapshot(snapshot => {
-          pedidosCache = snapshot.docs.map(doc => {
-            const d = doc.data();
-            return {
-              id:        doc.id,
-              nombre:    d.nombre    || '',
-              apellido:  d.apellido  || '',
-              dni:       d.dni       || '',
-              telefono:  d.telefono  || '',
-              email:     d.email     || '',
-              calle:     d.calle     || '',
-              numero:    d.numero    || '',
-              cp:        d.cp        || '',
-              localidad: d.localidad || '',
-              provincia: d.provincia || '',
-              producto:  d.producto  || '',
-              fecha:     d.fecha     || '',
-              timestamp: d.timestamp || (d.createdAt && d.createdAt.toMillis ? d.createdAt.toMillis() : 0),
-              _manual:   d._manual   || false,
-              _st:       d.status     || 'abandonado',
-              _fst:      d.formStatus || 'pendiente',
-              _c:        getCombo(d.producto),
-            };
-          });
-          loadData();
-        }, err => {
-          console.warn('Firestore listener error:', err);
-          loadFromLocalStorage();
-        });
+    /* ── PERÍODO ────────────────────────────────────────────────────── */
+    const NOMBRE_PERIODO = { hoy: 'Hoy', semana: 'Últimos 7 días', mes: 'Este mes', mes_pasado: 'Mes pasado', todo: 'Desde el principio' };
+    function setPeriodo(p) {
+      periodo = p;
+      try { localStorage.setItem('panelPeriodo', p); } catch (e) {}
+      document.querySelectorAll('#periodoTabs button').forEach(b => b.classList.toggle('on', b.dataset.p === p));
+      $('lblPeriodo').textContent = NOMBRE_PERIODO[p];
+      renderTodo();
     }
 
-    /* ── ESTADÍSTICAS DE VISITAS ─────────────────────────────────────── */
-    // Colección aparte (`estadisticas`, un doc por día) que llena la Cloud
-    // Function trackVisit — no depende de ningún token de Meta, así que
-    // funciona aunque el CAPI todavía no esté configurado.
-    function setupStatsListener() {
-      firebase.firestore()
-        .collection('estadisticas')
-        .orderBy(firebase.firestore.FieldPath.documentId(), 'desc')
-        .limit(60)
-        .onSnapshot(snapshot => {
-          statsCache = snapshot.docs.map(doc => {
-            const d = doc.data();
-            return {
-              fecha:       doc.id,
-              visitas:     d.visitas || 0,
-              home:        d.visitas_home || 0,
-              combo:       d.visitas_combo || 0,
-              biotinaPura: d.visitas_biotinaPura || 0,
-              duo:         d.visitas_duo || 0,
-            };
-          }).sort((a, b) => a.fecha.localeCompare(b.fecha)); // ascendente para el gráfico
-          renderVisitas();
-        }, err => {
-          console.warn('Firestore stats listener error (revisá las reglas de "estadisticas"):', err);
-        });
+    /* ── NÚMEROS ────────────────────────────────────────────────────── */
+    function renderNumeros() {
+      const cobradas = ventas.filter(v => COBRADAS.includes(v.estado) && enPeriodo(v.creado));
+      const ingresos = cobradas.reduce((a, v) => a + (v.precio_ars || 0), 0);
+      const ganancia = cobradas.reduce((a, v) => a + cuentas(v).ganancia, 0);
+      const unidades = cobradas.reduce((a, v) => a + (v.cantidad || 1), 0);
+      $('sVentas').textContent = cobradas.length;
+      $('sUnidades').textContent = unidades + (unidades === 1 ? ' unidad' : ' unidades');
+      $('sIngresos').textContent = fmt(ingresos);
+      $('sGanancia').textContent = fmt(ganancia);
+      $('sTicket').textContent = cobradas.length ? fmt(ingresos / cobradas.length) : '—';
+      // "A cobrar" no depende del período: es lo que falta cobrar hoy.
+      const aCobrar = ventas.filter(v => v.estado === 'a_coordinar');
+      $('sACobrar').textContent = aCobrar.length;
+      $('sACobrarMonto').textContent = aCobrar.length ? fmt(aCobrar.reduce((a, v) => a + (v.precio_ars || 0), 0)) + ' al entregar' : 'pagan al recibir';
     }
 
-    function isThisMonthISO(fechaISO) {
-      if (!fechaISO) return false;
-      const now = new Date();
-      const [y, m] = fechaISO.split('-').map(Number);
-      return y === now.getFullYear() && m === now.getMonth() + 1;
+    function renderProductos() {
+      const datos = {};
+      ventas.filter(v => COBRADAS.includes(v.estado) && enPeriodo(v.creado)).forEach(v => {
+        const d = datos[v.familia] || (datos[v.familia] = { ventas: 0, unidades: 0, ingresos: 0, ganancia: 0 });
+        d.ventas++; d.unidades += v.cantidad || 1; d.ingresos += v.precio_ars || 0; d.ganancia += cuentas(v).ganancia;
+      });
+      $('prodGrid').innerHTML = Object.keys(NOMBRES).map(f => {
+        const d = datos[f] || { ventas: 0, unidades: 0, ingresos: 0, ganancia: 0 };
+        return `<div class="dist-card">
+          <div class="dist-card-label">${NOMBRES[f]}</div>
+          <div class="prod-stat-row"><span>Ventas</span><strong>${d.ventas}</strong></div>
+          <div class="prod-stat-row"><span>Unidades</span><strong>${d.unidades}</strong></div>
+          <div class="prod-stat-row"><span>Ingresos</span><strong>${fmt(d.ingresos)}</strong></div>
+          <div class="prod-stat-row prod-stat-ganancia"><span>Ganancia</span><strong>${fmt(d.ganancia)}</strong></div>
+        </div>`;
+      }).join('');
+    }
+
+    /* ── TABLA DE VENTAS ────────────────────────────────────────────── */
+    const opciones = (mapa, elegido, conVacio) =>
+      (conVacio ? `<option value="" ${elegido ? '' : 'selected'}>—</option>` : '') +
+      Object.entries(mapa).map(([v, l]) => `<option value="${v}" ${elegido === v ? 'selected' : ''}>${l}</option>`).join('');
+
+    function textoPreparar(v) {
+      return 'Pedido para preparar\n\n' +
+        'Nombre: ' + (v.nombre || '-') + '\n' +
+        'WhatsApp: ' + (v.telefono || '-') + '\n' +
+        'Producto: ' + NOMBRES[v.familia] + ' x' + v.cantidad + '\n' +
+        'Total: ' + fmt(v.precio_ars) + ' (' + (PAGOS[v.pago] || 'pago sin anotar') + ', ' + (ESTADOS[v.estado] || v.estado) + ')\n' +
+        'Entrega: ' + (ENTREGAS[v.entrega] || 'Correo') + '\n' +
+        'Dirección: ' + [v.direccion, v.localidad, v.cp, v.provincia].filter(Boolean).join(', ') + '\n' +
+        (v.email ? 'Mail: ' + v.email + '\n' : '') +
+        (v.nota ? 'Nota: ' + v.nota + '\n' : '');
+    }
+
+    function renderVentas() {
+      const q = ($('searchInput').value || '').toLowerCase().trim();
+      const fEstado = $('filterEstado').value;
+      const filas = ventas.filter(v => {
+        if (!enPeriodo(v.creado)) return false;
+        if (fEstado && v.estado !== fEstado) return false;
+        if (!q) return true;
+        return [v.nombre, v.telefono, v.localidad, v.provincia, v.nota].join(' ').toLowerCase().includes(q);
+      });
+
+      if (!filas.length) {
+        $('ventasBody').innerHTML = `<tr><td colspan="9" class="td-vacio"><div class="empty-state">${
+          q || fEstado ? 'Nada con ese filtro.' : 'No hay ventas en este período. Anotalas con "Anotar una venta".'}</div></td></tr>`;
+        $('ventasFoot').innerHTML = '';
+        return;
+      }
+
+      $('ventasBody').innerHTML = filas.map(v => {
+        const c = cuentas(v);
+        const wa = waNumero(v.telefono);
+        const lugar = [v.localidad, v.provincia].filter(Boolean).join(', ');
+        const saludo = (v.nombre || '').split(' ')[0];
+        return `<tr class="row-${esc(v.estado)}">
+          <td class="td-date" data-label="Fecha">${fechaCorta(v.creado)}</td>
+          <td class="td-cliente">
+            <div class="cli-nombre">${esc(v.nombre) || 'Sin nombre'}</div>
+            <div class="cli-sub">${esc(v.telefono || '')}${v.telefono && lugar ? ' · ' : ''}${esc(lugar)}</div>
+            ${v.nota ? `<div class="nota">${esc(v.nota)}</div>` : ''}
+          </td>
+          <td data-label="Producto"><div>${NOMBRES[v.familia] || esc(v.producto)} x${v.cantidad}<div class="cli-sub">${ORIGENES[v.origen] || esc(v.origen || '')}</div></div></td>
+          <td class="td-r" data-label="Total">${fmt(v.precio_ars)}</td>
+          <td data-label="Pago"><select class="pago-sel" onchange="editar(${v.id}, { pago: this.value || null })">${opciones(PAGOS, v.pago, true)}</select></td>
+          <td data-label="Estado"><select class="status-sel s-${esc(v.estado)}" onchange="this.className='status-sel s-'+this.value; editar(${v.id}, { estado: this.value })">${opciones(ESTADOS, v.estado)}</select></td>
+          <td data-label="Entrega"><select class="pago-sel" onchange="editar(${v.id}, { entrega: this.value })">${opciones(ENTREGAS, v.entrega || 'correo')}</select></td>
+          <td class="td-r td-gain" data-label="Ganancia" title="Producto ${fmt(c.costo)} · envío ${fmt(c.envio)} · Mercado Pago ${fmt(c.mp)}">${fmt(c.ganancia)}</td>
+          <td class="td-acciones"><div class="acciones">
+            ${wa ? `<a class="btn-wa" target="_blank" rel="noopener" href="https://wa.me/${wa}?text=${encodeURIComponent('Hola ' + saludo + '! ')}">WhatsApp</a>` : ''}
+            <a class="btn-prep" target="_blank" rel="noopener" href="https://wa.me/${MI_NUMERO_PREPARACION}?text=${encodeURIComponent(textoPreparar(v))}" title="Mandarte el pedido por WhatsApp para prepararlo">Preparar</a>
+            <button class="btn-mini" onclick="editarNota(${v.id})">Nota</button>
+            <button class="btn-mini" onclick="editarPrecio(${v.id})">Total</button>
+            <button class="btn-delete" onclick="borrarVenta(${v.id})" title="Borrar" aria-label="Borrar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+            </button>
+          </div></td>
+        </tr>`;
+      }).join('');
+
+      const cobradas = filas.filter(v => COBRADAS.includes(v.estado));
+      $('ventasFoot').innerHTML = `<tr>
+        <td colspan="3" data-label="">${filas.length} ${filas.length === 1 ? 'venta' : 'ventas'} (${cobradas.length} cobrada${cobradas.length === 1 ? '' : 's'})</td>
+        <td class="td-r" data-label="Cobrado">${fmt(cobradas.reduce((a, v) => a + (v.precio_ars || 0), 0))}</td>
+        <td colspan="3"></td>
+        <td class="td-r td-gain" data-label="Ganancia">${fmt(cobradas.reduce((a, v) => a + cuentas(v).ganancia, 0))}</td>
+        <td></td>
+      </tr>`;
+    }
+
+    async function editar(id, cambios) {
+      const v = ventas.find(x => x.id === id);
+      try {
+        const j = await api('editar', Object.assign({ id: String(id) }, cambios));
+        if (!j.ok) throw new Error(j.error || 'no se guardó');
+        if (v) Object.assign(v, cambios.precio != null ? { precio_ars: Number(cambios.precio) } : cambios);
+        renderTodo();
+        aviso('Guardado');
+      } catch (e) {
+        if (e.message !== 'sin acceso') { aviso('No se pudo guardar: ' + e.message, true); renderVentas(); }
+      }
+    }
+
+    function editarNota(id) {
+      const v = ventas.find(x => x.id === id);
+      const n = prompt('Nota de la venta (vacío para borrarla):', (v && v.nota) || '');
+      if (n === null) return;
+      editar(id, { nota: n.trim() });
+    }
+
+    function editarPrecio(id) {
+      const v = ventas.find(x => x.id === id);
+      const n = prompt('Total cobrado, en pesos y sin puntos:', v ? v.precio_ars || '' : '');
+      if (n === null) return;
+      const limpio = n.replace(/\D/g, '');
+      if (!limpio) return aviso('Escribí el total solo con números', true);
+      editar(id, { precio: limpio });
+    }
+
+    async function borrarVenta(id) {
+      const v = ventas.find(x => x.id === id);
+      if (!confirm('¿Borrar la venta de ' + ((v && v.nombre) || 'sin nombre') + ' por ' + fmt(v && v.precio_ars) + '?\n\nSi solo se cayó la venta, mejor ponela en "Cancelado".')) return;
+      try {
+        const j = await api('borrar', { id: String(id) });
+        if (!j.ok) throw new Error(j.error || 'no se borró');
+        ventas = ventas.filter(x => x.id !== id);
+        renderTodo();
+        aviso('Venta borrada');
+      } catch (e) {
+        if (e.message !== 'sin acceso') aviso('No se pudo borrar: ' + e.message, true);
+      }
+    }
+
+    /* ── ANOTAR UNA VENTA ───────────────────────────────────────────── */
+    function toggleForm(abrir) {
+      const inner = $('formInner');
+      const open = typeof abrir === 'boolean' ? abrir : !inner.classList.contains('open');
+      inner.classList.toggle('open', open);
+      $('formToggle').classList.toggle('open', open);
+    }
+
+    function precioSugerido() {
+      const f = $('fFamilia').value, q = Number($('fCantidad').value), pago = $('fPago').value;
+      const p = PRECIOS[f];
+      return ((pago === 'transferencia' && p.transferencia) ? p.transferencia : p.lista)[q - 1];
+    }
+
+    function autoPrecio() {
+      if (!precioTocado) $('fPrecio').value = precioSugerido();
+      calcForm();
+    }
+
+    function autoPago() {
+      const pago = $('fPago').value;
+      $('fEstado').value = pago === 'efectivo' ? 'a_coordinar' : 'pagado';
+      if (pago === 'efectivo') $('fEntrega').value = 'en_mano';
+      autoPrecio();
+    }
+
+    function calcForm() {
+      const precio = Number($('fPrecio').value) || 0;
+      const sugerido = precioSugerido();
+      $('fPrecioHint').textContent = precio && precio !== sugerido ? 'precio de hoy: ' + fmt(sugerido) : '';
+      const c = cuentas({ precio_ars: precio, familia: $('fFamilia').value, cantidad: Number($('fCantidad').value), entrega: $('fEntrega').value, pago: $('fPago').value });
+      $('formCalc').innerHTML = precio ? 'Ganancia estimada: <strong>' + fmt(c.ganancia) + '</strong>' : '';
+    }
+
+    function limpiarForm() {
+      ['fNombre', 'fTel', 'fLocalidad', 'fNota'].forEach(id => { $(id).value = ''; });
+      $('fFamilia').value = 'biotina'; $('fCantidad').value = '2';
+      $('fPago').value = 'transferencia'; $('fEntrega').value = 'correo'; $('fEstado').value = 'pagado';
+      $('fFecha').value = hoyISO(); $('fFecha').max = hoyISO();
+      precioTocado = false;
+      pedidoWebEnCurso = null;
+      $('formTitulo').textContent = 'Anotar una venta';
+      $('formAviso').style.display = 'none';
+      autoPrecio();
+    }
+
+    async function guardarVenta() {
+      const precio = String($('fPrecio').value || '').replace(/\D/g, '');
+      if (!precio || Number(precio) <= 0) return aviso('Falta el total cobrado', true);
+      if (!$('fNombre').value.trim() && !$('fTel').value.trim()) return aviso('Poné al menos el nombre o el WhatsApp', true);
+      const familia = $('fFamilia').value, cantidad = $('fCantidad').value;
+      const datos = {
+        familia, cantidad, precio,
+        producto: NOMBRES[familia] + ' x' + cantidad,
+        pago: $('fPago').value, entrega: $('fEntrega').value, estado: $('fEstado').value,
+        fecha: $('fFecha').value || hoyISO(),
+        nombre: $('fNombre').value, telefono: $('fTel').value,
+        localidad: $('fLocalidad').value, nota: $('fNota').value,
+      };
+      if (pedidoWebEnCurso) datos.pedido_web_id = String(pedidoWebEnCurso);
+      const btn = $('btnGuardar');
+      btn.disabled = true; btn.textContent = 'Guardando...';
+      try {
+        const j = await api('agregar', datos);
+        if (!j.ok) throw new Error(j.error === 'datos' ? 'revisá los datos' : (j.error || 'no se guardó'));
+        limpiarForm();
+        toggleForm(false);
+        aviso('Venta guardada');
+        await cargar();
+      } catch (e) {
+        if (e.message !== 'sin acceso') aviso('No se pudo guardar: ' + e.message, true);
+      } finally {
+        btn.disabled = false; btn.textContent = 'Guardar venta';
+      }
+    }
+
+    /* ── FORMULARIOS DE LA WEB ──────────────────────────────────────── */
+    // "Biotina Pura x2 — $44.000" -> { familia, cantidad, precio }
+    function leerPedidoWeb(texto) {
+      const t = String(texto || '');
+      const familia = /combo/i.test(t) ? 'combo' : /d[uú]o|shampoo/i.test(t) ? 'duo' : 'biotina';
+      const q = Number((t.match(/x\s*([1-3])/i) || [])[1] || 1);
+      const m = t.match(/\$\s*([\d.]+)/);
+      return { familia, cantidad: q, precio: m ? Number(m[1].replace(/\./g, '')) : null };
+    }
+
+    function renderFormularios() {
+      $('formulariosCount').textContent = formularios.length;
+      $('formulariosCount').classList.toggle('is-alert', formularios.length > 0);
+      if (!formularios.length) {
+        $('formulariosBody').innerHTML = `<tr><td colspan="4" class="td-vacio"><div class="empty-state">No hay formularios sin resolver.</div></td></tr>`;
+        return;
+      }
+      $('formulariosBody').innerHTML = formularios.map(f => {
+        const wa = waNumero(f.telefono);
+        const saludo = (f.nombre || '').split(' ')[0];
+        const msg = 'Hola ' + saludo + '! Te escribo de Productos Capilares PG. Vimos que empezaste tu pedido de ' +
+          (f.producto || 'Biotina Pura').replace(/\s*—.*$/, '') + ' en la web y no nos llegó el pago. ¿Te ayudo a terminarlo? Si te queda más cómodo, también podés pagar por transferencia.';
+        return `<tr>
+          <td class="td-date" data-label="Fecha">${fechaCorta(f.creado)}</td>
+          <td class="td-cliente">
+            <div class="cli-nombre">${esc(f.nombre) || 'Sin nombre'}</div>
+            <div class="cli-sub">${esc(f.telefono || '')}${f.email ? ' · ' + esc(f.email) : ''}</div>
+          </td>
+          <td data-label="Pedido">${esc(f.producto || '—')}</td>
+          <td class="td-acciones"><div class="acciones">
+            ${wa ? `<a class="btn-wa" target="_blank" rel="noopener" href="https://wa.me/${wa}?text=${encodeURIComponent(msg)}">Escribirle</a>` : ''}
+            <button class="btn-mini btn-ok" onclick="formularioPago(${f.id})">Pagó</button>
+            <button class="btn-mini" onclick="descartarFormulario(${f.id})">Descartar</button>
+          </div></td>
+        </tr>`;
+      }).join('');
+    }
+
+    function formularioPago(id) {
+      const f = formularios.find(x => x.id === id);
+      if (!f) return;
+      limpiarForm();
+      const p = leerPedidoWeb(f.producto);
+      pedidoWebEnCurso = id;
+      $('fFamilia').value = p.familia;
+      $('fCantidad').value = String(p.cantidad);
+      $('fPago').value = 'mp';
+      $('fEntrega').value = 'correo';
+      $('fEstado').value = 'pagado';
+      $('fNombre').value = f.nombre || '';
+      $('fTel').value = f.telefono || '';
+      $('fFecha').value = hoyISO();
+      if (p.precio) { $('fPrecio').value = p.precio; precioTocado = true; } else { autoPrecio(); }
+      calcForm();
+      $('formTitulo').textContent = 'Pasar a venta: ' + (f.nombre || 'formulario de la web');
+      const av = $('formAviso');
+      av.textContent = 'Revisá que el pago haya entrado en Mercado Pago antes de guardar. Al guardar, el formulario sale de la lista de pendientes.';
+      av.style.display = 'block';
+      toggleForm(true);
+      $('formSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    async function descartarFormulario(id) {
+      const f = formularios.find(x => x.id === id);
+      if (!confirm('¿Descartar el formulario de ' + ((f && f.nombre) || 'sin nombre') + '? Sale de la lista de pendientes.')) return;
+      try {
+        const j = await api('descartar_formulario', { id: String(id) });
+        if (!j.ok) throw new Error(j.error || 'no se descartó');
+        formularios = formularios.filter(x => x.id !== id);
+        renderFormularios();
+        aviso('Formulario descartado');
+      } catch (e) {
+        if (e.message !== 'sin acceso') aviso('No se pudo descartar: ' + e.message, true);
+      }
+    }
+
+    /* ── VISITAS (Firebase, colección "estadisticas") ───────────────── */
+    // Las escribe el Worker de Cloudflare biotina-trackvisit, un documento por
+    // día. Son solo contadores, sin datos de personas.
+    function escucharVisitas() {
+      if (statsEscuchando || typeof firebase === 'undefined') return;
+      statsEscuchando = true;
+      try {
+        if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+        firebase.firestore().collection('estadisticas')
+          .orderBy(firebase.firestore.FieldPath.documentId(), 'desc')
+          .limit(400)
+          .onSnapshot(snap => {
+            statsCache = snap.docs.map(doc => {
+              const d = doc.data();
+              return { fecha: doc.id, visitas: d.visitas || 0, home: d.visitas_home || 0, combo: d.visitas_combo || 0, biotinaPura: d.visitas_biotinaPura || 0, duo: d.visitas_duo || 0 };
+            }).sort((a, b) => a.fecha.localeCompare(b.fecha));
+            renderVisitas();
+            renderNumerosVisitas();
+          }, err => console.warn('Visitas:', err));
+      } catch (e) { console.warn('Visitas:', e); }
+    }
+
+    function renderNumerosVisitas() {
+      const hoy = statsCache.find(d => d.fecha === new Date().toISOString().slice(0, 10));
+      $('sVisitasHoy').textContent = 'hoy: ' + (hoy ? hoy.visitas : 0);
+      $('sVisitas').textContent = statsCache.filter(d => enPeriodoISO(d.fecha)).reduce((a, d) => a + d.visitas, 0).toLocaleString('es-AR');
     }
 
     function renderVisitas() {
-      const chartEl    = document.getElementById('visitsChart');
-      const pageGridEl = document.getElementById('visitsByPageGrid');
-      const funnelEl   = document.getElementById('funnelRow');
-      const lbl        = document.getElementById('lblVisitasPeriodo');
-      if (!chartEl) return;
-
-      const periodo = window._statsPeriodo || document.getElementById('statsPeriodo')?.value || 'todo';
-      lbl.textContent = periodo === 'todo' ? 'Visitas y embudo de conversión (histórico)' : 'Visitas y embudo de conversión (este mes)';
-
-      // El gráfico siempre muestra la tendencia de los últimos 14 días,
-      // sin importar el período elegido para el embudo (un gráfico de 1
-      // solo día si hoy es el 1° del mes no serviría de nada). Se rellenan
-      // los días sin visitas dentro de esa ventana para que las barras
-      // queden parejas en vez de amontonadas.
-      const hoyISO = new Date().toISOString().slice(0, 10);
-      const visitasHoyEl = document.getElementById('sVisitasHoy');
-      if (visitasHoyEl) {
-        const statsHoy = statsCache.find(d => d.fecha === hoyISO);
-        visitasHoyEl.textContent = statsHoy ? statsHoy.visitas : 0;
-      }
-
+      const chartEl = $('visitsChart');
+      renderNumerosVisitas();
       if (!statsCache.length) {
-        chartEl.innerHTML = `<div class="visits-empty">Todavía no hay datos de visitas — van a empezar a aparecer a medida que entren visitantes a la web.</div>`;
+        chartEl.innerHTML = '<div class="visits-empty">Cargando visitas...</div>';
       } else {
         const porFecha = new Map(statsCache.map(d => [d.fecha, d]));
-        const primerFecha = statsCache[0].fecha;
         const dias = [];
         for (let i = 13; i >= 0; i--) {
-          const d = new Date();
-          d.setDate(d.getDate() - i);
+          const d = new Date(); d.setDate(d.getDate() - i);
           const fecha = d.toISOString().slice(0, 10);
-          if (fecha < primerFecha) continue;
           dias.push(porFecha.get(fecha) || { fecha, visitas: 0 });
         }
         const max = Math.max(1, ...dias.map(d => d.visitas));
-        const bars = dias.map(d => {
+        chartEl.innerHTML = '<div class="visits-bars">' + dias.map(d => {
           const h = Math.max(2, Math.round((d.visitas / max) * 70));
-          const peak = d.visitas === max && max > 0;
-          return `<div class="visits-col"><div class="visits-bar-val">${d.visitas}</div><div class="visits-bar${peak ? ' is-peak' : ''}" style="height:${h}px" title="${d.fecha}: ${d.visitas} visitas"></div></div>`;
-        }).join('');
-        const axis = dias.map(d => {
+          return `<div class="visits-col"><div class="visits-bar-val">${d.visitas}</div><div class="visits-bar${d.visitas === max ? ' is-peak' : ''}" style="height:${h}px"></div></div>`;
+        }).join('') + '</div><div class="visits-axis">' + dias.map(d => {
           const [, m, dd] = d.fecha.split('-');
           return `<div class="visits-bar-day">${dd}/${m}</div>`;
-        }).join('');
-        chartEl.innerHTML = `<div class="visits-bars">${bars}</div><div class="visits-axis">${axis}</div>`;
+        }).join('') + '</div>';
       }
 
-      // Desglose por página + embudo, respetando el selector de período.
-      const statsPeriodo = periodo === 'todo' ? statsCache : statsCache.filter(d => isThisMonthISO(d.fecha));
-      const t = statsPeriodo.reduce((acc, d) => {
-        acc.visitas += d.visitas; acc.home += d.home; acc.combo += d.combo;
-        acc.biotinaPura += d.biotinaPura; acc.duo += d.duo;
-        return acc;
+      const t = statsCache.filter(d => enPeriodoISO(d.fecha)).reduce((a, d) => {
+        a.visitas += d.visitas; a.home += d.home; a.combo += d.combo; a.biotinaPura += d.biotinaPura; a.duo += d.duo; return a;
       }, { visitas: 0, home: 0, combo: 0, biotinaPura: 0, duo: 0 });
-
       const PAGINAS = [
-        { key: 'home',        label: 'Home' },
-        { key: 'combo',       label: 'Combo Biotina' },
         { key: 'biotinaPura', label: 'Biotina Pura' },
+        { key: 'combo',       label: 'Combo Biotina' },
         { key: 'duo',         label: 'Dúo Shampoo + Crema' },
+        { key: 'home',        label: 'Inicio' },
       ];
       const maxPagina = Math.max(1, ...PAGINAS.map(p => t[p.key]));
-      pageGridEl.innerHTML = PAGINAS
-        .slice()
-        .sort((a, b) => t[b.key] - t[a.key])
-        .map(p => `
-          <div class="page-bar-row">
-            <div class="page-bar-label">${p.label}</div>
-            <div class="page-bar-track"><div class="page-bar-fill" style="width:${Math.round((t[p.key] / maxPagina) * 100)}%"></div></div>
-            <div class="page-bar-value">${t[p.key]}</div>
-          </div>
-        `).join('');
+      $('visitsByPageGrid').innerHTML = PAGINAS.slice().sort((a, b) => t[b.key] - t[a.key]).map(p => `
+        <div class="page-bar-row">
+          <div class="page-bar-label">${p.label}</div>
+          <div class="page-bar-track"><div class="page-bar-fill" style="width:${Math.round((t[p.key] / maxPagina) * 100)}%"></div></div>
+          <div class="page-bar-value">${t[p.key]}</div>
+        </div>`).join('');
 
-      // Embudo: Visitas → Carritos iniciados → Formularios completos → Ventas
-      // confirmadas. Carritos/formularios/ventas usan la misma lógica de
-      // período que ya usa loadData() (campo `fecha` en formato es-AR).
-      const pedidosPeriodo = pedidosCache.filter(p => periodo === 'todo' || isThisMonth(p.fecha));
-      const carritos    = pedidosPeriodo.length;
-      const formularios = pedidosPeriodo.filter(p => (p._fst || 'pendiente') !== 'carrito_iniciado').length;
-      const ventas       = pedidosPeriodo.filter(p => p._st === 'confirmado' || p._fst === 'aprobado').length;
-      const visitasTotal = t.visitas;
-
-      const pct = (num, den) => den > 0 ? `${Math.round((num / den) * 1000) / 10}%` : '—';
-
-      const steps = [
-        { label: 'Visitas',               value: visitasTotal, pct: null },
-        { label: 'Carritos iniciados',     value: carritos,     pct: pct(carritos, visitasTotal) },
-        { label: 'Formularios completos',  value: formularios,  pct: pct(formularios, carritos) },
-        { label: 'Ventas confirmadas',     value: ventas,       pct: pct(ventas, formularios) },
+      const forms = formulariosFechas.filter(f => enPeriodo(f)).length;
+      const ventasWeb = ventas.filter(v => v.origen === 'web' && COBRADAS.includes(v.estado) && enPeriodo(v.creado)).length;
+      const pct = (a, b) => b > 0 ? (Math.round((a / b) * 1000) / 10) + '%' : '—';
+      const pasos = [
+        { label: 'Visitas', value: t.visitas, pct: null },
+        { label: 'Formularios de compra', value: forms, pct: pct(forms, t.visitas) },
+        { label: 'Ventas por la web', value: ventasWeb, pct: pct(ventasWeb, forms) },
       ];
-      const maxStep = Math.max(1, visitasTotal);
-      funnelEl.innerHTML = steps.map(s => `
-        <div class="funnel-step">
+      const maxPaso = Math.max(1, t.visitas);
+      $('funnelRow').innerHTML = pasos.map(s => `
+        <div>
           <div class="funnel-step-top">
             <span class="funnel-step-label">${s.label}</span>
             <span><span class="funnel-step-value">${s.value}</span>${s.pct ? `<span class="funnel-step-pct">${s.pct}</span>` : ''}</span>
           </div>
-          <div class="funnel-track"><div class="funnel-fill" style="width:${Math.round((s.value / maxStep) * 100)}%"></div></div>
-        </div>
-      `).join('');
+          <div class="funnel-track"><div class="funnel-fill" style="width:${Math.max(s.value ? 1 : 0, Math.round((s.value / maxPaso) * 100))}%"></div></div>
+        </div>`).join('');
     }
 
-    /* ── LOCALSTORAGE FALLBACK ───────────────────────────────────────── */
-    function loadFromLocalStorage() {
-      const pedidos      = JSON.parse(localStorage.getItem('pedidos')          || '[]');
-      const statuses     = JSON.parse(localStorage.getItem('pedidoStatus')     || '{}');
-      const formStatuses = JSON.parse(localStorage.getItem('pedidoFormStatus') || '{}');
-      pedidosCache = pedidos.map((p, i) => ({
-        id:        String(i),
-        nombre:    p.nombre    || '',
-        apellido:  p.apellido  || '',
-        dni:       p.dni       || '',
-        telefono:  p.telefono  || '',
-        email:     p.email     || '',
-        calle:     p.calle     || '',
-        numero:    p.numero    || '',
-        cp:        p.cp        || '',
-        localidad: p.localidad || '',
-        provincia: p.provincia || '',
-        producto:  p.producto  || '',
-        fecha:     p.fecha     || '',
-        timestamp: p.timestamp || 0,
-        _manual:   p._manual   || false,
-        _st:       statuses[i]     || 'abandonado',
-        _fst:      formStatuses[i] || p.formStatus || 'pendiente',
-        _c:        getCombo(p.producto),
-      }));
-      loadData();
-    }
-
-    /* ── SAVE STATUS ─────────────────────────────────────────────────── */
-    function saveStatus(id, val) {
-      if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
-        firebase.firestore().collection('pedidos').doc(id)
-          .update({ status: val })
-          .catch(e => console.warn('saveStatus:', e));
-        const p = pedidosCache.find(x => x.id === id);
-        if (p) { p._st = val; }
-        loadData();
-      } else {
-        const idx = parseInt(id);
-        const s   = JSON.parse(localStorage.getItem('pedidoStatus') || '{}');
-        s[idx] = val;
-        localStorage.setItem('pedidoStatus', JSON.stringify(s));
-        loadFromLocalStorage();
+    /* ── CONTRASEÑA ─────────────────────────────────────────────────── */
+    async function cambiarClave() {
+      const a = $('clave1').value, b = $('clave2').value;
+      if (a.length < 10) return aviso('La contraseña nueva tiene que tener al menos 10 caracteres', true);
+      if (a !== b) return aviso('Las dos no coinciden', true);
+      const btn = $('btnClave');
+      btn.disabled = true;
+      try {
+        const j = await api('cambiar_clave', { nueva: a });
+        if (!j.ok) throw new Error(j.error === 'corta' ? 'es muy corta' : (j.error || 'no se cambió'));
+        let recordada = false;
+        try { recordada = !!localStorage.getItem('panelClave'); } catch (e) {}
+        clave = a;
+        guardarClave(a, recordada);
+        $('clave1').value = ''; $('clave2').value = '';
+        aviso('Contraseña cambiada');
+      } catch (e) {
+        if (e.message !== 'sin acceso') aviso('No se pudo cambiar: ' + e.message, true);
+      } finally {
+        btn.disabled = false;
       }
     }
 
-    /* ── ELIMINAR PEDIDO ─────────────────────────────────────────────── */
-    function eliminarPedido(id) {
-      if (!confirm('¿Eliminar este cliente/pedido? Esta acción no se puede deshacer.')) return;
-
-      if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
-        firebase.firestore().collection('pedidos').doc(id).delete()
-          .catch(e => {
-            console.warn('eliminarPedido:', e);
-            alert('No se pudo eliminar. Revisá que las reglas de Firestore permitan "delete".');
-          });
-        // El listener en tiempo real (onSnapshot) actualiza la tabla solo.
-      } else {
-        const idx = parseInt(id);
-        const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
-        const statuses = JSON.parse(localStorage.getItem('pedidoStatus') || '{}');
-        const formStatuses = JSON.parse(localStorage.getItem('pedidoFormStatus') || '{}');
-
-        pedidos.splice(idx, 1);
-
-        // Los mapas de estado están indexados por posición — al sacar un elemento,
-        // hay que correr los índices posteriores para que sigan apuntando al pedido correcto.
-        const reindexar = (map) => {
-          const nuevo = {};
-          Object.keys(map).map(Number).sort((a, b) => a - b).forEach(i => {
-            if (i < idx) nuevo[i] = map[i];
-            else if (i > idx) nuevo[i - 1] = map[i];
-            // i === idx se descarta (era del pedido eliminado)
-          });
-          return nuevo;
-        };
-
-        localStorage.setItem('pedidos', JSON.stringify(pedidos));
-        localStorage.setItem('pedidoStatus', JSON.stringify(reindexar(statuses)));
-        localStorage.setItem('pedidoFormStatus', JSON.stringify(reindexar(formStatuses)));
-        loadFromLocalStorage();
+    /* ── ARRANQUE ───────────────────────────────────────────────────── */
+    (async function inicio() {
+      try { const p = localStorage.getItem('panelPeriodo'); if (p && NOMBRE_PERIODO[p]) periodo = p; } catch (e) {}
+      document.querySelectorAll('#periodoTabs button').forEach(b => b.classList.toggle('on', b.dataset.p === periodo));
+      $('lblPeriodo').textContent = NOMBRE_PERIODO[periodo];
+      const guardada = leerGuardada();
+      if (!guardada) { $('loginScreen').style.display = 'flex'; return; }
+      clave = guardada;
+      try {
+        const j = await llamar('listar');
+        if (j.ok) { recibir(j); mostrarPanel(); return; }
+        salir(j.error === 'bloqueado' ? 'Demasiados intentos con contraseña equivocada. Esperá 15 minutos.' : '');
+      } catch (e) {
+        $('loginScreen').style.display = 'flex';
+        errorLogin('No se pudo conectar con el servidor. Revisá internet y probá de nuevo.');
       }
-    }
+    })();
 
-    /* ── HELPERS ─────────────────────────────────────────────────────── */
-    function getCombo(productoStr) {
-      if (!productoStr) return null;
-      const m = productoStr.match(/\$([0-9.]+)/);
-      if (!m) return null;
-      return COMBOS[parseInt(m[1].replace(/\./g, ''))] || null;
-    }
-
-    function fmt(n) {
-      return '$' + Math.round(n).toLocaleString('es-AR');
-    }
-
-    // Convierte el teléfono que cargó la clienta (ej: "11 1234-5678") al
-    // formato que necesita wa.me (54 9 + código de área + número, sin
-    // espacios/guiones). Si ya viene con el "54" puesto, lo deja igual.
-    function waLinkCliente(tel) {
-      const digits = String(tel || '').replace(/\D/g, '');
-      if (!digits) return null;
-      return digits.startsWith('54') ? digits : `549${digits}`;
-    }
-
-    // Arma un link de WhatsApp hacia TU propio número (MI_NUMERO_PREPARACION)
-    // con todos los datos del pedido, para tenerlo a mano y preparar el envío.
-    function waLinkPreparacion(p) {
-      const calleNum = [p.calle, p.numero].filter(Boolean).join(' ') + (p.piso ? ` ${p.piso}` : '');
-
-      const msg = encodeURIComponent(
-        `*Pedido para preparar*\n\n` +
-        `Nombre y Apellido: ${p.nombre || ''} ${p.apellido || ''}\n` +
-        `DNI: ${p.dni || '—'}\n` +
-        `Provincia: ${p.provincia || '—'}\n` +
-        `Localidad: ${p.localidad || '—'}\n` +
-        `Dirección: ${calleNum || '—'}\n` +
-        `Código postal: ${p.cp || '—'}\n` +
-        `Correo electrónico: ${p.email || '—'}\n` +
-        `Número de celu: ${p.telefono || '—'}\n\n` +
-        `Producto: ${p.producto || '—'}\n` +
-        `Fecha del pedido: ${p.fecha || '—'}\n\n` +
-        `Observación: `
-      );
-      return `https://wa.me/${MI_NUMERO_PREPARACION}?text=${msg}`;
-    }
-
-    function isToday(f) {
-      return f ? f.startsWith(new Date().toLocaleDateString('es-AR')) : false;
-    }
-
-    function isThisMonth(f) {
-      if (!f) return false;
-      const now = new Date();
-      const p   = f.split('/');
-      return p.length >= 3 &&
-        parseInt(p[1]) === now.getMonth() + 1 &&
-        parseInt(p[2]) === now.getFullYear();
-    }
-
-    /* ── GANANCIAS POR PRODUCTO ────────────────────────────────────────── */
-    const FAMILIAS = [
-      { key: 'Combo Biotina' },
-      { key: 'Biotina Pura' },
-      { key: 'Dúo Shampoo + Crema' },
-    ];
-
-    function renderProductos(porProducto) {
-      document.getElementById('prodGrid').innerHTML = FAMILIAS.map(f => {
-        const d = porProducto[f.key] || { pedidos: 0, ingresos: 0, ganancia: 0 };
-        return `
-          <div class="dist-card">
-            <div class="dist-card-label">${f.key}</div>
-            <div class="prod-stat-row"><span>Pedidos</span><strong>${d.pedidos}</strong></div>
-            <div class="prod-stat-row"><span>Ingresos</span><strong>${fmt(d.ingresos)}</strong></div>
-            <div class="prod-stat-row prod-stat-ganancia"><span>Ganancia</span><strong>${fmt(d.ganancia)}</strong></div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    /* ── STATS ───────────────────────────────────────────────────────── */
-    function setStatsPeriodo(val) {
-      window._statsPeriodo = val;
-      loadData();
-    }
-
-    function loadData() {
-      const periodo = window._statsPeriodo || document.getElementById('statsPeriodo')?.value || 'todo';
-      let ventasHoy = 0, carritosHoy = 0, ventasPeriodo = 0, ingresosPeriodo = 0, gananciaPeriodo = 0, abandoned = 0;
-      const porProducto = {};
-
-      pedidosCache.forEach(p => {
-        const combo = p._c;
-        // Cualquier pedido/carrito guardado hoy, sin importar si llegó a
-        // confirmar el pago o no — para saber de un vistazo si hubo
-        // actividad nueva en el día (aunque no se haya convertido en venta).
-        if (isToday(p.fecha)) carritosHoy++;
-        // Cuenta como venta si "status" dice confirmado O si "formStatus" dice
-        // aprobado — son dos campos que deberían ir siempre sincronizados
-        // (saveFormStatus y el webhook de MercadoPago los actualizan juntos),
-        // pero pedidos marcados "Aprobado" a mano antes de esa sincronización
-        // se quedaron con status viejo. Con el OR quedan bien sin tener que
-        // re-tocarlos uno por uno.
-        if ((p._st === 'confirmado' || p._fst === 'aprobado') && combo) {
-          if (isToday(p.fecha))     ventasHoy++;
-
-          if (periodo === 'todo' || isThisMonth(p.fecha)) {
-            ventasPeriodo++; ingresosPeriodo += combo.precio; gananciaPeriodo += combo.ganancia;
-            const fam = combo.familia || 'Otro';
-            if (!porProducto[fam]) porProducto[fam] = { pedidos: 0, ingresos: 0, ganancia: 0 };
-            porProducto[fam].pedidos++;
-            porProducto[fam].ingresos += combo.precio;
-            porProducto[fam].ganancia += combo.ganancia;
-          }
-        }
-        if (p._st === 'abandonado' && p._fst !== 'aprobado') abandoned++;
-      });
-
-      document.getElementById('sHoy').textContent       = ventasHoy;
-      document.getElementById('sCarritosHoy').textContent = carritosHoy;
-      document.getElementById('sMes').textContent       = ventasPeriodo;
-      document.getElementById('sIngresos').textContent  = fmt(ingresosPeriodo);
-      document.getElementById('sGanancia').textContent  = fmt(gananciaPeriodo);
-      document.getElementById('sAbandoned').textContent = abandoned;
-
-      document.getElementById('lblVentasMes').textContent   = periodo === 'todo' ? 'Ventas totales' : 'Ventas del mes';
-      document.getElementById('lblIngresosMes').textContent = periodo === 'todo' ? 'Ingresos brutos totales' : 'Ingresos brutos del mes';
-      document.getElementById('lblGananciaMes').textContent = periodo === 'todo' ? 'Ganancia neta total' : 'Ganancia neta del mes';
-      document.getElementById('lblProdPeriodo').textContent = periodo === 'todo' ? 'Ganancias por producto (histórico)' : 'Ganancias por producto (este mes)';
-
-      renderProductos(porProducto);
-      renderVisitas();
-
-      renderTable();
-      loadFormularios();
-    }
-
-    /* ── TABLE ───────────────────────────────────────────────────────── */
-    function renderTable() {
-      const q     = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
-      const fSt   = document.getElementById('filterStatus')?.value || '';
-      const tbody = document.getElementById('tableBody');
-      const tfoot = document.getElementById('tableFoot');
-
-      const rows = [...pedidosCache]
-        .filter(p => {
-          if (fSt && p._st !== fSt) return false;
-          if (!q) return true;
-          return `${p.nombre} ${p.apellido} ${p.telefono} ${p.provincia}`.toLowerCase().includes(q);
-        })
-        .reverse();
-
-      if (!rows.length) {
-        tbody.innerHTML = `<tr><td colspan="13"><div class="empty-state">
-          <p>${q || fSt ? 'Sin resultados para el filtro aplicado.' : 'Aún no hay clientes registrados.'}</p>
-        </div></td></tr>`;
-        tfoot.innerHTML = '';
-        return;
-      }
-
-      // Precio/comisión/costo/ganancia solo se cuentan en pagos confirmados de
-      // verdad — un carrito o un formulario sin pagar no generó ni un peso, así
-      // que no puede sumar a la ganancia aunque tengamos identificado el
-      // producto que estaba mirando.
-      let tPrecio = 0, tMP = 0, tCosto = 0, tEnvio = 0, tGanancia = 0;
-      rows.forEach(p => {
-        const esVenta = p._st === 'confirmado' || p._fst === 'aprobado';
-        if (p._c && esVenta) { tPrecio += p._c.precio; tMP += p._c.mp; tCosto += p._c.costo; tEnvio += p._c.envio; tGanancia += p._c.ganancia; }
-      });
-
-      const opts = (selected) => Object.entries(STATUS_CFG).map(([v, l]) =>
-        `<option value="${v}" ${selected === v ? 'selected' : ''}>${l}</option>`
-      ).join('');
-
-      tbody.innerHTML = rows.map(p => {
-        const nombre = `${p.nombre} ${p.apellido}`.trim() || '—';
-        const esVenta = p._st === 'confirmado' || p._fst === 'aprobado';
-        const c      = esVenta ? p._c : null;
-        const waMsg  = encodeURIComponent(`Hola ${p.nombre || ''}! Vi que estuviste viendo nuestro Combo Biotina. ¿Te puedo ayudar a completar tu pedido? Tenemos envío gratis a todo el país.`);
-        const waTel  = waLinkCliente(p.telefono);
-        const safeId = p.id.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-
-        return `<tr class="row-${p._st}">
-          <td class="td-name">${nombre}</td>
-          <td class="td-phone">${p.telefono || '—'}</td>
-          <td>
-            <select class="status-sel s-${p._st}"
-              onchange="saveStatus('${safeId}',this.value);this.className='status-sel s-'+this.value">
-              ${opts(p._st)}
-            </select>
-          </td>
-          <td class="td-date">${p.fecha || '—'}</td>
-          <td>${p.provincia || '—'}</td>
-          <td>${p.producto || (c ? `Combo x${c.qty}` : '—')}</td>
-          <td class="td-r">${c ? fmt(c.precio) : '—'}</td>
-          <td class="td-r td-mp">${c ? fmt(c.mp) : '—'}</td>
-          <td class="td-r">${c ? fmt(c.costo) : '—'}</td>
-          <td class="td-r">${c && c.envio ? fmt(c.envio) : '—'}</td>
-          <td class="td-r td-gain">${c ? fmt(c.ganancia) : '—'}</td>
-          <td>
-            ${waTel ? `<a href="https://wa.me/${waTel}?text=${waMsg}" target="_blank" class="btn-wa">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-              </svg>
-              WA
-            </a>` : `<span style="color:var(--gray-light);font-size:0.72rem;">Sin teléfono</span>`}
-          </td>
-          <td>
-            <a href="${waLinkPreparacion(p)}" target="_blank" class="btn-prep" title="Enviarme este pedido completo por WhatsApp">Preparar</a>
-            <button class="btn-delete" onclick="eliminarPedido('${safeId}')" title="Eliminar registro">${TRASH_ICON_SVG}</button>
-          </td>
-        </tr>`;
-      }).join('');
-
-      const ventasCount = rows.filter(p => p._st === 'confirmado' || p._fst === 'aprobado').length;
-      tfoot.innerHTML = `<tr>
-        <td colspan="6" style="color:var(--gray);font-style:italic">TOTAL — ${rows.length} registro${rows.length !== 1 ? 's' : ''} (${ventasCount} venta${ventasCount !== 1 ? 's' : ''} confirmada${ventasCount !== 1 ? 's' : ''})</td>
-        <td class="td-r">${fmt(tPrecio)}</td>
-        <td class="td-r td-mp">${fmt(tMP)}</td>
-        <td class="td-r">${fmt(tCosto)}</td>
-        <td class="td-r">${fmt(tEnvio)}</td>
-        <td class="td-r td-gain">${fmt(tGanancia)}</td>
-        <td colspan="2"></td>
-      </tr>`;
-    }
-
-    /* ── MANUAL SALE ─────────────────────────────────────────────────── */
-    function addManualSale() {
-      const nombre  = document.getElementById('fNombre').value.trim();
-      const tel     = document.getElementById('fTel').value.trim();
-      const prov    = document.getElementById('fProvincia').value;
-      const prodAmt = document.getElementById('fProducto').value;
-      const estado  = document.getElementById('fEstado').value;
-
-      if (!nombre || !prodAmt) {
-        alert('Completá al menos nombre y producto.');
-        return;
-      }
-
-      const combo = COMBOS[prodAmt];
-
-      if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
-        firebase.firestore().collection('pedidos').add({
-          nombre, apellido: '', dni: '', telefono: tel, email: '',
-          calle: '', numero: '', piso: '', cp: '', localidad: '', provincia: prov,
-          producto: combo.label,
-          fecha: new Date().toLocaleString('es-AR'),
-          status: estado,
-          _manual: true,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        }).catch(e => console.warn('addManualSale:', e));
-      } else {
-        const pedidos  = JSON.parse(localStorage.getItem('pedidos')      || '[]');
-        const statuses = JSON.parse(localStorage.getItem('pedidoStatus') || '{}');
-        const idx      = pedidos.length;
-        pedidos.push({
-          nombre, apellido: '', dni: '', telefono: tel, email: '',
-          calle: '', numero: '', piso: '', cp: '', localidad: '', provincia: prov,
-          producto: combo.label,
-          fecha: new Date().toLocaleString('es-AR'),
-          _manual: true,
-        });
-        statuses[idx] = estado;
-        localStorage.setItem('pedidos',      JSON.stringify(pedidos));
-        localStorage.setItem('pedidoStatus', JSON.stringify(statuses));
-        loadFromLocalStorage();
-      }
-
-      document.getElementById('fNombre').value    = '';
-      document.getElementById('fTel').value       = '';
-      document.getElementById('fProvincia').value = '';
-      document.getElementById('fProducto').value  = '';
-      document.getElementById('fEstado').value    = 'confirmado';
-    }
-
-    /* ── FORMULARIOS COMPLETADOS / CARRITOS ABANDONADOS ────────────────── */
-    const FORM_STATUS_CFG = {
-      carrito_iniciado: 'Carrito iniciado (sin enviar)',
-      pendiente:    'Pendiente',
-      aprobado:     'Aprobado',
-      rechazado:    'Rechazado',
-      sinconfirmar: 'Sin confirmar',
-    };
-    const ABANDONED_MS = 45 * 60 * 1000; // 45 minutos
-    const WA_ICON_SVG = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
-    const TRASH_ICON_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>';
-
-    function saveFormStatus(id, val) {
-      // Si el pago queda "Aprobado" acá, también lo marcamos como
-      // "Pago confirmado" en Ventas Web — son dos tablas separadas pero
-      // un pago aprobado siempre tiene que contar como venta.
-      const update = { formStatus: val };
-      if (val === 'aprobado') update.status = 'confirmado';
-
-      if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
-        firebase.firestore().collection('pedidos').doc(id)
-          .update(update)
-          .catch(e => console.warn('saveFormStatus:', e));
-        const p = pedidosCache.find(x => x.id === id);
-        if (p) { p._fst = val; if (update.status) p._st = update.status; }
-        loadData();
-      } else {
-        const idx = parseInt(id);
-        const s   = JSON.parse(localStorage.getItem('pedidoFormStatus') || '{}');
-        s[idx] = val;
-        localStorage.setItem('pedidoFormStatus', JSON.stringify(s));
-        if (update.status) {
-          const st = JSON.parse(localStorage.getItem('pedidoStatus') || '{}');
-          st[idx] = update.status;
-          localStorage.setItem('pedidoStatus', JSON.stringify(st));
-        }
-        loadFromLocalStorage();
-      }
-    }
-
-    function formStatusOpts(selected) {
-      return Object.entries(FORM_STATUS_CFG).map(([v, l]) =>
-        `<option value="${v}" ${selected === v ? 'selected' : ''}>${l}</option>`
-      ).join('');
-    }
-
-    function formRowHtml(p) {
-      const nombre = `${p.nombre || ''} ${p.apellido || ''}`.trim() || '—';
-      const dirParts = [
-        [p.calle, p.numero].filter(Boolean).join(' '),
-        p.localidad,
-        p.provincia,
-      ].filter(Boolean);
-      const dir = dirParts.length ? dirParts.join(', ') : '—';
-      const fechaFmt = p.fecha || (p.timestamp ? new Date(p.timestamp).toLocaleString('es-AR') : '—');
-      const estado = p._fst || 'pendiente';
-      const safeId = String(p.id).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-      const waMsg = encodeURIComponent(
-        `Hola ${p.nombre || ''}! Vimos que estuviste por completar tu pedido de ${p.producto || 'nuestros productos'} pero quedó sin terminar. Sigue disponible y con envío gratis — ¿te ayudo a cerrarlo o tenés alguna duda?`
-      );
-      const waTel = waLinkCliente(p.telefono);
-
-      return `<tr>
-        <td class="td-name">${nombre}</td>
-        <td class="td-phone">${p.dni || '—'}</td>
-        <td class="td-phone">${p.telefono || '—'}</td>
-        <td>${p.email || '—'}</td>
-        <td>${dir}</td>
-        <td>${p.producto || '—'}</td>
-        <td class="td-date">${fechaFmt}</td>
-        <td>
-          <select class="status-sel fst-${estado}"
-            onchange="saveFormStatus('${safeId}',this.value);this.className='status-sel fst-'+this.value">
-            ${formStatusOpts(estado)}
-          </select>
-        </td>
-        <td>
-          ${waTel ? `<a href="https://wa.me/${waTel}?text=${waMsg}" target="_blank" class="btn-wa">
-            ${WA_ICON_SVG} WA
-          </a>` : `<span style="color:var(--gray-light);font-size:0.72rem;">Sin teléfono</span>`}
-        </td>
-        <td>
-          <a href="${waLinkPreparacion(p)}" target="_blank" class="btn-prep" title="Enviarme este pedido completo por WhatsApp">Preparar</a>
-          <button class="btn-delete" onclick="eliminarPedido('${safeId}')" title="Eliminar registro">${TRASH_ICON_SVG}</button>
-        </td>
-      </tr>`;
-    }
-
-    function loadFormularios() {
-      // Formularios completados — todos, más reciente primero
-      const tbody  = document.getElementById('formulariosTableBody');
-      const sorted = [...pedidosCache].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-      tbody.innerHTML = sorted.length
-        ? sorted.map(formRowHtml).join('')
-        : `<tr><td colspan="10"><div class="empty-state">
-             <p>Todavía no se registraron formularios completados.</p>
-           </div></td></tr>`;
-
-      // Carritos abandonados — Pendiente / Sin confirmar / Carrito iniciado (sin
-      // enviar el formulario) hace más de ABANDONED_MS
-      const now = Date.now();
-      const abandoned = pedidosCache
-        .filter(p => {
-          const st = p._fst || 'pendiente';
-          if (st !== 'pendiente' && st !== 'sinconfirmar' && st !== 'carrito_iniciado') return false;
-          return p.timestamp && (now - p.timestamp) > ABANDONED_MS;
-        })
-        .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
-
-      const abandonedCountEl = document.getElementById('abandonedCount');
-      abandonedCountEl.textContent = abandoned.length;
-      abandonedCountEl.classList.toggle('is-alert', abandoned.length > 0);
-
-      const abandonedBody = document.getElementById('abandonedTableBody');
-      abandonedBody.innerHTML = abandoned.length
-        ? abandoned.map(formRowHtml).join('')
-        : `<tr><td colspan="10"><div class="empty-state">
-             <p>No hay carritos abandonados por el momento.</p>
-           </div></td></tr>`;
-    }
-
-    // Refrescar cada 5 min mientras el panel esté abierto (el paso del tiempo por sí
-    // solo puede mover un pedido a "más de 2hs", sin que cambien datos en Firestore)
+    // Se actualiza solo cada 2 minutos mientras está abierto (no toca el
+    // formulario de venta si está a medio cargar).
     setInterval(() => {
-      if (document.getElementById('adminPanel').style.display !== 'none') loadFormularios();
-    }, 5 * 60 * 1000);
-
+      if (clave && $('adminPanel').style.display !== 'none' && !document.hidden) cargar();
+    }, 2 * 60 * 1000);
   </script>
 
 </body>
