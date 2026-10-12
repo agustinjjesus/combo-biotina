@@ -654,6 +654,7 @@
  text-decoration: none;
  }
 
+ .qty-price .price-transfer { display: block; font-size: 0.74rem; font-weight: 700; color: #1a7f37; margin-top: 2px; white-space: nowrap; }
  .qty-save {
  display: block;
  font-size: 0.74rem;
@@ -1247,7 +1248,7 @@
  </ul>
 
  <div class="quantity-options">
- <div class="qty-option" onclick="selectQty(this, 1)" data-price="32000">
+ <div class="qty-option" onclick="selectQty(this, 1)" data-price="29000">
  <span class="qty-count">1 unidad</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
@@ -1258,13 +1259,14 @@
  </div>
  </div>
  <div class="qty-price">
- <span class="price-now">$ 25.000</span>
+ <span class="price-now">$ 22.000</span>
  <span class="price-cuotas">+ $ 7.000 de envío</span>
- <span class="price-cuotas">3 cuotas de $ 10.667</span>
+ <span class="price-cuotas">3 cuotas de $ 9.667</span>
+ <span class="price-transfer">Transferencia $ 19.800</span>
  </div>
  </div>
 
- <div class="qty-option popular selected" onclick="selectQty(this, 2)" data-price="40000">
+ <div class="qty-option popular selected" onclick="selectQty(this, 2)" data-price="44000">
  <span class="qty-count">2 unidades</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
@@ -1275,15 +1277,16 @@
  </div>
  </div>
  <div class="qty-price">
- <span class="price-old">$ 64.000 <span class="discount-badge">-38%</span></span>
- <span class="price-now">$ 40.000</span>
- <span class="price-cuotas">3 cuotas de $ 13.333</span>
- <span class="qty-save">Ahorrás $24.000</span>
+ <span class="price-old">$ 58.000 <span class="discount-badge">-24%</span></span>
+ <span class="price-now">$ 44.000</span>
+ <span class="price-cuotas">3 cuotas de $ 14.667</span>
+ <span class="price-transfer">Transferencia $ 39.600</span>
+ <span class="qty-save">Ahorrás $14.000</span>
  <span class="qty-value-note">El más elegido — mejor relación precio por unidad</span>
  </div>
  </div>
 
- <div class="qty-option best" onclick="selectQty(this, 3)" data-price="55000">
+ <div class="qty-option best" onclick="selectQty(this, 3)" data-price="61000">
  <span class="qty-count">3 unidades</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
@@ -1294,10 +1297,11 @@
  </div>
  </div>
  <div class="qty-price">
- <span class="price-old">$ 96.000 <span class="discount-badge">-43%</span></span>
- <span class="price-now">$ 55.000</span>
- <span class="price-cuotas">3 cuotas de $ 18.333</span>
- <span class="qty-save">Ahorrás $41.000</span>
+ <span class="price-old">$ 87.000 <span class="discount-badge">-30%</span></span>
+ <span class="price-now">$ 61.000</span>
+ <span class="price-cuotas">3 cuotas de $ 20.333</span>
+ <span class="price-transfer">Transferencia $ 54.900</span>
+ <span class="qty-save">Ahorrás $26.000</span>
  <span class="qty-value-note">Máximo ahorro</span>
  </div>
  </div>
@@ -1320,7 +1324,7 @@
  </p>
 
  <button class="btn-buy" id="buyBtn" onclick="irAPagar()">
- COMPRAR AHORA · $40.000 — ENVÍO GRATIS
+ COMPRAR AHORA · $44.000 — ENVÍO GRATIS
  </button>
             <p class="cuotas-linea" id="cuotasLinea"></p>
 
@@ -1602,7 +1606,7 @@
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Qué formas de pago aceptan? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Con Mercado Pago podés pagar con tarjeta de crédito en 3 cuotas sin interés, con débito, con dinero en cuenta o en efectivo en Pago Fácil y Rapipago. También podés pagar por transferencia bancaria: escribinos por WhatsApp y te pasamos los datos. En todos los casos el pago se hace antes del envío.</div>
+ <div class="faq-a">Con Mercado Pago podés pagar con tarjeta de crédito en 3 cuotas sin interés, con débito, con dinero en cuenta o en efectivo en Pago Fácil y Rapipago. Pagando por transferencia bancaria tenés 10% de descuento: escribinos por WhatsApp y te pasamos los datos. En todos los casos el pago se hace antes del envío.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Es seguro comprar? <span class="faq-arrow">+</span></button>
@@ -1626,7 +1630,7 @@
  <div class="cta-final">
  <h2>Empezá hoy tu tratamiento</h2>
  <p>Los resultados se empiezan a ver desde la semana 3 de uso diario. Sin formol ni sulfatos.</p>
- <a href="#" onclick="irAPagar(); return false;" class="btn-cta-final">Lleva 2 · $40.000 — Envío gratis</a>
+ <a href="#" onclick="irAPagar(); return false;" class="btn-cta-final">Lleva 2 · $44.000 — Envío gratis</a>
  </div>
 
  <!-- MODAL FORMULARIO -->
@@ -1634,7 +1638,7 @@
  <div class="modal">
  <button class="modal-close" onclick="closeModal()">×</button>
  <h3>¡Un paso más! </h3>
- <p class="modal-sub">Dejanos tu nombre y tu WhatsApp y seguí al pago. Por WhatsApp te escribimos para coordinar el envío. Tu pedido: <span id="modalProducto">Biotina Pura x2 — $40.000</span></p>
+ <p class="modal-sub">Dejanos tu nombre y tu WhatsApp y seguí al pago. Por WhatsApp te escribimos para coordinar el envío. Tu pedido: <span id="modalProducto">Biotina Pura x2 — $44.000</span></p>
 
  
  <div class="form-section-title">Datos de contacto</div>
@@ -1794,7 +1798,7 @@
  <!-- FLOATING CTA MOBILE -->
  <div class="floating-cta">
  <button class="floating-cta-btn" id="floatingBtn" onclick="irAPagar()">
- COMPRAR AHORA · $40.000 — ENVÍO GRATIS
+ COMPRAR AHORA · $44.000 — ENVÍO GRATIS
  </button>
  </div>
 
@@ -1824,19 +1828,20 @@
  // costo, no el comprador) — si se prefiere que el comprador pague el
  // interés en cuotas, o eliminar cuotas del todo, hay que ajustarlo desde
  // el panel de MercadoPago (esa opción no existe en "Link de pago").
- const MP_URL_1 = 'https://mpago.la/2hiTmLS'; // ← 1 unidad, $32.000 ($25.000 + $7.000 de envío)
- const MP_URL_2 = 'https://mpago.la/2T58ZTq'; // ← 2 unidades $40.000
- const MP_URL_3 = 'https://mpago.la/1DmS85A'; // ← 3 unidades $55.000
+ const MP_URL_1 = 'https://mpago.la/1aYABR8'; // ← 1 unidad, $29.000 ($22.000 + $7.000 de envío)
+ const MP_URL_2 = 'https://mpago.la/2wDo3xX'; // ← 2 unidades $44.000
+ const MP_URL_3 = 'https://mpago.la/2wmf92V'; // ← 3 unidades $61.000 (link propio, no el del Combo x2)
 
  const MP_AUTO_CONFIRM_ENABLED = true;
  const CLOUD_FN_CREAR_PREFERENCIA = 'https://us-central1-biotina-pg.cloudfunctions.net/crearPreferencia';
- // 1 unidad: $25.000 + $7.000 de envío = $32.000, que es lo que se cobra.
- const PRECIOS_NUM = { 1: 32000, 2: 40000, 3: 55000 };
+ // 1 unidad: $22.000 + $7.000 de envío = $29.000, que es lo que se cobra.
+ // Por transferencia hay 10% de descuento (se pide por WhatsApp): $19.800 + envío / $39.600 / $54.900.
+ const PRECIOS_NUM = { 1: 29000, 2: 44000, 3: 61000 };
 
  const precios = {
- 1: { label: 'Biotina Pura x1 — $32.000 con envío', mp: MP_URL_1 },
- 2: { label: 'Biotina Pura x2 — $40.000', mp: MP_URL_2 },
- 3: { label: 'Biotina Pura x3 — $55.000', mp: MP_URL_3 }
+ 1: { label: 'Biotina Pura x1 — $29.000 con envío', mp: MP_URL_1 },
+ 2: { label: 'Biotina Pura x2 — $44.000', mp: MP_URL_2 },
+ 3: { label: 'Biotina Pura x3 — $61.000', mp: MP_URL_3 }
  };
  let selectedQty = 2;
 
@@ -1897,9 +1902,9 @@
  document.querySelectorAll('.qty-option').forEach(o => o.classList.remove('selected'));
  el.classList.add('selected');
  selectedQty = qty;
- const prices = { 1: '32.000', 2: '40.000', 3: '55.000' };
- // Con 1 unidad el envío se cobra ($7.000, ya sumado en los $32.000).
- const textoBoton = qty === 1 ? 'COMPRAR AHORA · $32.000 CON ENVÍO' : `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
+ const prices = { 1: '29.000', 2: '44.000', 3: '61.000' };
+ // Con 1 unidad el envío se cobra ($7.000, ya sumado en los $29.000).
+ const textoBoton = qty === 1 ? 'COMPRAR AHORA · $29.000 CON ENVÍO' : `COMPRAR AHORA · $${prices[qty]} — ENVÍO GRATIS`;
  document.getElementById('buyBtn').textContent = textoBoton;
  document.getElementById('floatingBtn').textContent = textoBoton;
  const envioPrecio = document.getElementById('envioPrecio');
