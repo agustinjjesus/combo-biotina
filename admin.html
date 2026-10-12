@@ -567,12 +567,12 @@
 
     // Precios del 12/10/2026, para completar el total al anotar una venta. El
     // total se puede corregir a mano (precio viejo ya pasado, descuento, etc.).
-    // Biotina Pura tiene 10% menos por transferencia; el x1 incluye $7.000 de
-    // envío. Combo y Dúo cuestan lo mismo pagando como sea.
+    // Por transferencia, 10% menos sobre el producto (no sobre el envío); el
+    // x1 incluye $7.000 de envío.
     const PRECIOS = {
       biotina: { lista: [29000, 44000, 61000], transferencia: [26800, 39600, 54900] },
-      combo:   { lista: [40000, 61000, 77000] },
-      duo:     { lista: [27000, 36000, 47000] },
+      combo:   { lista: [40000, 61000, 77000], transferencia: [36700, 54900, 69300] },
+      duo:     { lista: [27000, 36000, 47000], transferencia: [25000, 32400, 42300] },
     };
     const NOMBRES = { biotina: 'Biotina Pura', combo: 'Combo Biotina', duo: 'Dúo Shampoo + Acond.' };
     // Para estimar la ganancia (sin la publicidad): costo por unidad, envío que

@@ -1702,6 +1702,12 @@
  <!-- Firebase SDK (sincronización en tiempo real) -->
  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<style>
+ /* Transferencia con 10% menos (12/10/2026) */
+ .qty-price .price-transfer { display: block; font-size: 0.74rem; font-weight: 700; color: #1a7f37; margin-top: 2px; white-space: nowrap; }
+ .pago-transferencia { text-align: center; font-size: 0.8rem; color: var(--dark); margin-top: 12px; }
+ .pago-transferencia a { color: #1a7f37; font-weight: 700; text-decoration: underline; }
+ </style>
 </head>
 <body id="top">
 
@@ -1720,6 +1726,8 @@
  <span class="announce-sep"></span>
  3 CUOTAS SIN INTERÉS
  <span class="announce-sep"></span>
+ 10% MENOS PAGANDO POR TRANSFERENCIA
+ <span class="announce-sep"></span>
  ENVÍO GRATIS LLEVANDO 2 O MÁS
  <span class="announce-sep"></span>
  RESULTADOS DESDE LA SEMANA 3
@@ -1731,6 +1739,8 @@
  PAGO 100% SEGURO CON MERCADOPAGO
  <span class="announce-sep"></span>
  3 CUOTAS SIN INTERÉS
+ <span class="announce-sep"></span>
+ 10% MENOS PAGANDO POR TRANSFERENCIA
  <span class="announce-sep"></span>
  </div>
  </div>
@@ -1821,6 +1831,7 @@
  <span class="price-now">$ 33.000</span>
  <span class="price-cuotas">+ $ 7.000 de envío</span>
  <span class="price-cuotas">3 cuotas de $ 13.333</span>
+ <span class="price-transfer">Transferencia $ 29.700</span>
  </div>
  </div>
 
@@ -1839,6 +1850,7 @@
  <span class="price-old">$ 80.000 <span class="discount-badge">-24%</span></span>
  <span class="price-now">$ 61.000</span>
  <span class="price-cuotas">3 cuotas de $ 20.333</span>
+ <span class="price-transfer">Transferencia $ 54.900</span>
  </div>
  </div>
 
@@ -1857,6 +1869,7 @@
  <span class="price-old">$ 120.000 <span class="discount-badge">-36%</span></span>
  <span class="price-now">$ 77.000</span>
  <span class="price-cuotas">3 cuotas de $ 25.667</span>
+ <span class="price-transfer">Transferencia $ 69.300</span>
  </div>
  </div>
  </div>
@@ -2098,7 +2111,7 @@
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Qué formas de pago aceptan? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Con Mercado Pago podés pagar con tarjeta de crédito en 3 cuotas sin interés, con débito, con dinero en cuenta o en efectivo en Pago Fácil y Rapipago. También podés pagar por transferencia bancaria: escribinos por WhatsApp y te pasamos los datos. En todos los casos el pago se hace antes del envío.</div>
+ <div class="faq-a">Con Mercado Pago podés pagar con tarjeta de crédito en 3 cuotas sin interés, con débito, con dinero en cuenta o en efectivo en Pago Fácil y Rapipago. Pagando por transferencia bancaria tenés 10% de descuento: escribinos por WhatsApp y te pasamos los datos. En todos los casos el pago se hace antes del envío.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Es seguro comprar? <span class="faq-arrow">+</span></button>
@@ -2280,6 +2293,7 @@
               </div>
 
  <button class="btn-confirm" id="btnConfirmarCompra" onclick="confirmarCompra()">Confirmar y pagar →</button>
+ <p class="pago-transferencia">¿Preferís pagar por transferencia? Tenés 10% menos. <a href="#" onclick="pagarPorTransferencia(); return false;">Pedilo por WhatsApp</a></p>
  <p style="text-align:center;font-size:0.75rem;color:var(--green);font-weight:600;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px;">
  Pago 100% seguro procesado por MercadoPago
  </p>
@@ -2402,7 +2416,7 @@
  <p style="margin-bottom:14px"><strong>2. Productos</strong><br>
  Todos los productos ofrecidos son cosméticos capilares de uso externo. Los resultados pueden variar según el tipo de cabello y la constancia en el uso. No reemplazamos tratamientos médicos. Si tenés alguna condición de salud, consultá con un profesional antes de usar el producto.</p>
  <p style="margin-bottom:14px"><strong>3. Precios y pagos</strong><br>
- Los precios están expresados en pesos argentinos (ARS) e incluyen IVA. El pago se realiza a través de MercadoPago, que acepta tarjetas de crédito, débito, efectivo y dinero en cuenta, o por transferencia bancaria. Los precios pueden modificarse sin previo aviso.</p>
+ Los precios están expresados en pesos argentinos (ARS). El pago se realiza a través de MercadoPago, que acepta tarjetas de crédito, débito, efectivo y dinero en cuenta, o por transferencia bancaria. Los precios pueden modificarse sin previo aviso.</p>
  <p style="margin-bottom:14px"><strong>4. Envíos</strong><br>
  Los envíos se realizan por Correo Argentino a todo el país. El costo de envío se informa al momento de la compra. Los plazos de entrega son estimativos y pueden variar según la provincia. No nos hacemos responsables por demoras atribuibles al servicio postal.</p>
  <p style="margin-bottom:14px"><strong>5. Cambios y devoluciones</strong><br>
@@ -2595,6 +2609,15 @@
  if (e.target === document.getElementById('modalOverlay')) closeModal();
  }
 
+
+ // Transferencia: 10% menos, se coordina por WhatsApp (12/10/2026).
+ const TRANSFERENCIA = {"1":"$36.700 con envío","2":"$54.900","3":"$69.300"};
+ function pagarPorTransferencia() {
+ const pedido = precios[selectedQty].label.replace(/\s*—.*$/, '');
+ const msg = 'Hola! Quiero ' + pedido + ' pagando por transferencia (' + TRANSFERENCIA[selectedQty] + '). ¿Me pasás los datos?';
+ if (typeof fbq === 'function') fbq('track', 'Contact');
+ window.open('https://wa.me/5491124838177?text=' + encodeURIComponent(msg), '_blank');
+ }
  function confirmarCompra() {
  const campos = ['nombre','telefono','email','calle','piso','cp','localidad','provincia'];
         const obligatorios = ['nombre','telefono','calle','cp','localidad','provincia'];

@@ -1156,6 +1156,11 @@
       white-space: nowrap;
     }
 </style>
+<style>
+ /* Transferencia con 10% menos (12/10/2026) */
+ .pago-transferencia { text-align: center; font-size: 0.8rem; color: var(--dark); margin-top: 12px; }
+ .pago-transferencia a { color: #1a7f37; font-weight: 700; text-decoration: underline; }
+ </style>
 </head>
 <body id="top">
 
@@ -1168,6 +1173,8 @@
  <span class="announce-sep">•</span>
  3 CUOTAS SIN INTERÉS
  <span class="announce-sep">•</span>
+ 10% MENOS PAGANDO POR TRANSFERENCIA
+ <span class="announce-sep">•</span>
  RESULTADOS DESDE LA SEMANA 3
  <span class="announce-sep">•</span>
  SIN FORMOL NI SULFATOS
@@ -1177,6 +1184,8 @@
  PAGO 100% SEGURO CON MERCADOPAGO
  <span class="announce-sep">•</span>
  3 CUOTAS SIN INTERÉS
+ <span class="announce-sep">•</span>
+ 10% MENOS PAGANDO POR TRANSFERENCIA
  <span class="announce-sep">•</span>
  </div>
  </div>
@@ -1710,6 +1719,7 @@
               </div>
 
  <button class="btn-confirm" id="btnConfirmarCompra" onclick="confirmarCompra()">Confirmar y pagar →</button>
+ <p class="pago-transferencia">¿Preferís pagar por transferencia? Tenés 10% menos. <a href="#" onclick="pagarPorTransferencia(); return false;">Pedilo por WhatsApp</a></p>
  <p style="text-align:center;font-size:0.75rem;color:var(--green);font-weight:600;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px;">
  Pago 100% seguro procesado por MercadoPago
  </p>
@@ -1832,7 +1842,7 @@
  <p style="margin-bottom:14px"><strong>2. Productos</strong><br>
  Todos los productos ofrecidos son cosméticos capilares de uso externo. Los resultados pueden variar según el tipo de cabello y la constancia en el uso. No reemplazamos tratamientos médicos. Si tenés alguna condición de salud, consultá con un profesional antes de usar el producto.</p>
  <p style="margin-bottom:14px"><strong>3. Precios y pagos</strong><br>
- Los precios están expresados en pesos argentinos (ARS) e incluyen IVA. El pago se realiza a través de MercadoPago, que acepta tarjetas de crédito, débito, efectivo y dinero en cuenta, o por transferencia bancaria. Los precios pueden modificarse sin previo aviso.</p>
+ Los precios están expresados en pesos argentinos (ARS). El pago se realiza a través de MercadoPago, que acepta tarjetas de crédito, débito, efectivo y dinero en cuenta, o por transferencia bancaria. Los precios pueden modificarse sin previo aviso.</p>
  <p style="margin-bottom:14px"><strong>4. Envíos</strong><br>
  Los envíos se realizan por Correo Argentino a todo el país. El costo de envío se informa al momento de la compra. Los plazos de entrega son estimativos y pueden variar según la provincia. No nos hacemos responsables por demoras atribuibles al servicio postal.</p>
  <p style="margin-bottom:14px"><strong>5. Cambios y devoluciones</strong><br>
@@ -2018,6 +2028,15 @@
  if (e.target === document.getElementById('modalOverlay')) closeModal();
  }
 
+
+ // Transferencia: 10% menos, se coordina por WhatsApp (12/10/2026).
+ const TRANSFERENCIA = {"1":"$26.800 con envío","2":"$39.600","3":"$54.900"};
+ function pagarPorTransferencia() {
+ const pedido = precios[selectedQty].label.replace(/\s*—.*$/, '');
+ const msg = 'Hola! Quiero ' + pedido + ' pagando por transferencia (' + TRANSFERENCIA[selectedQty] + '). ¿Me pasás los datos?';
+ if (typeof fbq === 'function') fbq('track', 'Contact');
+ window.open('https://wa.me/5491124838177?text=' + encodeURIComponent(msg), '_blank');
+ }
  function confirmarCompra() {
  const campos = ['nombre','telefono','email','calle','piso','cp','localidad','provincia'];
         const obligatorios = ['nombre','telefono','calle','cp','localidad','provincia'];
