@@ -128,7 +128,7 @@
     <div class="pedido" id="pedido" hidden></div>
     <ul class="pasos" id="pasos">
       <li>Mandanos tu direcci&oacute;n por WhatsApp para que preparemos el env&iacute;o.</li>
-      <li>Sale dentro de las 48 horas y es gratis.</li>
+      <li>Sale dentro de las 48 horas por Correo Argentino.</li>
       <li>Te pasamos el n&uacute;mero de seguimiento de Correo Argentino.</li>
     </ul>
     <p class="urgente" id="urgente">Sin tu direcci&oacute;n no podemos despachar el pedido.</p>
@@ -188,6 +188,16 @@
       'Código postal:',
     ].join('\n');
     $('whatsapp').href = 'https://wa.me/5491124838177?text=' + encodeURIComponent(texto);
+
+    // Desde el 12/10 la dirección se carga en el formulario antes de pagar:
+    // si la tenemos, no se la volvemos a pedir.
+    if (pedido && pedido.calle) {
+      $('pasos').querySelector('li').textContent = 'Ya tenemos tu dirección: ' +
+        [pedido.calle, pedido.piso].filter(Boolean).join(' ') + (pedido.localidad ? ', ' + pedido.localidad : '') + '.';
+      $('urgente').hidden = true;
+      $('whatsapp').href = 'https://wa.me/5491124838177?text=' + encodeURIComponent('Hola! Acabo de comprar' + (pedido.producto ? ' ' + pedido.producto : '') + '.');
+      $('whatsapp').textContent = 'Escribinos por WhatsApp';
+    }
 
     if (estado === 'pendiente') {
       $('icono').textContent = '\u23F3';

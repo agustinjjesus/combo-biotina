@@ -1034,6 +1034,7 @@
           <td class="td-cliente">
             <div class="cli-nombre">${esc(f.nombre) || 'Sin nombre'}</div>
             <div class="cli-sub">${esc(f.telefono || '')}${f.email ? ' · ' + esc(f.email) : ''}</div>
+            ${f.direccion ? `<div class="cli-sub">${esc([f.direccion, f.localidad, f.provincia].filter(Boolean).join(', '))}${f.cp ? ' (CP ' + esc(f.cp) + ')' : ''}</div>` : ''}
           </td>
           <td data-label="Pedido">${esc(f.producto || '—')}</td>
           <td class="td-acciones"><div class="acciones">
@@ -1058,6 +1059,7 @@
       $('fEstado').value = 'pagado';
       $('fNombre').value = f.nombre || '';
       $('fTel').value = f.telefono || '';
+      $('fLocalidad').value = f.localidad || '';   // la dirección completa la copia el servidor
       $('fFecha').value = hoyISO();
       if (p.precio) { $('fPrecio').value = p.precio; precioTocado = true; } else { autoPrecio(); }
       calcForm();
