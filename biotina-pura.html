@@ -1282,7 +1282,7 @@
  <span class="price-cuotas">3 cuotas de $ 14.667</span>
  <span class="price-transfer">Transferencia $ 39.600</span>
  <span class="qty-save">Ahorrás $14.000</span>
- <span class="qty-value-note">El más elegido — mejor relación precio por unidad</span>
+ <span class="qty-value-note">El más elegido</span>
  </div>
  </div>
 
@@ -1315,7 +1315,7 @@
  </div>
  <div class="shipping-price">
  <span class="shipping-free" id="envioPrecio">GRATIS</span>
- <span class="shipping-old" id="envioTachado">$ 10.000</span>
+ <span class="shipping-old" id="envioTachado">$ 7.000</span>
  </div>
  </div>
 
@@ -1598,7 +1598,7 @@
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Cuánto cuesta el envío? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Enviamos por Correo Argentino a todo el país, a domicilio o a sucursal. Con 1 unidad el envío cuesta $7.000 y llevando 2 o más es gratis. El precio que ves al elegir la cantidad ya incluye el envío.</div>
+ <div class="faq-a">Enviamos por Correo Argentino a todo el país, a domicilio o a sucursal. Con 1 unidad el envío cuesta $7.000 y llevando 2 o más es gratis. En el botón de compra ves el total, con el envío incluido.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Cuánto tarda en llegar mi pedido? <span class="faq-arrow">+</span></button>
@@ -1771,7 +1771,7 @@
  </div>
 
  <div class="footer-bottom">
- <p>© 2025 Productos Capilares PG · Todos los derechos reservados</p>
+ <p>© 2026 Productos Capilares PG · Todos los derechos reservados</p>
  </div>
  </footer>
 
@@ -1802,7 +1802,7 @@
  <div class="modal" style="max-width:640px;">
  <button class="modal-close" onclick="closeLegal('privacidad')">×</button>
  <h3>Política de Privacidad</h3>
- <p class="modal-sub">Última actualización: Mayo 2025</p>
+ <p class="modal-sub">Última actualización: Octubre 2026</p>
  <div style="font-size:0.83rem; color:#444; line-height:1.85; max-height:60vh; overflow-y:auto; padding-right:8px;">
  <p style="margin-bottom:14px"><strong>1. Información que recopilamos</strong><br>
  Cuando realizás una compra en nuestro sitio, recopilamos datos personales como nombre, apellido, teléfono, email y dirección de entrega. Esta información es necesaria para procesar tu pedido y coordinar el envío.</p>
@@ -1825,14 +1825,14 @@
  <div class="modal" style="max-width:640px;">
  <button class="modal-close" onclick="closeLegal('terminos')">×</button>
  <h3>Términos y Condiciones</h3>
- <p class="modal-sub">Última actualización: Mayo 2025</p>
+ <p class="modal-sub">Última actualización: Octubre 2026</p>
  <div style="font-size:0.83rem; color:#444; line-height:1.85; max-height:60vh; overflow-y:auto; padding-right:8px;">
  <p style="margin-bottom:14px"><strong>1. Aceptación</strong><br>
  Al realizar una compra en este sitio, aceptás estos términos y condiciones en su totalidad. Si no estás de acuerdo con alguno de ellos, te pedimos que no realices la compra.</p>
  <p style="margin-bottom:14px"><strong>2. Productos</strong><br>
  Todos los productos ofrecidos son cosméticos capilares de uso externo. Los resultados pueden variar según el tipo de cabello y la constancia en el uso. No reemplazamos tratamientos médicos. Si tenés alguna condición de salud, consultá con un profesional antes de usar el producto.</p>
  <p style="margin-bottom:14px"><strong>3. Precios y pagos</strong><br>
- Los precios están expresados en pesos argentinos (ARS) e incluyen IVA. El pago se realiza a través de MercadoPago, que acepta tarjetas de crédito, débito, efectivo y dinero en cuenta. Los precios pueden modificarse sin previo aviso.</p>
+ Los precios están expresados en pesos argentinos (ARS) e incluyen IVA. El pago se realiza a través de MercadoPago, que acepta tarjetas de crédito, débito, efectivo y dinero en cuenta, o por transferencia bancaria. Los precios pueden modificarse sin previo aviso.</p>
  <p style="margin-bottom:14px"><strong>4. Envíos</strong><br>
  Los envíos se realizan por Correo Argentino a todo el país. El costo de envío se informa al momento de la compra. Los plazos de entrega son estimativos y pueden variar según la provincia. No nos hacemos responsables por demoras atribuibles al servicio postal.</p>
  <p style="margin-bottom:14px"><strong>5. Cambios y devoluciones</strong><br>
@@ -2278,19 +2278,6 @@
  // ningún aviso. Además de la UX, es el único lugar donde el pixel del
  // browser puede disparar el Purchase (con Advanced Matching de verdad, desde
  // los datos que guardamos en localStorage al confirmar la compra).
-      // El cross-sell que antes estaba dentro del checkout. Acá ya pagó,
-      // así que ofrecerle sumar algo no le cuesta la venta.
-      function mostrarUpsellPostCompra() {
-        const caja = document.createElement('div');
-        caja.style.cssText = 'position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:99998;max-width:420px;width:calc(100% - 32px);background:#fff;border:1.5px solid #e6d5cf;border-radius:14px;padding:18px 20px;box-shadow:0 8px 28px rgba(0,0,0,0.16);text-align:center';
-        caja.innerHTML = '<div style="font-size:0.66rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#b4674f;margin-bottom:7px">Sumalo a tu pedido</div>' +
-          '<p style="font-size:0.86rem;line-height:1.5;color:#2b2b2b;margin:0 0 12px">Por <strong>$13.000 más</strong> llevás la <strong>rutina completa</strong>: Shampoo + Acondicionador + Ampolla + este mismo Spray de Biotina Pura, con envío gratis.</p>' +
-          '<a href="combo-biotina.html" style="display:inline-block;background:#2b2b2b;color:#fff;font-size:0.8rem;font-weight:600;padding:9px 20px;border-radius:8px;text-decoration:none">Ver el Combo completo →</a>' +
-          '<div style="margin-top:9px"><span id="cerrarUpsell" style="font-size:0.75rem;color:#888;cursor:pointer;text-decoration:underline">No, gracias</span></div>';
-        document.body.appendChild(caja);
-        const x = caja.querySelector('#cerrarUpsell');
-        if (x) x.onclick = () => caja.remove();
-      }
 
  function mostrarBannerPago(texto, bg, color) {
  const div = document.createElement('div');
@@ -2348,7 +2335,6 @@
  } : {});
  }
  mostrarBannerPago('¡Pago aprobado! Gracias por tu compra' + (ultimo && ultimo.producto ? ' de ' + ultimo.producto : '') + '. Te contactamos por WhatsApp con el seguimiento del envío.', '#e8f5ee', '#1e6640');
-          setTimeout(mostrarUpsellPostCompra, 900);
  } else if (pago === 'pendiente') {
  mostrarBannerPago('Tu pago está pendiente de confirmación. Te avisamos apenas se acredite.', '#fff3cd', '#856404');
  } else if (pago === 'rechazado') {
