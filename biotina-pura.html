@@ -2097,6 +2097,8 @@
  nombre: datos.nombre, apellido: datos.apellido, telefono: datos.telefono,
  email: datos.email || '', producto: datos.producto, pagina: location.pathname,
  calle: [datos.calle, datos.piso].filter(Boolean).join(' '), localidad: datos.localidad, provincia: datos.provincia, cp: datos.cp,
+ // Para avisarle la compra a Meta desde el servidor cuando entre el pago.
+ monto: String(PRECIOS_NUM[selectedQty]), fbp: fbGetCookie('_fbp') || '', fbc: fbGetFbc() || '', xid: (function () { try { return fbAnonId(); } catch (e) { return ''; } })(), url: location.href,
  });
  const urlAviso = 'https://n8n.productoscapilarespg.com/webhook/aviso-venta';
  if (!(navigator.sendBeacon && navigator.sendBeacon(urlAviso, aviso))) {
