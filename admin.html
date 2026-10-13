@@ -513,7 +513,7 @@
         <div class="section-title">Formularios de la web sin pago</div>
         <span class="section-count-badge" id="formulariosCount">0</span>
       </div>
-      <p class="section-sub">Gente que dejó nombre y WhatsApp en la web y se fue a Mercado Pago. Si pagó, tocá "Pagó" y queda como venta; si no, escribile y, si no compra, descartalo.</p>
+      <p class="section-sub">Gente que dejó sus datos en la web y todavía no pagó. Si paga con Mercado Pago, sale sola de esta lista y queda como venta (llega el aviso "PAGÓ" al grupo). Si pagó por transferencia o en efectivo, tocá "Pagó". Si no compra, escribile y, si no, descartalo.</p>
       <div class="table-wrap">
         <table class="tarjetas">
           <thead>
@@ -584,7 +584,8 @@
     const ESTADOS  = { a_coordinar: 'A cobrar', pagado: 'Pagado', enviado: 'Enviado', entregado: 'Entregado', cancelado: 'Cancelado' };
     const PAGOS    = { mp: 'Mercado Pago', transferencia: 'Transferencia', efectivo: 'Efectivo' };
     const ENTREGAS = { correo: 'Correo', en_mano: 'En mano' };
-    const ORIGENES = { anuncio: 'WhatsApp · anuncio', directo: 'WhatsApp', web: 'Web', panel: 'Anotada a mano' };
+    // mp: cobro por link de Mercado Pago sin formulario de la web, anotado solo
+    const ORIGENES = { anuncio: 'WhatsApp · anuncio', directo: 'WhatsApp', web: 'Web', panel: 'Anotada a mano', mp: 'Link de Mercado Pago' };
     const COBRADAS = ['pagado', 'enviado', 'entregado'];
 
     const FIREBASE_CONFIG = {
