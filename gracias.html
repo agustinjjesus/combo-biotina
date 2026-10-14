@@ -118,6 +118,23 @@
     background:#FFF6E5; border-radius:10px; padding:12px 14px; margin:20px 0 0;
     font-size:1rem; font-weight:600; color:#8A5A00;
   }
+  /* Formulario de envío (desde el 14/10 la dirección se carga acá, después de pagar) */
+  .envio { text-align:left; margin:22px 0 0; }
+  .envio h2 { font-size:1.2rem; margin:0 0 4px; color:var(--texto); text-align:center; }
+  .envio .ayuda { font-size:1rem; text-align:center; margin:0 0 16px; }
+  .campo { margin:0 0 12px; }
+  .campo label { display:block; font-size:0.98rem; font-weight:600; color:var(--texto); margin:0 0 5px; }
+  .campo input, .campo select {
+    width:100%; padding:13px 14px; font:inherit; font-size:1.05rem; color:var(--texto);
+    border:1.5px solid #E4D6D9; border-radius:10px; background:#fff;
+  }
+  .campo input:focus, .campo select:focus { outline:none; border-color:var(--vino); }
+  .campo.error input, .campo.error select { border-color:#C0392B; }
+  .fila { display:flex; gap:10px; }
+  .fila .campo { flex:1; min-width:0; }
+  button.btn { width:100%; border:0; cursor:pointer; font-family:inherit; }
+  button.btn:disabled { opacity:0.6; cursor:default; }
+  .listo { background:#E8F5EE; color:#1E6640; border-radius:12px; padding:14px 16px; margin:20px 0 0; font-size:1.02rem; font-weight:600; text-align:left; }
 </style>
 </head>
 <body>
@@ -126,6 +143,40 @@
     <h1 id="titulo">&iexcl;Gracias por tu compra!</h1>
     <p id="mensaje">Ya recibimos tu pedido.</p>
     <div class="pedido" id="pedido" hidden></div>
+
+    <form class="envio" id="envio" hidden novalidate>
+      <h2>&iquest;A d&oacute;nde te lo mandamos?</h2>
+      <p class="ayuda">&Uacute;ltimo paso: carg&aacute; la direcci&oacute;n de entrega.</p>
+      <div id="contacto" hidden>
+        <div class="campo"><label for="e-nombre">Nombre y apellido</label>
+          <input type="text" id="e-nombre" autocomplete="name" maxlength="80" placeholder="Mar&iacute;a Gonz&aacute;lez" /></div>
+        <div class="campo"><label for="e-telefono">WhatsApp</label>
+          <input type="tel" id="e-telefono" autocomplete="tel" inputmode="tel" maxlength="20" placeholder="11 1234-5678" /></div>
+      </div>
+      <div class="campo"><label for="e-calle">Calle y n&uacute;mero</label>
+        <input type="text" id="e-calle" autocomplete="address-line1" maxlength="100" placeholder="Av. San Mart&iacute;n 1234" /></div>
+      <div class="fila">
+        <div class="campo"><label for="e-piso">Piso / depto</label>
+          <input type="text" id="e-piso" autocomplete="address-line2" maxlength="20" placeholder="3° B" /></div>
+        <div class="campo"><label for="e-cp">C&oacute;digo postal</label>
+          <input type="text" id="e-cp" autocomplete="postal-code" inputmode="numeric" maxlength="8" placeholder="1678" /></div>
+      </div>
+      <div class="campo"><label for="e-localidad">Localidad</label>
+        <input type="text" id="e-localidad" autocomplete="address-level2" maxlength="60" placeholder="Caseros" /></div>
+      <div class="campo"><label for="e-provincia">Provincia</label>
+        <select id="e-provincia" autocomplete="address-level1">
+          <option value="">Eleg&iacute;</option>
+          <option>Buenos Aires</option><option>CABA</option><option>Catamarca</option><option>Chaco</option>
+          <option>Chubut</option><option>C&oacute;rdoba</option><option>Corrientes</option><option>Entre R&iacute;os</option>
+          <option>Formosa</option><option>Jujuy</option><option>La Pampa</option><option>La Rioja</option>
+          <option>Mendoza</option><option>Misiones</option><option>Neuqu&eacute;n</option><option>R&iacute;o Negro</option>
+          <option>Salta</option><option>San Juan</option><option>San Luis</option><option>Santa Cruz</option>
+          <option>Santa Fe</option><option>Santiago del Estero</option><option>Tierra del Fuego</option><option>Tucum&aacute;n</option>
+        </select></div>
+      <button type="submit" class="btn" id="e-enviar">Confirmar direcci&oacute;n de env&iacute;o</button>
+    </form>
+    <p class="listo" id="listo" hidden></p>
+
     <ul class="pasos" id="pasos">
       <li>Mandanos tu direcci&oacute;n por WhatsApp para que preparemos el env&iacute;o.</li>
       <li>Sale dentro de las 48 horas por Correo Argentino.</li>
@@ -171,10 +222,8 @@
       $('pedido').hidden = false;
     }
 
-    // El boton de WhatsApp va con el mensaje ya escrito. Cuando ella lo manda,
-    // nos queda su numero: es la unica via que hay para pedirle la direccion,
-    // porque MercadoPago nos da nombre y mail pero no el telefono. Un formulario
-    // aca volveria a poner una pared, aunque sea despues de cobrar.
+    // Backup por WhatsApp, con el mensaje ya escrito, para quien no quiera
+    // usar el formulario de abajo.
     const texto = [
       'Hola! Acabo de comprar' + (pedido && pedido.producto ? ' ' + pedido.producto : '') + '.',
       '',
@@ -189,28 +238,19 @@
     ].join('\n');
     $('whatsapp').href = 'https://wa.me/5491124838177?text=' + encodeURIComponent(texto);
 
-    // Desde el 12/10 la dirección se carga en el formulario antes de pagar:
-    // si la tenemos, no se la volvemos a pedir.
-    if (pedido && pedido.calle) {
+    const yaTieneDireccion = function () {
       $('pasos').querySelector('li').textContent = 'Ya tenemos tu dirección: ' +
         [pedido.calle, pedido.piso].filter(Boolean).join(' ') + (pedido.localidad ? ', ' + pedido.localidad : '') + '.';
       $('urgente').hidden = true;
       $('whatsapp').href = 'https://wa.me/5491124838177?text=' + encodeURIComponent('Hola! Acabo de comprar' + (pedido.producto ? ' ' + pedido.producto : '') + '.');
       $('whatsapp').textContent = 'Escribinos por WhatsApp';
-    }
-
-    if (estado === 'pendiente') {
-      $('icono').textContent = '\u23F3';
-      $('titulo').textContent = 'Tu pago está pendiente';
-      $('mensaje').textContent = 'Apenas se acredite te escribimos por WhatsApp y preparamos el envío. Si pagaste en Pago Fácil o Rapipago puede demorar hasta 2 días hábiles.';
-      $('pasos').hidden = true;
-      $('urgente').hidden = true;
-      $('whatsapp').textContent = 'Escribinos por WhatsApp';
-      return;
-    }
+    };
+    // Pedidos del 12 al 14/10 traen la dirección del formulario de antes de
+    // pagar, y quien ya la cargó acá no la vuelve a ver.
+    if (pedido && pedido.calle) yaTieneDireccion();
 
     if (estado === 'rechazado') {
-      $('icono').textContent = '\u26A0\uFE0F';
+      $('icono').textContent = '⚠️';
       $('titulo').textContent = 'El pago no se pudo procesar';
       $('mensaje').textContent = 'No se te cobró nada. Podés intentar con otra tarjeta, pagar en efectivo, o escribirnos por WhatsApp y lo resolvemos juntas.';
       $('pasos').hidden = true;
@@ -218,6 +258,15 @@
       $('whatsapp').href = 'https://wa.me/5491124838177';
       $('whatsapp').textContent = 'Escribinos por WhatsApp';
       return;
+    }
+
+    if (estado === 'pendiente') {
+      $('icono').textContent = '⏳';
+      $('titulo').textContent = 'Tu pago está pendiente';
+      $('mensaje').textContent = 'Apenas se acredite te escribimos por WhatsApp y preparamos el envío. Si pagaste en Pago Fácil o Rapipago puede demorar hasta 2 días hábiles.';
+      $('pasos').hidden = true;
+      $('urgente').hidden = true;
+      $('whatsapp').textContent = 'Escribinos por WhatsApp';
     }
 
     // Solo se dispara Purchase con la aprobacion confirmada por MercadoPago.
@@ -240,8 +289,78 @@
 
     if (!estado) {
       // Vuelve del pago pero sin decir como fue: se agradece sin afirmar nada.
-      $('mensaje').textContent = 'Si completaste el pago, te escribimos por WhatsApp para coordinar el envío. Si tuviste algún problema, escribinos y lo vemos.';
+      $('mensaje').textContent = 'Si completaste el pago, cargá abajo la dirección de entrega. Si tuviste algún problema, escribinos y lo vemos.';
     }
+
+    if (pedido && pedido.calle) return;
+
+    // ─── Dirección de envío, DESPUÉS de pagar (14/10/2026) ──────────────────
+    // Antes de pagar se pide solo nombre y WhatsApp: del 12 al 14/10 se pedía
+    // también la dirección y de 39 que abrieron ese formulario no lo mandó
+    // ninguna. Lo que se carga acá va al grupo y a la base por n8n
+    // ("Aviso web - datos de envío"), que lo junta con el formulario y el pago.
+    const URL_ENVIO = 'https://n8n.productoscapilarespg.com/webhook/envio-web';
+    const conContacto = !(pedido && pedido.telefono);   // pagó desde otro navegador
+    $('envio').hidden = false;
+    $('contacto').hidden = !conContacto;
+    $('pasos').hidden = true;
+    $('urgente').hidden = true;
+    $('whatsapp').className = 'btn secundario';
+    $('whatsapp').textContent = 'Prefiero mandarla por WhatsApp';
+
+    const valor = function (id) { return $(id).value.trim(); };
+    const marcar = function (id, mal) { $(id).parentNode.classList.toggle('error', mal); return mal; };
+
+    $('envio').addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      const errores = [];
+      if (conContacto) {
+        if (marcar('e-nombre', !valor('e-nombre'))) errores.push(['e-nombre', 'Poné tu nombre y apellido.']);
+        if (marcar('e-telefono', valor('e-telefono').replace(/\D/g, '').length < 8)) errores.push(['e-telefono', 'Revisá el WhatsApp: característica y número, por ejemplo 11 1234-5678.']);
+      }
+      if (marcar('e-calle', valor('e-calle').length < 3)) errores.push(['e-calle', 'Poné la calle y el número.']);
+      if (marcar('e-cp', !/^[A-Za-z]?\d{4}[A-Za-z]{0,3}$/.test(valor('e-cp').replace(/\s/g, '')))) errores.push(['e-cp', 'Revisá el código postal: son 4 números, por ejemplo 1678.']);
+      if (marcar('e-localidad', !valor('e-localidad'))) errores.push(['e-localidad', 'Poné la localidad.']);
+      if (marcar('e-provincia', !valor('e-provincia'))) errores.push(['e-provincia', 'Elegí la provincia.']);
+      if (errores.length) {
+        alert(errores[0][1]);
+        $(errores[0][0]).focus();
+        return;
+      }
+
+      const envio = {
+        nombre: conContacto ? valor('e-nombre') : [pedido.nombre, pedido.apellido].filter(Boolean).join(' '),
+        telefono: conContacto ? valor('e-telefono') : pedido.telefono,
+        calle: valor('e-calle'), piso: valor('e-piso'), cp: valor('e-cp'),
+        localidad: valor('e-localidad'), provincia: valor('e-provincia'),
+        producto: (pedido && pedido.producto) || '', estado: estado || '',
+        pid: pagoId || '', monto: pedido && pedido.precio ? String(pedido.precio) : '',
+      };
+      const cuerpo = new URLSearchParams(envio);
+      $('e-enviar').disabled = true;
+      $('e-enviar').textContent = 'Enviando...';
+      try {
+        if (!(navigator.sendBeacon && navigator.sendBeacon(URL_ENVIO, cuerpo))) {
+          fetch(URL_ENVIO, { method: 'POST', body: cuerpo, keepalive: true, mode: 'no-cors' }).catch(function () {});
+        }
+      } catch (e) {}
+
+      // Queda guardada para que, si vuelve a entrar, no se la pidamos de nuevo.
+      pedido = Object.assign({}, pedido || {}, {
+        calle: envio.calle, piso: envio.piso, cp: envio.cp, localidad: envio.localidad, provincia: envio.provincia,
+        nombre: pedido && pedido.nombre ? pedido.nombre : envio.nombre, telefono: envio.telefono,
+      });
+      try { localStorage.setItem('ultimoPedido', JSON.stringify(pedido)); } catch (e) {}
+
+      $('envio').hidden = true;
+      $('listo').textContent = '¡Listo! Recibimos tu dirección: ' + [envio.calle, envio.piso].filter(Boolean).join(' ') + ', ' +
+        envio.localidad + '. ' + (estado === 'pendiente'
+          ? 'Apenas se acredite el pago lo despachamos por Correo Argentino y por WhatsApp te pasamos el seguimiento.'
+          : 'Sale dentro de las 48 horas por Correo Argentino y por WhatsApp te pasamos el número de seguimiento.');
+      $('listo').hidden = false;
+      $('whatsapp').href = 'https://wa.me/5491124838177?text=' + encodeURIComponent('Hola! Acabo de comprar' + (envio.producto ? ' ' + envio.producto : '') + '.');
+      $('whatsapp').textContent = '¿Dudas? Escribinos por WhatsApp';
+    });
   })();
 </script>
 </body>

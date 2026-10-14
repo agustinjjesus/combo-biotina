@@ -2119,7 +2119,7 @@
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Cómo hago el pedido? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Elegí la cantidad y tocá Comprar. Completá tus datos de envío y pagá en Mercado Pago. Apenas se acredita el pago preparamos tu pedido y por WhatsApp te pasamos el número de seguimiento. Si preferís, podés hacer todo el pedido directamente por WhatsApp.</div>
+ <div class="faq-a">Elegí la cantidad y tocá Comprar. Dejá tu nombre y tu WhatsApp y pagá en Mercado Pago. Después del pago cargás la dirección de envío y, apenas se acredita, preparamos tu pedido y por WhatsApp te pasamos el número de seguimiento. Si preferís, podés hacer todo el pedido directamente por WhatsApp.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Y si no me convence? <span class="faq-arrow">+</span></button>
@@ -2222,7 +2222,7 @@
  <div class="modal">
  <button class="modal-close" onclick="closeModal()">×</button>
  <h3>¡Un paso más! </h3>
- <p class="modal-sub">Completá tus datos de envío y seguí al pago. Tu pedido: <span id="modalProducto">Combo Biotina x1 — $40.000 con envío</span></p>
+ <p class="modal-sub">Dejanos tu nombre y tu WhatsApp y seguí al pago. La dirección de envío la cargás después de pagar. Tu pedido: <span id="modalProducto">Combo Biotina x1 — $40.000 con envío</span></p>
 
  <div class="form-section-title">Datos de contacto</div>
               <div class="form-group">
@@ -2240,57 +2240,6 @@
                 </div>
               </div>
 
- <div class="form-section-title">Datos de envío</div>
-              <div class="form-group">
-                <label>Calle y número</label>
-                <input type="text" id="calle" placeholder="Av. San Martín 1234" autocomplete="address-line1" maxlength="100" required />
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Piso / depto (opcional)</label>
-                  <input type="text" id="piso" placeholder="3° B" autocomplete="address-line2" maxlength="20" />
-                </div>
-                <div class="form-group">
-                  <label>Código postal</label>
-                  <input type="text" id="cp" placeholder="1678" inputmode="numeric" autocomplete="postal-code" maxlength="8" required />
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Localidad</label>
-                  <input type="text" id="localidad" placeholder="Caseros" autocomplete="address-level2" maxlength="60" required />
-                </div>
-                <div class="form-group">
-                  <label>Provincia</label>
-                  <select id="provincia" autocomplete="address-level1" required>
-                    <option value="">Elegí</option>
-                    <option>Buenos Aires</option>
-                    <option>CABA</option>
-                    <option>Catamarca</option>
-                    <option>Chaco</option>
-                    <option>Chubut</option>
-                    <option>Córdoba</option>
-                    <option>Corrientes</option>
-                    <option>Entre Ríos</option>
-                    <option>Formosa</option>
-                    <option>Jujuy</option>
-                    <option>La Pampa</option>
-                    <option>La Rioja</option>
-                    <option>Mendoza</option>
-                    <option>Misiones</option>
-                    <option>Neuquén</option>
-                    <option>Río Negro</option>
-                    <option>Salta</option>
-                    <option>San Juan</option>
-                    <option>San Luis</option>
-                    <option>Santa Cruz</option>
-                    <option>Santa Fe</option>
-                    <option>Santiago del Estero</option>
-                    <option>Tierra del Fuego</option>
-                    <option>Tucumán</option>
-                  </select>
-                </div>
-              </div>
 
  <button class="btn-confirm" id="btnConfirmarCompra" onclick="confirmarCompra()">Confirmar y pagar →</button>
  <p class="pago-transferencia">¿Preferís pagar por transferencia? Tenés 10% menos. <a href="#" onclick="pagarPorTransferencia(); return false;">Pedilo por WhatsApp</a></p>
@@ -2619,8 +2568,11 @@
  window.open('https://wa.me/5491124838177?text=' + encodeURIComponent(msg), '_blank');
  }
  function confirmarCompra() {
- const campos = ['nombre','telefono','email','calle','piso','cp','localidad','provincia'];
-        const obligatorios = ['nombre','telefono','calle','cp','localidad','provincia'];
+ const campos = ['nombre','telefono','email'];
+        // Desde el 14/10 la dirección se pide DESPUÉS de pagar, en gracias.html:
+        // del 12 al 14/10 se pedía acá y de 39 que abrieron el formulario no lo
+        // mandó ninguna.
+        const obligatorios = ['nombre','telefono'];
  let valido = true;
  obligatorios.forEach(id => {
  const el = document.getElementById(id);
@@ -2628,17 +2580,9 @@
  else { el.style.borderColor = ''; }
  });
  if (!valido) {
- alert('Completá tu nombre, tu WhatsApp y los datos de envío para seguir.');
+ alert('Completá tu nombre y tu WhatsApp para seguir.');
  const primero = obligatorios.map(id => document.getElementById(id)).find(el => !el.value.trim());
  if (primero) primero.focus();
- return;
- }
- // Código postal argentino: 4 números (1678) o el formato nuevo (B1678ABC).
- const cpEl = document.getElementById('cp');
- if (!/^[A-Za-z]?\d{4}[A-Za-z]{0,3}$/.test(cpEl.value.replace(/\s/g, ''))) {
- cpEl.style.borderColor = 'var(--coral)';
- cpEl.focus();
- alert('Revisá el código postal: son 4 números, por ejemplo 1678.');
  return;
  }
  const telEl = document.getElementById('telefono');
@@ -2678,7 +2622,6 @@
  const aviso = new URLSearchParams({
  nombre: datos.nombre, apellido: datos.apellido, telefono: datos.telefono,
  email: datos.email || '', producto: datos.producto, pagina: location.pathname,
- calle: [datos.calle, datos.piso].filter(Boolean).join(' '), localidad: datos.localidad, provincia: datos.provincia, cp: datos.cp,
  // Para avisarle la compra a Meta desde el servidor cuando entre el pago.
  monto: String(PRECIOS_NUM[selectedQty]), fbp: fbGetCookie('_fbp') || '', fbc: fbGetFbc() || '', xid: (function () { try { return fbAnonId(); } catch (e) { return ''; } })(), url: location.href,
  });
