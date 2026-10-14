@@ -11,12 +11,12 @@
  <meta property="og:site_name" content="Productos Capilares PG" />
  <meta property="og:title" content="Biotina Pura® | Menos caída, activá el crecimiento desde la raíz" />
  <meta property="og:description" content="Spray de 500ml, fórmula concentrada de Biotina B7 para frenar la caída y estimular el crecimiento capilar desde el folículo. Envío gratis llevando 2 o más." />
- <meta property="og:image" content="https://productoscapilarespg.com/biotina-pura-real.jpg" />
+ <meta property="og:image" content="https://productoscapilarespg.com/biotina-pura-gatillo-og.jpg" />
  <meta property="og:url" content="https://productoscapilarespg.com/biotina-pura.html" />
  <meta name="twitter:card" content="summary_large_image" />
  <meta name="twitter:title" content="Biotina Pura® | Menos caída, activá el crecimiento desde la raíz" />
  <meta name="twitter:description" content="Spray de 500ml, fórmula concentrada de Biotina B7 para frenar la caída y estimular el crecimiento capilar. Envío gratis llevando 2 o más." />
- <meta name="twitter:image" content="https://productoscapilarespg.com/biotina-pura-real.jpg" />
+ <meta name="twitter:image" content="https://productoscapilarespg.com/biotina-pura-gatillo-og.jpg" />
  <link rel="icon" type="image/x-icon" href="favicon.ico" />
  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -1160,6 +1160,20 @@
  /* Transferencia con 10% menos (12/10/2026) */
  .pago-transferencia { text-align: center; font-size: 0.8rem; color: var(--dark); margin-top: 12px; }
  .pago-transferencia a { color: #1a7f37; font-weight: 700; text-decoration: underline; }
+
+ /* Video arriba de todo (14/10/2026): el anuncio "No se la recomiendo a
+    cualquiera" sin la placa, en 4:5, con los subtítulos quemados para que se
+    entienda sin sonido. Dos clases para ganarle al aspect-ratio 1/1 del celular. */
+ .hero-img.hero-video { aspect-ratio: 4/5; background: #111; }
+ .hero-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
+ @media (min-width: 769px) { .hero-img.hero-video { max-height: 78vh; } }
+ .btn-sonido {
+ position: absolute; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 6px;
+ background: rgba(0,0,0,0.62); color: #fff; border: 0; border-radius: 20px;
+ padding: 8px 13px; font: 600 0.82rem 'Outfit', sans-serif; cursor: pointer;
+ }
+ .btn-sonido svg { width: 16px; height: 16px; }
+ .include-foto { width: 100%; max-width: 240px; aspect-ratio: 4/5; object-fit: cover; border-radius: 14px; align-self: center; }
  </style>
 </head>
 <body id="top">
@@ -1225,8 +1239,12 @@
 
  <!-- HERO -->
  <div class="hero">
- <div class="hero-img">
- <img src="biotina-pura-real.jpg?v=1" alt="Biotina Pura PG — Spray de 500ml" />
+ <div class="hero-img hero-video">
+ <video id="heroVideo" src="biotina-pura-video.mp4?v=1" poster="biotina-pura-gatillo.jpg?v=1" autoplay muted loop playsinline preload="auto" aria-label="Video de Biotina Pura PG en spray"></video>
+ <button type="button" class="btn-sonido" id="btnSonido" onclick="alternarSonido()" aria-label="Activar sonido">
+ <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+ <span>Activar sonido</span>
+ </button>
  </div>
 
  <div class="hero-right">
@@ -1426,7 +1444,7 @@
 
  <div class="include-card include-card--featured" onclick="openProduct(0)" role="button">
  <div class="include-badge">500ml</div>
- <div class="include-icon"></div>
+ <img class="include-foto" src="biotina-pura-gatillo.jpg?v=1" alt="Biotina Pura PG — Spray de 500ml con gatillo" loading="lazy" />
  <h3>Biotina Pura en Spray</h3>
  <p>Biotina concentrada en spray de aplicación directa sobre el cuero cabelludo. Actúa donde realmente importa: en el folículo piloso, estimulando el crecimiento de pelitos nuevos y frenando la caída. No requiere enjuague.</p>
  <span class="include-tag">USO DIARIO · NO ENJUAGAR</span>
@@ -2346,6 +2364,22 @@
  }
  function howPrev() {
  if (howCurrent > 0) howGoTo(howCurrent - 1, true);
+ }
+
+ // ─── VIDEO DE ARRIBA ───
+ // Arranca solo y sin sonido (los navegadores no dejan otra cosa); el botón
+ // prende la voz y lo vuelve al principio para que se escuche entero.
+ const ICONO_MUDO = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
+ const ICONO_SONIDO = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>';
+ function alternarSonido() {
+ const v = document.getElementById('heroVideo');
+ const b = document.getElementById('btnSonido');
+ if (!v || !b) return;
+ if (v.muted) { v.muted = false; v.currentTime = 0; v.play().catch(function () {}); }
+ else { v.muted = true; }
+ b.querySelector('svg').innerHTML = v.muted ? ICONO_MUDO : ICONO_SONIDO;
+ b.querySelector('span').textContent = v.muted ? 'Activar sonido' : 'Silenciar';
+ b.setAttribute('aria-label', v.muted ? 'Activar sonido' : 'Silenciar');
  }
  </script>
 
