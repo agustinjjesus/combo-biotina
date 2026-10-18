@@ -179,7 +179,7 @@
 
     <ul class="pasos" id="pasos">
       <li>Mandanos tu direcci&oacute;n por WhatsApp para que preparemos el env&iacute;o.</li>
-      <li>Sale dentro de las 48 horas por Correo Argentino.</li>
+      <li id="pasoDespacho">Sale dentro de las 48 horas por Correo Argentino.</li>
       <li>Te pasamos el n&uacute;mero de seguimiento de Correo Argentino.</li>
     </ul>
     <p class="urgente" id="urgente">Sin tu direcci&oacute;n no podemos despachar el pedido.</p>
@@ -221,6 +221,10 @@
       $('pedido').textContent = pedido.producto;
       $('pedido').hidden = false;
     }
+
+    // 18/10: el Dúo (y el Combo, que lo trae) se vende sin stock propio; no prometer 48 horas.
+    const sinStock = /d[uú]o|combo/i.test((pedido && pedido.producto) || '');
+    if (sinStock) $('pasoDespacho').textContent = 'Te avisamos por WhatsApp el día que sale por Correo Argentino.';
 
     // Backup por WhatsApp, con el mensaje ya escrito, para quien no quiera
     // usar el formulario de abajo.
@@ -355,8 +359,10 @@
       $('envio').hidden = true;
       $('listo').textContent = '¡Listo! Recibimos tu dirección: ' + [envio.calle, envio.piso].filter(Boolean).join(' ') + ', ' +
         envio.localidad + '. ' + (estado === 'pendiente'
-          ? 'Apenas se acredite el pago lo despachamos por Correo Argentino y por WhatsApp te pasamos el seguimiento.'
-          : 'Sale dentro de las 48 horas por Correo Argentino y por WhatsApp te pasamos el número de seguimiento.');
+          ? 'Apenas se acredite el pago lo preparamos y por WhatsApp te pasamos el seguimiento cuando salga por Correo Argentino.'
+          : (/d[uú]o|combo/i.test(envio.producto || (pedido && pedido.producto) || '')
+            ? 'Te avisamos por WhatsApp el día que sale por Correo Argentino y te pasamos el número de seguimiento.'
+            : 'Sale dentro de las 48 horas por Correo Argentino y por WhatsApp te pasamos el número de seguimiento.'));
       $('listo').hidden = false;
       $('whatsapp').href = 'https://wa.me/5491124838177?text=' + encodeURIComponent('Hola! Acabo de comprar' + (envio.producto ? ' ' + envio.producto : '') + '.');
       $('whatsapp').textContent = '¿Dudas? Escribinos por WhatsApp';
