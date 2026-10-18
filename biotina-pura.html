@@ -1167,6 +1167,9 @@
  .hero-img.hero-video { aspect-ratio: 4/5; background: #111; }
  .hero-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
  @media (min-width: 769px) { .hero-img.hero-video { max-height: 78vh; } }
+ /* celular: video más bajo para que el título y el precio entren en la primera pantalla (18/10) */
+ @media (max-width: 768px) { .hero-img.hero-video { aspect-ratio: auto; height: 44vh; } }
+ .pagos-linea { text-align: center; font-size: 0.8rem; color: #555; margin: 8px 0 14px; line-height: 1.45; }
  .btn-sonido {
  position: absolute; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 6px;
  background: rgba(0,0,0,0.62); color: #fff; border: 0; border-radius: 20px;
@@ -1252,17 +1255,17 @@
  <span class="stock-dot"></span>
  En stock · Pagando antes de las 14 hs, sale hoy
  </div>
- <h1>Biotina Pura® | Menos caída, activá el crecimiento desde la raíz.</h1>
- <p class="combo-composition">Spray de 500ml · Fórmula concentrada de Biotina B7</p>
+ <h1>Biotina Pura® en spray para la caída del pelo</h1>
+ <p class="combo-composition">Spray de 500 ml listo para usar · Va directo a la raíz y no se enjuaga</p>
 
  <ul class="benefits-list">
  <li>
  <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
- <span><strong>Reduce la caída</strong> con uso diario.</span>
+ <span><strong>Ayuda a reducir la caída</strong> con uso diario.</span>
  </li>
  <li>
  <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
- <span><strong>Estimula el crecimiento</strong> de pelo nuevo.</span>
+ <span><strong>En spray, listo para usar:</strong> sin mezclar ni trasvasar.</span>
  </li>
  <li>
  <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
@@ -1298,7 +1301,7 @@
  <div class="qty-left">
  <div class="qty-radio"></div>
  <div class="qty-info">
- <strong>Lleva 2</strong>
+ <strong>Lleva 2 · 1 litro</strong>
  <span>Tratamiento 4 meses</span>
  <span class="qty-shipping-free"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Envío gratis incluido</span>
  </div>
@@ -1354,6 +1357,7 @@
  COMPRAR AHORA · $44.000 — ENVÍO GRATIS
  </button>
             <p class="cuotas-linea" id="cuotasLinea"></p>
+ <p class="pagos-linea">Tarjeta en 3 cuotas sin interés · Débito · Efectivo en Rapipago y Pago Fácil · Transferencia con 10% menos</p>
 
  <div class="delivery-timeline">
  <div class="delivery-step">
