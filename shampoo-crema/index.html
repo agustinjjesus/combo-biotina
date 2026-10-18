@@ -194,6 +194,15 @@
  0%,100% { opacity:1; transform:scale(1); }
  50% { opacity:0.5; transform:scale(1.3); }
  }
+ /* ─── PRIMERAS CLIENTAS ─── */
+ .primeras-section { max-width: 760px; margin: 0 auto; padding: 64px 24px; text-align: center; }
+ .primeras-section h2 { font-family: 'Outfit', sans-serif; font-size: 1.9rem; font-weight: 700; margin: 12px 0 10px; }
+ .primeras-section p { font-size: 0.92rem; color: var(--gray); line-height: 1.7; max-width: 560px; margin: 0 auto 22px; }
+ .primeras-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; background: #fdf0ee; color: #a03a4b; padding: 6px 14px; border-radius: 20px; }
+ .primeras-garantia { display: flex; flex-direction: column; gap: 4px; background: #f0faf4; border: 1px solid #c3e6cb; border-radius: 14px; padding: 16px 20px; max-width: 520px; margin: 0 auto 24px; font-size: 0.88rem; color: #1e6640; }
+ .primeras-garantia strong { font-size: 0.95rem; }
+ .primeras-btn { display: inline-block; background: #111111; color: #ffffff; text-decoration: none; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.95rem; padding: 15px 28px; border-radius: 12px; }
+ @media (max-width: 768px) { .primeras-section { padding: 48px 20px; } .primeras-section h2 { font-size: 1.55rem; } }
  /* ─── GUARANTEE ─── */
  .guarantee-box {
  background: #f0faf4; border: 1px solid #c3e6cb;
@@ -1214,7 +1223,7 @@
  <div class="hero-right">
  <div class="stock-badge">
  <span class="stock-dot"></span>
- Envío a todo el país por Correo Argentino
+ Nuevo · Precio de lanzamiento · Envío a todo el país
  </div>
  <h1>Dúo Shampoo + Acondicionador con Biotina, sin sulfatos</h1>
  <p class="combo-composition">500 ml cada uno · Pelo suave y con brillo desde el primer lavado</p>
@@ -1397,6 +1406,18 @@
  <div style="text-align:center"><div class="proof-num">0%</div><div class="proof-label">formol ni sulfatos</div></div>
  <div style="text-align:center"><div class="proof-num">Diario</div><div class="proof-label">apto para uso diario</div></div>
  <div style="text-align:center"><div class="proof-num">Gratis</div><div class="proof-label">envío llevando 2 o más</div></div>
+ </div>
+
+ <!-- PRIMERAS CLIENTAS (18/10): el Dúo es nuevo y todavía no tiene opiniones; no se inventan -->
+ <div class="primeras-section">
+ <span class="primeras-tag">Nuevo · Precio de lanzamiento</span>
+ <h2>Sé de las primeras en probarlo</h2>
+ <p>Lanzamos el Dúo hace poco, por eso todavía no hay opiniones acá. Las vamos a ir sumando con lo que nos cuenten las primeras clientas.</p>
+ <div class="primeras-garantia">
+ <strong>Probalo sin riesgo</strong>
+ <span>Si no te convence, tenés 10 días desde que lo recibís para devolverlo y te devolvemos la plata.</span>
+ </div>
+ <a href="#" onclick="selectQty(document.querySelector('.qty-option.popular'), 2); irAPagar(); return false;" class="primeras-btn">Quiero probarlo · 2 dúos $36.000</a>
  </div>
 
  <!-- QUÉ INCLUYE -->
