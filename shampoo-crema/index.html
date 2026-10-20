@@ -1931,6 +1931,14 @@
           actualizarCuotas();
  }
 
+ // Los videos del Dúo con voz en off (19/10) dicen "los dos por $27.000" (1 dúo): su link lleva
+ // ?duos=1 para que la página arranque con 1 dúo elegido. Sin el parámetro sigue arrancando en 2.
+ document.addEventListener('DOMContentLoaded', () => {
+ const q = parseInt(new URLSearchParams(location.search).get('duos'), 10);
+ const op = [1, 2, 3].includes(q) && document.querySelectorAll('.quantity-options .qty-option')[q - 1];
+ if (op) selectQty(op, q);
+ });
+
  // ─── TIMELINE DE ENTREGA ─────────────────────────────────────────────────
  function initDeliveryTimeline() {
  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
