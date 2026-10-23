@@ -1173,6 +1173,11 @@
  .modal-pago-cuotas { margin: 2px 0 8px; color: #1a7f37; font-weight: 600; }
  .modal-pago-sin-cuenta { margin: 0; }
  .modal-pago-entrega { margin: 8px 0 0; font-weight: 600; }
+ /* "Despachamos rápido" bien grande arriba (23/10/2026): él lo pidió para generar confianza. */
+ .despacho-rapido { border: 2px solid #1e6640; background: #eef7f1; border-radius: 14px; padding: 14px 16px; margin: 14px 0 18px; text-align: left; }
+ .despacho-rapido-titulo { font-size: 1.3rem; font-weight: 800; color: #1e6640; line-height: 1.2; }
+ .despacho-rapido-fecha { font-size: 1.02rem; font-weight: 700; color: var(--dark); margin-top: 6px; line-height: 1.35; }
+ .despacho-rapido-sub { font-size: 0.8rem; color: var(--gray); margin-top: 4px; }
 
  /* Video arriba de todo (14/10/2026): el anuncio "No se la recomiendo a
     cualquiera" sin la placa, en 4:5, con los subtítulos quemados para que se
@@ -1197,6 +1202,8 @@
  <!-- BARRA SCROLLING -->
  <div class="announce-bar">
  <div class="announce-track">
+ DESPACHO RÁPIDO: LLEGA EN 3 A 5 DÍAS HÁBILES
+ <span class="announce-sep">•</span>
  ENVÍO GRATIS LLEVANDO 2 O MÁS
  <span class="announce-sep">•</span>
  PAGO 100% SEGURO CON MERCADOPAGO
@@ -1208,6 +1215,8 @@
  RESULTADOS DESDE LA SEMANA 3
  <span class="announce-sep">•</span>
  SIN FORMOL NI SULFATOS
+ <span class="announce-sep">•</span>
+ DESPACHO RÁPIDO: LLEGA EN 3 A 5 DÍAS HÁBILES
  <span class="announce-sep">•</span>
  ENVÍO GRATIS LLEVANDO 2 O MÁS
  <span class="announce-sep">•</span>
@@ -1270,6 +1279,11 @@
  </div>
  <h1>Biotina Pura® en spray para la caída del pelo</h1>
  <p class="combo-composition">Spray de 500 ml listo para usar · Va directo a la raíz y no se enjuaga</p>
+ <div class="despacho-rapido">
+   <div class="despacho-rapido-titulo">🚚 Despachamos rápido</div>
+   <div class="despacho-rapido-fecha">Si comprás hoy, te llega <span id="entregaGrande">en 3 a 5 días hábiles</span>.</div>
+   <div class="despacho-rapido-sub">Por Correo Argentino, con número de seguimiento.</div>
+ </div>
 
  <ul class="benefits-list">
  <li>
@@ -1385,14 +1399,14 @@
  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
  </div>
  <div class="delivery-date" id="deliveryDate2">—</div>
- <div class="delivery-label">Envío en camino</div>
+ <div class="delivery-label">Sale por Correo</div>
  </div>
  <div class="delivery-step">
  <div class="delivery-icon">
  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
  </div>
  <div class="delivery-date" id="deliveryDate3">—</div>
- <div class="delivery-label">Entrega</div>
+ <div class="delivery-label">Te llega</div>
  </div>
  </div>
 
@@ -1972,16 +1986,15 @@
  function initDeliveryTimeline() {
  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
  const fmt = d => `${d.getDate()} ${meses[d.getMonth()]}`;
- const hoy = new Date();
- const envio = new Date(hoy); envio.setDate(hoy.getDate() + 2);
- const entregaIni = new Date(hoy); entregaIni.setDate(hoy.getDate() + 4);
- const entregaFin = new Date(hoy); entregaFin.setDate(hoy.getDate() + 6);
+ // Desde el 23/10/2026 en días hábiles, igual que el formulario (diaHabil, más abajo).
  const d1 = document.getElementById('deliveryDate1');
  const d2 = document.getElementById('deliveryDate2');
  const d3 = document.getElementById('deliveryDate3');
- if (d1) d1.textContent = fmt(hoy);
- if (d2) d2.textContent = fmt(envio);
- if (d3) d3.textContent = `${fmt(entregaIni)} - ${fmt(entregaFin)}`;
+ if (d1) d1.textContent = fmt(new Date());
+ if (d2) d2.textContent = fmt(diaHabil(2));
+ if (d3) d3.textContent = `${fmt(diaHabil(3))} - ${fmt(diaHabil(5))}`;
+ const grande = document.getElementById('entregaGrande');
+ if (grande) grande.textContent = fechaEntrega();
  }
  document.addEventListener('DOMContentLoaded', () => {
  initDeliveryTimeline();
@@ -1995,20 +2008,23 @@
         function irAPagar() {
           openModal();
         }
-        // Él dijo el 23/10/2026: "pongamos de 3 a 5 días hábiles" desde que paga. Se
-        // muestra el 3.º y el 5.º día hábil desde mañana. Los feriados trasladables van
-        // por las dos fechas posibles, por las dudas.
+        // Él dijo el 23/10/2026: "pongamos de 3 a 5 días hábiles" desde que paga. Sale
+        // por Correo el 2.º día hábil y llega del 3.º al 5.º, contando desde mañana. Los
+        // feriados trasladables van por las dos fechas posibles, por las dudas.
         const FERIADOS = ['2026-11-20', '2026-11-23', '2026-12-08', '2026-12-25', '2027-01-01'];
-        function fechaEntrega() {
+        function diaHabil(n) {
           const iso = x => x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0');
+          const d = new Date();
+          for (let habiles = 0; habiles < n; ) {
+            d.setDate(d.getDate() + 1);
+            if (d.getDay() !== 0 && d.getDay() !== 6 && !FERIADOS.includes(iso(d))) habiles++;
+          }
+          return d;
+        }
+        function fechaEntrega() {
           const dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
           const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-          const d = new Date(), fechas = {};
-          for (let habiles = 0; habiles < 5; ) {
-            d.setDate(d.getDate() + 1);
-            if (d.getDay() !== 0 && d.getDay() !== 6 && !FERIADOS.includes(iso(d))) fechas[++habiles] = new Date(d);
-          }
-          const desde = fechas[3], hasta = fechas[5];
+          const desde = diaHabil(3), hasta = diaHabil(5);
           const mismoMes = desde.getMonth() === hasta.getMonth();
           return 'entre el ' + dias[desde.getDay()] + ' ' + desde.getDate() + (mismoMes ? '' : ' de ' + meses[desde.getMonth()]) +
             ' y el ' + dias[hasta.getDay()] + ' ' + hasta.getDate() + ' de ' + meses[hasta.getMonth()];
