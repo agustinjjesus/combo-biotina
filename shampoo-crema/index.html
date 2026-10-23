@@ -1167,6 +1167,15 @@
  .despacho-rapido-titulo { font-size: 1.3rem; font-weight: 800; color: #1e6640; line-height: 1.2; }
  .despacho-rapido-fecha { font-size: 1.02rem; font-weight: 700; color: var(--dark); margin-top: 6px; line-height: 1.35; }
  .despacho-rapido-sub { font-size: 0.8rem; color: var(--gray); margin-top: 4px; }
+ /* El camión anda en diagonal, arriba y abajo, como en la ruta (23/10/2026, a pedido de él).
+    scaleX(-1) lo da vuelta para que mire a la derecha, hacia donde avanza. */
+ .despacho-camion { display: inline-block; margin-right: 6px; transform-origin: 50% 80%; animation: camionDiagonal 1.2s ease-in-out infinite; }
+ @keyframes camionDiagonal {
+   0%, 100% { transform: scaleX(-1) translate(6px, 5px) rotate(-5deg); }
+   50% { transform: scaleX(-1) translate(-6px, -6px) rotate(8deg); }
+ }
+ .despacho-rapido-gratis { display: inline-block; margin-top: 10px; background: #1e6640; color: #fff; font-weight: 800; font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; }
+ @media (prefers-reduced-motion: reduce) { .despacho-camion { animation: none; transform: scaleX(-1); } }
  </style>
 </head>
 <body id="top">
@@ -1248,9 +1257,10 @@
  <h1>Dúo Shampoo + Acondicionador con Biotina, sin sulfatos</h1>
  <p class="combo-composition">500 ml cada uno · Pelo suave y con brillo desde el primer lavado</p>
  <div class="despacho-rapido">
-   <div class="despacho-rapido-titulo">🚚 Despachamos rápido</div>
+   <div class="despacho-rapido-titulo"><span class="despacho-camion" aria-hidden="true">🚚</span> Despachamos rápido</div>
    <div class="despacho-rapido-fecha">Si comprás hoy, te llega <span id="entregaGrande">en 3 a 5 días hábiles</span>.</div>
    <div class="despacho-rapido-sub">Por Correo Argentino, con número de seguimiento.</div>
+   <div class="despacho-rapido-gratis">Envío gratis llevando 2 o más</div>
  </div>
 
  <ul class="benefits-list">
