@@ -48,6 +48,15 @@ const primeras = ({ comentario, tag, titulo, texto, boton, cant }) =>
   ' <div class="primeras-garantia">\n <strong>Probalo sin riesgo</strong>\n <span>Si no te convence, tenés 10 días desde que lo recibís para devolverlo y te devolvemos la plata.</span>\n </div>\n' +
   ` <a href="#" onclick="selectQty(document.querySelector('.qty-option.popular'), ${cant}); irAPagar(); return false;" class="primeras-btn">${boton}</a>\n </div>\n\n`;
 
+// Pedidos que ya salieron: provincias reales y, cuando haya, fotos reales de paquetes (landings/envios-reales.js).
+const enviosReales = ({ provincias, fotos }, p) =>
+  ' <!-- PEDIDOS QUE YA SALIERON (23/10): datos y fotos reales, nada inventado -->\n <div class="envios-reales">\n' +
+  ' <span class="primeras-tag">Envíos reales</span>\n <h2>Pedidos que ya salieron</h2>\n' +
+  ' <p>Enviamos por Correo Argentino a todo el país, con número de seguimiento. Ya llegaron pedidos a:</p>\n' +
+  ` <div class="envios-reales-provincias">${provincias.map(x => `<span>${x}</span>`).join('')}</div>\n` +
+  (fotos.length ? ` <div class="envios-reales-fotos">${fotos.map(f => `<img src="${p}${f.src}" alt="${f.alt}" loading="lazy" width="720" height="900">`).join('')}</div>\n` : '') +
+  ' </div>\n\n';
+
 // tarjetas: [{ ml, titulo, texto, tag, destacada, regalo }]
 const incluye = ({ titulo, sub, tarjetas, una }) =>
   ` <!-- QUÉ INCLUYE -->\n <div class="includes-section">\n <h2>${titulo}</h2>\n <p class="how-sub">${sub}</p>\n <div class="includes-grid${una ? ' includes-grid--single' : ''}">\n\n` +
@@ -126,4 +135,4 @@ const jsTextosPrecio = precios => ` const prices = { 1: '${miles(precios[0])}', 
 
 const transferencia = t => ` const TRANSFERENCIA = ${JSON.stringify({ 1: t[0], 2: t[1], 3: t[2] })};\n`;
 
-module.exports = { plata, navLinks, badge, beneficios, cantidades, prueba, primeras, incluye, queHace, comoSeUsa, faq, faqComunes, ctaFinal, products, jsMp, jsPrecios, jsTextosPrecio, transferencia };
+module.exports = { plata, navLinks, badge, beneficios, cantidades, prueba, primeras, enviosReales, incluye, queHace, comoSeUsa, faq, faqComunes, ctaFinal, products, jsMp, jsPrecios, jsTextosPrecio, transferencia };

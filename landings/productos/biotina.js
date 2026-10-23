@@ -50,7 +50,7 @@ module.exports = {
     comentario: 'COMPRA SIN RIESGO (23/10): el mismo bloque que el Dúo, sin opiniones inventadas',
     tag: 'Compra sin riesgo',
     titulo: 'Probala tranquila',
-    texto: 'Nuestros pedidos ya llegaron a clientas de 5 provincias. Pagás por Mercado Pago y te pasamos el seguimiento del Correo por WhatsApp.',
+    texto: 'Pagás por Mercado Pago y te pasamos el seguimiento del Correo por WhatsApp, para que sepas en todo momento dónde está tu pedido.',
     boton: 'Quiero probarla · 2 frascos $44.000', cant: 2,
   }),
   INCLUYE: P.incluye({

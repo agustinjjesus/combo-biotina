@@ -9,11 +9,16 @@
 const fs = require('fs');
 const path = require('path');
 
+const P = require('./piezas');
+
 const RAIZ = path.join(__dirname, '..');
 const plantilla = fs.readFileSync(path.join(__dirname, 'plantilla.html'), 'utf8');
+const envios = require('./envios-reales');
 
 for (const nombre of ['duo', 'biotina', 'combo']) {
-  const datos = require('./productos/' + nombre);
+  const datos = Object.assign({}, require('./productos/' + nombre));
+  // Lo que va igual en las tres páginas
+  datos.ENVIOS_REALES = P.enviosReales(envios, datos.P);
   const html = plantilla.replace(/\{\{([A-Z0-9_]+)\}\}/g, (marca, clave) => {
     if (!(clave in datos)) throw new Error(`${nombre}: falta ${clave}`);
     return datos[clave];
