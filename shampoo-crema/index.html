@@ -1176,6 +1176,21 @@
  }
  .despacho-rapido-gratis { display: inline-block; margin-top: 10px; background: #1e6640; color: #fff; font-weight: 800; font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; }
  @media (prefers-reduced-motion: reduce) { .despacho-camion { animation: none; transform: scaleX(-1); } }
+ /* Piezas que usa solo alguna de las tres páginas (23/10/2026, al unificarlas). */
+ /* Biotina: video arriba con subtítulos quemados y botón de sonido (14/10). Dos clases para ganarle al aspect-ratio 1/1 del celular. */
+ .hero-img.hero-video { aspect-ratio: 4/5; background: #111; }
+ .hero-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
+ @media (min-width: 769px) { .hero-img.hero-video { max-height: 78vh; } }
+ /* celular: video más bajo para que el título y el precio entren en la primera pantalla (18/10) */
+ @media (max-width: 768px) { .hero-img.hero-video { aspect-ratio: auto; height: 44vh; } }
+ .btn-sonido { position: absolute; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.62); color: #fff; border: 0; border-radius: 20px; padding: 8px 13px; font: 600 0.82rem 'Outfit', sans-serif; cursor: pointer; }
+ .btn-sonido svg { width: 16px; height: 16px; }
+ .includes-grid--single { grid-template-columns: 1fr; max-width: 460px; }
+ /* Combo: la ampolla de regalo */
+ .gift-highlight { display: inline-flex; align-items: center; gap: 7px; background: var(--dark); color: #ffffff; font-size: 0.8rem; font-weight: 700; padding: 7px 16px; border-radius: 30px; margin-bottom: 18px; }
+ .qty-gift { display: block; font-size: 0.68rem; color: var(--dark); font-weight: 700; margin-top: 3px; }
+ .include-card--gift { border: 2px dashed #111111; background: #fafafa; position: relative; }
+ .include-gift-ribbon { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--dark); color: #ffffff; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.06em; padding: 4px 14px; border-radius: 20px; white-space: nowrap; }
  </style>
 </head>
 <body id="top">
@@ -1637,7 +1652,7 @@
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Sirve para la caída? <span class="faq-arrow">+</span></button>
- <div class="faq-a">El dúo cuida el pelo en el lavado. Para la caída, el tratamiento es la Biotina Pura en spray, que se aplica directo en el cuero cabelludo. Se pueden usar juntos.</div>
+ <div class="faq-a">El dúo cuida el pelo en el lavado. Para el cuero cabelludo está la Biotina Pura en spray, que se aplica directo en la raíz todos los días. Se pueden usar juntos.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Sirve para todo tipo de cabello? <span class="faq-arrow">+</span></button>
@@ -1968,10 +1983,11 @@
           actualizarCuotas();
  }
 
- // Los videos del Dúo con voz en off (19/10) dicen "los dos por $27.000" (1 dúo): su link lleva
- // ?duos=1 para que la página arranque con 1 dúo elegido. Sin el parámetro sigue arrancando en 2.
+ // ?cant=1 hace que la página arranque con esa cantidad elegida; sin el parámetro arranca en 2.
+ // ?duos=1 sigue andando: es lo que llevan los videos del Dúo con voz en off (19/10).
  document.addEventListener('DOMContentLoaded', () => {
- const q = parseInt(new URLSearchParams(location.search).get('duos'), 10);
+ const params = new URLSearchParams(location.search);
+ const q = parseInt(params.get('cant') || params.get('duos'), 10);
  const op = [1, 2, 3].includes(q) && document.querySelectorAll('.quantity-options .qty-option')[q - 1];
  if (op) selectQty(op, q);
  });

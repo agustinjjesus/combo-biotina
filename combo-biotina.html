@@ -156,6 +156,12 @@
  .btn-confirm:hover { background:var(--coral-dark); }
  .modal-disclaimer { font-size:0.72rem; color:var(--gray); text-align:center; margin-top:12px; line-height:1.5; }
  .modal-info-note { background:var(--cream); border:1px solid var(--cream2); border-radius:10px; padding:12px 14px; font-size:0.78rem; color:var(--dark); line-height:1.5; margin-top:16px; }
+ .upsell-card { border: 1.5px solid var(--coral-light); background: #fdf3ef; border-radius: 12px; padding: 14px 16px; margin-bottom: 22px; text-align: center; }
+ .upsell-card-tag { display: inline-block; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--coral-dark); margin-bottom: 6px; }
+ .upsell-card-text { font-size: 0.82rem; color: var(--dark); line-height: 1.5; margin-bottom: 10px; }
+ .upsell-card-text strong { color: var(--coral-dark); }
+ .upsell-card-btn { display: inline-block; background: var(--dark); color: white; font-size: 0.78rem; font-weight: 600; padding: 8px 18px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+ .upsell-card-btn:hover { background: #333; }
  @media (max-width:540px) { .modal { padding:28px 20px; } .form-row { grid-template-columns:1fr; } }
  /* ─── BARRA SCROLLING ─── */
  .announce-bar {
@@ -193,6 +199,15 @@
  0%,100% { opacity:1; transform:scale(1); }
  50% { opacity:0.5; transform:scale(1.3); }
  }
+ /* ─── PRIMERAS CLIENTAS ─── */
+ .primeras-section { max-width: 760px; margin: 0 auto; padding: 64px 24px; text-align: center; }
+ .primeras-section h2 { font-family: 'Outfit', sans-serif; font-size: 1.9rem; font-weight: 700; margin: 12px 0 10px; }
+ .primeras-section p { font-size: 0.92rem; color: var(--gray); line-height: 1.7; max-width: 560px; margin: 0 auto 22px; }
+ .primeras-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; background: #fdf0ee; color: #a03a4b; padding: 6px 14px; border-radius: 20px; }
+ .primeras-garantia { display: flex; flex-direction: column; gap: 4px; background: #f0faf4; border: 1px solid #c3e6cb; border-radius: 14px; padding: 16px 20px; max-width: 520px; margin: 0 auto 24px; font-size: 0.88rem; color: #1e6640; }
+ .primeras-garantia strong { font-size: 0.95rem; }
+ .primeras-btn { display: inline-block; background: #111111; color: #ffffff; text-decoration: none; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.95rem; padding: 15px 28px; border-radius: 12px; }
+ @media (max-width: 768px) { .primeras-section { padding: 48px 20px; } .primeras-section h2 { font-size: 1.55rem; } }
  /* ─── GUARANTEE ─── */
  .guarantee-box {
  background: #f0faf4; border: 1px solid #c3e6cb;
@@ -239,14 +254,6 @@
  height: 32px;
  }
  .payment-logo img { height: 16px; width: auto; object-fit: contain; display: block; }
- .payment-logo-text {
- font-size: 0.6rem;
- font-weight: 700;
- color: var(--dark);
- letter-spacing: 0.03em;
- white-space: nowrap;
- line-height: 1;
- }
  /* ─── WA ALT BUTTON ─── */
  .btn-wa-alt {
  width: 100%; background: white; color: var(--dark);
@@ -336,19 +343,35 @@
  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
  }
 
- .nav-logo {
- width: 42px; height: 42px;
- border: 2px solid var(--dark);
- border-radius: 50%;
- display: flex;
- align-items: center;
- justify-content: center;
- font-weight: 700;
- font-size: 0.8rem;
- letter-spacing: 0.05em;
- }
-
  .nav-spacer { justify-self: start; display: flex; align-items: center; }
+
+ .nav-menu-wrap { position: relative; }
+ .nav-menu-btn {
+ background: none; border: 2px solid var(--cream2); border-radius: 8px;
+ width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+ cursor: pointer; color: var(--dark); transition: border-color 0.2s;
+ }
+ .nav-menu-btn:hover { border-color: var(--dark); }
+ .nav-menu-dropdown {
+ display: none; position: absolute; top: calc(100% + 10px); left: 0;
+ background: white; border: 1px solid var(--cream2); border-radius: 12px;
+ box-shadow: 0 8px 30px rgba(0,0,0,0.14); min-width: 210px; overflow: hidden; z-index: 200;
+ }
+ .nav-menu-dropdown.open { display: block; }
+ .nav-menu-label {
+ display: block; padding: 12px 18px 6px; font-size: 0.62rem; font-weight: 700;
+ letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray);
+ }
+ .nav-menu-dropdown a {
+ display: block; padding: 12px 18px; font-size: 0.85rem; font-weight: 500;
+ color: var(--dark); text-decoration: none; border-top: 1px solid var(--cream2);
+ transition: background 0.2s;
+ }
+ .nav-menu-dropdown a:hover { background: var(--cream); }
+ .nav-menu-dropdown a.active { font-weight: 700; }
+ @media (max-width: 768px) {
+ .nav-menu-btn { width: 36px; height: 36px; }
+ }
 
  .nav-brand {
  justify-self: center;
@@ -415,34 +438,6 @@
  }
  .nav-wa:hover { background: #1ebe5a; }
 
- .nav-menu-wrap { position: relative; }
- .nav-menu-btn {
- background: none; border: 2px solid var(--cream2); border-radius: 8px;
- width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
- cursor: pointer; color: var(--dark); transition: border-color 0.2s;
- }
- .nav-menu-btn:hover { border-color: var(--dark); }
- .nav-menu-dropdown {
- display: none; position: absolute; top: calc(100% + 10px); left: 0;
- background: white; border: 1px solid var(--cream2); border-radius: 12px;
- box-shadow: 0 8px 30px rgba(0,0,0,0.14); min-width: 210px; overflow: hidden; z-index: 200;
- }
- .nav-menu-dropdown.open { display: block; }
- .nav-menu-label {
- display: block; padding: 12px 18px 6px; font-size: 0.62rem; font-weight: 700;
- letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray);
- }
- .nav-menu-dropdown a {
- display: block; padding: 12px 18px; font-size: 0.85rem; font-weight: 500;
- color: var(--dark); text-decoration: none; border-top: 1px solid var(--cream2);
- transition: background 0.2s;
- }
- .nav-menu-dropdown a:hover { background: var(--cream); }
- .nav-menu-dropdown a.active { font-weight: 700; }
- @media (max-width: 768px) {
- .nav-menu-btn { width: 36px; height: 36px; }
- }
-
  /* ─── HERO ─── */
  .hero {
  max-width: 1200px;
@@ -473,22 +468,6 @@
  padding: 12px;
  }
 
- .hero-img-placeholder {
- display: flex;
- flex-direction: column;
- align-items: center;
- gap: 12px;
- color: var(--gray-light);
- }
-
- .hero-img-placeholder svg { opacity: 0.4; }
-
- .hero-img-placeholder span {
- font-size: 0.7rem;
- letter-spacing: 0.2em;
- text-transform: uppercase;
- }
-
  .hero-right h1 {
  font-family: 'Outfit', sans-serif;
  font-size: clamp(1.9rem, 3vw, 2.6rem);
@@ -498,49 +477,12 @@
  color: var(--dark);
  }
 
- .hero-right h1 span { color: var(--coral); }
-
  .combo-composition {
  font-size: 0.92rem;
  color: var(--gray);
  font-weight: 500;
- margin-bottom: 10px;
- }
-
- .gift-highlight {
- display: inline-flex;
- align-items: center;
- gap: 7px;
- background: var(--dark);
- color: #ffffff;
- font-size: 0.8rem;
- font-weight: 700;
- padding: 7px 16px;
- border-radius: 30px;
- margin-bottom: 18px;
- }
-
- .stars-row {
- display: flex;
- align-items: center;
- gap: 8px;
  margin-bottom: 20px;
  }
-
- .stars { color: #111111; font-size: 1rem; }
-
- .stars-text {
- font-size: 0.8rem;
- color: var(--gray);
- }
-
- .stars-link {
- text-decoration: underline;
- text-underline-offset: 2px;
- cursor: pointer;
- transition: color 0.2s;
- }
- .stars-link:hover { color: var(--dark); }
 
  .benefits-list {
  list-style: none;
@@ -573,19 +515,6 @@
 
  .benefits-list li strong { font-weight: 500; }
 
- .promo-tag {
- background: var(--coral);
- color: white;
- font-size: 0.68rem;
- font-weight: 500;
- letter-spacing: 0.15em;
- text-transform: uppercase;
- padding: 6px 16px;
- border-radius: 4px;
- display: inline-block;
- margin-bottom: 16px;
- }
-
  /* ─── QUANTITY SELECTOR ─── */
  .quantity-options {
  display: flex;
@@ -615,7 +544,7 @@
  }
 
  .qty-option.popular::before {
- content: 'MÁS VENDIDO';
+ content: 'RECOMENDADO';
  position: absolute;
  top: -10px;
  left: 50%;
@@ -659,14 +588,6 @@
  margin-top: 6px;
  }
  .qty-shipping-free svg { flex-shrink: 0; }
-
- .qty-gift {
- display: block;
- font-size: 0.68rem;
- color: var(--dark);
- font-weight: 700;
- margin-top: 3px;
- }
 
  .qty-left {
  display: flex;
@@ -719,9 +640,11 @@
  }
 
  .qty-price .price-old {
- font-size: 0.78rem;
+ display: block;
+ font-size: 0.75rem;
  color: var(--gray-light);
  text-decoration: line-through;
+ margin-bottom: 2px;
  }
 
  .discount-badge {
@@ -843,484 +766,101 @@
  transition: transform 0.2s, box-shadow 0.2s;
  }
  .wa-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.55); }
- .wa-fab-tooltip {
- position: absolute; right: 66px; top: 50%; transform: translateY(-50%);
- background: var(--dark); color: white; white-space: nowrap;
- font-size: 0.72rem; font-weight: 600; padding: 5px 10px;
- border-radius: 8px; opacity: 0; pointer-events: none; transition: opacity 0.2s;
- }
- .wa-fab:hover .wa-fab-tooltip { opacity: 1; }
  @media (max-width: 768px) { .wa-fab { display: none; } }
 
- /* ─── INGREDIENTES ─── */
- .ing-section {
- background: var(--cream); padding: 80px 48px; text-align: center;
+ /* ─── QUÉ HACE CADA UNO ───
+ 19/10: él dijo que los íconos en círculos "con IA" quedaban pedorros. Ahora son dos tarjetas
+ con foto (cuadros de los clips de Flow) y una franja de resultados con foto, sin íconos. */
+ .que-section { background: #f7f7f5; padding: 80px 48px; text-align: center; }
+ .que-section h2 { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+ .que-sub { font-size: 0.88rem; color: var(--gray); }
+ .que-grid { max-width: 980px; margin: 40px auto 0; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; text-align: left; }
+ .que-card { background: #ffffff; border-radius: 20px; overflow: hidden; border: 1px solid #ecece9; }
+ .que-foto { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #ece6e3; }
+ .que-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+ .que-tag { position: absolute; left: 16px; top: 16px; background: rgba(255,255,255,0.94); color: #111111; font-family: 'Outfit', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 12px; border-radius: 999px; }
+ .que-body { padding: 24px 26px 28px; }
+ .que-num { font-family: 'Outfit', sans-serif; font-size: 0.78rem; font-weight: 700; color: #a3a39f; letter-spacing: 0.12em; }
+ .que-body h3 { font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 700; line-height: 1.2; margin: 6px 0 10px; color: var(--dark); }
+ .que-body p { font-size: 0.9rem; color: var(--gray); line-height: 1.6; }
+ .que-list { list-style: none; margin: 18px 0 0; padding: 18px 0 0; border-top: 1px solid #efefec; display: flex; flex-wrap: wrap; gap: 8px; }
+ .que-list li { font-family: 'Outfit', sans-serif; font-size: 0.78rem; font-weight: 600; color: #111111; background: #f4f4f1; border-radius: 999px; padding: 6px 12px; }
+ .que-resultados { max-width: 980px; margin: 24px auto 0; display: grid; grid-template-columns: 1fr 1.25fr; background: #111111; border-radius: 20px; overflow: hidden; text-align: left; color: #ffffff; }
+ .que-res-foto { position: relative; min-height: 300px; }
+ .que-res-foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; display: block; }
+ .que-res-texto { padding: 36px 40px; display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+ .que-res-k { font-family: 'Outfit', sans-serif; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.55); }
+ .que-res-item strong { display: block; font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+ .que-res-item span { display: block; font-size: 0.95rem; color: rgba(255,255,255,0.75); margin-top: 4px; }
+ .que-res-item + .que-res-item { padding-top: 22px; border-top: 1px solid rgba(255,255,255,0.14); }
+ @media (max-width: 760px) {
+ .que-section { padding: 56px 20px; }
+ .que-grid { grid-template-columns: 1fr; gap: 18px; }
+ .que-resultados { grid-template-columns: 1fr; }
+ .que-res-foto { min-height: 0; aspect-ratio: 16 / 10; }
+ .que-res-texto { padding: 26px 24px 30px; }
  }
- .ing-section h2 {
- font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 8px;
- }
- .ing-grid {
- max-width: 1060px; margin: 40px auto 0;
- display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px;
- }
- .ing-card {
- background: white; border-radius: 16px; padding: 26px 16px; text-align: center;
- transition: transform 0.2s, box-shadow 0.2s;
- }
- .ing-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
- .ing-icon { width: 56px; height: 56px; border-radius: 50%; background: #f5f5f5; border: 1.5px solid #e8e8e5; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
- .ing-name { font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 6px; line-height: 1.2; }
- .ing-benefit { font-size: 0.72rem; color: var(--gray); line-height: 1.6; }
- @media (max-width: 900px) { .ing-grid { grid-template-columns: repeat(3, 1fr); } }
- @media (max-width: 600px) { .ing-section { padding: 56px 20px; } .ing-grid { grid-template-columns: repeat(2, 1fr); } }
 
  /* ─── ENVÍO ─── */
- .envio-section { background: white; padding: 80px 48px; }
+ .envio-section { background: #ffffff; padding: 80px 48px; }
  .envio-section h2 {
  font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700;
  text-align: center; margin-bottom: 8px;
  }
- .envio-inner { max-width: 1000px; margin: 0 auto; }
- .envio-steps {
- display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 40px 0;
- }
- .envio-step {
- display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;
- }
- .envio-step-icon {
- width: 56px; height: 56px; background: #f0faf4; border-radius: 50%;
- display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
- }
- .envio-step-title { font-weight: 600; font-size: 0.88rem; color: var(--dark); }
- .envio-step-desc { font-size: 0.78rem; color: var(--gray); line-height: 1.5; }
- .envio-divider { border: none; border-top: 1px solid var(--cream2); margin: 0 0 32px; }
- .envio-grid {
- display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px;
- }
- .envio-row {
- background: var(--cream); border-radius: 12px; padding: 16px 20px;
- display: flex; align-items: center; justify-content: space-between;
- }
- .envio-region { font-size: 0.83rem; font-weight: 500; color: var(--dark); }
- .envio-time {
- font-size: 0.78rem; font-weight: 600; color: var(--green);
- background: #e8f5ee; padding: 3px 10px; border-radius: 20px;
- }
- .envio-footer {
- display: flex; align-items: center; gap: 12px; justify-content: center;
- background: #f0faf4; border: 1px solid #c3e6cb; border-radius: 12px;
- padding: 16px 20px; font-size: 0.82rem; color: var(--green); font-weight: 500;
- }
- @media (max-width: 768px) {
- .envio-section { padding: 56px 20px; }
- .envio-steps { grid-template-columns: 1fr; gap: 20px; }
- .envio-grid { grid-template-columns: 1fr; }
- }
-
- /* ─── QUÉ INCLUYE ─── */
- .includes-section {
- background: var(--white);
- padding: 80px 48px;
- text-align: center;
- }
- .includes-section h2 {
- font-family: 'Outfit', sans-serif;
- font-size: 2rem;
- font-weight: 700;
- margin-bottom: 8px;
- }
- .includes-grid {
- max-width: 1060px;
- margin: 0 auto;
- display: grid;
- grid-template-columns: repeat(4, 1fr);
- gap: 20px;
- }
- .include-card {
- background: var(--cream);
- border-radius: 16px;
- padding: 28px 22px;
- text-align: left;
- display: flex;
- flex-direction: column;
- gap: 10px;
- position: relative;
- }
- .include-card--featured {
- background: #fdf5f2;
- border: 2px solid var(--coral-light);
- }
- .include-card--gift {
- border: 2px dashed var(--dark);
- }
- .include-gift-ribbon {
- position: absolute;
- top: -12px;
- left: 50%;
- transform: translateX(-50%);
- background: var(--dark);
- color: #ffffff;
- font-size: 0.66rem;
- font-weight: 700;
- letter-spacing: 0.06em;
- padding: 4px 14px;
- border-radius: 20px;
- white-space: nowrap;
- }
- .include-badge {
- position: absolute;
- top: 16px;
- right: 16px;
- background: var(--dark);
- color: white;
- font-size: 0.62rem;
- font-weight: 600;
- letter-spacing: 0.08em;
- padding: 3px 8px;
- border-radius: 8px;
- }
- .include-icon { font-size: 1.6rem; }
- .include-card h3 {
- font-family: 'Outfit', sans-serif;
- font-size: 1.15rem;
- font-weight: 700;
- color: var(--dark);
- line-height: 1.2;
- }
- .include-card p {
- font-size: 0.8rem;
- color: var(--gray);
- line-height: 1.7;
- flex: 1;
- }
- .include-tag {
- font-size: 0.62rem;
- font-weight: 600;
- letter-spacing: 0.12em;
- text-transform: uppercase;
- color: var(--coral);
- border: 1px solid var(--coral-light);
- border-radius: 20px;
- padding: 4px 10px;
- align-self: flex-start;
- }
- .include-card {
- cursor: pointer;
- transition: transform 0.22s ease, box-shadow 0.22s ease;
- }
- .include-card:hover {
- transform: translateY(-6px);
- box-shadow: 0 12px 32px rgba(0,0,0,0.10);
- }
- .include-card:hover .include-more { opacity: 1; }
- .include-more {
- font-size: 0.7rem; font-weight: 600; color: var(--coral);
- letter-spacing: 0.06em; text-transform: uppercase;
- margin-top: auto; padding-top: 10px;
- opacity: 0; transition: opacity 0.2s;
- }
- /* ─── PRODUCT MODAL ─── */
- .pmodal-overlay {
- display: none; position: fixed; inset: 0;
- background: rgba(0,0,0,0.55); z-index: 1100;
- align-items: center; justify-content: center; padding: 20px;
- }
- .pmodal-overlay.active { display: flex; }
- .pmodal {
- background: white; border-radius: 24px;
- padding: 40px 36px; width: 100%; max-width: 560px;
- max-height: 90vh; overflow-y: auto;
- animation: modalIn 0.3s ease; position: relative;
- }
- .pmodal-close {
- position: absolute; top: 16px; right: 20px;
- background: none; border: none; font-size: 1.5rem;
- cursor: pointer; color: #999; line-height: 1;
- }
- .pmodal-close:hover { color: var(--dark); }
- .pmodal-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
- .pmodal-icon { font-size: 2.4rem; line-height: 1; }
- .pmodal-header h2 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--dark); line-height: 1.2; }
- .pmodal-ml {
- display: inline-block; background: var(--dark); color: white;
- font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em;
- padding: 3px 8px; border-radius: 6px; margin-top: 4px;
- }
- .pmodal-tag {
- font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em;
- text-transform: uppercase; border-radius: 20px; padding: 4px 12px;
- display: inline-block; margin-bottom: 16px; align-self: flex-start;
- }
- .pmodal-tag.coral { color: var(--coral); border: 1px solid var(--coral-light); }
- .pmodal-tag.green { color: var(--green); border: 1px solid #b2dfc0; background: #f0faf4; }
- .pmodal-desc { font-size: 0.85rem; color: var(--gray); line-height: 1.75; margin-bottom: 20px; }
- .pmodal-section { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--cream2); }
- .pmodal-list { list-style: none; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
- .pmodal-list li { font-size: 0.83rem; color: var(--dark); display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
- .pmodal-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--coral); flex-shrink: 0; margin-top: 6px; }
- .pmodal-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
- .pmodal-steps li { font-size: 0.83rem; color: var(--dark); display: flex; gap: 12px; align-items: flex-start; line-height: 1.5; }
- .pmodal-step-num { width: 22px; height: 22px; background: var(--coral); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; flex-shrink: 0; }
- .pmodal-nota { background: #f0faf4; border: 1px solid #c3e6cb; border-radius: 10px; padding: 12px 14px; font-size: 0.78rem; color: var(--green); line-height: 1.6; }
- .pmodal-buy { margin-top: 24px; width: 100%; background: var(--coral); color: white; border: none; padding: 15px; border-radius: 12px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
- .pmodal-buy:hover { background: var(--coral-dark); }
- @media (max-width: 768px) {
- .includes-section { padding: 56px 20px; }
- .includes-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
- .include-more { opacity: 1; }
- }
- @media (max-width: 480px) {
- .includes-grid { grid-template-columns: 1fr; }
- .pmodal { padding: 28px 20px; }
- }
-
- /* ─── HOW TO USE ─── */
- .how-section {
- background: var(--white);
- padding: 80px 48px;
- text-align: center;
- }
-
- .how-section h2 {
- font-family: 'Outfit', sans-serif;
- font-size: 2rem;
- font-weight: 700;
- margin-bottom: 8px;
- }
-
- .how-sub {
- font-size: 0.88rem;
- color: var(--gray);
- margin-bottom: 48px;
- }
-
- /* ─── STEPPER INTERACTIVO ─── */
- .how-stepper { max-width: 620px; margin: 0 auto; }
-
- .how-track {
-  display: flex; align-items: center; justify-content: center;
-  gap: 0; margin-bottom: 48px; position: relative;
- }
- .how-track-line {
-  position: absolute; height: 2px; background: #e0e0de;
-  left: 72px; right: 72px; top: 50%; transform: translateY(-50%); z-index: 0;
- }
- .how-track-fill {
-  position: absolute; height: 2px; background: #111111;
-  left: 72px; top: 50%; transform: translateY(-50%);
-  z-index: 1; transition: width 0.4s ease; width: 0%;
- }
- .how-dot {
-  width: 48px; height: 48px; border-radius: 50%;
-  background: #ebebea; border: 2px solid #d8d8d5;
-  color: #aaa; font-family: 'Outfit', sans-serif;
-  font-size: 0.88rem; font-weight: 700; cursor: pointer;
-  transition: all 0.25s; z-index: 2; position: relative;
-  margin: 0 36px; flex-shrink: 0;
- }
+ .envio-inner { max-width: 960px; margin: 0 auto; }
+ .how-sub { font-size: 0.88rem; color: var(--gray); margin-bottom: 48px; text-align: center; }
+ .how-stepper { max-width: 620px; margin: 0 auto; text-align: center; }
+ .how-track { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 48px; position: relative; }
+ .how-track-line { position: absolute; height: 2px; background: #e0e0de; left: 72px; right: 72px; top: 50%; transform: translateY(-50%); z-index: 0; }
+ .how-track-fill { position: absolute; height: 2px; background: #111111; left: 72px; top: 50%; transform: translateY(-50%); z-index: 1; transition: width 0.4s ease; width: 0%; }
+ .how-dot { width: 48px; height: 48px; border-radius: 50%; background: #ebebea; border: 2px solid #d8d8d5; color: #aaa; font-family: 'Outfit', sans-serif; font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: all 0.25s; z-index: 2; position: relative; margin: 0 36px; flex-shrink: 0; }
  .how-dot.active { background: #111111; border-color: #111111; color: white; }
  .how-dot.done { background: #444444; border-color: #444444; color: white; }
- .how-dot.done::after {
-  content: '✓'; position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1rem; color: white;
- }
+ .how-dot.done::after { content: '✓'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: white; }
  .how-dot.done span { display: none; }
-
  .how-steps-wrapper { min-height: 200px; margin-bottom: 36px; }
  .how-step-item { display: none; }
  .how-step-item.active { display: block; animation: stepIn 0.35s ease both; }
  .how-step-item.back { display: block; animation: stepBack 0.35s ease both; }
- @keyframes stepIn {
-  from { opacity: 0; transform: translateX(24px); }
-  to { opacity: 1; transform: translateX(0); }
- }
- @keyframes stepBack {
-  from { opacity: 0; transform: translateX(-24px); }
-  to { opacity: 1; transform: translateX(0); }
- }
-
- .how-step-tag {
-  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em;
-  text-transform: uppercase; color: #999; margin-bottom: 14px;
- }
- .how-step-title {
-  font-family: 'Outfit', sans-serif; font-size: 1.9rem; font-weight: 700;
-  color: #111111; margin-bottom: 16px; line-height: 1.15;
- }
- .how-step-text {
-  font-size: 0.9rem; color: #6b6b6b; line-height: 1.78;
-  max-width: 480px; margin: 0 auto 20px;
- }
- .how-step-badge {
-  display: inline-block; font-size: 0.68rem; font-weight: 600;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  color: #444; background: #ebebea; padding: 5px 14px; border-radius: 20px;
- }
-
+ @keyframes stepIn { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+ @keyframes stepBack { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: translateX(0); } }
+ .how-step-tag { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #999; margin-bottom: 14px; }
+ .how-step-title { font-family: 'Outfit', sans-serif; font-size: 1.9rem; font-weight: 700; color: #111111; margin-bottom: 16px; line-height: 1.15; }
+ .how-step-text { font-size: 0.9rem; color: #6b6b6b; line-height: 1.78; max-width: 480px; margin: 0 auto 20px; }
+ .how-step-badge { display: inline-block; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #444; background: #ebebea; padding: 5px 14px; border-radius: 20px; }
  .how-nav { display: flex; justify-content: center; gap: 14px; align-items: center; }
- .how-btn {
-  border: 2px solid #111111; border-radius: 10px;
-  padding: 12px 28px; font-family: 'Outfit', sans-serif;
-  font-size: 0.88rem; font-weight: 600; cursor: pointer;
-  transition: all 0.2s; letter-spacing: 0.03em;
- }
+ .how-btn { border: 2px solid #111111; border-radius: 10px; padding: 12px 28px; font-family: 'Outfit', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; letter-spacing: 0.03em; }
  .how-btn-prev { background: white; color: #111111; }
  .how-btn-prev:hover:not(:disabled) { background: #111111; color: white; }
  .how-btn-prev:disabled { opacity: 0.28; cursor: default; border-color: #bbb; color: #bbb; }
  .how-btn-next { background: #111111; color: white; }
  .how-btn-next:hover { background: #000; }
-
  .how-step-counter { font-size: 0.78rem; color: #aaa; font-weight: 500; min-width: 60px; text-align: center; }
-
- @media (max-width: 600px) {
-  .how-dot { width: 40px; height: 40px; margin: 0 20px; font-size: 0.8rem; }
-  .how-track-line { left: 50px; right: 50px; }
-  .how-track-fill { left: 50px; }
-  .how-step-title { font-size: 1.5rem; }
+ .envio-divider { border: none; border-top: 1px solid var(--cream2); margin: 0 0 32px; }
+ .envio-tiempos-title { text-align: center; font-size: 1rem; font-weight: 600; color: var(--dark); margin-bottom: 20px; }
+ .envio-dispatch-note { display: flex; align-items: center; gap: 8px; background: #111111; color: #ffffff; border-radius: 10px; padding: 11px 18px; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.02em; margin-bottom: 16px; }
+ .envio-dispatch-note svg { flex-shrink: 0; opacity: 0.8; }
+ .envio-dispatch-note strong { font-weight: 700; }
+ .envio-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px; }
+ .envio-row { background: #f7f7f5; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #f0f0ee; }
+ .envio-row-info { display: flex; align-items: center; gap: 10px; }
+ .envio-row-info svg { flex-shrink: 0; opacity: 0.4; }
+ .envio-region { font-size: 0.85rem; font-weight: 500; color: var(--dark); }
+ .envio-time { font-size: 0.78rem; font-weight: 600; color: #444; background: #ebebea; padding: 3px 12px; border-radius: 20px; }
+ .envio-row--free { background: #111111; border-color: #111111; }
+ .envio-row--free .envio-region { color: #ffffff; }
+ .envio-row--free .envio-row-info svg { stroke: #ffffff; opacity: 0.7; }
+ .envio-time-free { font-size: 0.78rem; font-weight: 700; color: #111111; background: #ffffff; padding: 3px 14px; border-radius: 20px; letter-spacing: 0.06em; }
+ .envio-footer { display: flex; align-items: center; gap: 10px; justify-content: center; background: #f7f7f5; border: 1px solid #e8e8e5; border-radius: 12px; padding: 16px 20px; font-size: 0.82rem; color: #555; margin-top: 20px; }
+ .envio-footer svg { flex-shrink: 0; opacity: 0.45; }
+ @media (max-width: 768px) {
+ .envio-section { padding: 56px 20px; }
+ .envio-grid { grid-template-columns: 1fr; }
+ .how-dot { width: 40px; height: 40px; margin: 0 20px; font-size: 0.8rem; }
+ .how-track-line { left: 50px; right: 50px; }
+ .how-track-fill { left: 50px; }
+ .how-step-title { font-size: 1.5rem; }
  }
-
- /* ─── REVIEWS ─── */
- .reviews-section {
- padding: 80px 48px;
- max-width: 1100px;
- margin: 0 auto;
- }
-
- .reviews-section h2 {
- font-family: 'Outfit', sans-serif;
- font-size: 2rem;
- font-weight: 700;
- text-align: center;
- margin-bottom: 8px;
- }
-
- .reviews-stars {
- text-align: center;
- margin-bottom: 32px;
- }
-
- .reviews-stars .stars { font-size: 1.4rem; }
-
- .reviews-stars p {
- font-size: 0.82rem;
- color: var(--gray);
- margin-top: 4px;
- }
-
- .rating-bars {
- background: var(--white);
- border-radius: 16px;
- padding: 24px;
- margin-bottom: 40px;
- max-width: 400px;
- margin-left: auto;
- margin-right: auto;
- }
-
- .rating-row {
- display: flex;
- align-items: center;
- gap: 12px;
- margin-bottom: 8px;
- }
-
- .rating-label {
- font-size: 0.78rem;
- color: var(--gray);
- width: 20px;
- text-align: right;
- }
-
- .rating-bar-bg {
- flex: 1;
- height: 8px;
- background: var(--cream2);
- border-radius: 4px;
- overflow: hidden;
- }
-
- .rating-bar-fill {
- height: 100%;
- background: var(--coral);
- border-radius: 4px;
- }
-
- .rating-pct {
- font-size: 0.75rem;
- color: var(--gray);
- width: 28px;
- }
-
- .reviews-grid {
- display: grid;
- grid-template-columns: repeat(3, 1fr);
- gap: 20px;
- }
-
- .review-card {
- background: var(--white);
- border-radius: 16px;
- padding: 24px;
- position: relative;
- }
-
- .review-card--more { display: none; }
- .review-card--more.show { display: block; }
-
- .review-header {
- display: flex;
- justify-content: space-between;
- align-items: flex-start;
- margin-bottom: 12px;
- }
-
- .review-verified {
- font-size: 0.65rem;
- color: var(--green);
- display: flex;
- align-items: center;
- gap: 4px;
- font-weight: 500;
- }
-
- .review-stars { font-size: 0.85rem; color: #111111; }
-
- .review-title {
- font-weight: 600;
- font-size: 0.88rem;
- margin-bottom: 8px;
- }
-
- .review-text {
- font-size: 0.82rem;
- color: var(--gray);
- line-height: 1.65;
- margin-bottom: 12px;
- }
-
- .review-meta {
- font-size: 0.7rem;
- color: var(--gray-light);
- display: flex;
- justify-content: space-between;
- }
-
- .btn-reviews {
- display: block;
- margin: 32px auto 0;
- background: none;
- border: 2px solid var(--coral);
- color: var(--coral);
- padding: 12px 32px;
- border-radius: 24px;
- font-family: 'Outfit', sans-serif;
- font-size: 0.85rem;
- font-weight: 500;
- cursor: pointer;
- transition: all 0.2s;
- }
- .btn-reviews:hover { background: var(--coral); color: white; }
 
  /* ─── CTA FINAL ─── */
  .cta-final {
@@ -1330,16 +870,6 @@
  position: relative;
  overflow: hidden;
  }
-
- .cta-final::before {
- content: '';
- position: absolute;
- font-size: 20rem;
- color: rgba(255,255,255,0.04);
- top: -60px;
- left: -60px;
- }
-
  .cta-final h2 {
  font-family: 'Outfit', sans-serif;
  font-size: 2.2rem;
@@ -1347,7 +877,6 @@
  color: white;
  margin-bottom: 12px;
  }
-
  .cta-final p {
  color: rgba(255,255,255,0.85);
  font-size: 0.9rem;
@@ -1355,7 +884,6 @@
  margin: 0 auto 32px;
  line-height: 1.7;
  }
-
  .btn-cta-final {
  background: white;
  color: var(--coral);
@@ -1381,7 +909,6 @@
  color: rgba(255,255,255,0.6);
  padding: 48px;
  }
-
  .footer-top {
  display: flex;
  flex-direction: column;
@@ -1390,24 +917,10 @@
  margin-bottom: 40px;
  text-align: center;
  }
-
- .footer-logo {
- width: 52px; height: 52px;
- border: 2px solid rgba(255,255,255,0.3);
- border-radius: 50%;
- display: flex;
- align-items: center;
- justify-content: center;
- font-weight: 700;
- font-size: 0.9rem;
- color: white;
- }
-
  .footer-tagline {
  font-size: 0.75rem;
  letter-spacing: 0.1em;
  }
-
  .footer-links {
  display: grid;
  grid-template-columns: repeat(3, 1fr);
@@ -1416,7 +929,6 @@
  border-top: 1px solid rgba(255,255,255,0.1);
  padding-top: 40px;
  }
-
  .footer-col h4 {
  color: white;
  font-size: 0.78rem;
@@ -1425,7 +937,6 @@
  text-transform: uppercase;
  margin-bottom: 16px;
  }
-
  .footer-col a {
  display: block;
  color: rgba(255,255,255,0.5);
@@ -1435,7 +946,6 @@
  transition: color 0.2s;
  }
  .footer-col a:hover { color: white; }
-
  .payment-methods {
  display: flex;
  justify-content: center;
@@ -1445,16 +955,6 @@
  border-top: 1px solid rgba(255,255,255,0.1);
  padding-top: 24px;
  }
-
- .payment-badge {
- background: rgba(255,255,255,0.1);
- border-radius: 6px;
- padding: 5px 11px;
- font-size: 0.68rem;
- color: rgba(255,255,255,0.6);
- font-weight: 500;
- }
-
  .pm-label { font-size: 0.7rem; color: rgba(255,255,255,0.35); margin-right: 2px; }
  .pm-card {
  background: white;
@@ -1470,7 +970,6 @@
  }
  .pm-card:hover { opacity: 1; }
  .pm-card svg { display: block; }
-
  .footer-social-row { display: flex; gap: 12px; margin-top: 8px; }
  .footer-col a.social-btn {
  width: 38px; height: 38px; border-radius: 50%;
@@ -1498,10 +997,10 @@
  .nav-brand-sub { display: none; }
  .nav-wa span { display: none; }
  .nav-wa {
-  width: 40px; height: 40px; padding: 0;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 3px 10px rgba(37,211,102,0.35);
+ width: 40px; height: 40px; padding: 0;
+ border-radius: 50%;
+ display: flex; align-items: center; justify-content: center;
+ box-shadow: 0 3px 10px rgba(37,211,102,0.35);
  }
  .nav-wa svg { width: 18px; height: 18px; }
 
@@ -1511,19 +1010,16 @@
  gap: 20px;
  }
  .hero-img {
-  aspect-ratio: 1080/1350;
-  border-radius: 16px;
-  box-shadow: none;
-  background: #f8f8f6;
-  margin: 0 -4px;
+ aspect-ratio: 1080/1350;
+ border-radius: 16px;
+ box-shadow: none;
+ background: #f8f8f6;
+ margin: 0 -4px;
  }
- .hero-img img { padding: 8px; }
-
- .how-section { padding: 56px 20px; }
- .steps-grid { grid-template-columns: repeat(2, 1fr); }
-
- .reviews-section { padding: 56px 20px; }
- .reviews-grid { grid-template-columns: 1fr; }
+ .hero-img img { padding: 0; }
+ /* celular: la foto es cuadrada; sin bandas grises para que el título y el precio entren en la primera pantalla (18/10) */
+ .hero-img { aspect-ratio: 1 / 1; }
+ .hero-img img { object-fit: cover; }
 
  .cta-final { padding: 56px 20px; }
  .cta-final h2 { font-size: 1.6rem; }
@@ -1534,165 +1030,112 @@
  .trust-badges { gap: 16px; }
  }
 
+ /* ─── STARS / RESEÑAS (hero + sección reviews) ─── */
+ .stars-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+ .stars { color: #111111; font-size: 1rem; }
+ .stars-text { font-size: 0.8rem; color: var(--gray); font-weight: 500; }
+ .stars-link { text-decoration: underline; cursor: pointer; }
+ .stars-link:hover { color: var(--dark); }
+
+ /* ─── QUÉ INCLUYE ─── */
+ .includes-section { background: var(--white); padding: 80px 48px; text-align: center; }
+ .includes-section h2 { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+ .includes-grid { max-width: 1060px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+ .include-card {
+ background: var(--cream); border-radius: 16px; padding: 28px 22px; text-align: left;
+ display: flex; flex-direction: column; gap: 10px; position: relative;
+ cursor: pointer; transition: transform 0.22s ease, box-shadow 0.22s ease;
+ }
+ .include-card--featured { background: #fdf5f2; border: 2px solid var(--coral-light); }
+ .include-badge {
+ position: absolute; top: 16px; right: 16px; background: var(--dark); color: white;
+ font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 8px;
+ }
+ .include-icon { font-size: 1.6rem; }
+ .include-card h3 { font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--dark); line-height: 1.2; }
+ .include-card p { font-size: 0.8rem; color: var(--gray); line-height: 1.7; flex: 1; }
+ .include-tag {
+ font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+ color: var(--coral); border: 1px solid var(--coral-light); border-radius: 20px; padding: 4px 10px;
+ align-self: flex-start;
+ }
+ .include-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,0.10); }
+ .include-card:hover .include-more { opacity: 1; }
+ .include-more {
+ font-size: 0.7rem; font-weight: 600; color: var(--coral); letter-spacing: 0.06em; text-transform: uppercase;
+ margin-top: auto; padding-top: 10px; opacity: 0; transition: opacity 0.2s;
+ }
+ @media (max-width: 768px) {
+ .includes-section { padding: 56px 20px; }
+ .include-more { opacity: 1; }
+ }
+ @media (max-width: 480px) { .includes-grid { grid-template-columns: 1fr; } .pmodal { padding: 28px 20px; } }
+
+ /* ─── MODAL PRODUCTO ─── */
+ .pmodal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1100; align-items: center; justify-content: center; padding: 20px; }
+ .pmodal-overlay.active { display: flex; }
+ .pmodal { background: white; border-radius: 24px; padding: 40px 36px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; animation: modalIn 0.3s ease; position: relative; }
+ .pmodal-close { position: absolute; top: 16px; right: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999; line-height: 1; }
+ .pmodal-close:hover { color: var(--dark); }
+ .pmodal-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+ .pmodal-icon { font-size: 2.4rem; line-height: 1; }
+ .pmodal-header h2 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--dark); line-height: 1.2; }
+ .pmodal-ml { display: inline-block; background: var(--dark); color: white; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; padding: 3px 8px; border-radius: 6px; margin-top: 4px; }
+ .pmodal-tag { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; border-radius: 20px; padding: 4px 12px; display: inline-block; margin-bottom: 16px; align-self: flex-start; }
+ .pmodal-tag.coral { color: var(--coral); border: 1px solid var(--coral-light); }
+ .pmodal-tag.green { color: var(--green); border: 1px solid #b2dfc0; background: #f0faf4; }
+ .pmodal-desc { font-size: 0.85rem; color: var(--gray); line-height: 1.75; margin-bottom: 20px; }
+ .pmodal-section { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--coral); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--cream2); }
+ .pmodal-list { list-style: none; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+ .pmodal-list li { font-size: 0.83rem; color: var(--dark); display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+ .pmodal-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--coral); flex-shrink: 0; margin-top: 6px; }
+ .pmodal-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+ .pmodal-steps li { font-size: 0.83rem; color: var(--dark); display: flex; gap: 12px; align-items: flex-start; line-height: 1.5; }
+ .pmodal-step-num { width: 22px; height: 22px; background: var(--coral); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; flex-shrink: 0; }
+ .pmodal-nota { background: #f0faf4; border: 1px solid #c3e6cb; border-radius: 10px; padding: 12px 14px; font-size: 0.78rem; color: var(--green); line-height: 1.6; }
+ .pmodal-buy { margin-top: 24px; width: 100%; background: var(--coral); color: white; border: none; padding: 15px; border-radius: 12px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+ .pmodal-buy:hover { background: var(--coral-dark); }
+
+ /* ─── REVIEWS ─── */
+ .reviews-section { padding: 80px 48px; max-width: 1100px; margin: 0 auto; }
+ .reviews-section h2 { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; text-align: center; margin-bottom: 8px; }
+ .reviews-stars { text-align: center; margin-bottom: 32px; }
+ .reviews-stars .stars { font-size: 1.4rem; }
+ .reviews-stars p { font-size: 0.82rem; color: var(--gray); margin-top: 4px; }
+ .rating-bars { background: var(--white); border-radius: 16px; padding: 24px; margin-bottom: 40px; max-width: 400px; margin-left: auto; margin-right: auto; }
+ .rating-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+ .rating-label { font-size: 0.78rem; color: var(--gray); width: 20px; text-align: right; }
+ .rating-bar-bg { flex: 1; height: 8px; background: var(--cream2); border-radius: 4px; overflow: hidden; }
+ .rating-bar-fill { height: 100%; background: var(--coral); border-radius: 4px; }
+ .rating-pct { font-size: 0.75rem; color: var(--gray); width: 28px; }
+ .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+ .review-card { background: var(--white); border-radius: 16px; padding: 24px; position: relative; border: 1px solid var(--cream2); }
+ .review-card--more { display: none; }
+ .review-card--more.show { display: block; }
+ .review-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+ .review-verified { font-size: 0.65rem; color: var(--green); display: flex; align-items: center; gap: 4px; font-weight: 500; }
+ .review-stars { font-size: 0.85rem; color: #111111; }
+ .review-title { font-weight: 600; font-size: 0.88rem; margin-bottom: 8px; }
+ .review-text { font-size: 0.82rem; color: var(--gray); line-height: 1.65; margin-bottom: 12px; }
+ .review-meta { font-size: 0.7rem; color: var(--gray-light); display: flex; justify-content: space-between; }
+ .btn-reviews {
+ display: block; margin: 32px auto 0; background: none; border: 2px solid var(--coral); color: var(--coral);
+ padding: 12px 32px; border-radius: 24px; font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 500;
+ cursor: pointer; transition: all 0.2s;
+ }
+ .btn-reviews:hover { background: var(--coral); color: white; }
+ @media (max-width: 768px) { .reviews-section { padding: 56px 20px; } .reviews-grid { grid-template-columns: 1fr; } }
+
  /* ─── ANIMATIONS ─── */
  @keyframes fadeUp {
  from { opacity: 0; transform: translateY(20px); }
  to { opacity: 1; transform: translateY(0); }
  }
-
- .hero-right > * {
- animation: fadeUp 0.6s ease both;
- }
+ .hero-right > * { animation: fadeUp 0.6s ease both; }
  .hero-right h1 { animation-delay: 0.1s; }
- .stars-row { animation-delay: 0.2s; }
  .benefits-list { animation-delay: 0.3s; }
  .quantity-options { animation-delay: 0.4s; }
  .btn-buy { animation-delay: 0.5s; }
-
- /* ─── TEMA BLANCO ELEGANTE ─── */
-
- /* Nav limpio */
- nav {
-  background: #ffffff;
-  border-bottom: 1px solid #f0f0ee;
-  box-shadow: 0 1px 20px rgba(0,0,0,0.06);
- }
-
- /* Hero image */
- .hero-img { background: #f8f8f6; }
-
- /* Secciones alternadas sutilmente */
- .ing-section { background: #f7f7f5; }
- .ing-card {
-  background: #ffffff;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.055);
-  border: 1px solid #f0f0ee;
- }
- .ing-card:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.10); border-color: #e6e6e3; }
-
- .includes-section { background: #ffffff; }
- .include-card {
-  background: #f7f7f5;
-  border: 1px solid transparent;
- }
- .include-card--featured { background: #f0f0f0; border-color: #cccccc; }
- .include-card--gift { border: 2px dashed #111111; background: #fafafa; }
- .include-card:hover { box-shadow: 0 10px 32px rgba(0,0,0,0.09); border-color: #cccccc; }
-
- .how-section { background: #f7f7f5; }
-
- .envio-section { background: #ffffff; }
- .envio-row {
-  background: #f7f7f5;
-  border: 1px solid #f0f0ee;
- }
-
- .faq-section { background: #f7f7f5; }
-
- .reviews-section { background: #ffffff; }
- .review-card {
-  background: #ffffff;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.055);
-  border: 1px solid #f0f0ee;
- }
- .rating-bars {
-  background: #ffffff;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.055);
-  border: 1px solid #f0f0ee;
- }
-
- /* Cards de cantidad más elegantes */
- .qty-option {
-  background: #ffffff;
-  border: 1.5px solid #ebebea;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
- }
- .qty-option:hover { border-color: #999; box-shadow: 0 2px 12px rgba(0,0,0,0.09); }
- .qty-option.selected {
-  background: #f5f5f5;
-  border-color: #111111;
-  box-shadow: 0 2px 14px rgba(0,0,0,0.10);
- }
-
- /* Payment box más limpio */
- .payment-box { background: #f7f7f5; border: 1.5px solid #ebebea; }
-
- /* Sección how-to steps */
- .step-num { box-shadow: 0 3px 10px rgba(224,122,95,0.3); }
-
- /* Floating CTA blanca limpia */
- .floating-cta { background: #ffffff; box-shadow: 0 -2px 20px rgba(0,0,0,0.08); }
-
- /* Proof strip levemente diferente */
- .proof-strip { background: #111111; }
-
- /* Separador más sutil en FAQ */
- .faq-item { border-bottom-color: #ebebea; }
-
- /* ─── BLANCO Y NEGRO: eliminar todos los colores ─── */
- .stock-badge { background: #f5f5f5; border-color: #d0d0d0; color: #111111; }
- .stock-dot { background: #111111; }
- .guarantee-box { background: #f7f7f5; border-color: #d8d8d5; }
- .guarantee-text strong { color: #111111; }
- .guarantee-text span { color: var(--gray); }
- .benefit-check { background: #111111; }
- .step-num { background: #111111; box-shadow: none; }
- .envio-step-icon { background: #f0f0ee; }
- .envio-time { background: #ebebea; color: #111111; }
- .envio-footer { background: #f5f5f5; border-color: #d0d0d0; color: #111111; }
- .review-verified { color: #555555; }
- .pmodal-nota { background: #f7f7f5; border-color: #d8d8d5; color: #333333; }
- .pmodal-tag.green { color: #111111; border-color: #bbbbbb; background: #f5f5f5; }
- .payment-box { background: #f7f7f5; border-color: #e0e0de; }
- .reviews-stars .stars { color: #111111; }
- .stars-row .stars { color: #111111; }
- .rating-bars { background: #ffffff; box-shadow: 0 2px 12px rgba(0,0,0,0.055); border: 1px solid #f0f0ee; }
-
- /* ─── ENVÍO REDISEÑADO ─── */
- .envio-section { background: #ffffff; padding: 80px 48px; }
- .envio-inner { max-width: 960px; margin: 0 auto; }
- .envio-section h2 { text-align: center; margin-bottom: 8px; }
- .envio-steps {
-  display: grid;
-  grid-template-columns: 1fr 72px 1fr 72px 1fr;
-  align-items: start;
-  margin: 48px 0 44px;
- }
- .envio-step { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
- .envio-step-icon {
-  width: 72px; height: 72px; border-radius: 50%;
-  background: #f5f5f5; border: 2px solid #e8e8e5;
-  display: flex; align-items: center; justify-content: center;
- }
- .envio-connector {
-  display: flex; align-items: flex-start; justify-content: center; padding-top: 36px;
- }
- .envio-connector::after {
-  content: ''; display: block; width: 42px; height: 1.5px; background: #d0d0cc;
- }
- .envio-step-title { font-size: 0.9rem; font-weight: 700; color: var(--dark); }
- .envio-step-desc { font-size: 0.78rem; color: var(--gray); line-height: 1.6; max-width: 200px; }
- .envio-tiempos-title { text-align: center; font-size: 1rem; font-weight: 600; color: var(--dark); margin-bottom: 20px; }
- .envio-row { background: #f7f7f5; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #f0f0ee; }
- .envio-row-info { display: flex; align-items: center; gap: 10px; }
- .envio-row-info svg { flex-shrink: 0; opacity: 0.4; }
- .envio-region { font-size: 0.85rem; font-weight: 500; color: var(--dark); }
- .envio-time { font-size: 0.78rem; font-weight: 600; color: #444; background: #ebebea; padding: 3px 12px; border-radius: 20px; }
- .envio-row--free { background: #111111; border-color: #111111; }
- .envio-row--free .envio-region { color: #ffffff; }
- .envio-row--free .envio-row-info svg { stroke: #ffffff; opacity: 0.7; }
- .envio-time-free { font-size: 0.78rem; font-weight: 700; color: #111111; background: #ffffff; padding: 3px 14px; border-radius: 20px; letter-spacing: 0.06em; }
- .envio-footer { display: flex; align-items: center; gap: 10px; justify-content: center; background: #f7f7f5; border: 1px solid #e8e8e5; border-radius: 12px; padding: 16px 20px; font-size: 0.82rem; color: #555; margin-top: 20px; }
- .envio-footer svg { flex-shrink: 0; opacity: 0.45; }
- .envio-dispatch-note { display: flex; align-items: center; gap: 8px; background: #111111; color: #ffffff; border-radius: 10px; padding: 11px 18px; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.02em; margin-bottom: 16px; }
- .envio-dispatch-note svg { flex-shrink: 0; opacity: 0.8; }
- .envio-dispatch-note strong { font-weight: 700; }
- @media (max-width: 768px) {
-  .envio-section { padding: 56px 20px; }
-  .envio-steps { grid-template-columns: 1fr; gap: 28px; }
-  .envio-connector { display: none; }
-  .envio-grid { grid-template-columns: 1fr; }
- }
      .cuotas-linea {
       margin: 10px 0 0; text-align: center;
       font-size: 1rem; font-weight: 600; color: #7E2B42;
@@ -1703,15 +1146,51 @@
       font-size: 0.78rem; font-weight: 600; color: var(--wine, #7E2B42);
       white-space: nowrap;
     }
+ .pagos-linea { text-align: center; font-size: 0.8rem; color: #555; margin: 8px 0 14px; line-height: 1.45; }
 </style>
- <!-- Firebase SDK (sincronización en tiempo real) -->
- <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
- <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 <style>
  /* Transferencia con 10% menos (12/10/2026) */
  .qty-price .price-transfer { display: block; font-size: 0.74rem; font-weight: 700; color: #1a7f37; margin-top: 2px; white-space: nowrap; }
+ .qty-save { display: block; font-size: 0.74rem; font-weight: 700; color: #1e6640; margin-top: 2px; white-space: nowrap; }
  .pago-transferencia { text-align: center; font-size: 0.8rem; color: var(--dark); margin-top: 12px; }
  .pago-transferencia a { color: #1a7f37; font-weight: 700; text-decoration: underline; }
+ /* Cómo se paga, justo arriba de "Confirmar y pagar" (23/10/2026): en los chats
+    muchas creían que hacía falta cuenta de Mercado Pago o tarjeta. */
+ .modal-pago { background: #f6f6f4; border: 1px solid #e4e4e0; border-radius: 12px; padding: 14px 16px; margin: 6px 0 12px; font-size: 0.85rem; line-height: 1.45; color: var(--dark); }
+ .modal-pago-total { font-size: 1rem; margin: 0; }
+ .modal-pago-total strong { font-size: 1.15rem; }
+ .modal-pago-cuotas { margin: 2px 0 8px; color: #1a7f37; font-weight: 600; }
+ .modal-pago-sin-cuenta { margin: 0; }
+ .modal-pago-entrega { margin: 8px 0 0; font-weight: 600; }
+ /* "Despachamos rápido" bien grande arriba (23/10/2026): él lo pidió para generar confianza. */
+ .despacho-rapido { border: 2px solid #1e6640; background: #eef7f1; border-radius: 14px; padding: 14px 16px; margin: 14px 0 18px; text-align: left; }
+ .despacho-rapido-titulo { font-size: 1.3rem; font-weight: 800; color: #1e6640; line-height: 1.2; }
+ .despacho-rapido-fecha { font-size: 1.02rem; font-weight: 700; color: var(--dark); margin-top: 6px; line-height: 1.35; }
+ .despacho-rapido-sub { font-size: 0.8rem; color: var(--gray); margin-top: 4px; }
+ /* El camión anda en diagonal, arriba y abajo, como en la ruta (23/10/2026, a pedido de él).
+    scaleX(-1) lo da vuelta para que mire a la derecha, hacia donde avanza. */
+ .despacho-camion { display: inline-block; margin-right: 6px; transform-origin: 50% 80%; animation: camionDiagonal 1.2s ease-in-out infinite; }
+ @keyframes camionDiagonal {
+   0%, 100% { transform: scaleX(-1) translate(6px, 5px) rotate(-5deg); }
+   50% { transform: scaleX(-1) translate(-6px, -6px) rotate(8deg); }
+ }
+ .despacho-rapido-gratis { display: inline-block; margin-top: 10px; background: #1e6640; color: #fff; font-weight: 800; font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; }
+ @media (prefers-reduced-motion: reduce) { .despacho-camion { animation: none; transform: scaleX(-1); } }
+ /* Piezas que usa solo alguna de las tres páginas (23/10/2026, al unificarlas). */
+ /* Biotina: video arriba con subtítulos quemados y botón de sonido (14/10). Dos clases para ganarle al aspect-ratio 1/1 del celular. */
+ .hero-img.hero-video { aspect-ratio: 4/5; background: #111; }
+ .hero-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
+ @media (min-width: 769px) { .hero-img.hero-video { max-height: 78vh; } }
+ /* celular: video más bajo para que el título y el precio entren en la primera pantalla (18/10) */
+ @media (max-width: 768px) { .hero-img.hero-video { aspect-ratio: auto; height: 44vh; } }
+ .btn-sonido { position: absolute; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.62); color: #fff; border: 0; border-radius: 20px; padding: 8px 13px; font: 600 0.82rem 'Outfit', sans-serif; cursor: pointer; }
+ .btn-sonido svg { width: 16px; height: 16px; }
+ .includes-grid--single { grid-template-columns: 1fr; max-width: 460px; }
+ /* Combo: la ampolla de regalo */
+ .gift-highlight { display: inline-flex; align-items: center; gap: 7px; background: var(--dark); color: #ffffff; font-size: 0.8rem; font-weight: 700; padding: 7px 16px; border-radius: 30px; margin-bottom: 18px; }
+ .qty-gift { display: block; font-size: 0.68rem; color: var(--dark); font-weight: 700; margin-top: 3px; }
+ .include-card--gift { border: 2px dashed #111111; background: #fafafa; position: relative; }
+ .include-gift-ribbon { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--dark); color: #ffffff; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.06em; padding: 4px 14px; border-radius: 20px; white-space: nowrap; }
  </style>
 </head>
 <body id="top">
@@ -1719,34 +1198,30 @@
  <!-- BARRA SCROLLING -->
  <div class="announce-bar">
  <div class="announce-track">
+ DESPACHO RÁPIDO: LLEGA EN 3 A 5 DÍAS HÁBILES
+ <span class="announce-sep">•</span>
  ENVÍO GRATIS LLEVANDO 2 O MÁS
- <span class="announce-sep"></span>
- RESULTADOS DESDE LA SEMANA 3
- <span class="announce-sep"></span>
- SIN FORMOL NI SULFATOS
- <span class="announce-sep"></span>
- ATENCIÓN PERSONALIZADA POR WHATSAPP
- <span class="announce-sep"></span>
+ <span class="announce-sep">•</span>
  PAGO 100% SEGURO CON MERCADOPAGO
- <span class="announce-sep"></span>
+ <span class="announce-sep">•</span>
  3 CUOTAS SIN INTERÉS
- <span class="announce-sep"></span>
+ <span class="announce-sep">•</span>
  10% MENOS PAGANDO POR TRANSFERENCIA
- <span class="announce-sep"></span>
+ <span class="announce-sep">•</span>
+ AMPOLLA PLEX DE REGALO
+ <span class="announce-sep">•</span>
+ SIN FORMOL NI SULFATOS
+ <span class="announce-sep">•</span>
+ DESPACHO RÁPIDO: LLEGA EN 3 A 5 DÍAS HÁBILES
+ <span class="announce-sep">•</span>
  ENVÍO GRATIS LLEVANDO 2 O MÁS
- <span class="announce-sep"></span>
- RESULTADOS DESDE LA SEMANA 3
- <span class="announce-sep"></span>
- SIN FORMOL NI SULFATOS
- <span class="announce-sep"></span>
- ATENCIÓN PERSONALIZADA POR WHATSAPP
- <span class="announce-sep"></span>
+ <span class="announce-sep">•</span>
  PAGO 100% SEGURO CON MERCADOPAGO
- <span class="announce-sep"></span>
+ <span class="announce-sep">•</span>
  3 CUOTAS SIN INTERÉS
- <span class="announce-sep"></span>
+ <span class="announce-sep">•</span>
  10% MENOS PAGANDO POR TRANSFERENCIA
- <span class="announce-sep"></span>
+ <span class="announce-sep">•</span>
  </div>
  </div>
 
@@ -1792,61 +1267,64 @@
  <div class="hero-right">
  <div class="stock-badge">
  <span class="stock-dot"></span>
- Envío a todo el país por Correo Argentino
+ Envío a todo el país · Ampolla de regalo
  </div>
- <h1>Combo Biotina® | Menos caída, recuperá tu cabello de forma natural.</h1>
-
- <p class="combo-composition">Shampoo + Acondicionador + Biotina Pura</p>
+ <h1>Combo Biotina®: shampoo, acondicionador y spray de biotina</h1>
+ <p class="combo-composition">Shampoo y acondicionador de 500 ml + Biotina Pura en spray de 250 ml</p>
  <div class="gift-highlight">+ Ampolla Plex de regalo</div>
+ <div class="despacho-rapido">
+   <div class="despacho-rapido-titulo"><span class="despacho-camion" aria-hidden="true">🚚</span> Despachamos rápido</div>
+   <div class="despacho-rapido-fecha">Si comprás hoy, te llega <span id="entregaGrande">en 3 a 5 días hábiles</span>.</div>
+   <div class="despacho-rapido-sub">Por Correo Argentino, con número de seguimiento.</div>
+   <div class="despacho-rapido-gratis">Envío gratis llevando 2 o más</div>
+ </div>
 
  <ul class="benefits-list">
  <li>
  <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
- <span><strong>Reduce la caída</strong> con el uso diario del spray.</span>
+ <span><strong>Rutina completa:</strong> lavado, acondicionador y spray para la raíz.</span>
  </li>
  <li>
  <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
- <span><strong>Estimula el crecimiento</strong> y fortalece la raíz.</span>
+ <span><strong>Sin sulfatos ni formol:</strong> limpia suave, por eso hace menos espuma.</span>
  </li>
  <li>
  <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
- <span><strong>Activa pelitos nuevos</strong> en zonas debilitadas.</span>
+ <span><strong>Suave y con brillo</strong> desde el primer lavado.</span>
  </li>
  <li>
  <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
- <span><strong>Sin formol ni sulfatos.</strong> Apto uso diario.</span>
+ <span><strong>Ampolla Plex de regalo</strong> para un tratamiento intensivo por semana.</span>
  </li>
  </ul>
 
- <div class="promo-tag">¡Llevá más, pagá menos!</div>
-
  <div class="quantity-options">
- <div class="qty-option" onclick="selectQty(this, '$40.000', 1)" data-price="40000">
- <span class="qty-count">1 producto</span>
+ <div class="qty-option" onclick="selectQty(this, 1)" data-price="40000">
+ <span class="qty-count">1 combo</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
  <div class="qty-info">
  <strong>Lleva 1</strong>
- <span>Tratamiento 1 mes</span>
+ <span>Rinde 1 mes</span>
  <span class="qty-shipping-free"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Envío $7.000 · gratis llevando 2</span>
  <span class="qty-gift">Incluye Ampolla Plex de regalo</span>
  </div>
  </div>
  <div class="qty-price">
- <span class="price-now">$ 33.000</span>
- <span class="price-cuotas">+ $ 7.000 de envío</span>
+ <span class="price-now">$ 40.000</span>
+ <span class="price-cuotas">envío incluido</span>
  <span class="price-cuotas">3 cuotas de $ 13.333</span>
- <span class="price-transfer">Transferencia $ 29.700</span>
+ <span class="price-transfer">Transferencia $ 36.700</span>
  </div>
  </div>
 
- <div class="qty-option popular" onclick="selectQty(this, '$61.000', 2)" data-price="61000">
- <span class="qty-count">2 productos</span>
+ <div class="qty-option popular selected" onclick="selectQty(this, 2)" data-price="61000">
+ <span class="qty-count">2 combos</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
  <div class="qty-info">
  <strong>Lleva 2</strong>
- <span>Tratamiento 2 meses</span>
+ <span>Rinde 2 meses</span>
  <span class="qty-shipping-free"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Envío gratis incluido</span>
  <span class="qty-gift">Incluye Ampolla Plex de regalo</span>
  </div>
@@ -1856,16 +1334,17 @@
  <span class="price-now">$ 61.000</span>
  <span class="price-cuotas">3 cuotas de $ 20.333</span>
  <span class="price-transfer">Transferencia $ 54.900</span>
+ <span class="qty-save">$30.500 cada combo</span>
  </div>
  </div>
 
- <div class="qty-option best" onclick="selectQty(this, '$77.000', 3)" data-price="77000">
- <span class="qty-count">3 productos</span>
+ <div class="qty-option best" onclick="selectQty(this, 3)" data-price="77000">
+ <span class="qty-count">3 combos</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
  <div class="qty-info">
  <strong>Lleva 3</strong>
- <span>Tratamiento 3 meses</span>
+ <span>Rinde 3 meses</span>
  <span class="qty-shipping-free"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Envío gratis incluido</span>
  <span class="qty-gift">Incluye Ampolla Plex de regalo</span>
  </div>
@@ -1875,6 +1354,7 @@
  <span class="price-now">$ 77.000</span>
  <span class="price-cuotas">3 cuotas de $ 25.667</span>
  <span class="price-transfer">Transferencia $ 69.300</span>
+ <span class="qty-save">$25.667 cada combo</span>
  </div>
  </div>
  </div>
@@ -1886,21 +1366,22 @@
  <span>Con número de seguimiento</span>
  </div>
  <div class="shipping-price">
- <span class="shipping-free" id="envioPrecio">$ 7.000</span>
- <span class="shipping-old" id="envioTachado" style="display:none">$ 7.000</span>
+ <span class="shipping-free" id="envioPrecio">GRATIS</span>
+ <span class="shipping-old" id="envioTachado">$ 7.000</span>
  </div>
  </div>
 
  <p id="envioNota" style="text-align:center; font-size:0.82rem; font-weight:600; color:var(--green); margin-bottom:12px;">
- Envío $7.000 — gratis llevando 2 o más
+ Envío gratis a todo el país
  </p>
 
  <button class="btn-buy" id="buyBtn" onclick="irAPagar()">
- COMPRAR AHORA · $40.000 CON ENVÍO
+ COMPRAR AHORA · $61.000 — ENVÍO GRATIS
  </button>
             <p class="cuotas-linea" id="cuotasLinea"></p>
+ <p class="pagos-linea">Tarjeta en 3 cuotas sin interés · Débito · Efectivo en Rapipago y Pago Fácil · Transferencia con 10% menos</p>
 
- <div class="delivery-timeline" style="display:none"><!-- oculto 18/10: el Combo trae el Dúo, que se vende sin stock propio; no prometer fechas -->
+ <div class="delivery-timeline">
  <div class="delivery-step">
  <div class="delivery-icon">
  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
@@ -1913,14 +1394,14 @@
  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
  </div>
  <div class="delivery-date" id="deliveryDate2">—</div>
- <div class="delivery-label">Envío en camino</div>
+ <div class="delivery-label">Sale por Correo</div>
  </div>
  <div class="delivery-step">
  <div class="delivery-icon">
  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
  </div>
  <div class="delivery-date" id="deliveryDate3">—</div>
- <div class="delivery-label">Entrega</div>
+ <div class="delivery-label">Te llega</div>
  </div>
  </div>
 
@@ -1975,16 +1456,28 @@
 
  <!-- PROOF STRIP -->
  <div class="proof-strip">
- <div style="text-align:center"><div class="proof-num">3</div><div class="proof-label">cuotas sin interés</div></div>
- <div style="text-align:center"><div class="proof-num">Gratis</div><div class="proof-label">envío llevando 2 o más</div></div>
- <div style="text-align:center"><div class="proof-num">3 semanas</div><div class="proof-label">para ver resultados</div></div>
+ <div style="text-align:center"><div class="proof-num">3 + 1</div><div class="proof-label">productos + ampolla de regalo</div></div>
  <div style="text-align:center"><div class="proof-num">0%</div><div class="proof-label">formol ni sulfatos</div></div>
+ <div style="text-align:center"><div class="proof-num">Diario</div><div class="proof-label">apto para uso diario</div></div>
+ <div style="text-align:center"><div class="proof-num">Gratis</div><div class="proof-label">envío llevando 2 o más</div></div>
+ </div>
+
+ <!-- COMPRA SIN RIESGO (23/10): el mismo bloque que el Dúo, sin opiniones inventadas -->
+ <div class="primeras-section">
+ <span class="primeras-tag">Compra sin riesgo</span>
+ <h2>Probalo tranquila</h2>
+ <p>Nuestros pedidos ya llegaron a clientas de 5 provincias. Pagás por Mercado Pago y te pasamos el seguimiento del Correo por WhatsApp.</p>
+ <div class="primeras-garantia">
+ <strong>Probalo sin riesgo</strong>
+ <span>Si no te convence, tenés 10 días desde que lo recibís para devolverlo y te devolvemos la plata.</span>
+ </div>
+ <a href="#" onclick="selectQty(document.querySelector('.qty-option.popular'), 2); irAPagar(); return false;" class="primeras-btn">Quiero el combo · 2 combos $61.000</a>
  </div>
 
  <!-- QUÉ INCLUYE -->
  <div class="includes-section">
  <h2>¿Qué incluye el combo?</h2>
- <p class="how-sub">3 productos que trabajan en conjunto para un tratamiento completo, + un regalo especial.</p>
+ <p class="how-sub">3 productos que se complementan, más una ampolla de regalo.</p>
  <div class="includes-grid">
 
  <div class="include-card" onclick="openProduct(0)" role="button">
@@ -2009,7 +1502,7 @@
  <div class="include-badge">250ml</div>
  <div class="include-icon"></div>
  <h3>Biotina Pura en Spray</h3>
- <p>El corazón del combo. Biotina concentrada en spray de aplicación directa sobre el cuero cabelludo. Va directo a la raíz, que es donde importa, y con uso diario ayuda a reducir la caída. No requiere enjuague.</p>
+ <p>Spray con biotina para aplicar directo sobre el cuero cabelludo, que es donde nace el pelo. Se usa todos los días y no requiere enjuague.</p>
  <span class="include-tag">USO DIARIO · NO ENJUAGAR</span>
  <span class="include-more">Ver más →</span>
  </div>
@@ -2019,7 +1512,7 @@
  <div class="include-badge">60ml</div>
  <div class="include-icon"></div>
  <h3>Ampolla Plex + Biotina</h3>
- <p>Tratamiento intensivo semanal para recuperar el cabello dañado, teñido o debilitado. Repara la fibra capilar desde adentro, fortalece y reduce la quebradura. Mezclá con la crema de tratamiento, aplicá de medios a puntas y dejá actuar.</p>
+ <p>Tratamiento intensivo semanal para el cabello dañado, teñido o con procesos químicos. Se mezcla con la crema de tratamiento y se aplica de medios a puntas.</p>
  <span class="include-tag">USO SEMANAL</span>
  <span class="include-more">Ver más →</span>
  </div>
@@ -2027,60 +1520,173 @@
  </div>
  </div>
 
- <!-- INGREDIENTES ACTIVOS: se sacó el 12/10/2026. La lista (keratina, pantenol, bambú,
-      vitamina E) no tenía respaldo; va de nuevo cuando el laboratorio pase la real. -->
+ <!-- QUÉ HACE CADA UNO (fotos de los productos) -->
+ <div class="que-section" id="que-hace">
+ <h2>¿Qué hace cada uno?</h2>
+ <p class="que-sub">Tres productos que se complementan, más la ampolla de regalo.</p>
+ <div class="que-grid">
+ <article class="que-card">
+ <div class="que-foto">
+ <img src="duo-shampoo-espuma.jpg" alt="Manos con la espuma suave del shampoo sin sulfatos" loading="lazy" width="720" height="900" style="object-position: center 62%;">
+ <span class="que-tag">Shampoo · 500 ml</span>
+ </div>
+ <div class="que-body">
+ <span class="que-num">01</span>
+ <h3>Limpia suave, sin sulfatos</h3>
+ <p>Limpia el cuero cabelludo y el largo sin arrastrar la grasa natural que protege el pelo. Hace menos espuma porque no tiene sulfatos, y limpia igual.</p>
+ <ul class="que-list"><li>Con biotina B7</li><li>Sin sulfatos ni formol</li><li>Apto uso diario</li></ul>
+ </div>
+ </article>
+ <article class="que-card">
+ <div class="que-foto">
+ <img src="duo-acond-hebra.jpg" alt="El acondicionador envolviendo la hebra de pelo" loading="lazy" width="720" height="900" style="object-position: center 50%;">
+ <span class="que-tag">Acondicionador · 500 ml</span>
+ </div>
+ <div class="que-body">
+ <span class="que-num">02</span>
+ <h3>Suave y con brillo, de medios a puntas</h3>
+ <p>Envuelve la fibra, ayuda a sellar la cutícula y controla el frizz. Desenreda y deja el pelo suave y manejable desde el primer lavado.</p>
+ <ul class="que-list"><li>Con biotina B7</li><li>Sin sulfatos ni formol</li><li>Actúa en 3 a 5 minutos</li></ul>
+ </div>
+ </article>
+ <article class="que-card">
+ <div class="que-foto">
+ <img src="biotina-pura-real.jpg" alt="Biotina Pura en spray de 250 ml" loading="lazy" width="720" height="900" style="object-position: center 50%;">
+ <span class="que-tag">Biotina Pura · 250 ml</span>
+ </div>
+ <div class="que-body">
+ <span class="que-num">03</span>
+ <h3>Spray directo a la raíz</h3>
+ <p>Se pulveriza sobre el cuero cabelludo seco, se masajea un minuto y no se enjuaga. Con biotina, la vitamina B7.</p>
+ <ul class="que-list"><li>Con biotina B7</li><li>Sin formol ni sulfatos</li><li>No se enjuaga</li></ul>
+ </div>
+ </article>
+ <article class="que-card">
+ <div class="que-foto">
+ <img src="combo-productos-v2.jpg" alt="Los productos del combo con la Ampolla Plex" loading="lazy" width="720" height="900" style="object-position: 12% 60%;">
+ <span class="que-tag">Ampolla Plex · 60 ml · de regalo</span>
+ </div>
+ <div class="que-body">
+ <span class="que-num">04</span>
+ <h3>Un tratamiento por semana</h3>
+ <p>Se mezcla con la crema de tratamiento y se aplica de medios a puntas sobre el pelo húmedo. Se deja actuar 15 a 20 minutos y se enjuaga.</p>
+ <ul class="que-list"><li>Uso semanal</li><li>Para pelo teñido o dañado</li><li>De regalo en cada combo</li></ul>
+ </div>
+ </article>
+ </div>
+ <div class="que-resultados">
+ <div class="que-res-foto"><img src="duo-resultado-pelo.jpg" alt="Pelo largo, suave y con brillo" loading="lazy" width="720" height="900"></div>
+ <div class="que-res-texto">
+ <span class="que-res-k">Con uso constante</span>
+ <div class="que-res-item"><strong>Semana 1</strong><span>Cabello más limpio, suave y manejable.</span></div>
+ <div class="que-res-item"><strong>Semana 3 a 6</strong><span>Menos frizz, más brillo y más cuerpo.</span></div>
+ </div>
+ </div>
+ </div>
 
- <!-- HOW TO USE -->
- <div class="how-section">
-  <h2>¿Cómo se usa?</h2>
-  <p class="how-sub">Una rutina simple, resultados visibles.</p>
+ <!-- CÓMO SE USA -->
+ <div class="envio-section" style="background:#f7f7f5;">
+ <div class="envio-inner">
+ <h2>¿Cómo se usa?</h2>
+ <p class="how-sub">Una rutina simple, todos los días.</p>
 
-  <div class="how-stepper">
-   <!-- Barra de progreso -->
-   <div class="how-track">
-    <div class="how-track-line"></div>
-    <div class="how-track-fill" id="howTrackFill"></div>
-    <button class="how-dot active" id="how-dot-0" onclick="howGoTo(0)"><span>1</span></button>
-    <button class="how-dot" id="how-dot-1" onclick="howGoTo(1)"><span>2</span></button>
-    <button class="how-dot" id="how-dot-2" onclick="howGoTo(2)"><span>3</span></button>
-    <button class="how-dot" id="how-dot-3" onclick="howGoTo(3)"><span>4</span></button>
-   </div>
+ <div class="how-stepper">
+ <div class="how-track">
+ <div class="how-track-line"></div>
+ <div class="how-track-fill" id="howTrackFill"></div>
+ <button class="how-dot active" id="how-dot-0" onclick="howGoTo(0)"><span>1</span></button>
+ <button class="how-dot" id="how-dot-1" onclick="howGoTo(1)"><span>2</span></button>
+ <button class="how-dot" id="how-dot-2" onclick="howGoTo(2)"><span>3</span></button>
+ <button class="how-dot" id="how-dot-3" onclick="howGoTo(3)"><span>4</span></button>
+ </div>
 
-   <!-- Contenido de cada paso -->
-   <div class="how-steps-wrapper">
-    <div class="how-step-item active" id="how-step-0">
-     <div class="how-step-tag">Paso 1 de 4 — Todos los días</div>
-     <h3 class="how-step-title">Shampoo de Biotina</h3>
-     <p class="how-step-text">Lavá el cabello con el shampoo de biotina. Masajeá el cuero cabelludo con las yemas de los dedos durante 2–3 minutos para activar la circulación. Enjuagá con agua tibia.</p>
-     <span class="how-step-badge">Uso diario · 500 ml</span>
-    </div>
-    <div class="how-step-item" id="how-step-1">
-     <div class="how-step-tag">Paso 2 de 4 — Todos los días</div>
-     <h3 class="how-step-title">Acondicionador</h3>
-     <p class="how-step-text">Aplicá la crema acondicionadora de medios a puntas, evitando la raíz. Dejá actuar 3 minutos para hidratar y suavizar la fibra. Enjuagá con agua fría para sellar el brillo.</p>
-     <span class="how-step-badge">Uso diario · 500 ml</span>
-    </div>
-    <div class="how-step-item" id="how-step-2">
-     <div class="how-step-tag">Paso 3 de 4 — 1 vez por semana</div>
-     <h3 class="how-step-title">Ampolla Plex + Biotina</h3>
-     <p class="how-step-text">Mezclá con la crema de tratamiento y aplicá de medios a puntas sobre el cabello húmedo. Dejá actuar 15 a 20 minutos y enjuagá. Ayuda a reparar la fibra y a reducir la quebradura.</p>
-     <span class="how-step-badge">Tratamiento intensivo · 60 ml · Uso semanal</span>
-    </div>
-    <div class="how-step-item" id="how-step-3">
-     <div class="how-step-tag">Paso 4 de 4 — Todos los días</div>
-     <h3 class="how-step-title">Biotina Pura en Spray</h3>
-     <p class="how-step-text">Aplicá el spray directamente en el cuero cabelludo limpio y seco. Masajeá suavemente con las yemas de los dedos. No enjuagar. Con uso diario ayuda a fortalecer el pelo desde la raíz.</p>
-     <span class="how-step-badge">No enjuagar · 250 ml · Uso diario</span>
-    </div>
-   </div>
+ <div class="how-steps-wrapper">
+ <div class="how-step-item active" id="how-step-0">
+ <div class="how-step-tag">Paso 1 de 4 — Todos los días</div>
+ <h3 class="how-step-title">Shampoo</h3>
+ <p class="how-step-text">Lavá el cabello y masajeá el cuero cabelludo con las yemas de los dedos durante 2-3 minutos. Enjuagá.</p>
+ <span class="how-step-badge">Uso diario · 500 ml</span>
+ </div>
+ <div class="how-step-item" id="how-step-1">
+ <div class="how-step-tag">Paso 2 de 4 — Todos los días</div>
+ <h3 class="how-step-title">Acondicionador</h3>
+ <p class="how-step-text">Aplicá de medios a puntas, evitando la raíz. Dejá actuar 3 a 5 minutos y enjuagá con agua fría.</p>
+ <span class="how-step-badge">Uso diario · 500 ml</span>
+ </div>
+ <div class="how-step-item" id="how-step-2">
+ <div class="how-step-tag">Paso 3 de 4 — Todos los días</div>
+ <h3 class="how-step-title">Biotina Pura en spray</h3>
+ <p class="how-step-text">Con el pelo seco, pulverizá directo sobre el cuero cabelludo y masajeá 1 minuto. No se enjuaga.</p>
+ <span class="how-step-badge">No enjuagar · 250 ml</span>
+ </div>
+ <div class="how-step-item" id="how-step-3">
+ <div class="how-step-tag">Paso 4 de 4 — 1 vez por semana</div>
+ <h3 class="how-step-title">Ampolla Plex + Biotina</h3>
+ <p class="how-step-text">Mezclala con la crema de tratamiento, aplicá de medios a puntas sobre el pelo húmedo, dejá actuar 15 a 20 minutos y enjuagá.</p>
+ <span class="how-step-badge">Uso semanal · 60 ml</span>
+ </div>
+ </div>
 
-   <!-- Navegación -->
-   <div class="how-nav">
-    <button class="how-btn how-btn-prev" id="how-prev" onclick="howPrev()" disabled>← Anterior</button>
-    <span class="how-step-counter" id="how-counter">1 / 4</span>
-    <button class="how-btn how-btn-next" id="how-next" onclick="howNext()">Siguiente →</button>
-   </div>
-  </div>
+ <div class="how-nav">
+ <button class="how-btn how-btn-prev" id="how-prev" onclick="howPrev()" disabled>← Anterior</button>
+ <span class="how-step-counter" id="how-counter">1 / 4</span>
+ <button class="how-btn how-btn-next" id="how-next" onclick="howNext()">Siguiente →</button>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ENVÍO -->
+ <div class="envio-section">
+ <div class="envio-inner">
+ <h2>¿Cómo llega tu pedido?</h2>
+ <p class="how-sub" style="text-align:center;font-size:0.88rem;color:var(--gray);margin-bottom:32px;">Enviamos a todo el país por Correo Argentino, con número de seguimiento.</p>
+
+ <hr class="envio-divider" />
+ <p class="envio-tiempos-title">Beneficios de tu envío</p>
+ <div class="envio-dispatch-note">
+ <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+ Te avisamos por WhatsApp el día que sale tu pedido
+ </div>
+
+ <div class="envio-grid">
+ <div class="envio-row">
+ <div class="envio-row-info">
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+ <span class="envio-region">Correo Argentino a todo el país</span>
+ </div>
+ </div>
+ <div class="envio-row">
+ <div class="envio-row-info">
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+ <span class="envio-region">Llega en 3 a 5 días hábiles</span>
+ </div>
+ </div>
+ <div class="envio-row">
+ <div class="envio-row-info">
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+ <span class="envio-region">Con 1 combo</span>
+ </div>
+ <span class="envio-time">$ 7.000</span>
+ </div>
+ <div class="envio-row envio-row--free">
+ <div class="envio-row-info">
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+ <span class="envio-region">Llevando 2 o más</span>
+ </div>
+ <span class="envio-time-free">GRATIS</span>
+ </div>
+ </div>
+
+ <div class="envio-footer">
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+ Enviamos por Correo Argentino — entrega a domicilio o sucursal a tu elección
+ </div>
+ <div class="envio-footer">
+ <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+ Envío seguro con número de seguimiento — vas a poder rastrear tu pedido en todo momento
+ </div>
+ </div>
  </div>
 
  <!-- FAQ -->
@@ -2095,12 +1701,16 @@
  <div class="faq-a">No. El spray que viene en el combo es de 250 ml y rinde alrededor de un mes de uso diario. La Biotina Pura que se vende sola es de 500 ml y rinde dos. El combo suma el cuidado en el lavado con el shampoo, el acondicionador y la ampolla.</div>
  </div>
  <div class="faq-item">
- <button class="faq-q" onclick="toggleFaq(this)">¿Cuándo voy a ver resultados? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Los resultados se empiezan a notar a partir de la semana 3 de uso diario y constante. Pueden variar de una persona a otra.</div>
+ <button class="faq-q" onclick="toggleFaq(this)">¿Con qué frecuencia se usa cada uno? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">El shampoo, el acondicionador y el spray, todos los días. La ampolla, una vez por semana.</div>
+ </div>
+ <div class="faq-item">
+ <button class="faq-q" onclick="toggleFaq(this)">¿Por qué el shampoo hace menos espuma? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">Porque no tiene sulfatos. Los sulfatos son los que hacen mucha espuma en los shampoos comunes y pueden resecar el pelo y el cuero cabelludo. El nuestro limpia igual pero más suave: con un poco de agua y masajeando alcanza.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Sirve para todo tipo de cabello? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Sí, es apto para todo tipo de cabello: liso, ondulado, rizado, teñido o tratado químicamente. Sin formol ni sulfatos.</div>
+ <div class="faq-a">Sí, es apto para todo tipo de cabello: liso, ondulado, rizado, teñido o con procesos químicos.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Lo puedo usar si estoy embarazada o con un tratamiento? <span class="faq-arrow">+</span></button>
@@ -2112,7 +1722,7 @@
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Cuánto tarda en llegar mi pedido? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Apenas se acredita el pago preparamos tu pedido y te avisamos por WhatsApp el día que sale. Una vez despachado, llega entre 2 y 9 días hábiles según tu zona, y te pasamos el número de seguimiento del Correo para que lo sigas.</div>
+ <div class="faq-a">Apenas se acredita el pago preparamos tu pedido y te avisamos por WhatsApp el día que sale. Llega en 3 a 5 días hábiles desde que pagás, y te pasamos el número de seguimiento del Correo para que lo sigas.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Qué formas de pago aceptan? <span class="faq-arrow">+</span></button>
@@ -2136,90 +1746,11 @@
  </div>
  </div>
 
- <!-- ENVÍO DETALLADO -->
- <div class="envio-section">
- <div class="envio-inner">
-  <h2>¿Cómo llega tu pedido?</h2>
-  <p class="how-sub">Enviamos a todo el país por Correo Argentino, con número de seguimiento.</p>
-
-  <div class="envio-steps">
-   <div class="envio-step">
-    <div class="envio-step-icon">
-     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-    </div>
-    <h3 class="envio-step-title">Preparamos tu pedido</h3>
-    <p class="envio-step-desc">Te avisamos por WhatsApp el día que sale tu pedido.</p>
-   </div>
-   <div class="envio-connector"></div>
-   <div class="envio-step">
-    <div class="envio-step-icon">
-     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-    </div>
-    <h3 class="envio-step-title">Lo despachamos</h3>
-    <p class="envio-step-desc">Enviamos por Correo Argentino y te mandamos el número de seguimiento por WhatsApp.</p>
-   </div>
-   <div class="envio-connector"></div>
-   <div class="envio-step">
-    <div class="envio-step-icon">
-     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    </div>
-    <h3 class="envio-step-title">Llega a tu puerta</h3>
-    <p class="envio-step-desc">Tu combo llega directo a la dirección que nos diste. Podés rastrearlo en tiempo real.</p>
-   </div>
-  </div>
-
-  <hr class="envio-divider" />
-  <p class="envio-tiempos-title">Beneficios de tu envío</p>
-  <div class="envio-dispatch-note">
-   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-   Te avisamos por WhatsApp el día que sale tu pedido
-  </div>
-
-  <div class="envio-grid">
- <div class="envio-row">
- <div class="envio-row-info">
- <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
- <span class="envio-region">Correo Argentino a todo el país</span>
- </div>
- </div>
- <div class="envio-row">
- <div class="envio-row-info">
- <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
- <span class="envio-region">Llega en 2 a 9 días hábiles según tu zona</span>
- </div>
- </div>
- <div class="envio-row">
- <div class="envio-row-info">
- <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
- <span class="envio-region">Con 1 combo</span>
- </div>
- <span class="envio-time">$ 7.000</span>
- </div>
- <div class="envio-row envio-row--free">
- <div class="envio-row-info">
- <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
- <span class="envio-region">Llevando 2 o más</span>
- </div>
- <span class="envio-time-free">GRATIS</span>
- </div>
- </div>
-
-  <div class="envio-footer">
-   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-   Enviamos por Correo Argentino — entrega a domicilio o sucursal a tu elección
-  </div>
-  <div class="envio-footer">
-   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-   Envío seguro con número de seguimiento — vas a poder rastrear tu pedido en todo momento
-  </div>
- </div>
- </div>
-
  <!-- CTA FINAL -->
  <div class="cta-final">
- <h2>Empezá hoy tu tratamiento</h2>
- <p>Los resultados se empiezan a ver desde la semana 3 de uso diario. Sin formol ni sulfatos.</p>
- <a href="#" onclick="irAPagar(); return false;" class="btn-cta-final">Lleva 1 · $40.000 con envío</a>
+ <h2>Empezá hoy tu rutina completa</h2>
+ <p>Shampoo y acondicionador de 500 ml, Biotina Pura en spray y una Ampolla Plex de regalo. Sin formol ni sulfatos.</p>
+ <a href="#" onclick="selectQty(document.querySelector('.qty-option.popular'), 2); irAPagar(); return false;" class="btn-cta-final">Lleva 2 · $61.000 — Envío gratis</a>
  </div>
 
  <!-- MODAL FORMULARIO -->
@@ -2229,6 +1760,7 @@
  <h3>¡Un paso más! </h3>
  <p class="modal-sub">Dejanos tu nombre y tu WhatsApp y seguí al pago. Te confirmamos el pedido por WhatsApp, y la dirección de envío la cargás después de pagar. Tu pedido: <span id="modalProducto">Combo Biotina x1 — $40.000 con envío</span></p>
 
+ 
  <div class="form-section-title">Datos de contacto</div>
               <div class="form-group">
                 <label>Nombre y apellido</label>
@@ -2246,6 +1778,12 @@
               </div>
 
 
+ <div class="modal-pago">
+   <p class="modal-pago-total">Total: <strong id="modalTotal"></strong> <span id="modalEnvio"></span></p>
+   <p class="modal-pago-cuotas" id="modalCuotas"></p>
+   <p class="modal-pago-sin-cuenta"><strong>No necesitás cuenta de Mercado Pago.</strong> Pagás con tarjeta de crédito o débito, o en efectivo en Rapipago o Pago Fácil.</p>
+   <p class="modal-pago-entrega" id="modalEntrega"></p>
+ </div>
  <button class="btn-confirm" id="btnConfirmarCompra" onclick="confirmarCompra()">Confirmar y pagar →</button>
  <p class="pago-transferencia">¿Preferís pagar por transferencia? Tenés 10% menos. <a href="#" onclick="pagarPorTransferencia(); return false;">Pedilo por WhatsApp</a></p>
  <p style="text-align:center;font-size:0.75rem;color:var(--green);font-weight:600;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px;">
@@ -2388,20 +1926,15 @@
  <!-- FLOATING CTA MOBILE -->
  <div class="floating-cta">
  <button class="floating-cta-btn" id="floatingBtn" onclick="irAPagar()">
- COMPRAR AHORA · $40.000 CON ENVÍO
+ COMPRAR AHORA · $61.000 — ENVÍO GRATIS
  </button>
  </div>
 
+ <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
  <script>
- // ─── FIREBASE CONFIG ──────────────────────────────────────────────────────
- // Para activar la sincronización en tiempo real con el panel admin:
- // 1. Crear un proyecto en https://console.firebase.google.com
- // 2. Agregar una app web → copiar el objeto firebaseConfig
- // 3. Habilitar Firestore Database (modo producción)
- // 4. Pegar las reglas del comentario en admin.html y publicarlas
- // 5. Completar FIREBASE_CONFIG y cambiar FIREBASE_ENABLED a true
+ // ─── FIREBASE CONFIG (mismo proyecto que index.html — comparte el panel admin) ──
  const FIREBASE_ENABLED = false; // apagado el 07/10/2026: la colección de pedidos se lee sin login; los datos del formulario van al n8n propio
-
  const FIREBASE_CONFIG = {
  apiKey: 'AIzaSyB2lipjGfqeV6gmKRw4vZEnzFHQsF1JxnQ',
  authDomain: 'biotina-pg.firebaseapp.com',
@@ -2410,38 +1943,28 @@
  messagingSenderId: '167629017281',
  appId: '1:167629017281:web:def9e7b08c390b40d04440'
  };
-
  if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
  firebase.initializeApp(FIREBASE_CONFIG);
  }
- // ─────────────────────────────────────────────────────────────────────────
 
  // ─── CONFIGURACIÓN ────────────────────────────────────────────────────────
- // WhatsApp (formato internacional sin + ni espacios)
  const WA_NUMERO = '5491124838177';
 
- // Links de MercadoPago — reemplazá cada uno con tu link real de preferencia
- // Ejemplo: 'https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=XXXXX'
+ // Links de pago de MercadoPago (Link de pago, montos fijos)
  const MP_URL_1 = 'https://mpago.la/1QLwa1G'; // ← 1 combo, $40.000 ($33.000 + $7.000 de envío)
  const MP_URL_2 = 'https://mpago.la/1WX3K3Y'; // ← 2 combos $61.000
  const MP_URL_3 = 'https://mpago.la/2J4mMuV'; // ← 3 combos $77.000
- // ─────────────────────────────────────────────────────────────────────────
 
- // ─── CONFIRMACIÓN AUTOMÁTICA DE PAGOS (Cloud Function + webhook MercadoPago) ──
- // Poné esto en true recién después de desplegar functions/ con `firebase deploy`
- // y configurar el secret MP_ACCESS_TOKEN. Mientras esté en false, el checkout
- // sigue usando los links fijos de arriba sin ningún cambio.
  const MP_AUTO_CONFIRM_ENABLED = true;
  const CLOUD_FN_CREAR_PREFERENCIA = 'https://us-central1-biotina-pg.cloudfunctions.net/crearPreferencia';
  const PRECIOS_NUM = { 1: 40000, 2: 61000, 3: 77000 };
- // ─────────────────────────────────────────────────────────────────────────
 
  const precios = {
  1: { label: 'Combo Biotina x1 — $40.000 con envío', mp: MP_URL_1 },
  2: { label: 'Combo Biotina x2 — $61.000', mp: MP_URL_2 },
  3: { label: 'Combo Biotina x3 — $77.000', mp: MP_URL_3 }
  };
- let selectedQty = 1;
+ let selectedQty = 2; // arranca en 2 dúos, la oferta principal (18/10)
 
  // ─── CARRITO PROGRESIVO ─────────────────────────────────────────────────
  // Antes no había forma de saber quién abrió el formulario si no llegaba a
@@ -2484,6 +2007,7 @@
  });
  });
 
+
         // MercadoPago no muestra las cuotas hasta que la clienta carga la tarjeta,
         // asi que la promo tiene que estar visible acá, antes de que decida.
         function actualizarCuotas() {
@@ -2495,7 +2019,7 @@
         }
         document.addEventListener('DOMContentLoaded', actualizarCuotas);
 
- function selectQty(el, price, qty) {
+ function selectQty(el, qty) {
  document.querySelectorAll('.qty-option').forEach(o => o.classList.remove('selected'));
  el.classList.add('selected');
  selectedQty = qty;
@@ -2513,20 +2037,28 @@
           actualizarCuotas();
  }
 
+ // ?cant=1 hace que la página arranque con esa cantidad elegida; sin el parámetro arranca en 2.
+ // ?duos=1 sigue andando: es lo que llevan los videos del Dúo con voz en off (19/10).
+ document.addEventListener('DOMContentLoaded', () => {
+ const params = new URLSearchParams(location.search);
+ const q = parseInt(params.get('cant') || params.get('duos'), 10);
+ const op = [1, 2, 3].includes(q) && document.querySelectorAll('.quantity-options .qty-option')[q - 1];
+ if (op) selectQty(op, q);
+ });
+
  // ─── TIMELINE DE ENTREGA ─────────────────────────────────────────────────
  function initDeliveryTimeline() {
  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
  const fmt = d => `${d.getDate()} ${meses[d.getMonth()]}`;
- const hoy = new Date();
- const envio = new Date(hoy); envio.setDate(hoy.getDate() + 2);
- const entregaIni = new Date(hoy); entregaIni.setDate(hoy.getDate() + 4);
- const entregaFin = new Date(hoy); entregaFin.setDate(hoy.getDate() + 6);
+ // Desde el 23/10/2026 en días hábiles, igual que el formulario (diaHabil, más abajo).
  const d1 = document.getElementById('deliveryDate1');
  const d2 = document.getElementById('deliveryDate2');
  const d3 = document.getElementById('deliveryDate3');
- if (d1) d1.textContent = fmt(hoy);
- if (d2) d2.textContent = fmt(envio);
- if (d3) d3.textContent = `${fmt(entregaIni)} - ${fmt(entregaFin)}`;
+ if (d1) d1.textContent = fmt(new Date());
+ if (d2) d2.textContent = fmt(diaHabil(2));
+ if (d3) d3.textContent = `${fmt(diaHabil(3))} - ${fmt(diaHabil(5))}`;
+ const grande = document.getElementById('entregaGrande');
+ if (grande) grande.textContent = fechaEntrega();
  }
  document.addEventListener('DOMContentLoaded', () => {
  initDeliveryTimeline();
@@ -2540,8 +2072,34 @@
         function irAPagar() {
           openModal();
         }
+        // Él dijo el 23/10/2026: "pongamos de 3 a 5 días hábiles" desde que paga. Sale
+        // por Correo el 2.º día hábil y llega del 3.º al 5.º, contando desde mañana. Los
+        // feriados trasladables van por las dos fechas posibles, por las dudas.
+        const FERIADOS = ['2026-11-20', '2026-11-23', '2026-12-08', '2026-12-25', '2027-01-01'];
+        function diaHabil(n) {
+          const iso = x => x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0');
+          const d = new Date();
+          for (let habiles = 0; habiles < n; ) {
+            d.setDate(d.getDate() + 1);
+            if (d.getDay() !== 0 && d.getDay() !== 6 && !FERIADOS.includes(iso(d))) habiles++;
+          }
+          return d;
+        }
+        function fechaEntrega() {
+          const dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+          const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+          const desde = diaHabil(3), hasta = diaHabil(5);
+          const mismoMes = desde.getMonth() === hasta.getMonth();
+          return 'entre el ' + dias[desde.getDay()] + ' ' + desde.getDate() + (mismoMes ? '' : ' de ' + meses[desde.getMonth()]) +
+            ' y el ' + dias[hasta.getDay()] + ' ' + hasta.getDate() + ' de ' + meses[hasta.getMonth()];
+        }
  function openModal() {
  document.getElementById('modalProducto').textContent = precios[selectedQty].label;
+ const total = PRECIOS_NUM[selectedQty];
+ document.getElementById('modalTotal').textContent = '$' + total.toLocaleString('es-AR');
+ document.getElementById('modalEnvio').textContent = selectedQty === 1 ? 'con envío incluido' : 'con envío gratis';
+ document.getElementById('modalCuotas').textContent = 'o 3 cuotas sin interés de $' + Math.round(total / 3).toLocaleString('es-AR');
+ document.getElementById('modalEntrega').textContent = '📦 Si pagás hoy, te llega ' + fechaEntrega() + '. Va por Correo Argentino con seguimiento.';
  document.getElementById('modalOverlay').classList.add('active');
  document.body.style.overflow = 'hidden';
  const btn = document.getElementById('btnConfirmarCompra');
@@ -2597,7 +2155,6 @@
  return;
  }
 
- // Guardar datos
  const datos = {};
  campos.forEach(id => { datos[id] = document.getElementById(id).value; });
  // El form pide "nombre y apellido" junto para bajar la fricción, pero el
@@ -2636,12 +2193,6 @@
  }
  } catch (e) {}
 
- // Datos que viajan siempre: sean guardados en localStorage o en Firestore,
- // formStatus/timestamp permiten que "Formularios completados" y "Carritos
- // abandonados" en el admin vean este pedido sin importar si el pago
- // después se aprueba, rechaza o queda abandonado. Sumamos precio/fbp/fbc/
- // event_source_url para poder mandar un Purchase por CAPI bien "matcheado"
- // cuando MercadoPago confirme el pago, y para la página de "gracias".
  const nowTs = Date.now();
  const datosTracking = Object.assign({}, datos, {
  precio: PRECIOS_NUM[selectedQty],
@@ -2650,7 +2201,6 @@
  event_source_url: location.href,
  });
 
- // Guardar en localStorage (siempre, como respaldo, y para la página de "gracias")
  const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
  pedidos.push({ ...datosTracking, formStatus: 'pendiente', timestamp: nowTs });
  localStorage.setItem('pedidos', JSON.stringify(pedidos));
@@ -2664,10 +2214,8 @@
 
  function irAlSiguientePaso() {
  if (mpListo) {
- // Redirigir a MercadoPago
  window.location.href = mpUrl;
  } else {
- // Fallback: enviar pedido completo por WhatsApp
  const d = datos;
  // La dirección se coordina por WhatsApp después del pago.
  const msg = encodeURIComponent(
@@ -2686,11 +2234,6 @@
  }
  }
 
- // Si logramos crear un pago dinámico en MercadoPago (vía Cloud Function),
- // ese link reemplaza al link fijo — permite que el webhook identifique
- // exactamente qué pedido pagó cada cliente, confirme el estado solo, y le
- // pasa a MercadoPago los datos del comprador (nombre, email, teléfono) para
- // que el checkout llegue precargado.
  async function crearPagoDinamico(docId) {
  if (!MP_AUTO_CONFIRM_ENABLED || !docId || !mpListo) {
  console.warn('Pago dinámico: no se intenta ->', { MP_AUTO_CONFIRM_ENABLED, docId, mpListo });
@@ -2715,10 +2258,6 @@
  }
 
  if (FIREBASE_ENABLED && typeof firebase !== 'undefined') {
- // Esperamos a que el guardado en Firestore termine (con un tope) antes de
- // navegar. Si redirigimos de inmediato, el navegador corta la petición a
- // mitad de camino al cambiar de página y el pedido nunca llega a la base de
- // datos — así es como se perdían clientes con pagos rechazados o abandonados.
  // El tope está en 6s (no 2.5s) porque el primer write de Firestore de la
  // sesión suele tardar más por el handshake del canal — con 2.5s el timeout
  // le ganaba la carrera casi siempre y el pago dinámico nunca llegaba ni a
@@ -2741,9 +2280,6 @@
  if (!docRef) {
  console.warn('Pago dinámico: no hay docRef (Firestore falló o tardó más que el tope) -> uso link fijo');
  } else {
- // Guardamos el id real del pedido junto a los datos en localStorage: la
- // página de "gracias" lo usa como event_id del Purchase para deduplicar
- // con el que ya mandamos por CAPI desde el webhook de MercadoPago.
  try {
  const ult = JSON.parse(localStorage.getItem('ultimoPedido') || '{}');
  ult.pedidoId = docRef.id;
@@ -2757,43 +2293,6 @@
  } else {
  irAlSiguientePaso();
  }
- }
-
-function toggleFaq(btn) {
- const item = btn.parentElement;
- const isOpen = item.classList.contains('open');
- document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
- if (!isOpen) item.classList.add('open');
- }
-
- function toggleAllReviews(btn) {
- const extra = document.querySelectorAll('.review-card--more');
- const showing = extra.length && extra[0].classList.contains('show');
- extra.forEach(c => c.classList.toggle('show', !showing));
- btn.textContent = showing ? 'Ver todas las reseñas' : 'Ver menos reseñas';
- }
-
- function toggleNavMenu(e) {
- e.stopPropagation();
- document.getElementById('navMenuDropdown').classList.toggle('open');
- }
- document.addEventListener('click', function(e) {
- const wrap = document.querySelector('.nav-menu-wrap');
- const dropdown = document.getElementById('navMenuDropdown');
- if (wrap && dropdown && !wrap.contains(e.target)) dropdown.classList.remove('open');
- });
-
- function openLegal(tipo) {
- document.getElementById(tipo === 'privacidad' ? 'modalPrivacidad' : 'modalTerminos').classList.add('active');
- document.body.style.overflow = 'hidden';
- }
- function closeLegal(tipo) {
- document.getElementById(tipo === 'privacidad' ? 'modalPrivacidad' : 'modalTerminos').classList.remove('active');
- document.body.style.overflow = '';
- }
- function closeLegalOutside(e, tipo) {
- const id = tipo === 'privacidad' ? 'modalPrivacidad' : 'modalTerminos';
- if (e.target === document.getElementById(id)) closeLegal(tipo);
  }
 
  // ─── MODAL PRODUCTOS ──────────────────────────────────────────────────────
@@ -2839,42 +2338,41 @@ function toggleFaq(btn) {
  {
  icon: '', ml: '250ml', name: 'Biotina Pura en Spray',
  tag: 'USO DIARIO · NO ENJUAGAR', tagClass: 'green',
- desc: 'El corazón del combo. Biotina concentrada en spray de aplicación directa sobre el cuero cabelludo. Va directo a la raíz, que es donde importa, y con uso diario ayuda a reducir la caída. No requiere enjuague.',
+ desc: 'Spray con biotina (vitamina B7) para aplicar directo sobre el cuero cabelludo. Va a la raíz, que es donde nace el pelo, y no requiere enjuague.',
  beneficios: [
- 'Activa el folículo piloso directamente en la raíz',
- 'Estimula el crecimiento de pelitos nuevos en zonas debilitadas',
- 'Frena la caída de forma progresiva',
- 'Absorción rápida, no deja residuo ni aplasta el cabello',
- 'No requiere enjuague — ideal para usar en cualquier momento',
+ 'Se aplica directo en el cuero cabelludo',
+ 'Con biotina (vitamina B7)',
+ 'Absorción rápida: no deja residuo ni aplasta el cabello',
+ 'No requiere enjuague: lo usás en cualquier momento',
+ 'Sin formol ni sulfatos',
  ],
  uso: [
  'Aplicá sobre el cuero cabelludo seco o semihúmedo.',
- 'Separar el cabello en secciones para llegar bien a la raíz.',
- 'Dar 2-3 pulverizaciones por zona.',
- 'Masajear suavemente con las yemas de los dedos durante 1 minuto.',
- 'No enjuagar. Dejá que absorba solo.',
+ 'Separá el cabello en secciones para llegar bien a la raíz.',
+ 'Dá 2 o 3 pulverizaciones por zona.',
+ 'Masajeá suavemente con las yemas de los dedos durante 1 minuto.',
+ 'No enjuagues. Dejá que absorba solo.',
  ],
- nota: 'Este es el producto más importante del combo. La constancia diaria es la clave para ver resultados desde la semana 3.',
+ nota: 'Usalo todos los días: la constancia es lo más importante.',
  },
  {
  icon: '', ml: '60ml', name: 'Ampolla Plex + Biotina',
  tag: 'USO SEMANAL', tagClass: 'coral',
- desc: 'Tratamiento intensivo semanal para recuperar el cabello dañado, teñido o debilitado. Repara la fibra capilar desde adentro, fortalece y reduce la quebradura. El complemento perfecto para el tratamiento completo.',
+ desc: 'Tratamiento intensivo semanal para el cabello dañado, teñido o con procesos químicos. Se mezcla con la crema de tratamiento y se aplica de medios a puntas.',
  beneficios: [
- 'Repara la fibra capilar dañada o teñida en profundidad',
- 'Reduce la quebradura y el cabello partido',
- 'Fortalece el cabello desde adentro hacia afuera',
- 'Ideal para cabello sometido a procesos químicos (decoloración, alaciados)',
+ 'Para cabello teñido, decolorado o alisado',
+ 'Se aplica de medios a puntas',
  'Un tratamiento por semana alcanza',
+ 'Con biotina',
  ],
  uso: [
  'Mezclá el contenido de la ampolla con tu crema de tratamiento habitual.',
  'Aplicá de medios a puntas sobre cabello húmedo (no en la raíz).',
- 'Cubrí con una bolsa de plástico o gorro de ducha para potenciar el efecto.',
+ 'Cubrí con una bolsa de plástico o gorro de ducha.',
  'Dejá actuar 15 a 20 minutos.',
  'Enjuagá completamente con agua tibia.',
  ],
- nota: ' Usarlo 1 vez por semana es suficiente. No sobredosificar.',
+ nota: ' Usarla 1 vez por semana es suficiente.',
  },
  ];
 
@@ -2902,73 +2400,50 @@ function toggleFaq(btn) {
  function closeProductOutside(e) {
  if (e.target === document.getElementById('pmodalOverlay')) closeProduct();
  }
- // ─────────────────────────────────────────────────────────────────────────
 
- // ─── STEPPER CÓMO SE USA ───
- let howCurrent = 0;
- const HOW_TOTAL = 4;
-
- function howUpdateFill() {
-  const pct = howCurrent === 0 ? 0 : (howCurrent / (HOW_TOTAL - 1)) * 100;
-  document.getElementById('howTrackFill').style.width = `calc(${pct}% * (100% - 144px) / 100)`;
+ function toggleFaq(btn) {
+ const item = btn.parentElement;
+ const isOpen = item.classList.contains('open');
+ document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+ if (!isOpen) item.classList.add('open');
  }
 
- function howGoTo(idx, isBack) {
-  // Quitar activo del paso actual
-  const prevItem = document.getElementById(`how-step-${howCurrent}`);
-  prevItem.classList.remove('active', 'back');
-  document.getElementById(`how-dot-${howCurrent}`).classList.remove('active');
-  if (howCurrent < idx) document.getElementById(`how-dot-${howCurrent}`).classList.add('done');
-
-  // Desmarcar "done" si volvemos atrás
-  if (isBack) {
-   for (let i = idx; i < HOW_TOTAL; i++) {
-    document.getElementById(`how-dot-${i}`).classList.remove('done');
-   }
-  }
-
-  howCurrent = idx;
-
-  // Activar nuevo paso
-  const newItem = document.getElementById(`how-step-${howCurrent}`);
-  newItem.classList.remove('active', 'back');
-  void newItem.offsetWidth; // reflow para reiniciar animación
-  newItem.classList.add(isBack ? 'back' : 'active');
-  document.getElementById(`how-dot-${howCurrent}`).classList.add('active');
-
-  // Botones
-  document.getElementById('how-prev').disabled = howCurrent === 0;
-  const nextBtn = document.getElementById('how-next');
-  nextBtn.textContent = howCurrent === HOW_TOTAL - 1 ? '↺ Volver al inicio' : 'Siguiente →';
-
-  // Contador
-  document.getElementById('how-counter').textContent = `${howCurrent + 1} / ${HOW_TOTAL}`;
-
-  // Línea de progreso
-  const fillPct = howCurrent / (HOW_TOTAL - 1) * 100;
-  document.getElementById('howTrackFill').style.width = fillPct + '%';
+ function toggleAllReviews(btn) {
+ const extra = document.querySelectorAll('.review-card--more');
+ const showing = extra.length && extra[0].classList.contains('show');
+ extra.forEach(c => c.classList.toggle('show', !showing));
+ btn.textContent = showing ? 'Ver todas las reseñas' : 'Ver menos reseñas';
  }
 
- function howNext() {
-  if (howCurrent === HOW_TOTAL - 1) { howGoTo(0, true); }
-  else { howGoTo(howCurrent + 1, false); }
+ function openLegal(tipo) {
+ document.getElementById(tipo === 'privacidad' ? 'modalPrivacidad' : 'modalTerminos').classList.add('active');
+ document.body.style.overflow = 'hidden';
  }
- function howPrev() {
-  if (howCurrent > 0) howGoTo(howCurrent - 1, true);
+ function closeLegal(tipo) {
+ document.getElementById(tipo === 'privacidad' ? 'modalPrivacidad' : 'modalTerminos').classList.remove('active');
+ document.body.style.overflow = '';
+ }
+ function closeLegalOutside(e, tipo) {
+ const id = tipo === 'privacidad' ? 'modalPrivacidad' : 'modalTerminos';
+ if (e.target === document.getElementById(id)) closeLegal(tipo);
  }
 
- // Seleccionar "2 combos" por defecto sin hacer scroll
- selectQty(document.querySelector('.qty-option[data-price="40000"]'), '$40.000', 1);
-
- // Asegurar que la página arranque desde arriba
- history.scrollRestoration = 'manual';
- window.scrollTo(0, 0);
+ function toggleNavMenu(e) {
+ e.stopPropagation();
+ document.getElementById('navMenuDropdown').classList.toggle('open');
+ }
+ document.addEventListener('click', function(e) {
+ const wrap = document.querySelector('.nav-menu-wrap');
+ const dropdown = document.getElementById('navMenuDropdown');
+ if (wrap && dropdown && !wrap.contains(e.target)) dropdown.classList.remove('open');
+ });
 
  // ─── VUELTA DE MERCADOPAGO (?pago=aprobado|pendiente|rechazado&pid=...) ────
  // Hoy esto no se manejaba: el cliente volvía del pago y caía en la home sin
  // ningún aviso. Además de la UX, es el único lugar donde el pixel del
  // browser puede disparar el Purchase (con Advanced Matching de verdad, desde
  // los datos que guardamos en localStorage al confirmar la compra).
+
  function mostrarBannerPago(texto, bg, color) {
  const div = document.createElement('div');
  div.textContent = texto;
@@ -3001,7 +2476,6 @@ function toggleFaq(btn) {
  // contar dos veces la compra si la clienta recarga la pantalla.
  const pid = params.get('pid') || params.get('payment_id') || params.get('collection_id');
 
- // Limpiamos la URL para que un refresh no vuelva a disparar el Purchase.
  history.replaceState({}, '', location.pathname);
 
  let ultimo = null;
@@ -3032,12 +2506,53 @@ function toggleFaq(btn) {
  mostrarBannerPago('El pago no se pudo procesar. Podés intentar de nuevo o escribirnos por WhatsApp.', '#fde8e8', '#9b2c2c');
  }
  })();
+
+ // ─── STEPPER CÓMO SE USA ───
+ let howCurrent = 0;
+ const HOW_TOTAL = 4;
+
+ function howGoTo(idx, isBack) {
+ const prevItem = document.getElementById(`how-step-${howCurrent}`);
+ prevItem.classList.remove('active', 'back');
+ document.getElementById(`how-dot-${howCurrent}`).classList.remove('active');
+ if (howCurrent < idx) document.getElementById(`how-dot-${howCurrent}`).classList.add('done');
+
+ if (isBack) {
+ for (let i = idx; i < HOW_TOTAL; i++) {
+ document.getElementById(`how-dot-${i}`).classList.remove('done');
+ }
+ }
+
+ howCurrent = idx;
+
+ const newItem = document.getElementById(`how-step-${howCurrent}`);
+ newItem.classList.remove('active', 'back');
+ void newItem.offsetWidth;
+ newItem.classList.add(isBack ? 'back' : 'active');
+ document.getElementById(`how-dot-${howCurrent}`).classList.add('active');
+
+ document.getElementById('how-prev').disabled = howCurrent === 0;
+ const nextBtn = document.getElementById('how-next');
+ nextBtn.textContent = howCurrent === HOW_TOTAL - 1 ? '↺ Volver al inicio' : 'Siguiente →';
+
+ document.getElementById('how-counter').textContent = `${howCurrent + 1} / ${HOW_TOTAL}`;
+
+ const fillPct = howCurrent / (HOW_TOTAL - 1) * 100;
+ document.getElementById('howTrackFill').style.width = fillPct + '%';
+ }
+
+ function howNext() {
+ if (howCurrent === HOW_TOTAL - 1) { howGoTo(0, true); }
+ else { howGoTo(howCurrent + 1, false); }
+ }
+ function howPrev() {
+ if (howCurrent > 0) howGoTo(howCurrent - 1, true);
+ }
  </script>
 
- <!-- FLOATING WA BUTTON -->
- <a class="wa-fab" href="https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20el%20Combo%20Biotina%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F" target="_blank" aria-label="Consultar por WhatsApp">
- <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
- <span class="wa-fab-tooltip">Consultar por WhatsApp</span>
+ <!-- WhatsApp flotante -->
+ <a href="https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20el%20Combo%20Biotina%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F" class="wa-fab" target="_blank" aria-label="WhatsApp">
+ <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
  </a>
 
 </body>

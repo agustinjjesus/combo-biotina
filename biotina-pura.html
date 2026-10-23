@@ -3,19 +3,19 @@
 <head>
  <meta charset="UTF-8" />
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <title>Biotina Pura® en spray para la caída del pelo | 500 ml</title>
- <meta name="description" content="Biotina Pura® en spray de 500 ml: va directo a la raíz, no se enjuaga y ayuda a reducir la caída. 2 frascos $44.000 con envío gratis a todo el país y 3 cuotas sin interés." />
+ <title>Biotina Pura® en spray · 500 ml | Directo a la raíz</title>
+ <meta name="description" content="Biotina Pura® en spray de 500 ml: va directo a la raíz, se usa todos los días y no se enjuaga. Sin formol ni sulfatos. 2 frascos $44.000 con envío gratis a todo el país y 3 cuotas sin interés." />
  <link rel="canonical" href="https://productoscapilarespg.com/biotina-pura.html" />
  <meta property="og:type" content="product" />
  <meta property="og:locale" content="es_AR" />
  <meta property="og:site_name" content="Productos Capilares PG" />
- <meta property="og:title" content="Biotina Pura® en spray para la caída del pelo | 500 ml" />
- <meta property="og:description" content="Spray de biotina de 500 ml: va directo a la raíz, no se enjuaga y ayuda a reducir la caída. 2 frascos $44.000 con envío gratis y 3 cuotas sin interés." />
+ <meta property="og:title" content="Biotina Pura® en spray · 500 ml | Directo a la raíz" />
+ <meta property="og:description" content="Spray de biotina de 500 ml: va directo a la raíz y no se enjuaga. 2 frascos $44.000 con envío gratis." />
  <meta property="og:image" content="https://productoscapilarespg.com/biotina-pura-gatillo-og.jpg" />
  <meta property="og:url" content="https://productoscapilarespg.com/biotina-pura.html" />
  <meta name="twitter:card" content="summary_large_image" />
- <meta name="twitter:title" content="Biotina Pura® en spray para la caída del pelo | 500 ml" />
- <meta name="twitter:description" content="Spray de biotina de 500 ml: va directo a la raíz, no se enjuaga y ayuda a reducir la caída. 2 frascos $44.000 con envío gratis." />
+ <meta name="twitter:title" content="Biotina Pura® en spray · 500 ml | Directo a la raíz" />
+ <meta name="twitter:description" content="Spray de biotina de 500 ml: va directo a la raíz y no se enjuaga. 2 frascos $44.000 con envío gratis." />
  <meta name="twitter:image" content="https://productoscapilarespg.com/biotina-pura-gatillo-og.jpg" />
  <link rel="icon" type="image/x-icon" href="favicon.ico" />
  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
@@ -199,6 +199,15 @@
  0%,100% { opacity:1; transform:scale(1); }
  50% { opacity:0.5; transform:scale(1.3); }
  }
+ /* ─── PRIMERAS CLIENTAS ─── */
+ .primeras-section { max-width: 760px; margin: 0 auto; padding: 64px 24px; text-align: center; }
+ .primeras-section h2 { font-family: 'Outfit', sans-serif; font-size: 1.9rem; font-weight: 700; margin: 12px 0 10px; }
+ .primeras-section p { font-size: 0.92rem; color: var(--gray); line-height: 1.7; max-width: 560px; margin: 0 auto 22px; }
+ .primeras-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; background: #fdf0ee; color: #a03a4b; padding: 6px 14px; border-radius: 20px; }
+ .primeras-garantia { display: flex; flex-direction: column; gap: 4px; background: #f0faf4; border: 1px solid #c3e6cb; border-radius: 14px; padding: 16px 20px; max-width: 520px; margin: 0 auto 24px; font-size: 0.88rem; color: #1e6640; }
+ .primeras-garantia strong { font-size: 0.95rem; }
+ .primeras-btn { display: inline-block; background: #111111; color: #ffffff; text-decoration: none; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.95rem; padding: 15px 28px; border-radius: 12px; }
+ @media (max-width: 768px) { .primeras-section { padding: 48px 20px; } .primeras-section h2 { font-size: 1.55rem; } }
  /* ─── GUARANTEE ─── */
  .guarantee-box {
  background: #f0faf4; border: 1px solid #c3e6cb;
@@ -336,6 +345,34 @@
 
  .nav-spacer { justify-self: start; display: flex; align-items: center; }
 
+ .nav-menu-wrap { position: relative; }
+ .nav-menu-btn {
+ background: none; border: 2px solid var(--cream2); border-radius: 8px;
+ width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+ cursor: pointer; color: var(--dark); transition: border-color 0.2s;
+ }
+ .nav-menu-btn:hover { border-color: var(--dark); }
+ .nav-menu-dropdown {
+ display: none; position: absolute; top: calc(100% + 10px); left: 0;
+ background: white; border: 1px solid var(--cream2); border-radius: 12px;
+ box-shadow: 0 8px 30px rgba(0,0,0,0.14); min-width: 210px; overflow: hidden; z-index: 200;
+ }
+ .nav-menu-dropdown.open { display: block; }
+ .nav-menu-label {
+ display: block; padding: 12px 18px 6px; font-size: 0.62rem; font-weight: 700;
+ letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray);
+ }
+ .nav-menu-dropdown a {
+ display: block; padding: 12px 18px; font-size: 0.85rem; font-weight: 500;
+ color: var(--dark); text-decoration: none; border-top: 1px solid var(--cream2);
+ transition: background 0.2s;
+ }
+ .nav-menu-dropdown a:hover { background: var(--cream); }
+ .nav-menu-dropdown a.active { font-weight: 700; }
+ @media (max-width: 768px) {
+ .nav-menu-btn { width: 36px; height: 36px; }
+ }
+
  .nav-brand {
  justify-self: center;
  display: flex;
@@ -401,34 +438,6 @@
  }
  .nav-wa:hover { background: #1ebe5a; }
 
- .nav-menu-wrap { position: relative; }
- .nav-menu-btn {
- background: none; border: 2px solid var(--cream2); border-radius: 8px;
- width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
- cursor: pointer; color: var(--dark); transition: border-color 0.2s;
- }
- .nav-menu-btn:hover { border-color: var(--dark); }
- .nav-menu-dropdown {
- display: none; position: absolute; top: calc(100% + 10px); left: 0;
- background: white; border: 1px solid var(--cream2); border-radius: 12px;
- box-shadow: 0 8px 30px rgba(0,0,0,0.14); min-width: 210px; overflow: hidden; z-index: 200;
- }
- .nav-menu-dropdown.open { display: block; }
- .nav-menu-label {
- display: block; padding: 12px 18px 6px; font-size: 0.62rem; font-weight: 700;
- letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray);
- }
- .nav-menu-dropdown a {
- display: block; padding: 12px 18px; font-size: 0.85rem; font-weight: 500;
- color: var(--dark); text-decoration: none; border-top: 1px solid var(--cream2);
- transition: background 0.2s;
- }
- .nav-menu-dropdown a:hover { background: var(--cream); }
- .nav-menu-dropdown a.active { font-weight: 700; }
- @media (max-width: 768px) {
- .nav-menu-btn { width: 36px; height: 36px; }
- }
-
  /* ─── HERO ─── */
  .hero {
  max-width: 1200px;
@@ -444,7 +453,7 @@
  border-radius: 20px;
  overflow: hidden;
  background: #f8f8f6;
- aspect-ratio: 1/1;
+ aspect-ratio: 1080/1350;
  display: flex;
  align-items: center;
  justify-content: center;
@@ -535,7 +544,7 @@
  }
 
  .qty-option.popular::before {
- content: 'MÁS ELEGIDO';
+ content: 'RECOMENDADO';
  position: absolute;
  top: -10px;
  left: 50%;
@@ -579,14 +588,6 @@
  margin-top: 6px;
  }
  .qty-shipping-free svg { flex-shrink: 0; }
-
- .qty-shipping-paid {
- display: inline-block;
- font-size: 0.68rem;
- color: var(--gray);
- font-weight: 600;
- margin-top: 3px;
- }
 
  .qty-left {
  display: flex;
@@ -659,22 +660,6 @@
  text-decoration: none;
  }
 
- .qty-price .price-transfer { display: block; font-size: 0.74rem; font-weight: 700; color: #1a7f37; margin-top: 2px; white-space: nowrap; }
- .qty-save {
- display: block;
- font-size: 0.74rem;
- font-weight: 700;
- color: #1e6640;
- margin-top: 2px;
- }
-
- .qty-value-note {
- display: block;
- font-size: 0.68rem;
- color: var(--gray);
- margin-top: 3px;
- }
-
  .qty-count {
  position: absolute;
  top: -10px;
@@ -689,7 +674,7 @@
  }
 
  /* ─── BUY BUTTON ─── */
- /* ─── CUOTAS + ENVÍO + TIMELINE DE ENTREGA (estilo marketplace) ─── */
+ /* ─── ENVÍO + TIMELINE DE ENTREGA (estilo marketplace) ─── */
  .checkout-shipping-box {
  display: flex; align-items: center; gap: 12px;
  border: 1.5px solid var(--cream2); border-radius: 12px;
@@ -783,40 +768,38 @@
  .wa-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.55); }
  @media (max-width: 768px) { .wa-fab { display: none; } }
 
- /* ─── BENEFICIOS / INGREDIENTES ─── */
- .ing-section {
- background: #f7f7f5; padding: 80px 48px; text-align: center;
+ /* ─── QUÉ HACE CADA UNO ───
+ 19/10: él dijo que los íconos en círculos "con IA" quedaban pedorros. Ahora son dos tarjetas
+ con foto (cuadros de los clips de Flow) y una franja de resultados con foto, sin íconos. */
+ .que-section { background: #f7f7f5; padding: 80px 48px; text-align: center; }
+ .que-section h2 { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+ .que-sub { font-size: 0.88rem; color: var(--gray); }
+ .que-grid { max-width: 980px; margin: 40px auto 0; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; text-align: left; }
+ .que-card { background: #ffffff; border-radius: 20px; overflow: hidden; border: 1px solid #ecece9; }
+ .que-foto { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #ece6e3; }
+ .que-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+ .que-tag { position: absolute; left: 16px; top: 16px; background: rgba(255,255,255,0.94); color: #111111; font-family: 'Outfit', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 12px; border-radius: 999px; }
+ .que-body { padding: 24px 26px 28px; }
+ .que-num { font-family: 'Outfit', sans-serif; font-size: 0.78rem; font-weight: 700; color: #a3a39f; letter-spacing: 0.12em; }
+ .que-body h3 { font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 700; line-height: 1.2; margin: 6px 0 10px; color: var(--dark); }
+ .que-body p { font-size: 0.9rem; color: var(--gray); line-height: 1.6; }
+ .que-list { list-style: none; margin: 18px 0 0; padding: 18px 0 0; border-top: 1px solid #efefec; display: flex; flex-wrap: wrap; gap: 8px; }
+ .que-list li { font-family: 'Outfit', sans-serif; font-size: 0.78rem; font-weight: 600; color: #111111; background: #f4f4f1; border-radius: 999px; padding: 6px 12px; }
+ .que-resultados { max-width: 980px; margin: 24px auto 0; display: grid; grid-template-columns: 1fr 1.25fr; background: #111111; border-radius: 20px; overflow: hidden; text-align: left; color: #ffffff; }
+ .que-res-foto { position: relative; min-height: 300px; }
+ .que-res-foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; display: block; }
+ .que-res-texto { padding: 36px 40px; display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+ .que-res-k { font-family: 'Outfit', sans-serif; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.55); }
+ .que-res-item strong { display: block; font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+ .que-res-item span { display: block; font-size: 0.95rem; color: rgba(255,255,255,0.75); margin-top: 4px; }
+ .que-res-item + .que-res-item { padding-top: 22px; border-top: 1px solid rgba(255,255,255,0.14); }
+ @media (max-width: 760px) {
+ .que-section { padding: 56px 20px; }
+ .que-grid { grid-template-columns: 1fr; gap: 18px; }
+ .que-resultados { grid-template-columns: 1fr; }
+ .que-res-foto { min-height: 0; aspect-ratio: 16 / 10; }
+ .que-res-texto { padding: 26px 24px 30px; }
  }
- .ing-section h2 {
- font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 8px;
- }
- .ing-grid {
- max-width: 1060px; margin: 40px auto 0;
- display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px;
- }
- .ing-card {
- background: #ffffff; border-radius: 16px; padding: 26px 16px; text-align: center;
- box-shadow: 0 2px 12px rgba(0,0,0,0.055); border: 1px solid #f0f0ee;
- transition: transform 0.2s, box-shadow 0.2s;
- }
- .ing-card:hover { transform: translateY(-4px); box-shadow: 0 10px 32px rgba(0,0,0,0.10); border-color: #e6e6e3; }
- .ing-icon { width: 56px; height: 56px; border-radius: 50%; background: #f5f5f5; border: 1.5px solid #e8e8e5; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
- .ing-name { font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 6px; line-height: 1.2; }
- .ing-benefit { font-size: 0.72rem; color: var(--gray); line-height: 1.6; }
- @media (max-width: 900px) { .ing-grid { grid-template-columns: repeat(3, 1fr); } }
- @media (max-width: 600px) { .ing-section { padding: 56px 20px; } .ing-grid { grid-template-columns: repeat(2, 1fr); } }
-
- .resultados-note {
- max-width: 720px; margin: 40px auto 0;
- background: #111111; color: #ffffff;
- border-radius: 14px; padding: 20px 24px;
- display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; text-align: left;
- }
- .resultados-note .r-item { display: flex; align-items: center; gap: 10px; }
- .resultados-note .r-item svg { flex-shrink: 0; opacity: 0.85; }
- .resultados-note strong { display: block; font-size: 0.85rem; }
- .resultados-note span { font-size: 0.75rem; color: rgba(255,255,255,0.7); }
- @media (max-width: 600px) { .resultados-note { flex-direction: column; gap: 14px; } }
 
  /* ─── ENVÍO ─── */
  .envio-section { background: #ffffff; padding: 80px 48px; }
@@ -1027,13 +1010,16 @@
  gap: 20px;
  }
  .hero-img {
- aspect-ratio: 1/1;
+ aspect-ratio: 1080/1350;
  border-radius: 16px;
  box-shadow: none;
  background: #f8f8f6;
  margin: 0 -4px;
  }
  .hero-img img { padding: 0; }
+ /* celular: la foto es cuadrada; sin bandas grises para que el título y el precio entren en la primera pantalla (18/10) */
+ .hero-img { aspect-ratio: 1 / 1; }
+ .hero-img img { object-fit: cover; }
 
  .cta-final { padding: 56px 20px; }
  .cta-final h2 { font-size: 1.6rem; }
@@ -1044,47 +1030,17 @@
  .trust-badges { gap: 16px; }
  }
 
- /* ─── STARS / RESEÑAS ─── */
+ /* ─── STARS / RESEÑAS (hero + sección reviews) ─── */
  .stars-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
  .stars { color: #111111; font-size: 1rem; }
  .stars-text { font-size: 0.8rem; color: var(--gray); font-weight: 500; }
  .stars-link { text-decoration: underline; cursor: pointer; }
  .stars-link:hover { color: var(--dark); }
 
- .reviews-section { padding: 80px 48px; max-width: 1100px; margin: 0 auto; }
- .reviews-section h2 { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; text-align: center; margin-bottom: 8px; }
- .reviews-stars { text-align: center; margin-bottom: 32px; }
- .reviews-stars .stars { font-size: 1.4rem; }
- .reviews-stars p { font-size: 0.82rem; color: var(--gray); margin-top: 4px; }
- .rating-bars { background: var(--white); border-radius: 16px; padding: 24px; margin-bottom: 40px; max-width: 400px; margin-left: auto; margin-right: auto; }
- .rating-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
- .rating-label { font-size: 0.78rem; color: var(--gray); width: 20px; text-align: right; }
- .rating-bar-bg { flex: 1; height: 8px; background: var(--cream2); border-radius: 4px; overflow: hidden; }
- .rating-bar-fill { height: 100%; background: var(--coral); border-radius: 4px; }
- .rating-pct { font-size: 0.75rem; color: var(--gray); width: 28px; }
- .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
- .review-card { background: var(--white); border-radius: 16px; padding: 24px; position: relative; border: 1px solid var(--cream2); }
- .review-card--more { display: none; }
- .review-card--more.show { display: block; }
- .review-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
- .review-verified { font-size: 0.65rem; color: var(--green); display: flex; align-items: center; gap: 4px; font-weight: 500; }
- .review-stars { font-size: 0.85rem; color: #111111; }
- .review-title { font-weight: 600; font-size: 0.88rem; margin-bottom: 8px; }
- .review-text { font-size: 0.82rem; color: var(--gray); line-height: 1.65; margin-bottom: 12px; }
- .review-meta { font-size: 0.7rem; color: var(--gray-light); display: flex; justify-content: space-between; }
- .btn-reviews {
- display: block; margin: 32px auto 0; background: none; border: 2px solid var(--coral); color: var(--coral);
- padding: 12px 32px; border-radius: 24px; font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 500;
- cursor: pointer; transition: all 0.2s;
- }
- .btn-reviews:hover { background: var(--coral); color: white; }
- @media (max-width: 768px) { .reviews-section { padding: 56px 20px; } .reviews-grid { grid-template-columns: 1fr; } }
-
- /* ─── FICHA DEL PRODUCTO ─── */
+ /* ─── QUÉ INCLUYE ─── */
  .includes-section { background: var(--white); padding: 80px 48px; text-align: center; }
  .includes-section h2 { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
  .includes-grid { max-width: 1060px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
- .includes-grid--single { grid-template-columns: 1fr; max-width: 460px; }
  .include-card {
  background: var(--cream); border-radius: 16px; padding: 28px 22px; text-align: left;
  display: flex; flex-direction: column; gap: 10px; position: relative;
@@ -1140,6 +1096,36 @@
  .pmodal-buy { margin-top: 24px; width: 100%; background: var(--coral); color: white; border: none; padding: 15px; border-radius: 12px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
  .pmodal-buy:hover { background: var(--coral-dark); }
 
+ /* ─── REVIEWS ─── */
+ .reviews-section { padding: 80px 48px; max-width: 1100px; margin: 0 auto; }
+ .reviews-section h2 { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; text-align: center; margin-bottom: 8px; }
+ .reviews-stars { text-align: center; margin-bottom: 32px; }
+ .reviews-stars .stars { font-size: 1.4rem; }
+ .reviews-stars p { font-size: 0.82rem; color: var(--gray); margin-top: 4px; }
+ .rating-bars { background: var(--white); border-radius: 16px; padding: 24px; margin-bottom: 40px; max-width: 400px; margin-left: auto; margin-right: auto; }
+ .rating-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+ .rating-label { font-size: 0.78rem; color: var(--gray); width: 20px; text-align: right; }
+ .rating-bar-bg { flex: 1; height: 8px; background: var(--cream2); border-radius: 4px; overflow: hidden; }
+ .rating-bar-fill { height: 100%; background: var(--coral); border-radius: 4px; }
+ .rating-pct { font-size: 0.75rem; color: var(--gray); width: 28px; }
+ .reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+ .review-card { background: var(--white); border-radius: 16px; padding: 24px; position: relative; border: 1px solid var(--cream2); }
+ .review-card--more { display: none; }
+ .review-card--more.show { display: block; }
+ .review-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+ .review-verified { font-size: 0.65rem; color: var(--green); display: flex; align-items: center; gap: 4px; font-weight: 500; }
+ .review-stars { font-size: 0.85rem; color: #111111; }
+ .review-title { font-weight: 600; font-size: 0.88rem; margin-bottom: 8px; }
+ .review-text { font-size: 0.82rem; color: var(--gray); line-height: 1.65; margin-bottom: 12px; }
+ .review-meta { font-size: 0.7rem; color: var(--gray-light); display: flex; justify-content: space-between; }
+ .btn-reviews {
+ display: block; margin: 32px auto 0; background: none; border: 2px solid var(--coral); color: var(--coral);
+ padding: 12px 32px; border-radius: 24px; font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 500;
+ cursor: pointer; transition: all 0.2s;
+ }
+ .btn-reviews:hover { background: var(--coral); color: white; }
+ @media (max-width: 768px) { .reviews-section { padding: 56px 20px; } .reviews-grid { grid-template-columns: 1fr; } }
+
  /* ─── ANIMATIONS ─── */
  @keyframes fadeUp {
  from { opacity: 0; transform: translateY(20px); }
@@ -1160,9 +1146,12 @@
       font-size: 0.78rem; font-weight: 600; color: var(--wine, #7E2B42);
       white-space: nowrap;
     }
+ .pagos-linea { text-align: center; font-size: 0.8rem; color: #555; margin: 8px 0 14px; line-height: 1.45; }
 </style>
 <style>
  /* Transferencia con 10% menos (12/10/2026) */
+ .qty-price .price-transfer { display: block; font-size: 0.74rem; font-weight: 700; color: #1a7f37; margin-top: 2px; white-space: nowrap; }
+ .qty-save { display: block; font-size: 0.74rem; font-weight: 700; color: #1e6640; margin-top: 2px; white-space: nowrap; }
  .pago-transferencia { text-align: center; font-size: 0.8rem; color: var(--dark); margin-top: 12px; }
  .pago-transferencia a { color: #1a7f37; font-weight: 700; text-decoration: underline; }
  /* Cómo se paga, justo arriba de "Confirmar y pagar" (23/10/2026): en los chats
@@ -1187,23 +1176,21 @@
  }
  .despacho-rapido-gratis { display: inline-block; margin-top: 10px; background: #1e6640; color: #fff; font-weight: 800; font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; }
  @media (prefers-reduced-motion: reduce) { .despacho-camion { animation: none; transform: scaleX(-1); } }
-
- /* Video arriba de todo (14/10/2026): el anuncio "No se la recomiendo a
-    cualquiera" sin la placa, en 4:5, con los subtítulos quemados para que se
-    entienda sin sonido. Dos clases para ganarle al aspect-ratio 1/1 del celular. */
+ /* Piezas que usa solo alguna de las tres páginas (23/10/2026, al unificarlas). */
+ /* Biotina: video arriba con subtítulos quemados y botón de sonido (14/10). Dos clases para ganarle al aspect-ratio 1/1 del celular. */
  .hero-img.hero-video { aspect-ratio: 4/5; background: #111; }
  .hero-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
  @media (min-width: 769px) { .hero-img.hero-video { max-height: 78vh; } }
  /* celular: video más bajo para que el título y el precio entren en la primera pantalla (18/10) */
  @media (max-width: 768px) { .hero-img.hero-video { aspect-ratio: auto; height: 44vh; } }
- .pagos-linea { text-align: center; font-size: 0.8rem; color: #555; margin: 8px 0 14px; line-height: 1.45; }
- .btn-sonido {
- position: absolute; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 6px;
- background: rgba(0,0,0,0.62); color: #fff; border: 0; border-radius: 20px;
- padding: 8px 13px; font: 600 0.82rem 'Outfit', sans-serif; cursor: pointer;
- }
+ .btn-sonido { position: absolute; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.62); color: #fff; border: 0; border-radius: 20px; padding: 8px 13px; font: 600 0.82rem 'Outfit', sans-serif; cursor: pointer; }
  .btn-sonido svg { width: 16px; height: 16px; }
- .include-foto { width: 100%; max-width: 240px; aspect-ratio: 4/5; object-fit: cover; border-radius: 14px; align-self: center; }
+ .includes-grid--single { grid-template-columns: 1fr; max-width: 460px; }
+ /* Combo: la ampolla de regalo */
+ .gift-highlight { display: inline-flex; align-items: center; gap: 7px; background: var(--dark); color: #ffffff; font-size: 0.8rem; font-weight: 700; padding: 7px 16px; border-radius: 30px; margin-bottom: 18px; }
+ .qty-gift { display: block; font-size: 0.68rem; color: var(--dark); font-weight: 700; margin-top: 3px; }
+ .include-card--gift { border: 2px dashed #111111; background: #fafafa; position: relative; }
+ .include-gift-ribbon { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--dark); color: #ffffff; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.06em; padding: 4px 14px; border-radius: 20px; white-space: nowrap; }
  </style>
 </head>
 <body id="top">
@@ -1221,7 +1208,7 @@
  <span class="announce-sep">•</span>
  10% MENOS PAGANDO POR TRANSFERENCIA
  <span class="announce-sep">•</span>
- RESULTADOS DESDE LA SEMANA 3
+ 500 ML · RINDE 2 MESES
  <span class="announce-sep">•</span>
  SIN FORMOL NI SULFATOS
  <span class="announce-sep">•</span>
@@ -1284,10 +1271,10 @@
  <div class="hero-right">
  <div class="stock-badge">
  <span class="stock-dot"></span>
- En stock · Pagando antes de las 14 hs, sale hoy
+ En stock · Envío a todo el país
  </div>
- <h1>Biotina Pura® en spray para la caída del pelo</h1>
- <p class="combo-composition">Spray de 500 ml listo para usar · Va directo a la raíz y no se enjuaga</p>
+ <h1>Biotina Pura® en spray, directo a la raíz</h1>
+ <p class="combo-composition">Spray de 500 ml listo para usar · Se usa todos los días y no se enjuaga</p>
  <div class="despacho-rapido">
    <div class="despacho-rapido-titulo"><span class="despacho-camion" aria-hidden="true">🚚</span> Despachamos rápido</div>
    <div class="despacho-rapido-fecha">Si comprás hoy, te llega <span id="entregaGrande">en 3 a 5 días hábiles</span>.</div>
@@ -1298,7 +1285,7 @@
  <ul class="benefits-list">
  <li>
  <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
- <span><strong>Ayuda a reducir la caída</strong> con uso diario.</span>
+ <span><strong>Va directo a la raíz:</strong> se aplica en el cuero cabelludo.</span>
  </li>
  <li>
  <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
@@ -1306,7 +1293,7 @@
  </li>
  <li>
  <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
- <span><strong>Fortalece desde el cuero cabelludo.</strong></span>
+ <span><strong>No se enjuaga</strong> ni deja el pelo pesado.</span>
  </li>
  <li>
  <span class="benefit-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
@@ -1316,30 +1303,30 @@
 
  <div class="quantity-options">
  <div class="qty-option" onclick="selectQty(this, 1)" data-price="29000">
- <span class="qty-count">1 unidad</span>
+ <span class="qty-count">1 frasco</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
  <div class="qty-info">
  <strong>Lleva 1</strong>
- <span>Tratamiento 2 meses</span>
+ <span>500 ml · rinde 2 meses</span>
  <span class="qty-shipping-free"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Envío $7.000 · gratis llevando 2</span>
  </div>
  </div>
  <div class="qty-price">
- <span class="price-now">$ 22.000</span>
- <span class="price-cuotas">+ $ 7.000 de envío</span>
+ <span class="price-now">$ 29.000</span>
+ <span class="price-cuotas">envío incluido</span>
  <span class="price-cuotas">3 cuotas de $ 9.667</span>
- <span class="price-transfer">Transferencia $ 19.800</span>
+ <span class="price-transfer">Transferencia $ 26.800</span>
  </div>
  </div>
 
  <div class="qty-option popular selected" onclick="selectQty(this, 2)" data-price="44000">
- <span class="qty-count">2 unidades</span>
+ <span class="qty-count">2 frascos</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
  <div class="qty-info">
- <strong>Lleva 2 · 1 litro</strong>
- <span>Tratamiento 4 meses</span>
+ <strong>Lleva 2</strong>
+ <span>1 litro · rinde 4 meses</span>
  <span class="qty-shipping-free"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Envío gratis incluido</span>
  </div>
  </div>
@@ -1348,18 +1335,17 @@
  <span class="price-now">$ 44.000</span>
  <span class="price-cuotas">3 cuotas de $ 14.667</span>
  <span class="price-transfer">Transferencia $ 39.600</span>
- <span class="qty-save">Ahorrás $14.000</span>
- <span class="qty-value-note">El más elegido</span>
+ <span class="qty-save">$22.000 cada frasco</span>
  </div>
  </div>
 
  <div class="qty-option best" onclick="selectQty(this, 3)" data-price="61000">
- <span class="qty-count">3 unidades</span>
+ <span class="qty-count">3 frascos</span>
  <div class="qty-left">
  <div class="qty-radio"></div>
  <div class="qty-info">
  <strong>Lleva 3</strong>
- <span>Tratamiento 6 meses</span>
+ <span>1,5 litros · rinde 6 meses</span>
  <span class="qty-shipping-free"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Envío gratis incluido</span>
  </div>
  </div>
@@ -1368,8 +1354,7 @@
  <span class="price-now">$ 61.000</span>
  <span class="price-cuotas">3 cuotas de $ 20.333</span>
  <span class="price-transfer">Transferencia $ 54.900</span>
- <span class="qty-save">Ahorrás $26.000</span>
- <span class="qty-value-note">Máximo ahorro</span>
+ <span class="qty-save">$20.333 cada frasco</span>
  </div>
  </div>
  </div>
@@ -1471,23 +1456,35 @@
 
  <!-- PROOF STRIP -->
  <div class="proof-strip">
- <div style="text-align:center"><div class="proof-num">500ml</div><div class="proof-label">fórmula concentrada</div></div>
+ <div style="text-align:center"><div class="proof-num">500ml</div><div class="proof-label">spray listo para usar</div></div>
  <div style="text-align:center"><div class="proof-num">0%</div><div class="proof-label">formol ni sulfatos</div></div>
- <div style="text-align:center"><div class="proof-num">Diario</div><div class="proof-label">modo de aplicación</div></div>
+ <div style="text-align:center"><div class="proof-num">Diario</div><div class="proof-label">y sin enjuague</div></div>
  <div style="text-align:center"><div class="proof-num">Gratis</div><div class="proof-label">envío llevando 2 o más</div></div>
  </div>
 
- <!-- FICHA DEL PRODUCTO -->
+ <!-- COMPRA SIN RIESGO (23/10): el mismo bloque que el Dúo, sin opiniones inventadas -->
+ <div class="primeras-section">
+ <span class="primeras-tag">Compra sin riesgo</span>
+ <h2>Probala tranquila</h2>
+ <p>Nuestros pedidos ya llegaron a clientas de 5 provincias. Pagás por Mercado Pago y te pasamos el seguimiento del Correo por WhatsApp.</p>
+ <div class="primeras-garantia">
+ <strong>Probalo sin riesgo</strong>
+ <span>Si no te convence, tenés 10 días desde que lo recibís para devolverlo y te devolvemos la plata.</span>
+ </div>
+ <a href="#" onclick="selectQty(document.querySelector('.qty-option.popular'), 2); irAPagar(); return false;" class="primeras-btn">Quiero probarla · 2 frascos $44.000</a>
+ </div>
+
+ <!-- QUÉ INCLUYE -->
  <div class="includes-section">
- <h2>Conocé el producto en detalle</h2>
- <p class="how-sub">Toda la información que necesitás antes de comprar.</p>
+ <h2>¿Qué trae?</h2>
+ <p class="how-sub">Un frasco de 500 ml, listo para usar.</p>
  <div class="includes-grid includes-grid--single">
 
- <div class="include-card include-card--featured" onclick="openProduct(0)" role="button">
+ <div class="include-card" onclick="openProduct(0)" role="button">
  <div class="include-badge">500ml</div>
- <img class="include-foto" src="biotina-pura-gatillo.jpg?v=1" alt="Biotina Pura PG — Spray de 500ml con gatillo" loading="lazy" />
+ <div class="include-icon"></div>
  <h3>Biotina Pura en Spray</h3>
- <p>Biotina concentrada en spray de aplicación directa sobre el cuero cabelludo. Va directo a la raíz, que es donde importa, y con uso diario ayuda a reducir la caída. No requiere enjuague.</p>
+ <p>Spray con biotina (vitamina B7) para aplicar directo sobre el cuero cabelludo, que es donde nace el pelo. Se usa todos los días y no requiere enjuague. Sin formol ni sulfatos.</p>
  <span class="include-tag">USO DIARIO · NO ENJUAGAR</span>
  <span class="include-more">Ver más →</span>
  </div>
@@ -1495,46 +1492,42 @@
  </div>
  </div>
 
- <!-- BENEFICIOS -->
- <div class="ing-section">
- <h2>¿Por qué funciona?</h2>
- <p class="how-sub" style="font-size:0.88rem;color:var(--gray);margin-bottom:0;">Una fórmula simple, pensada para actuar donde realmente importa.</p>
- <div class="ing-grid">
- <div class="ing-card">
- <div class="ing-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg></div>
- <h3 class="ing-name">Biotina B7</h3>
- <p class="ing-benefit">Vitamina B7, clave para la queratina del pelo: ayuda a fortalecerlo desde la raíz.</p>
+ <!-- CÓMO ES (el frasco real y las fotos de Flow del 22/10) -->
+ <div class="que-section" id="que-hace">
+ <h2>¿Cómo es la Biotina Pura?</h2>
+ <p class="que-sub">Un spray simple, para usar todos los días.</p>
+ <div class="que-grid">
+ <article class="que-card">
+ <div class="que-foto">
+ <img src="biotina-pura-gatillo.jpg" alt="Frasco de Biotina Pura en spray de 500 ml" loading="lazy" width="720" height="900" style="object-position: center 50%;">
+ <span class="que-tag">Biotina Pura · 500 ml</span>
  </div>
- <div class="ing-card">
- <div class="ing-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg></div>
- <h3 class="ing-name">Reduce la caída</h3>
- <p class="ing-benefit">Va directo a la raíz y, con uso diario, ayuda a reducir la caída.</p>
+ <div class="que-body">
+ <span class="que-num">01</span>
+ <h3>Va directo a la raíz</h3>
+ <p>Se pulveriza sobre el cuero cabelludo, que es donde nace el pelo. Es una fórmula con biotina, la vitamina B7, sin formol ni sulfatos.</p>
+ <ul class="que-list"><li>Con biotina B7</li><li>Sin formol ni sulfatos</li><li>Para todo tipo de pelo</li></ul>
  </div>
- <div class="ing-card">
- <div class="ing-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M12 10C12 6 9 4 6 4c0 4 2 6 6 6z"/><path d="M12 10c0-3 2-5 5-5 0 3-1.5 5-5 5z"/></svg></div>
- <h3 class="ing-name">Estimula el crecimiento</h3>
- <p class="ing-benefit">Activa folículos debilitados para favorecer la aparición de pelo nuevo.</p>
+ </article>
+ <article class="que-card">
+ <div class="que-foto">
+ <img src="biotina-mano.jpg" alt="Mano aplicando el spray de Biotina Pura" loading="lazy" width="720" height="900" style="object-position: center 40%;">
+ <span class="que-tag">Uso diario</span>
  </div>
- <div class="ing-card">
- <div class="ing-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="#1a1a1a" stroke="none"/></svg></div>
- <h3 class="ing-name">Fortalece el cuero cabelludo</h3>
- <p class="ing-benefit">Nutre la base del cabello para una fibra más resistente y saludable.</p>
+ <div class="que-body">
+ <span class="que-num">02</span>
+ <h3>Todos los días, sin enjuagar</h3>
+ <p>Unas pulverizaciones por zona, un minuto de masaje con las yemas de los dedos y listo. No se enjuaga ni deja el pelo pesado.</p>
+ <ul class="que-list"><li>2 o 3 pulverizaciones por zona</li><li>Masaje de 1 minuto</li><li>No se enjuaga</li></ul>
  </div>
- <div class="ing-card">
- <div class="ing-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg></div>
- <h3 class="ing-name">Sin formol ni sulfatos</h3>
- <p class="ing-benefit">Fórmula suave, apta para uso diario en todo tipo de cabello.</p>
+ </article>
  </div>
- </div>
-
- <div class="resultados-note">
- <div class="r-item">
- <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
- <div><strong>Semana 3</strong><span>Empezás a notar menos caída</span></div>
- </div>
- <div class="r-item">
- <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M12 10C12 6 9 4 6 4c0 4 2 6 6 6z"/><path d="M12 10c0-3 2-5 5-5 0 3-1.5 5-5 5z"/></svg>
- <div><strong>Mes 2 en adelante</strong><span>Pelo nuevo visible con uso constante</span></div>
+ <div class="que-resultados">
+ <div class="que-res-foto"><img src="biotina-espejo.jpg" alt="Mujer mirándose el pelo frente al espejo" loading="lazy" width="720" height="900"></div>
+ <div class="que-res-texto">
+ <span class="que-res-k">Cuánto rinde</span>
+ <div class="que-res-item"><strong>1 frasco</strong><span>Unos 2 meses de uso diario.</span></div>
+ <div class="que-res-item"><strong>2 frascos</strong><span>Unos 4 meses, con envío gratis.</span></div>
  </div>
  </div>
  </div>
@@ -1558,20 +1551,20 @@
  <div class="how-step-item active" id="how-step-0">
  <div class="how-step-tag">Paso 1 de 3 — Todos los días</div>
  <h3 class="how-step-title">Aplicá</h3>
- <p class="how-step-text">Aplicá el spray directamente sobre el cuero cabelludo limpio y seco, en toda la zona a tratar.</p>
+ <p class="how-step-text">Pulverizá el spray directo sobre el cuero cabelludo limpio y seco, separando el pelo en secciones para llegar bien a la raíz.</p>
  <span class="how-step-badge">Uso diario · 500 ml</span>
  </div>
  <div class="how-step-item" id="how-step-1">
  <div class="how-step-tag">Paso 2 de 3 — Todos los días</div>
  <h3 class="how-step-title">Masajeá</h3>
- <p class="how-step-text">Con las yemas de los dedos durante 1 minuto para activar la circulación.</p>
- <span class="how-step-badge">Activa la circulación</span>
+ <p class="how-step-text">Con las yemas de los dedos, durante 1 minuto.</p>
+ <span class="how-step-badge">1 minuto</span>
  </div>
  <div class="how-step-item" id="how-step-2">
  <div class="how-step-tag">Paso 3 de 3 — Todos los días</div>
  <h3 class="how-step-title">No enjuagues</h3>
- <p class="how-step-text">Dejá que absorba solo. Usalo todos los días para mejores resultados.</p>
- <span class="how-step-badge">No enjuagar · 500 ml</span>
+ <p class="how-step-text">Dejá que absorba solo. Lo importante es usarlo todos los días.</p>
+ <span class="how-step-badge">No enjuagar</span>
  </div>
  </div>
 
@@ -1588,13 +1581,13 @@
  <div class="envio-section">
  <div class="envio-inner">
  <h2>¿Cómo llega tu pedido?</h2>
- <p class="how-sub" style="text-align:center;font-size:0.88rem;color:var(--gray);margin-bottom:32px;">Despachamos a todo el país el mismo día si pedís antes de las 14hs.</p>
+ <p class="how-sub" style="text-align:center;font-size:0.88rem;color:var(--gray);margin-bottom:32px;">Enviamos a todo el país por Correo Argentino, con número de seguimiento.</p>
 
  <hr class="envio-divider" />
  <p class="envio-tiempos-title">Beneficios de tu envío</p>
  <div class="envio-dispatch-note">
  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
- Pedidos confirmados antes de las <strong>14hs</strong> se despachan el mismo día
+ Te avisamos por WhatsApp el día que sale tu pedido
  </div>
 
  <div class="envio-grid">
@@ -1613,7 +1606,7 @@
  <div class="envio-row">
  <div class="envio-row-info">
  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
- <span class="envio-region">Con 1 unidad</span>
+ <span class="envio-region">Con 1 frasco</span>
  </div>
  <span class="envio-time">$ 7.000</span>
  </div>
@@ -1641,24 +1634,32 @@
  <div class="faq-section">
  <h2>Preguntas frecuentes</h2>
  <div class="faq-item">
- <button class="faq-q" onclick="toggleFaq(this)">¿Cuándo voy a ver resultados? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Los resultados se empiezan a notar a partir de la semana 3 de uso diario y constante: primero menos caída y, del segundo mes en adelante, pelo nuevo. Pueden variar de una persona a otra.</div>
+ <button class="faq-q" onclick="toggleFaq(this)">¿Qué trae? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">Un frasco de Biotina Pura en spray de 500 ml, listo para usar.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Cuánto me dura un frasco? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Un frasco de 500 ml rinde unos 2 meses de uso diario. Como el pelo nuevo aparece del segundo mes en adelante, conviene llevar 2 o 3 para no cortar el tratamiento.</div>
+ <div class="faq-a">Un frasco de 500 ml rinde unos 2 meses de uso diario. Llevando 2 o 3 no cortás la rutina y el envío es gratis.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Cómo se usa? <span class="faq-arrow">+</span></button>
  <div class="faq-a">Todos los días, directo sobre el cuero cabelludo limpio y seco. Masajeá un minuto con las yemas de los dedos y no lo enjuagues: dejá que absorba solo.</div>
  </div>
  <div class="faq-item">
- <button class="faq-q" onclick="toggleFaq(this)">¿Sirve para todo tipo de cabello? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Sí, es apto para todo tipo de cabello: liso, ondulado, rizado, teñido o con procesos químicos.</div>
- </div>
- <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Qué tiene? <span class="faq-arrow">+</span></button>
  <div class="faq-a">Es una fórmula a base de biotina (vitamina B7), sin formol ni sulfatos. Es de uso externo: se aplica en el cuero cabelludo, no se toma.</div>
+ </div>
+ <div class="faq-item">
+ <button class="faq-q" onclick="toggleFaq(this)">¿Sirve para la caída? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">Es un cosmético con biotina que se aplica todos los días en el cuero cabelludo, donde nace el pelo. No es un medicamento: si la caída es fuerte o empezó de golpe, consultalo con un médico.</div>
+ </div>
+ <div class="faq-item">
+ <button class="faq-q" onclick="toggleFaq(this)">¿Se puede usar con el dúo? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">Sí. El shampoo y el acondicionador cuidan el pelo en el lavado, y la Biotina Pura se aplica después, con el cuero cabelludo seco.</div>
+ </div>
+ <div class="faq-item">
+ <button class="faq-q" onclick="toggleFaq(this)">¿Sirve para todo tipo de cabello? <span class="faq-arrow">+</span></button>
+ <div class="faq-a">Sí, es apto para todo tipo de cabello: liso, ondulado, rizado, teñido o con procesos químicos.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Lo puedo usar si estoy embarazada o con un tratamiento? <span class="faq-arrow">+</span></button>
@@ -1666,11 +1667,11 @@
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Cuánto cuesta el envío? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Enviamos por Correo Argentino a todo el país, a domicilio o a sucursal. Con 1 unidad el envío cuesta $7.000 y llevando 2 o más es gratis. En el botón de compra ves el total, con el envío incluido.</div>
+ <div class="faq-a">Enviamos por Correo Argentino a todo el país, a domicilio o a sucursal. Con 1 frasco el envío cuesta $7.000 y llevando 2 o más es gratis. En el botón de compra ves el total, con el envío incluido.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Cuánto tarda en llegar mi pedido? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Si confirmás el pago antes de las 14 hs, lo despachamos ese mismo día. Llega en 3 a 5 días hábiles desde que pagás. Te mandamos el número de seguimiento del Correo por WhatsApp para que lo sigas.</div>
+ <div class="faq-a">Apenas se acredita el pago preparamos tu pedido y te avisamos por WhatsApp el día que sale. Llega en 3 a 5 días hábiles desde que pagás, y te pasamos el número de seguimiento del Correo para que lo sigas.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Qué formas de pago aceptan? <span class="faq-arrow">+</span></button>
@@ -1696,9 +1697,9 @@
 
  <!-- CTA FINAL -->
  <div class="cta-final">
- <h2>Empezá hoy tu tratamiento</h2>
- <p>Los resultados se empiezan a ver desde la semana 3 de uso diario. Sin formol ni sulfatos.</p>
- <a href="#" onclick="irAPagar(); return false;" class="btn-cta-final">Lleva 2 · $44.000 — Envío gratis</a>
+ <h2>Empezá hoy tu rutina con Biotina Pura</h2>
+ <p>Spray de 500 ml que va directo a la raíz, se usa todos los días y no se enjuaga. Sin formol ni sulfatos.</p>
+ <a href="#" onclick="selectQty(document.querySelector('.qty-option.popular'), 2); irAPagar(); return false;" class="btn-cta-final">Lleva 2 · $44.000 — Envío gratis</a>
  </div>
 
  <!-- MODAL FORMULARIO -->
@@ -1706,7 +1707,7 @@
  <div class="modal">
  <button class="modal-close" onclick="closeModal()">×</button>
  <h3>¡Un paso más! </h3>
- <p class="modal-sub">Dejanos tu nombre y tu WhatsApp y seguí al pago. Te confirmamos el pedido por WhatsApp, y la dirección de envío la cargás después de pagar. Tu pedido: <span id="modalProducto">Biotina Pura x2 — $44.000</span></p>
+ <p class="modal-sub">Dejanos tu nombre y tu WhatsApp y seguí al pago. Te confirmamos el pedido por WhatsApp, y la dirección de envío la cargás después de pagar. Tu pedido: <span id="modalProducto">Biotina Pura x1 — $29.000 con envío</span></p>
 
  
  <div class="form-section-title">Datos de contacto</div>
@@ -1898,20 +1899,13 @@
  // ─── CONFIGURACIÓN ────────────────────────────────────────────────────────
  const WA_NUMERO = '5491124838177';
 
- // Links de pago de MercadoPago (Link de pago, montos fijos) — fallback
- // estático que se usa solo si la Cloud Function de pago dinámico falla.
- // Los tres links (07/10/2026) permiten hasta 3 cuotas sin interés (el negocio absorbe ese
- // costo, no el comprador) — si se prefiere que el comprador pague el
- // interés en cuotas, o eliminar cuotas del todo, hay que ajustarlo desde
- // el panel de MercadoPago (esa opción no existe en "Link de pago").
- const MP_URL_1 = 'https://mpago.la/1aYABR8'; // ← 1 unidad, $29.000 ($22.000 + $7.000 de envío)
- const MP_URL_2 = 'https://mpago.la/2wDo3xX'; // ← 2 unidades $44.000
- const MP_URL_3 = 'https://mpago.la/2wmf92V'; // ← 3 unidades $61.000 (link propio, no el del Combo x2)
+ // Links de pago de MercadoPago (Link de pago, montos fijos)
+ const MP_URL_1 = 'https://mpago.la/1aYABR8'; // ← 1 frasco, $29.000 ($22.000 + $7.000 de envío)
+ const MP_URL_2 = 'https://mpago.la/2wDo3xX'; // ← 2 frascos $44.000
+ const MP_URL_3 = 'https://mpago.la/2wmf92V'; // ← 3 frascos $61.000 (link propio, no el del Combo x2)
 
  const MP_AUTO_CONFIRM_ENABLED = true;
  const CLOUD_FN_CREAR_PREFERENCIA = 'https://us-central1-biotina-pg.cloudfunctions.net/crearPreferencia';
- // 1 unidad: $22.000 + $7.000 de envío = $29.000, que es lo que se cobra.
- // Por transferencia hay 10% de descuento (se pide por WhatsApp): $19.800 + envío / $39.600 / $54.900.
  const PRECIOS_NUM = { 1: 29000, 2: 44000, 3: 61000 };
 
  const precios = {
@@ -1919,7 +1913,7 @@
  2: { label: 'Biotina Pura x2 — $44.000', mp: MP_URL_2 },
  3: { label: 'Biotina Pura x3 — $61.000', mp: MP_URL_3 }
  };
- let selectedQty = 2;
+ let selectedQty = 2; // arranca en 2 dúos, la oferta principal (18/10)
 
  // ─── CARRITO PROGRESIVO ─────────────────────────────────────────────────
  // Antes no había forma de saber quién abrió el formulario si no llegaba a
@@ -1991,6 +1985,15 @@
  if (envioNota) envioNota.textContent = qty === 1 ? 'Envío $7.000 — gratis llevando 2 o más' : 'Envío gratis a todo el país';
           actualizarCuotas();
  }
+
+ // ?cant=1 hace que la página arranque con esa cantidad elegida; sin el parámetro arranca en 2.
+ // ?duos=1 sigue andando: es lo que llevan los videos del Dúo con voz en off (19/10).
+ document.addEventListener('DOMContentLoaded', () => {
+ const params = new URLSearchParams(location.search);
+ const q = parseInt(params.get('cant') || params.get('duos'), 10);
+ const op = [1, 2, 3].includes(q) && document.querySelectorAll('.quantity-options .qty-option')[q - 1];
+ if (op) selectQty(op, q);
+ });
 
  // ─── TIMELINE DE ENTREGA ─────────────────────────────────────────────────
  function initDeliveryTimeline() {
@@ -2165,7 +2168,7 @@
  const d = datos;
  // La dirección se coordina por WhatsApp después del pago.
  const msg = encodeURIComponent(
- ` *Nuevo pedido — Biotina Pura PG*\n\n` +
+ ` *Nuevo pedido — Biotina PG*\n\n` +
  ` *Datos del comprador*\n` +
  `Nombre: ${d.nombre} ${d.apellido}\n` +
  `Teléfono: ${d.telefono}\n` +
@@ -2241,27 +2244,27 @@
  }
  }
 
- // ─── MODAL PRODUCTO ───────────────────────────────────────────────────────
+ // ─── MODAL PRODUCTOS ──────────────────────────────────────────────────────
  const PRODUCTS = [
  {
  icon: '', ml: '500ml', name: 'Biotina Pura en Spray',
  tag: 'USO DIARIO · NO ENJUAGAR', tagClass: 'green',
- desc: 'Biotina concentrada en spray de aplicación directa sobre el cuero cabelludo. Va directo a la raíz, que es donde importa, y con uso diario ayuda a reducir la caída. No requiere enjuague.',
+ desc: 'Spray con biotina (vitamina B7) para aplicar directo sobre el cuero cabelludo. Va a la raíz, que es donde nace el pelo, y no requiere enjuague.',
  beneficios: [
- 'Activa el folículo piloso directamente en la raíz',
- 'Estimula el crecimiento de pelitos nuevos en zonas debilitadas',
- 'Frena la caída de forma progresiva',
- 'Absorción rápida, no deja residuo ni aplasta el cabello',
- 'No requiere enjuague — ideal para usar en cualquier momento',
+ 'Se aplica directo en el cuero cabelludo',
+ 'Con biotina (vitamina B7)',
+ 'Absorción rápida: no deja residuo ni aplasta el cabello',
+ 'No requiere enjuague: lo usás en cualquier momento',
+ 'Sin formol ni sulfatos',
  ],
  uso: [
  'Aplicá sobre el cuero cabelludo seco o semihúmedo.',
- 'Separar el cabello en secciones para llegar bien a la raíz.',
- 'Dar 2-3 pulverizaciones por zona.',
- 'Masajear suavemente con las yemas de los dedos durante 1 minuto.',
- 'No enjuagar. Dejá que absorba solo.',
+ 'Separá el cabello en secciones para llegar bien a la raíz.',
+ 'Dá 2 o 3 pulverizaciones por zona.',
+ 'Masajeá suavemente con las yemas de los dedos durante 1 minuto.',
+ 'No enjuagues. Dejá que absorba solo.',
  ],
- nota: 'La constancia diaria es la clave para ver resultados desde la semana 3.',
+ nota: 'Usalo todos los días: la constancia es lo más importante.',
  },
  ];
 
@@ -2304,16 +2307,6 @@
  btn.textContent = showing ? 'Ver todas las reseñas' : 'Ver menos reseñas';
  }
 
- function toggleNavMenu(e) {
- e.stopPropagation();
- document.getElementById('navMenuDropdown').classList.toggle('open');
- }
- document.addEventListener('click', function(e) {
- const wrap = document.querySelector('.nav-menu-wrap');
- const dropdown = document.getElementById('navMenuDropdown');
- if (wrap && dropdown && !wrap.contains(e.target)) dropdown.classList.remove('open');
- });
-
  function openLegal(tipo) {
  document.getElementById(tipo === 'privacidad' ? 'modalPrivacidad' : 'modalTerminos').classList.add('active');
  document.body.style.overflow = 'hidden';
@@ -2326,6 +2319,16 @@
  const id = tipo === 'privacidad' ? 'modalPrivacidad' : 'modalTerminos';
  if (e.target === document.getElementById(id)) closeLegal(tipo);
  }
+
+ function toggleNavMenu(e) {
+ e.stopPropagation();
+ document.getElementById('navMenuDropdown').classList.toggle('open');
+ }
+ document.addEventListener('click', function(e) {
+ const wrap = document.querySelector('.nav-menu-wrap');
+ const dropdown = document.getElementById('navMenuDropdown');
+ if (wrap && dropdown && !wrap.contains(e.target)) dropdown.classList.remove('open');
+ });
 
  // ─── VUELTA DE MERCADOPAGO (?pago=aprobado|pendiente|rechazado&pid=...) ────
  // Hoy esto no se manejaba: el cliente volvía del pago y caía en la home sin
@@ -2396,6 +2399,19 @@
  }
  })();
 
+ const ICONO_MUDO = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
+ const ICONO_SONIDO = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>';
+ function alternarSonido() {
+ const v = document.getElementById('heroVideo');
+ const b = document.getElementById('btnSonido');
+ if (!v || !b) return;
+ if (v.muted) { v.muted = false; v.currentTime = 0; v.play().catch(function () {}); }
+ else { v.muted = true; }
+ b.querySelector('svg').innerHTML = v.muted ? ICONO_MUDO : ICONO_SONIDO;
+ b.querySelector('span').textContent = v.muted ? 'Activar sonido' : 'Silenciar';
+ b.setAttribute('aria-label', v.muted ? 'Activar sonido' : 'Silenciar');
+ }
+
  // ─── STEPPER CÓMO SE USA ───
  let howCurrent = 0;
  const HOW_TOTAL = 3;
@@ -2436,22 +2452,6 @@
  }
  function howPrev() {
  if (howCurrent > 0) howGoTo(howCurrent - 1, true);
- }
-
- // ─── VIDEO DE ARRIBA ───
- // Arranca solo y sin sonido (los navegadores no dejan otra cosa); el botón
- // prende la voz y lo vuelve al principio para que se escuche entero.
- const ICONO_MUDO = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
- const ICONO_SONIDO = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>';
- function alternarSonido() {
- const v = document.getElementById('heroVideo');
- const b = document.getElementById('btnSonido');
- if (!v || !b) return;
- if (v.muted) { v.muted = false; v.currentTime = 0; v.play().catch(function () {}); }
- else { v.muted = true; }
- b.querySelector('svg').innerHTML = v.muted ? ICONO_MUDO : ICONO_SONIDO;
- b.querySelector('span').textContent = v.muted ? 'Activar sonido' : 'Silenciar';
- b.setAttribute('aria-label', v.muted ? 'Activar sonido' : 'Silenciar');
  }
  </script>
 
