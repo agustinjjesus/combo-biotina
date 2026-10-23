@@ -1161,6 +1161,7 @@
  .modal-pago-total strong { font-size: 1.15rem; }
  .modal-pago-cuotas { margin: 2px 0 8px; color: #1a7f37; font-weight: 600; }
  .modal-pago-sin-cuenta { margin: 0; }
+ .modal-pago-entrega { margin: 8px 0 0; font-weight: 600; }
  </style>
 </head>
 <body id="top">
@@ -1688,6 +1689,7 @@
    <p class="modal-pago-total">Total: <strong id="modalTotal"></strong> <span id="modalEnvio"></span></p>
    <p class="modal-pago-cuotas" id="modalCuotas"></p>
    <p class="modal-pago-sin-cuenta"><strong>No necesitás cuenta de Mercado Pago.</strong> Pagás con tarjeta de crédito o débito, o en efectivo en Rapipago o Pago Fácil.</p>
+   <p class="modal-pago-entrega" id="modalEntrega"></p>
  </div>
  <button class="btn-confirm" id="btnConfirmarCompra" onclick="confirmarCompra()">Confirmar y pagar →</button>
  <p class="pago-transferencia">¿Preferís pagar por transferencia? Tenés 10% menos. <a href="#" onclick="pagarPorTransferencia(); return false;">Pedilo por WhatsApp</a></p>
@@ -1977,12 +1979,28 @@
         function irAPagar() {
           openModal();
         }
+        // Él dijo el 23/10/2026: sale en 2 días hábiles y el Correo tarda 2 a 4. La fecha
+        // es el 7.º día hábil desde mañana: "antes del" ese día = como mucho el 6.º. Los feriados
+        // trasladables van por las dos fechas posibles, por las dudas.
+        const FERIADOS = ['2026-11-20', '2026-11-23', '2026-12-08', '2026-12-25', '2027-01-01'];
+        function fechaEntrega() {
+          const d = new Date();
+          const iso = x => x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0');
+          for (let habiles = 0; habiles < 7; ) {
+            d.setDate(d.getDate() + 1);
+            if (d.getDay() !== 0 && d.getDay() !== 6 && !FERIADOS.includes(iso(d))) habiles++;
+          }
+          const dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+          const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+          return dias[d.getDay()] + ' ' + d.getDate() + ' de ' + meses[d.getMonth()];
+        }
  function openModal() {
  document.getElementById('modalProducto').textContent = precios[selectedQty].label;
  const total = PRECIOS_NUM[selectedQty];
  document.getElementById('modalTotal').textContent = '$' + total.toLocaleString('es-AR');
  document.getElementById('modalEnvio').textContent = selectedQty === 1 ? 'con envío incluido' : 'con envío gratis';
  document.getElementById('modalCuotas').textContent = 'o 3 cuotas sin interés de $' + Math.round(total / 3).toLocaleString('es-AR');
+ document.getElementById('modalEntrega').textContent = '📦 Si pagás hoy, te llega antes del ' + fechaEntrega() + '. Va por Correo Argentino con seguimiento.';
  document.getElementById('modalOverlay').classList.add('active');
  document.body.style.overflow = 'hidden';
  const btn = document.getElementById('btnConfirmarCompra');
