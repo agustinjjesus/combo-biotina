@@ -1165,6 +1165,13 @@
  /* Transferencia con 10% menos (12/10/2026) */
  .pago-transferencia { text-align: center; font-size: 0.8rem; color: var(--dark); margin-top: 12px; }
  .pago-transferencia a { color: #1a7f37; font-weight: 700; text-decoration: underline; }
+ /* Cómo se paga, justo arriba de "Confirmar y pagar" (23/10/2026): en los chats
+    muchas creían que hacía falta cuenta de Mercado Pago o tarjeta. */
+ .modal-pago { background: #f6f6f4; border: 1px solid #e4e4e0; border-radius: 12px; padding: 14px 16px; margin: 6px 0 12px; font-size: 0.85rem; line-height: 1.45; color: var(--dark); }
+ .modal-pago-total { font-size: 1rem; margin: 0; }
+ .modal-pago-total strong { font-size: 1.15rem; }
+ .modal-pago-cuotas { margin: 2px 0 8px; color: #1a7f37; font-weight: 600; }
+ .modal-pago-sin-cuenta { margin: 0; }
 
  /* Video arriba de todo (14/10/2026): el anuncio "No se la recomiendo a
     cualquiera" sin la placa, en 4:5, con los subtítulos quemados para que se
@@ -1694,6 +1701,11 @@
               </div>
 
 
+ <div class="modal-pago">
+   <p class="modal-pago-total">Total: <strong id="modalTotal"></strong> <span id="modalEnvio"></span></p>
+   <p class="modal-pago-cuotas" id="modalCuotas"></p>
+   <p class="modal-pago-sin-cuenta"><strong>No necesitás cuenta de Mercado Pago.</strong> Pagás con tarjeta de crédito o débito, o en efectivo en Rapipago o Pago Fácil.</p>
+ </div>
  <button class="btn-confirm" id="btnConfirmarCompra" onclick="confirmarCompra()">Confirmar y pagar →</button>
  <p class="pago-transferencia">¿Preferís pagar por transferencia? Tenés 10% menos. <a href="#" onclick="pagarPorTransferencia(); return false;">Pedilo por WhatsApp</a></p>
  <p style="text-align:center;font-size:0.75rem;color:var(--green);font-weight:600;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px;">
@@ -1983,6 +1995,10 @@
         }
  function openModal() {
  document.getElementById('modalProducto').textContent = precios[selectedQty].label;
+ const total = PRECIOS_NUM[selectedQty];
+ document.getElementById('modalTotal').textContent = '$' + total.toLocaleString('es-AR');
+ document.getElementById('modalEnvio').textContent = selectedQty === 1 ? 'con envío incluido' : 'con envío gratis';
+ document.getElementById('modalCuotas').textContent = 'o 3 cuotas sin interés de $' + Math.round(total / 3).toLocaleString('es-AR');
  document.getElementById('modalOverlay').classList.add('active');
  document.body.style.overflow = 'hidden';
  const btn = document.getElementById('btnConfirmarCompra');
