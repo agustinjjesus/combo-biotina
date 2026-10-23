@@ -1583,7 +1583,7 @@
  <div class="envio-row">
  <div class="envio-row-info">
  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
- <span class="envio-region">Llega en 2 a 9 días hábiles según tu zona</span>
+ <span class="envio-region">Llega en 3 a 5 días hábiles</span>
  </div>
  </div>
  <div class="envio-row">
@@ -1646,7 +1646,7 @@
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Cuánto tarda en llegar mi pedido? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Si confirmás el pago antes de las 14 hs, lo despachamos ese mismo día. Después llega entre 2 y 9 días hábiles según tu zona. Te mandamos el número de seguimiento del Correo por WhatsApp para que lo sigas.</div>
+ <div class="faq-a">Si confirmás el pago antes de las 14 hs, lo despachamos ese mismo día. Llega en 3 a 5 días hábiles desde que pagás. Te mandamos el número de seguimiento del Correo por WhatsApp para que lo sigas.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Qué formas de pago aceptan? <span class="faq-arrow">+</span></button>
@@ -1995,20 +1995,23 @@
         function irAPagar() {
           openModal();
         }
-        // Él dijo el 23/10/2026: sale en 2 días hábiles y el Correo tarda 2 a 4. La fecha
-        // es el 7.º día hábil desde mañana: "antes del" ese día = como mucho el 6.º. Los feriados
-        // trasladables van por las dos fechas posibles, por las dudas.
+        // Él dijo el 23/10/2026: "pongamos de 3 a 5 días hábiles" desde que paga. Se
+        // muestra el 3.º y el 5.º día hábil desde mañana. Los feriados trasladables van
+        // por las dos fechas posibles, por las dudas.
         const FERIADOS = ['2026-11-20', '2026-11-23', '2026-12-08', '2026-12-25', '2027-01-01'];
         function fechaEntrega() {
-          const d = new Date();
           const iso = x => x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0');
-          for (let habiles = 0; habiles < 7; ) {
-            d.setDate(d.getDate() + 1);
-            if (d.getDay() !== 0 && d.getDay() !== 6 && !FERIADOS.includes(iso(d))) habiles++;
-          }
           const dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
           const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-          return dias[d.getDay()] + ' ' + d.getDate() + ' de ' + meses[d.getMonth()];
+          const d = new Date(), fechas = {};
+          for (let habiles = 0; habiles < 5; ) {
+            d.setDate(d.getDate() + 1);
+            if (d.getDay() !== 0 && d.getDay() !== 6 && !FERIADOS.includes(iso(d))) fechas[++habiles] = new Date(d);
+          }
+          const desde = fechas[3], hasta = fechas[5];
+          const mismoMes = desde.getMonth() === hasta.getMonth();
+          return 'entre el ' + dias[desde.getDay()] + ' ' + desde.getDate() + (mismoMes ? '' : ' de ' + meses[desde.getMonth()]) +
+            ' y el ' + dias[hasta.getDay()] + ' ' + hasta.getDate() + ' de ' + meses[hasta.getMonth()];
         }
  function openModal() {
  document.getElementById('modalProducto').textContent = precios[selectedQty].label;
@@ -2016,7 +2019,7 @@
  document.getElementById('modalTotal').textContent = '$' + total.toLocaleString('es-AR');
  document.getElementById('modalEnvio').textContent = selectedQty === 1 ? 'con envío incluido' : 'con envío gratis';
  document.getElementById('modalCuotas').textContent = 'o 3 cuotas sin interés de $' + Math.round(total / 3).toLocaleString('es-AR');
- document.getElementById('modalEntrega').textContent = '📦 Si pagás hoy, te llega antes del ' + fechaEntrega() + '. Va por Correo Argentino con seguimiento.';
+ document.getElementById('modalEntrega').textContent = '📦 Si pagás hoy, te llega ' + fechaEntrega() + '. Va por Correo Argentino con seguimiento.';
  document.getElementById('modalOverlay').classList.add('active');
  document.body.style.overflow = 'hidden';
  const btn = document.getElementById('btnConfirmarCompra');
