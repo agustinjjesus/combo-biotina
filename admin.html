@@ -89,6 +89,15 @@
     .btn-mini:hover { border-color: var(--coral); color: var(--coral-dark); }
     .btn-ok   { background: #e8f5ee; color: #1e6640; border: 1.5px solid #cfe9da; }
     .btn-ok:hover { background: #d6eee0; color: #1e6640; }
+    .btn-desp { background: #1d4ed8; color: white; }
+    .btn-desp:hover { background: #1e40af; }
+
+    /* Despachos (24/10/2026): lo pagado que falta mandar, arriba de la tabla */
+    .despachos { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; border-radius: 12px; padding: 12px 16px; margin-bottom: 14px; font-size: 0.88rem; font-weight: 600; }
+    .despachos.pendientes { background: #dbeafe; color: #1d4ed8; }
+    .despachos.al-dia { background: #e8f5ee; color: #1e6640; }
+    .despachos button { border: none; border-radius: 7px; padding: 6px 12px; background: #1d4ed8; color: white; font-family: 'Outfit', sans-serif; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
+    .seg { font-size: 0.72rem; color: var(--gray); margin-top: 4px; font-variant-numeric: tabular-nums; }
 
     .btn-delete {
       display: inline-flex; align-items: center; justify-content: center;
@@ -473,6 +482,7 @@
       </div>
 
       <!-- VENTAS -->
+      <div class="despachos" id="despachos"></div>
       <div class="table-header">
         <h2>Ventas</h2>
         <div class="table-controls">
@@ -480,7 +490,7 @@
           <select class="input-filter" id="filterEstado" onchange="renderVentas()">
             <option value="">Todos los estados</option>
             <option value="a_coordinar">A cobrar</option>
-            <option value="pagado">Pagado</option>
+            <option value="pagado">Pagado (falta despachar)</option>
             <option value="enviado">Enviado</option>
             <option value="entregado">Entregado</option>
             <option value="cancelado">Cancelado</option>
@@ -765,6 +775,7 @@
     function renderTodo() {
       renderNumeros();
       renderProductos();
+      renderDespachos();
       renderVentas();
       renderFormularios();
       renderVisitas();
@@ -815,6 +826,44 @@
       }).join('');
     }
 
+    /* ── DESPACHOS ──────────────────────────────────────────────────── */
+    // "Pagado" = cobrada y todavía sin despachar. No depende del período: es lo que falta mandar hoy.
+    function renderDespachos() {
+      const faltan = ventas.filter(v => v.estado === 'pagado');
+      const caja = $('despachos');
+      if (!faltan.length) {
+        caja.className = 'despachos al-dia';
+        caja.innerHTML = 'Todo despachado: no hay ventas pagadas esperando salir.';
+        return;
+      }
+      const vieja = faltan.reduce((a, v) => (!a || v.creado < a ? v.creado : a), null);
+      const dias = Math.floor((Date.now() - new Date(vieja).getTime()) / 86400000);
+      caja.className = 'despachos pendientes';
+      caja.innerHTML = `📦 ${faltan.length} ${faltan.length === 1 ? 'venta pagada' : 'ventas pagadas'} para despachar` +
+        (dias >= 1 ? ` · la más vieja, de hace ${dias} ${dias === 1 ? 'día' : 'días'}` : '') +
+        ` <button type="button" onclick="verParaDespachar()">Ver cuáles</button>`;
+    }
+    function verParaDespachar() {
+      $('filterEstado').value = 'pagado';
+      renderVentas();
+      $('ventasBody').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Pasa la venta a Enviado y guarda el número de seguimiento del rótulo (se puede cargar después).
+    function despachar(id) {
+      const n = prompt('Número de seguimiento del rótulo (el "T&T HC…AR" de abajo).\nSi no lo tenés a mano, dejalo vacío y lo cargás después con "Seguimiento":', '');
+      if (n === null) return;
+      if (!/^[A-Za-z0-9 -]{0,40}$/.test(n.trim())) return aviso('El número de seguimiento lleva solo letras y números', true);
+      editar(id, { estado: 'enviado', seguimiento: n.trim() });
+    }
+    function editarSeguimiento(id) {
+      const v = ventas.find(x => x.id === id);
+      const n = prompt('Número de seguimiento (vacío para borrarlo):', (v && v.seguimiento) || '');
+      if (n === null) return;
+      if (!/^[A-Za-z0-9 -]{0,40}$/.test(n.trim())) return aviso('El número de seguimiento lleva solo letras y números', true);
+      editar(id, { seguimiento: n.trim() });
+    }
+
     /* ── TABLA DE VENTAS ────────────────────────────────────────────── */
     const opciones = (mapa, elegido, conVacio) =>
       (conVacio ? `<option value="" ${elegido ? '' : 'selected'}>—</option>` : '') +
@@ -836,10 +885,11 @@
       const q = ($('searchInput').value || '').toLowerCase().trim();
       const fEstado = $('filterEstado').value;
       const filas = ventas.filter(v => {
-        if (!enPeriodo(v.creado)) return false;
+        // lo que falta despachar se ve entero, sea del período que sea
+        if (fEstado !== 'pagado' && !enPeriodo(v.creado)) return false;
         if (fEstado && v.estado !== fEstado) return false;
         if (!q) return true;
-        return [v.nombre, v.telefono, v.localidad, v.provincia, v.nota].join(' ').toLowerCase().includes(q);
+        return [v.nombre, v.telefono, v.localidad, v.provincia, v.nota, v.seguimiento].join(' ').toLowerCase().includes(q);
       });
 
       if (!filas.length) {
@@ -854,6 +904,10 @@
         const wa = waNumero(v.telefono);
         const lugar = [v.localidad, v.provincia].filter(Boolean).join(', ');
         const saludo = (v.nombre || '').split(' ')[0];
+        // con número de seguimiento, el botón de WhatsApp ya trae el mensaje para pasárselo
+        const textoWa = v.seguimiento && ['enviado', 'entregado'].includes(v.estado)
+          ? 'Hola ' + saludo + '! Tu pedido ya salió por Correo Argentino. El número de seguimiento es ' + v.seguimiento + '.'
+          : 'Hola ' + saludo + '! ';
         return `<tr class="row-${esc(v.estado)}">
           <td class="td-date" data-label="Fecha">${fechaCorta(v.creado)}</td>
           <td class="td-cliente">
@@ -865,10 +919,14 @@
           <td class="td-r" data-label="Total">${fmt(v.precio_ars)}</td>
           <td data-label="Pago"><select class="pago-sel" onchange="editar(${v.id}, { pago: this.value || null })">${opciones(PAGOS, v.pago, true)}</select></td>
           <td data-label="Estado"><select class="status-sel s-${esc(v.estado)}" onchange="this.className='status-sel s-'+this.value; editar(${v.id}, { estado: this.value })">${opciones(ESTADOS, v.estado)}</select></td>
-          <td data-label="Entrega"><select class="pago-sel" onchange="editar(${v.id}, { entrega: this.value })">${opciones(ENTREGAS, v.entrega || 'correo')}</select></td>
+          <td data-label="Entrega"><select class="pago-sel" onchange="editar(${v.id}, { entrega: this.value })">${opciones(ENTREGAS, v.entrega || 'correo')}</select>
+            ${v.despachado ? `<div class="seg">Salió el ${new Date(v.despachado).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })}</div>` : ''}
+            ${v.seguimiento ? `<div class="seg">${esc(v.seguimiento)}</div>` : ''}</td>
           <td class="td-r td-gain" data-label="Ganancia" title="Producto ${fmt(c.costo)} · envío ${fmt(c.envio)} · Mercado Pago ${fmt(c.mp)}">${fmt(c.ganancia)}</td>
           <td class="td-acciones"><div class="acciones">
-            ${wa ? `<a class="btn-wa" target="_blank" rel="noopener" href="https://wa.me/${wa}?text=${encodeURIComponent('Hola ' + saludo + '! ')}">WhatsApp</a>` : ''}
+            ${v.estado === 'pagado' ? `<button class="btn-wa btn-desp" onclick="despachar(${v.id})" title="Ya salió: pasarla a Enviado y anotar el número de seguimiento">Despachado</button>` : ''}
+            ${['enviado', 'entregado'].includes(v.estado) ? `<button class="btn-mini" onclick="editarSeguimiento(${v.id})">Seguimiento</button>` : ''}
+            ${wa ? `<a class="btn-wa" target="_blank" rel="noopener" href="https://wa.me/${wa}?text=${encodeURIComponent(textoWa)}">WhatsApp</a>` : ''}
             <a class="btn-prep" target="_blank" rel="noopener" href="https://wa.me/${MI_NUMERO_PREPARACION}?text=${encodeURIComponent(textoPreparar(v))}" title="Mandarte el pedido por WhatsApp para prepararlo">Preparar</a>
             <button class="btn-mini" onclick="editarNota(${v.id})">Nota</button>
             <button class="btn-mini" onclick="editarPrecio(${v.id})">Total</button>
@@ -895,6 +953,10 @@
         const j = await api('editar', Object.assign({ id: String(id) }, cambios));
         if (!j.ok) throw new Error(j.error || 'no se guardó');
         if (v) Object.assign(v, cambios.precio != null ? { precio_ars: Number(cambios.precio) } : cambios);
+        // lo mismo que hace el servidor con la fecha de despacho y el número de seguimiento
+        if (v && cambios.seguimiento != null) v.seguimiento = cambios.seguimiento.replace(/\s/g, '').toUpperCase() || null;
+        if (v && ['enviado', 'entregado'].includes(cambios.estado)) v.despachado = v.despachado || new Date().toISOString();
+        if (v && ['pagado', 'a_coordinar'].includes(cambios.estado)) v.despachado = null;
         renderTodo();
         aviso('Guardado');
       } catch (e) {
