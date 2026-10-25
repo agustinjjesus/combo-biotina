@@ -587,8 +587,9 @@
     const NOMBRES = { biotina: 'Biotina Pura', combo: 'Combo Biotina', duo: 'Dúo Shampoo + Acond.' };
     // Para estimar la ganancia (sin la publicidad): costo por unidad, envío que
     // paga el negocio por pedido y comisión de Mercado Pago "al instante".
-    const COSTO_UNIDAD = { biotina: 2448, combo: 9888, duo: 3000 };
-    const COSTO_ENVIO  = { correo: 9000, en_mano: 0 };
+    // 25/10/2026, él: "10.000 me sale el dúo de costo, 10.000 de envío". El combo es dúo + biotina.
+    const COSTO_UNIDAD = { biotina: 2448, combo: 12448, duo: 10000 };
+    const COSTO_ENVIO  = { correo: 10000, en_mano: 0 };
     const COMISION_MP  = 0.066;
 
     const ESTADOS  = { a_coordinar: 'A cobrar', pagado: 'Pagado', enviado: 'Enviado', entregado: 'Entregado', cancelado: 'Cancelado' };
