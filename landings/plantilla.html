@@ -1193,6 +1193,7 @@
  .transf-monto-fila { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 4px 0 6px; }
 .transf-monto { font-family: 'Outfit', sans-serif; font-size: 2.4rem; font-weight: 800; color: #1e6640; letter-spacing: -1px; }
 .transf-monto-fila button { flex: none; background: #1e6640; color: #ffffff; border: 0; border-radius: 8px; padding: 9px 12px; font-family: 'Outfit', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+.transf-panel a.btn-comprobante { display: block; text-align: center; text-decoration: none; background: #25d366; color: #ffffff; }
  .transf-nota { font-size: 0.85rem; color: var(--gray); line-height: 1.5; margin: 0 0 14px; }
  .transf-dato { display: flex; align-items: center; gap: 10px; border: 1px solid var(--cream2); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; background: var(--cream); }
  .transf-dato span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray); width: 52px; flex: none; }
@@ -1489,16 +1490,16 @@
  </p>
  <p class="modal-disclaimer">Tus datos están protegidos y solo se usan para coordinar tu pedido.</p>
 
- <!-- TRANSFERENCIA (23/10): datos de la cuenta de Mercado Pago y un monto único que identifica el pedido -->
+ <!-- TRANSFERENCIA: a la cuenta de Dolo (25/10: "da más confianza"); se confirma a mano con el comprobante -->
  <div class="transf-panel" id="transfPanel" style="display:none">
- <h3>Transferí exactamente</h3>
+ <h3>Transferí</h3>
  <div class="transf-monto-fila"><div class="transf-monto" id="transfMonto"></div><button type="button" onclick="copiarDato('transfMonto', this, true)">Copiar monto</button></div>
- <p class="transf-nota">Ese monto identifica tu pedido: así lo confirmamos solo, en pocos minutos. Ya tiene el 10% de descuento.</p>
- <div class="transf-dato"><span>Alias</span><strong id="transfAlias">agustinjjesus.mp</strong><button type="button" onclick="copiarDato('transfAlias', this)">Copiar</button></div>
- <div class="transf-dato"><span>CVU</span><strong id="transfCvu">0000003100010473246731</strong><button type="button" onclick="copiarDato('transfCvu', this)">Copiar</button></div>
- <div class="transf-dato"><span>Titular</span><strong>Agustín Jesús Gamarra</strong></div>
- <p class="transf-nota">Podés transferir desde cualquier banco o billetera. Apenas entre, te escribimos por WhatsApp para confirmarte el pago y pedirte la dirección de envío. Tenés 48 horas para transferir.</p>
- <button class="btn-confirm" type="button" onclick="cerrarTransferencia()">Listo, ya transferí</button>
+ <p class="transf-nota">Ya tiene el 10% de descuento.</p>
+ <div class="transf-dato"><span>Alias</span><strong id="transfAlias">dolo.pg</strong><button type="button" onclick="copiarDato('transfAlias', this)">Copiar</button></div>
+ <div class="transf-dato"><span>CBU</span><strong id="transfCbu">3840200500000054291199</strong><button type="button" onclick="copiarDato('transfCbu', this)">Copiar</button></div>
+ <div class="transf-dato"><span>Titular</span><strong>Dolores Subirain</strong></div>
+ <p class="transf-nota">Podés transferir desde cualquier banco o billetera. Después mandanos el comprobante por WhatsApp: te confirmamos el pago y te pedimos la dirección de envío.</p>
+ <a class="btn-confirm btn-comprobante" id="btnComprobante" href="#" target="_blank" rel="noopener" onclick="setTimeout(cerrarTransferencia, 400)">Mandar el comprobante por WhatsApp</a>
  <p class="modal-disclaimer"><a href="#" onclick="volverAlFormulario(); return false;">Prefiero pagar con tarjeta, débito o efectivo</a></p>
  </div>
  </div>
@@ -1821,9 +1822,10 @@
  }
 
 
- // Transferencia (23/10/2026): a la cuenta de Mercado Pago con un monto único por pedido (el precio de
- // transferencia menos 1 a 99 pesos). El workflow "Mercado Pago -> Meta" mira cada 3 minutos lo que entra
- // y mp_registrar_pagos anota como pago solo la transferencia que coincide con ese monto exacto.
+ // Transferencia: desde el 25/10/2026 a la cuenta de Dolo (dolo.pg), por el precio de transferencia redondo.
+ // Esa cuenta no está conectada al sistema: la clienta manda el comprobante por WhatsApp y Dolo la pasa a
+ // venta en el panel ("Pagó"). Del 23 al 25/10 iba a la cuenta de Mercado Pago con monto único y se
+ // confirmaba sola; él prefirió el alias de Dolo "porque da más confianza, no importa si hay que esperar".
 {{TRANSFERENCIA}} const montoTransferencia = q => parseInt(String(TRANSFERENCIA[q]).replace(/\D/g, ''), 10);
 
  // Nombre y WhatsApp son obligatorios. Desde el 14/10 la dirección se pide DESPUÉS de pagar, en
@@ -1894,22 +1896,24 @@
  } catch (e) {}
  }
 
- // Si vuelve al formulario y aprieta otra vez con los mismos datos, es el mismo pedido: mismo monto y sin otro aviso.
+ // Si vuelve al formulario y aprieta otra vez con los mismos datos, es el mismo pedido: sin otro aviso.
  let transfActual = null;
  function pagarPorTransferencia() {
  const datos = leerFormulario();
  if (!datos) return;
  const clave = [selectedQty, datos.nombre, datos.apellido, datos.telefono].join('|');
- let monto;
- if (transfActual && transfActual.clave === clave) {
- monto = transfActual.monto;
- } else {
- monto = montoTransferencia(selectedQty) - (1 + Math.floor(Math.random() * 99));
- transfActual = { clave, monto };
+ const monto = montoTransferencia(selectedQty);
+ if (!transfActual || transfActual.clave !== clave) {
+ transfActual = { clave };
+ const pedido = precios[selectedQty].label.replace(/\s*—.*$/, '');
  datos.producto = precios[selectedQty].label + ' · por transferencia';
  avisarInicioDeCompra(datos, monto);
  avisarPedido(datos, monto, 'transferencia');
  try { localStorage.setItem('ultimoPedido', JSON.stringify(Object.assign({}, datos, { precio: monto, metodo: 'transferencia' }))); } catch (e) {}
+ // el mensaje con el que manda el comprobante: así Dolo sabe de qué pedido es
+ document.getElementById('btnComprobante').href = 'https://wa.me/' + WA_NUMERO + '?text=' + encodeURIComponent(
+ 'Hola! Soy ' + [datos.nombre, datos.apellido].join(' ').trim() + '. Hice el pedido de ' + pedido + ' en la web y transferí $' +
+ monto.toLocaleString('es-AR') + ' a dolo.pg. Te mando el comprobante:');
  }
  document.getElementById('transfMonto').textContent = '$' + monto.toLocaleString('es-AR');
  mostrarPanelTransferencia(true);
@@ -1930,9 +1934,9 @@
  function volverAlFormulario() { mostrarPanelTransferencia(false); }
  function cerrarTransferencia() {
  closeModal();
- mostrarBannerPago('¡Gracias! Apenas entre tu transferencia te confirmamos por WhatsApp y te pedimos la dirección de envío.', '#e8f5ee', '#1e6640');
+ mostrarBannerPago('¡Gracias! Cuando veamos tu transferencia te confirmamos por WhatsApp y te pedimos la dirección de envío.', '#e8f5ee', '#1e6640');
  }
- // soloNumeros: el monto se copia como 32398, que es lo que aceptan las apps de los bancos.
+ // soloNumeros: el monto se copia como 32400, que es lo que aceptan las apps de los bancos.
  function copiarDato(id, btn, soloNumeros) {
  let texto = document.getElementById(id).textContent.trim();
  if (soloNumeros) texto = texto.replace(/\D/g, '');
