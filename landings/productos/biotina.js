@@ -37,9 +37,9 @@ module.exports = {
     ['Sin formol ni sulfatos.', ' Apto uso diario.'],
   ]),
   CANTIDADES: P.cantidades([
-    { cant: '1 frasco', sub: '500 ml · rinde 2 meses', envio: 'Envío $7.000 · gratis llevando 2', precio: 22000, primeraLinea: 'envío incluido', transf: 20500 },
-    { cant: '2 frascos', sub: '1 litro · rinde 4 meses', envio: 'Envío gratis incluido', viejo: 44000, descuento: 32, precio: 30000, transf: 27000, cadaUno: '$15.000 cada frasco' },
-    { cant: '3 frascos', sub: '1,5 litros · rinde 6 meses', envio: 'Envío gratis incluido', viejo: 66000, descuento: 41, precio: 39000, transf: 35100, cadaUno: '$13.000 cada frasco' },
+    { cant: '1 frasco', sub: '500 ml · rinde 2 meses', envio: 'Envío $7.000 · gratis llevando 2', precio: 22000, primeraLinea: 'envío incluido' },
+    { cant: '2 frascos', sub: '1 litro · rinde 4 meses', envio: 'Envío gratis incluido', viejo: 44000, descuento: 32, precio: 30000, cadaUno: '$15.000 cada frasco' },
+    { cant: '3 frascos', sub: '1,5 litros · rinde 6 meses', envio: 'Envío gratis incluido', viejo: 66000, descuento: 41, precio: 39000, cadaUno: '$13.000 cada frasco' },
   ]),
   BOTON: 'COMPRAR AHORA · $30.000 — ENVÍO GRATIS',
   PRUEBA: P.prueba([
@@ -105,7 +105,7 @@ module.exports = {
   ]),
   JS_PRECIOS: P.jsPrecios([22000, 30000, 39000], ['Biotina Pura x1 — $22.000 con envío', 'Biotina Pura x2 — $30.000', 'Biotina Pura x3 — $39.000']),
   JS_PRECIOS_TXT: P.jsTextosPrecio([22000, 30000, 39000]),
-  TRANSFERENCIA: P.transferencia(['$20.500 con envío', '$27.000', '$35.100']),
+  TRANSFERENCIA: P.transferencia(['$22.000 con envío', '$30.000', '$39.000']),
   PRODUCTS: P.products([
     {
       ml: '500ml', name: 'Biotina Pura en Spray', tag: 'USO DIARIO · NO ENJUAGAR', tagClass: 'green',

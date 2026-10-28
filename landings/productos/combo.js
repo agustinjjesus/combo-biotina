@@ -34,9 +34,9 @@ module.exports = {
     ['Ampolla Plex de regalo', ' para un tratamiento intensivo por semana.'],
   ]),
   CANTIDADES: P.cantidades([
-    { cant: '1 combo', sub: 'Rinde 1 mes', envio: 'Envío $7.000 · gratis llevando 2', extra: REGALO, precio: 40000, primeraLinea: 'envío incluido', transf: 36700 },
-    { cant: '2 combos', sub: 'Rinde 2 meses', envio: 'Envío gratis incluido', extra: REGALO, viejo: 80000, descuento: 24, precio: 61000, transf: 54900, cadaUno: '$30.500 cada combo' },
-    { cant: '3 combos', sub: 'Rinde 3 meses', envio: 'Envío gratis incluido', extra: REGALO, viejo: 120000, descuento: 36, precio: 77000, transf: 69300, cadaUno: '$25.667 cada combo' },
+    { cant: '1 combo', sub: 'Rinde 1 mes', envio: 'Envío $7.000 · gratis llevando 2', extra: REGALO, precio: 40000, primeraLinea: 'envío incluido' },
+    { cant: '2 combos', sub: 'Rinde 2 meses', envio: 'Envío gratis incluido', extra: REGALO, viejo: 80000, descuento: 24, precio: 61000, cadaUno: '$30.500 cada combo' },
+    { cant: '3 combos', sub: 'Rinde 3 meses', envio: 'Envío gratis incluido', extra: REGALO, viejo: 120000, descuento: 36, precio: 77000, cadaUno: '$25.667 cada combo' },
   ]),
   BOTON: 'COMPRAR AHORA · $61.000 — ENVÍO GRATIS',
   PRUEBA: P.prueba([
@@ -105,7 +105,7 @@ module.exports = {
   ]),
   JS_PRECIOS: P.jsPrecios([40000, 61000, 77000], ['Combo Biotina x1 — $40.000 con envío', 'Combo Biotina x2 — $61.000', 'Combo Biotina x3 — $77.000']),
   JS_PRECIOS_TXT: P.jsTextosPrecio([40000, 61000, 77000]),
-  TRANSFERENCIA: P.transferencia(['$36.700 con envío', '$54.900', '$69.300']),
+  TRANSFERENCIA: P.transferencia(['$40.000 con envío', '$61.000', '$77.000']),
   PRODUCTS: P.products([
     {
       ml: '500ml', name: 'Shampoo de Biotina', tag: 'USO DIARIO', tagClass: 'coral',

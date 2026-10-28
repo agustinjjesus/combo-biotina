@@ -1149,7 +1149,7 @@
  .pagos-linea { text-align: center; font-size: 0.8rem; color: #555; margin: 8px 0 14px; line-height: 1.45; }
 </style>
 <style>
- /* Transferencia con 10% menos (12/10/2026) */
+ /* Precio por transferencia en las cantidades: solo si es menor (el 10% menos se sacó el 28/10/2026) */
  .qty-price .price-transfer { display: block; font-size: 0.74rem; font-weight: 700; color: #1a7f37; margin-top: 2px; white-space: nowrap; }
  .qty-save { display: block; font-size: 0.74rem; font-weight: 700; color: #1e6640; margin-top: 2px; white-space: nowrap; }
  .pago-transferencia { text-align: center; font-size: 0.8rem; color: var(--dark); margin-top: 12px; }
@@ -1235,8 +1235,6 @@
  <span class="announce-sep">•</span>
  3 CUOTAS SIN INTERÉS
  <span class="announce-sep">•</span>
- 10% MENOS PAGANDO POR TRANSFERENCIA
- <span class="announce-sep">•</span>
 {{ANUNCIO_1}} <span class="announce-sep">•</span>
 {{ANUNCIO_2}} <span class="announce-sep">•</span>
  DESPACHO RÁPIDO: LLEGA EN 3 A 5 DÍAS HÁBILES
@@ -1246,8 +1244,6 @@
  PAGO 100% SEGURO CON MERCADOPAGO
  <span class="announce-sep">•</span>
  3 CUOTAS SIN INTERÉS
- <span class="announce-sep">•</span>
- 10% MENOS PAGANDO POR TRANSFERENCIA
  <span class="announce-sep">•</span>
  </div>
  </div>
@@ -1314,14 +1310,14 @@
  {{BOTON}}
  </button>
             <p class="cuotas-linea" id="cuotasLinea"></p>
- <p class="pagos-linea">Tarjeta en 3 cuotas sin interés · Débito · Efectivo en Rapipago y Pago Fácil · Transferencia con 10% menos</p>
+ <p class="pagos-linea">Tarjeta en 3 cuotas sin interés · Débito · Efectivo en Rapipago y Pago Fácil · Transferencia</p>
 
  <!-- CÓMO ES LA COMPRA (23/10): la gente se frena entre el formulario y el pago porque no sabe qué pasa después -->
  <div class="como-compra">
  <div class="como-compra-titulo">Cómo es la compra</div>
  <ol class="como-compra-pasos">
  <li><b>1</b><span><strong>Elegís y dejás tu WhatsApp.</strong> Para avisarte cuando sale tu pedido.</span></li>
- <li><b>2</b><span><strong>Pagás en Mercado Pago o por transferencia.</strong> Tarjeta, débito o efectivo sin necesidad de cuenta, o transferencia con 10% menos.</span></li>
+ <li><b>2</b><span><strong>Pagás en Mercado Pago o por transferencia.</strong> Tarjeta, débito o efectivo sin necesidad de cuenta, o transferencia.</span></li>
  <li><b>3</b><span><strong>Cargás la dirección y listo.</strong> El día que sale te mandamos el seguimiento por WhatsApp.</span></li>
  </ol>
  </div>
@@ -1484,7 +1480,7 @@
    <p class="modal-pago-entrega" id="modalEntrega"></p>
  </div>
  <button class="btn-confirm" id="btnConfirmarCompra" onclick="confirmarCompra()">Confirmar y pagar →</button>
- <button class="btn-transferir" id="btnTransferir" onclick="pagarPorTransferencia()">Pagar por transferencia · <span id="modalTransf"></span> <small>(10% menos)</small></button>
+ <button class="btn-transferir" id="btnTransferir" onclick="pagarPorTransferencia()">Pagar por transferencia · <span id="modalTransf"></span></button>
  <p style="text-align:center;font-size:0.75rem;color:var(--green);font-weight:600;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px;">
  Pago 100% seguro procesado por MercadoPago
  </p>
@@ -1494,7 +1490,6 @@
  <div class="transf-panel" id="transfPanel" style="display:none">
  <h3>Transferí</h3>
  <div class="transf-monto-fila"><div class="transf-monto" id="transfMonto"></div><button type="button" onclick="copiarDato('transfMonto', this, true)">Copiar monto</button></div>
- <p class="transf-nota">Ya tiene el 10% de descuento.</p>
  <div class="transf-dato"><span>Alias</span><strong id="transfAlias">dolo.pg</strong><button type="button" onclick="copiarDato('transfAlias', this)">Copiar</button></div>
  <div class="transf-dato"><span>CBU</span><strong id="transfCbu">3840200500000054291199</strong><button type="button" onclick="copiarDato('transfCbu', this)">Copiar</button></div>
  <div class="transf-dato"><span>Titular</span><strong>Dolores Subirain</strong></div>

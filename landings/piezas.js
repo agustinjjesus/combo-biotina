@@ -33,7 +33,7 @@ function cantidades(opciones) {
       ` <span class="price-now">${plata(o.precio)}</span>\n` +
       (o.primeraLinea ? ` <span class="price-cuotas">${o.primeraLinea}</span>\n` : '') +
       ` <span class="price-cuotas">3 cuotas de ${plata(Math.round(o.precio / 3))}</span>\n` +
-      ` <span class="price-transfer">Transferencia ${plata(o.transf)}</span>\n` +
+      (o.transf && o.transf < o.precio ? ` <span class="price-transfer">Transferencia ${plata(o.transf)}</span>\n` : '') +
       (o.cadaUno ? ` <span class="qty-save">${o.cadaUno}</span>\n` : '') +
       ' </div>\n </div>\n';
   }).join('\n') + ' </div>\n\n';
@@ -98,7 +98,7 @@ const faqComunes = unidad => [
   ['¿Lo puedo usar si estoy embarazada o con un tratamiento?', 'Es un cosmético de uso externo, pero no reemplaza un tratamiento médico. Si estás embarazada, en lactancia, tomás medicación o tenés alguna condición en el cuero cabelludo, consultalo con tu médico antes de empezar.'],
   ['¿Cuánto cuesta el envío?', `Enviamos por Correo Argentino a todo el país, a domicilio o a sucursal. Con 1 ${unidad} el envío cuesta $7.000 y llevando 2 o más es gratis. En el botón de compra ves el total, con el envío incluido.`],
   ['¿Cuánto tarda en llegar mi pedido?', 'Apenas se acredita el pago preparamos tu pedido y te avisamos por WhatsApp el día que sale. Llega en 3 a 5 días hábiles desde que pagás, y te pasamos el número de seguimiento del Correo para que lo sigas.'],
-  ['¿Qué formas de pago aceptan?', 'Con Mercado Pago podés pagar con tarjeta de crédito en 3 cuotas sin interés, con débito, con dinero en cuenta o en efectivo en Pago Fácil y Rapipago. Pagando por transferencia tenés 10% de descuento: elegís "Pagar por transferencia" en el formulario, te mostramos los datos de la cuenta y nos mandás el comprobante por WhatsApp. En todos los casos el pago se hace antes del envío.'],
+  ['¿Qué formas de pago aceptan?', 'Con Mercado Pago podés pagar con tarjeta de crédito en 3 cuotas sin interés, con débito, con dinero en cuenta o en efectivo en Pago Fácil y Rapipago. También podés pagar por transferencia, al mismo precio: elegís "Pagar por transferencia" en el formulario, te mostramos los datos de la cuenta y nos mandás el comprobante por WhatsApp. En todos los casos el pago se hace antes del envío.'],
   ['¿Es seguro comprar?', 'Sí. El pago se procesa por Mercado Pago: si pagás con tu cuenta tenés Compra Protegida y, si el pedido no te llega, te devuelven la plata. Te pasamos el seguimiento del Correo por WhatsApp. Somos de Tres de Febrero (Buenos Aires). No tenemos local a la calle: vendemos online y por WhatsApp.'],
   ['¿Cómo hago el pedido?', 'Elegí la cantidad y tocá Comprar. Dejá tu nombre y tu WhatsApp y pagá en Mercado Pago. Después del pago cargás la dirección de envío y, apenas se acredita, preparamos tu pedido y por WhatsApp te pasamos el número de seguimiento. Si preferís, podés hacer todo el pedido directamente por WhatsApp.'],
   ['¿Y si no me convence?', 'Tenés 10 días desde que lo recibís para devolverlo. Nos escribís por WhatsApp, nos mandás el producto y te devolvemos la plata por el mismo medio con el que pagaste.'],

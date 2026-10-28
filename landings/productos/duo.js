@@ -44,9 +44,9 @@ module.exports = {
   ]
 ]),
   CANTIDADES: P.cantidades([
-    { cant: '1 dúo', sub: '1 litro · rinde 1 mes', envio: 'Envío $7.000 · gratis llevando 2', precio: 27000, primeraLinea: 'envío incluido', transf: 25000 },
-    { cant: '2 dúos', sub: '2 litros · rinde 2 meses', envio: 'Envío gratis incluido', viejo: 54000, descuento: 33, precio: 36000, transf: 32400, cadaUno: '$18.000 cada dúo' },
-    { cant: '3 dúos', sub: '3 litros · rinde 3 meses', envio: 'Envío gratis incluido', viejo: 81000, descuento: 42, precio: 47000, transf: 42300, cadaUno: '$15.667 cada dúo' },
+    { cant: '1 dúo', sub: '1 litro · rinde 1 mes', envio: 'Envío $7.000 · gratis llevando 2', precio: 27000, primeraLinea: 'envío incluido' },
+    { cant: '2 dúos', sub: '2 litros · rinde 2 meses', envio: 'Envío gratis incluido', viejo: 54000, descuento: 33, precio: 36000, cadaUno: '$18.000 cada dúo' },
+    { cant: '3 dúos', sub: '3 litros · rinde 3 meses', envio: 'Envío gratis incluido', viejo: 81000, descuento: 42, precio: 47000, cadaUno: '$15.667 cada dúo' },
   ]),
   BOTON: 'COMPRAR AHORA · $36.000 — ENVÍO GRATIS',
   PRUEBA: P.prueba([
@@ -199,7 +199,7 @@ module.exports = {
   ]),
   JS_PRECIOS: P.jsPrecios([27000, 36000, 47000], ['Dúo Shampoo + Acondicionador x1 — $27.000 con envío', 'Dúo Shampoo + Acondicionador x2 — $36.000', 'Dúo Shampoo + Acondicionador x3 — $47.000']),
   JS_PRECIOS_TXT: P.jsTextosPrecio([27000, 36000, 47000]),
-  TRANSFERENCIA: P.transferencia(['$25.000 con envío', '$32.400', '$42.300']),
+  TRANSFERENCIA: P.transferencia(['$27.000 con envío', '$36.000', '$47.000']),
   PRODUCTS: P.products([
   {
     "ml": "500ml",
