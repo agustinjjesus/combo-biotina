@@ -1426,7 +1426,7 @@
  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
  {{UNIDAD_1}}
  </div>
- <span class="envio-time">$ 7.000</span>
+ <span class="envio-time">{{ENVIO_X1}}</span>
  </div>
  <div class="envio-row envio-row--free">
  <div class="envio-row-info">
@@ -1724,9 +1724,9 @@
  const envioPrecio = document.getElementById('envioPrecio');
  const envioTachado = document.getElementById('envioTachado');
  const envioNota = document.getElementById('envioNota');
- if (envioPrecio) envioPrecio.textContent = qty === 1 ? '$ 7.000' : 'GRATIS';
+ if (envioPrecio) envioPrecio.textContent = qty === 1 ? '{{ENVIO_X1}}' : 'GRATIS';
  if (envioTachado) envioTachado.style.display = qty === 1 ? 'none' : '';
- if (envioNota) envioNota.textContent = qty === 1 ? 'Envío $7.000 — gratis llevando 2 o más' : 'Envío gratis a todo el país';
+ if (envioNota) envioNota.textContent = qty === 1 ? '{{ENVIO_X1_NOTA}}' : 'Envío gratis a todo el país';
           actualizarCuotas();
  }
 

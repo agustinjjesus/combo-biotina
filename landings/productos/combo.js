@@ -1,6 +1,8 @@
 // Combo Biotina: combo-biotina.html. Desde el 23/10/2026 sale de la misma plantilla que el
 // Dúo. Trae shampoo y acondicionador de 500 ml, Biotina Pura de 250 ml y una Ampolla Plex de
 // regalo. Sin promesas de caída, crecimiento ni resultados, como el Dúo.
+// Desde el 31/10/2026 (él: "pasa el combo a 33 en la web"): 1 combo $33.000 con envío gratis a sucursal,
+// 2 y 3 con envío gratis a domicilio, igual que la Biotina Pura x1 en el bot.
 const P = require('../piezas');
 const p = '';
 
@@ -12,8 +14,8 @@ module.exports = {
   archivo: 'combo-biotina.html',
   P: p,
   TITULO: 'Combo Biotina® | Shampoo + acondicionador + spray de biotina',
-  DESCRIPCION: 'Combo Biotina®: shampoo y acondicionador sin sulfatos de 500 ml + spray de Biotina Pura de 250 ml + ampolla de regalo. Envío gratis llevando 2 o más, pago seguro con Mercado Pago.',
-  DESCRIPCION_CORTA: 'Shampoo y acondicionador sin sulfatos + spray de Biotina Pura 250 ml + ampolla de regalo. Envío gratis llevando 2 o más.',
+  DESCRIPCION: 'Combo Biotina®: shampoo y acondicionador sin sulfatos de 500 ml + spray de Biotina Pura de 250 ml + ampolla de regalo. Envío gratis: 1 combo a sucursal, 2 o más a domicilio. Pago seguro con Mercado Pago.',
+  DESCRIPCION_CORTA: 'Shampoo y acondicionador sin sulfatos + spray de Biotina Pura 250 ml + ampolla de regalo. Envío gratis a todo el país.',
   URL: 'https://productoscapilarespg.com/combo-biotina.html',
   IMAGEN_OG: 'https://productoscapilarespg.com/combo-productos-v2.jpg',
   VC_NOMBRE: "content_name: 'Combo Biotina'",
@@ -34,9 +36,9 @@ module.exports = {
     ['Ampolla Plex de regalo', ' para un tratamiento intensivo por semana.'],
   ]),
   CANTIDADES: P.cantidades([
-    { cant: '1 combo', sub: 'Rinde 1 mes', envio: 'Envío $7.000 · gratis llevando 2', extra: REGALO, precio: 40000, primeraLinea: 'envío incluido' },
-    { cant: '2 combos', sub: 'Rinde 2 meses', envio: 'Envío gratis incluido', extra: REGALO, viejo: 80000, descuento: 24, precio: 61000, cadaUno: '$30.500 cada combo' },
-    { cant: '3 combos', sub: 'Rinde 3 meses', envio: 'Envío gratis incluido', extra: REGALO, viejo: 120000, descuento: 36, precio: 77000, cadaUno: '$25.667 cada combo' },
+    { cant: '1 combo', sub: 'Rinde 1 mes', envio: 'Envío gratis a sucursal', extra: REGALO, precio: 33000, primeraLinea: 'envío gratis a sucursal' },
+    { cant: '2 combos', sub: 'Rinde 2 meses', envio: 'Envío gratis a domicilio', extra: REGALO, viejo: 80000, descuento: 24, precio: 61000, cadaUno: '$30.500 cada combo' },
+    { cant: '3 combos', sub: 'Rinde 3 meses', envio: 'Envío gratis a domicilio', extra: REGALO, viejo: 120000, descuento: 36, precio: 77000, cadaUno: '$25.667 cada combo' },
   ]),
   BOTON: 'COMPRAR AHORA · $61.000 — ENVÍO GRATIS',
   PRUEBA: P.prueba([
@@ -90,22 +92,24 @@ module.exports = {
     ['¿Con qué frecuencia se usa cada uno?', 'El shampoo, el acondicionador y el spray, todos los días. La ampolla, una vez por semana.'],
     ['¿Por qué el shampoo hace menos espuma?', 'Porque no tiene sulfatos. Los sulfatos son los que hacen mucha espuma en los shampoos comunes y pueden resecar el pelo y el cuero cabelludo. El nuestro limpia igual pero más suave: con un poco de agua y masajeando alcanza.'],
     ['¿Sirve para todo tipo de cabello?', 'Sí, es apto para todo tipo de cabello: liso, ondulado, rizado, teñido o con procesos químicos.'],
-    ...P.faqComunes('combo'),
+    ...P.faqComunes('combo', 'Con 1 combo el envío es gratis a la sucursal del correo más cercana a tu dirección, y llevando 2 o más es gratis a domicilio.'),
   ]),
   CTA_FINAL: P.ctaFinal({
     titulo: 'Empezá hoy tu rutina completa',
     texto: 'Shampoo y acondicionador de 500 ml, Biotina Pura en spray y una Ampolla Plex de regalo. Sin formol ni sulfatos.',
     boton: 'Lleva 2 · $61.000 — Envío gratis', cant: 2,
   }),
-  MODAL_PRODUCTO: '<span id="modalProducto">Combo Biotina x1 — $40.000 con envío</span>',
+  ENVIO_X1: 'Gratis a sucursal',
+  ENVIO_X1_NOTA: 'Envío gratis a sucursal — a domicilio llevando 2 o más',
+  MODAL_PRODUCTO: '<span id="modalProducto">Combo Biotina x1 — $33.000 con envío gratis a sucursal</span>',
   JS_MP: P.jsMp([
-    ['https://mpago.la/1QLwa1G', '1 combo, $40.000 ($33.000 + $7.000 de envío)'],
+    ['https://mpago.la/1GkoJJp', '1 combo, $33.000 con envío gratis a sucursal'],
     ['https://mpago.la/1WX3K3Y', '2 combos $61.000'],
     ['https://mpago.la/2J4mMuV', '3 combos $77.000'],
   ]),
-  JS_PRECIOS: P.jsPrecios([40000, 61000, 77000], ['Combo Biotina x1 — $40.000 con envío', 'Combo Biotina x2 — $61.000', 'Combo Biotina x3 — $77.000']),
-  JS_PRECIOS_TXT: P.jsTextosPrecio([40000, 61000, 77000]),
-  TRANSFERENCIA: P.transferencia(['$40.000 con envío', '$61.000', '$77.000']),
+  JS_PRECIOS: P.jsPrecios([33000, 61000, 77000], ['Combo Biotina x1 — $33.000 con envío gratis a sucursal', 'Combo Biotina x2 — $61.000', 'Combo Biotina x3 — $77.000']),
+  JS_PRECIOS_TXT: P.jsTextosPrecio([33000, 61000, 77000]),
+  TRANSFERENCIA: P.transferencia(['$33.000 con envío gratis a sucursal', '$61.000', '$77.000']),
   PRODUCTS: P.products([
     {
       ml: '500ml', name: 'Shampoo de Biotina', tag: 'USO DIARIO', tagClass: 'coral',
