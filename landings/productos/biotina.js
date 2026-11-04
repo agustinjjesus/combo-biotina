@@ -21,12 +21,12 @@ module.exports = {
   ANUNCIO_2: ' SIN FORMOL NI SULFATOS\n',
   NAV_LINKS: P.navLinks(p, 'biotina'),
   WA_URL: 'https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20la%20Biotina%20Pura%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F',
-  // El video del anuncio "No se la recomiendo a cualquiera", sin la placa y con subtítulos (14/10).
-  HERO_MEDIA: ' <div class="hero-img hero-video">\n' +
-    ' <video id="heroVideo" src="biotina-pura-video.mp4?v=1" poster="biotina-pura-gatillo.jpg?v=1" autoplay muted loop playsinline preload="auto" aria-label="Video de Biotina Pura PG en spray"></video>\n' +
-    ' <button type="button" class="btn-sonido" id="btnSonido" onclick="alternarSonido()" aria-label="Activar sonido">\n' +
-    ' <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>\n' +
-    ' <span>Activar sonido</span>\n </button>\n </div>\n',
+  // 04/11/2026: el video de arriba es el de los anuncios nuevos (pantalla dividida: "En otros lados $40.000 el
+  // litro / acá $30.000"), en versión CUADRADA y sin sonido, para que quien entra desde el anuncio vea lo mismo.
+  // Antes: el video "No se la recomiendo a cualquiera" (biotina-pura-video.mp4) con botón de sonido.
+  HERO_MEDIA: ' <div class="hero-img hero-video cuadrado">\n' +
+    ' <video id="heroVideo" src="biotina-pura-precio.mp4?v=1" poster="biotina-pura-precio-poster.jpg?v=1" autoplay muted loop playsinline preload="auto" aria-label="Biotina Pura: 2 frascos, 1 litro, $30.000 con envío gratis a todo el país"></video>\n' +
+    ' </div>\n',
   BADGE: P.badge('En stock · Envío a todo el país'),
   H1: ' <h1>Biotina Pura® en spray, directo a la raíz</h1>\n',
   COMPOSICION: ' <p class="combo-composition">Spray de 500 ml listo para usar · Se usa todos los días y no se enjuaga</p>\n',

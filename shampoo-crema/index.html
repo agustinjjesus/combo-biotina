@@ -1183,6 +1183,8 @@
  @media (min-width: 769px) { .hero-img.hero-video { max-height: 78vh; } }
  /* celular: video más bajo para que el título y el precio entren en la primera pantalla (18/10) */
  @media (max-width: 768px) { .hero-img.hero-video { aspect-ratio: auto; height: 44vh; } }
+ /* Biotina desde el 04/11: video cuadrado (1080x1080), se muestra entero en celular y compu. Tres clases para ganarle a las de arriba. */
+ .hero-img.hero-video.cuadrado { aspect-ratio: 1 / 1; height: auto; max-height: none; }
  .btn-sonido { position: absolute; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.62); color: #fff; border: 0; border-radius: 20px; padding: 8px 13px; font: 600 0.82rem 'Outfit', sans-serif; cursor: pointer; }
  .btn-sonido svg { width: 16px; height: 16px; }
  .includes-grid--single { grid-template-columns: 1fr; max-width: 460px; }
