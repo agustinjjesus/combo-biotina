@@ -154,6 +154,34 @@
     .prod-stat-row strong { color: var(--dark); font-weight: 700; }
     .prod-stat-ganancia strong { color: var(--green); }
 
+    /* Ventas día por día (04/11/2026) */
+    .hist-resumen { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 0.86rem; color: var(--gray); margin-bottom: 16px; }
+    .hist-resumen strong { color: var(--dark); font-size: 1.05rem; }
+    .hist-resumen .ok { color: var(--green); }
+    .hist-scroll { overflow-x: auto; border-bottom: 1px solid var(--cream2); margin-bottom: 18px; }
+    .hist-inner { position: relative; display: flex; align-items: flex-end; gap: 4px; height: 140px; padding-top: 16px; width: max-content; min-width: 100%; }
+    .hist-col { flex: 0 0 26px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+    .hist-val { font-size: 0.62rem; font-weight: 700; color: var(--gray); margin-bottom: 3px; }
+    .hist-bar { width: 16px; border-radius: 3px 3px 0 0; background: var(--coral-light); min-height: 2px; }
+    .hist-bar.ok { background: var(--green); }
+    .hist-day { height: 16px; margin-top: 4px; font-size: 0.58rem; color: var(--gray-light); white-space: nowrap; }
+    .hist-col.hoy .hist-day { color: var(--dark); font-weight: 700; }
+    .hist-meta { position: absolute; left: 0; right: 0; border-top: 1.5px dashed var(--green); pointer-events: none; }
+    .hist-meta span { position: absolute; right: 2px; top: -16px; font-size: 0.6rem; font-weight: 700; color: var(--green); background: white; padding: 0 3px; }
+    .hist-lista { display: flex; flex-direction: column; }
+    .hist-dia { border-top: 1px solid var(--cream2); padding: 10px 0; }
+    .hist-dia:first-child { border-top: none; }
+    .hist-dia-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+    .hist-fecha { font-weight: 700; font-size: 0.9rem; min-width: 92px; text-transform: capitalize; }
+    .hist-n { font-size: 0.82rem; font-weight: 700; padding: 1px 9px; border-radius: 20px; background: var(--cream); color: var(--gray); }
+    .hist-n.ok { background: #e3f1e6; color: var(--green); }
+    .hist-tot { font-size: 0.82rem; color: var(--gray); }
+    .hist-venta { display: grid; grid-template-columns: 44px 1fr; gap: 0 8px; font-size: 0.8rem; color: var(--dark); padding: 6px 0 0 12px; line-height: 1.4; }
+    .hist-venta .h { color: var(--gray-light); }
+    .hist-venta .l2 { grid-column: 2; color: var(--gray); }
+    .hist-venta .l2 strong { color: var(--dark); }
+    .hist-mas { margin-top: 12px; }
+
     .visits-bars { display: flex; align-items: flex-end; gap: 5px; height: 106px; border-bottom: 1px solid var(--cream2); overflow-x: auto; }
     .visits-col { flex: 0 0 24px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
     .visits-bar-val { font-size: 0.6rem; color: var(--gray); font-weight: 700; margin-bottom: 3px; }
@@ -389,6 +417,17 @@
           <div class="stat-value" id="sVisitas">0</div>
           <div class="stat-sub" id="sVisitasHoy">hoy: 0</div>
         </div>
+      </div>
+
+      <!-- DÍA POR DÍA (04/11/2026): todas las ventas que tuvimos, agrupadas por día, contra la meta de 4 por día.
+           No depende del período elegido arriba. -->
+      <div class="dist-section" id="historial">
+        <div class="dist-title">Ventas día por día</div>
+        <p class="dist-sub">Todas las ventas que tuvimos (sin las canceladas), día por día. Meta: <strong>4 por día</strong>.</p>
+        <div class="hist-resumen" id="histResumen"></div>
+        <div class="hist-scroll" id="histScroll"><div class="hist-inner" id="histChart"></div></div>
+        <div class="hist-lista" id="histLista"></div>
+        <button type="button" class="btn-line hist-mas" id="histMas" onclick="histVerMas()">Ver días anteriores</button>
       </div>
 
       <!-- POR PRODUCTO -->
@@ -777,6 +816,7 @@
 
     function renderTodo() {
       renderNumeros();
+      renderHistorial();
       renderProductos();
       renderDespachos();
       renderVentas();
@@ -809,6 +849,77 @@
       const aCobrar = ventas.filter(v => v.estado === 'a_coordinar');
       $('sACobrar').textContent = aCobrar.length;
       $('sACobrarMonto').textContent = aCobrar.length ? fmt(aCobrar.reduce((a, v) => a + (v.precio_ars || 0), 0)) + ' al entregar' : 'pagan al recibir';
+    }
+
+    /* ── DÍA POR DÍA ────────────────────────────────────────────────── */
+    // Cuenta todas las ventas menos las canceladas (las "a cobrar" también: son ventas cerradas que se pagan al recibir).
+    // Los días van en hora de Argentina.
+    const META_DIA = 4;
+    const TZ = 'America/Argentina/Buenos_Aires';
+    let histDias = 7;
+    const diaAR = (iso) => new Date(iso).toLocaleDateString('en-CA', { timeZone: TZ });          // "2026-11-04"
+    const mediodia = (dia) => new Date(dia + 'T12:00:00-03:00');
+    const diaAnterior = (dia, n = 1) => diaAR(mediodia(dia).getTime() - n * 86400000);
+    function histVerMas() { histDias += 14; renderHistorial(); }
+
+    function renderHistorial() {
+      const validas = ventas.filter(v => v.estado !== 'cancelado' && !isNaN(new Date(v.creado)));
+      const porDia = {};
+      validas.forEach(v => { (porDia[diaAR(v.creado)] = porDia[diaAR(v.creado)] || []).push(v); });
+      const hoy = diaAR(Date.now());
+      const primera = Object.keys(porDia).sort()[0] || hoy;
+      const n = (d) => (porDia[d] || []).length;
+
+      // resumen de arriba
+      let semana = 0;
+      for (let i = 0; i < 7; i++) semana += n(diaAnterior(hoy, i));
+      const nHoy = n(hoy), nAyer = n(diaAnterior(hoy));
+      $('histResumen').innerHTML =
+        `<span>Hoy <strong class="${nHoy >= META_DIA ? 'ok' : ''}">${nHoy}</strong> de ${META_DIA}</span>` +
+        `<span>Ayer <strong class="${nAyer >= META_DIA ? 'ok' : ''}">${nAyer}</strong></span>` +
+        `<span>Últimos 7 días <strong>${semana}</strong> (${(semana / 7).toLocaleString('es-AR', { maximumFractionDigits: 1 })} por día)</span>` +
+        `<span>Desde el principio <strong>${validas.length}</strong></span>`;
+
+      // gráfico: últimos 28 días, el de hoy a la derecha
+      const dias = [];
+      for (let i = 27; i >= 0; i--) dias.push(diaAnterior(hoy, i));
+      const max = Math.max(META_DIA + 1, ...dias.map(n));
+      const escala = 88 / max;   // px por venta
+      $('histChart').innerHTML = dias.map(d => {
+        const c = n(d), [, m, dd] = d.split('-');
+        return `<div class="hist-col${d === hoy ? ' hoy' : ''}" title="${dd}/${m}: ${c} ${c === 1 ? 'venta' : 'ventas'}">
+          <div class="hist-val">${c || ''}</div>
+          <div class="hist-bar${c >= META_DIA ? ' ok' : ''}" style="height:${Math.max(2, c * escala)}px"></div>
+          <div class="hist-day">${+dd}/${+m}</div></div>`;
+      }).join('') + `<div class="hist-meta" style="bottom:${20 + META_DIA * escala}px"><span>meta ${META_DIA}</span></div>`;
+      const sc = $('histScroll'); sc.scrollLeft = sc.scrollWidth;
+
+      // lista: los últimos días, el más nuevo arriba, con cada venta
+      const lista = [];
+      for (let i = 0; i < histDias; i++) {
+        const d = diaAnterior(hoy, i);
+        if (d < primera) break;
+        lista.push(d);
+      }
+      $('histLista').innerHTML = lista.map(d => {
+        const vs = (porDia[d] || []).slice().sort((a, b) => new Date(b.creado) - new Date(a.creado));
+        const plata = vs.reduce((a, v) => a + (v.precio_ars || 0), 0);
+        const unidades = vs.reduce((a, v) => a + (v.cantidad || 1), 0);
+        const fecha = mediodia(d).toLocaleDateString('es-AR', { weekday: 'short', day: 'numeric', month: 'numeric', timeZone: TZ });
+        return `<div class="hist-dia">
+          <div class="hist-dia-head">
+            <span class="hist-fecha">${d === hoy ? 'Hoy' : esc(fecha)}</span>
+            <span class="hist-n${vs.length >= META_DIA ? ' ok' : ''}">${vs.length} ${vs.length === 1 ? 'venta' : 'ventas'}</span>
+            ${vs.length ? `<span class="hist-tot">${fmt(plata)} · ${unidades} ${unidades === 1 ? 'unidad' : 'unidades'}</span>` : ''}
+          </div>
+          ${vs.map(v => `<div class="hist-venta">
+            <span class="h">${new Date(v.creado).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: TZ })}</span>
+            <span>${esc(v.nombre) || 'Sin nombre'}${v.localidad ? ' · ' + esc(v.localidad) : ''}</span>
+            <span class="l2">${NOMBRES[v.familia] || esc(v.producto)} x${v.cantidad || 1} · <strong>${fmt(v.precio_ars)}</strong> · ${ESTADOS[v.estado] || esc(v.estado)}${v.entrega === 'en_mano' ? ' (en mano)' : ''}</span>
+          </div>`).join('')}
+        </div>`;
+      }).join('');
+      $('histMas').style.display = diaAnterior(hoy, histDias) >= primera ? '' : 'none';
     }
 
     function renderProductos() {
