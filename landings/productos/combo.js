@@ -26,7 +26,7 @@ module.exports = {
   NAV_LINKS: P.navLinks(p, 'combo'),
   WA_URL: 'https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20el%20Combo%20Biotina%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F',
   // 08/11/2026: imagen cuadrada en el mismo estilo que Biotina y Dúo (combo-hero.jpg, hacer-hero-combo-08-11.js). Antes: la foto combo-productos-v2.jpg.
-  HERO_MEDIA: ' <div class="hero-img cuadrado">\n <img src="combo-hero.jpg?v=1" width="1080" height="1080" fetchpriority="high" alt="Combo Biotina PG: shampoo, acondicionador y spray de biotina, con ampolla Plex de regalo. 2 combos $61.000 con envío gratis y 3 cuotas sin interés" />\n </div>\n',
+  HERO_MEDIA: ' <div class="hero-img cuadrado">\n <img src="combo-hero.jpg?v=2" width="1080" height="1080" fetchpriority="high" alt="Combo Biotina PG: shampoo, acondicionador y spray de biotina, con ampolla Plex de regalo. 2 combos $61.000 con envío gratis y 3 cuotas sin interés" />\n </div>\n',
   BADGE: P.badge('Envío a todo el país · Ampolla de regalo'),
   H1: ' <h1>Combo Biotina®: shampoo, acondicionador y spray de biotina</h1>\n',
   COMPOSICION: ' <p class="combo-composition">Shampoo y acondicionador de 500 ml + Biotina Pura en spray de 250 ml</p>\n <div class="gift-highlight">+ Ampolla Plex de regalo</div>\n',
