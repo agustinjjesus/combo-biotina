@@ -1194,6 +1194,11 @@
  /* Pago por transferencia en el formulario (23/10/2026) */
  .btn-transferir { width: 100%; background: #ffffff; color: var(--dark); border: 2px solid var(--dark); padding: 14px; border-radius: 12px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 10px; }
  .btn-transferir small { font-weight: 500; color: #1a7f37; }
+ /* 08/11/2026: los botones de pago quedan fijos abajo del cuadro. En el celular el formulario mide más que la pantalla y 'Confirmar y pagar' quedaba escondido (11 carritos, solo 2 dejaron sus datos). */
+ .modal-acciones { position: sticky; bottom: 0; z-index: 2; background: #fff; margin: 0 -32px; padding: 8px 32px 10px; box-shadow: 0 -10px 14px -10px rgba(0,0,0,0.18); }
+ .modal-acciones .btn-confirm { margin-top: 0; }
+ .modal-acciones .btn-transferir { margin-top: 8px; }
+ @media (max-width: 540px) { .modal-acciones { margin: 0 -20px; padding: 8px 20px 10px; } }
  .transf-panel h3 { margin-top: 4px; }
  .transf-monto-fila { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 4px 0 6px; }
 .transf-monto { font-family: 'Outfit', sans-serif; font-size: 2.4rem; font-weight: 800; color: #1e6640; letter-spacing: -1px; }
@@ -1794,8 +1799,10 @@
    <p class="modal-pago-sin-cuenta"><strong>No necesitás cuenta de Mercado Pago.</strong> Pagás con tarjeta de crédito o débito, o en efectivo en Rapipago o Pago Fácil.</p>
    <p class="modal-pago-entrega" id="modalEntrega"></p>
  </div>
+ <div class="modal-acciones">
  <button class="btn-confirm" id="btnConfirmarCompra" onclick="confirmarCompra()">Confirmar y pagar →</button>
  <button class="btn-transferir" id="btnTransferir" onclick="pagarPorTransferencia()">Pagar por transferencia · <span id="modalTransf"></span></button>
+ </div>
  <p style="text-align:center;font-size:0.75rem;color:var(--green);font-weight:600;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px;">
  Pago 100% seguro procesado por MercadoPago
  </p>
