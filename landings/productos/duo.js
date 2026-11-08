@@ -101,9 +101,9 @@ module.exports = {
     sub: 'Dos productos que se complementan para una rutina de lavado completa.',
     fotos: [
   {
-    "src": "../duo-shampoo-espuma.jpg",
-    "alt": "Manos con la espuma suave del shampoo sin sulfatos",
-    "pos": "center 62%",
+    "src": "../que-duo-shampoo.jpg",
+    "alt": "Shampoo con biotina de 500 ml",
+    "pos": "center 50%",
     "tag": "Shampoo · 500 ml",
     "titulo": "Limpia suave, sin sulfatos",
     "texto": "Limpia el cuero cabelludo y el largo sin arrastrar la grasa natural que protege el pelo. Hace menos espuma porque no tiene sulfatos, y limpia igual.",
@@ -114,8 +114,8 @@ module.exports = {
     ]
   },
   {
-    "src": "../duo-acond-hebra.jpg",
-    "alt": "El acondicionador envolviendo la hebra de pelo",
+    "src": "../que-duo-acond.jpg",
+    "alt": "Acondicionador con biotina de 500 ml",
     "pos": "center 50%",
     "tag": "Acondicionador · 500 ml",
     "titulo": "Suave y con brillo, de medios a puntas",
@@ -128,8 +128,8 @@ module.exports = {
   }
 ],
     resultado: {
-  "src": "../duo-resultado-pelo.jpg",
-  "alt": "Pelo largo, suave y con brillo",
+  "src": "../que-duo-par.jpg",
+  "alt": "Shampoo y acondicionador con biotina, 500 ml cada uno",
   "k": "Con uso constante",
   "items": [
     [

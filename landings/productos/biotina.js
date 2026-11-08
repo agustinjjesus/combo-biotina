@@ -67,10 +67,10 @@ module.exports = {
     titulo: '¿Cómo es la Biotina Pura?',
     sub: 'Un spray simple, para usar todos los días.',
     fotos: [
-      { src: 'biotina-pura-gatillo.jpg', alt: 'Frasco de Biotina Pura en spray de 500 ml', pos: 'center 50%', tag: 'Biotina Pura · 500 ml', titulo: 'Va directo a la raíz', texto: 'Se pulveriza sobre el cuero cabelludo, que es donde nace el pelo. Es una fórmula con biotina, la vitamina B7, sin formol ni sulfatos.', lista: ['Con biotina B7', 'Sin formol ni sulfatos', 'Para todo tipo de pelo'] },
-      { src: 'biotina-mano.jpg', alt: 'Mano aplicando el spray de Biotina Pura', pos: 'center 40%', tag: 'Uso diario', titulo: 'Todos los días, sin enjuagar', texto: 'Unas pulverizaciones por zona, un minuto de masaje con las yemas de los dedos y listo. No se enjuaga ni deja el pelo pesado.', lista: ['2 o 3 pulverizaciones por zona', 'Masaje de 1 minuto', 'No se enjuaga'] },
+      { src: 'que-biotina-1.jpg', alt: 'Frasco de Biotina Pura en spray de 500 ml', pos: 'center 50%', tag: 'Biotina Pura · 500 ml', titulo: 'Va directo a la raíz', texto: 'Se pulveriza sobre el cuero cabelludo, que es donde nace el pelo. Es una fórmula con biotina, la vitamina B7, sin formol ni sulfatos.', lista: ['Con biotina B7', 'Sin formol ni sulfatos', 'Para todo tipo de pelo'] },
+      { src: 'que-biotina-2.jpg', alt: 'Biotina Pura en spray pulverizando', pos: 'center 50%', tag: 'Uso diario', titulo: 'Todos los días, sin enjuagar', texto: 'Unas pulverizaciones por zona, un minuto de masaje con las yemas de los dedos y listo. No se enjuaga ni deja el pelo pesado.', lista: ['2 o 3 pulverizaciones por zona', 'Masaje de 1 minuto', 'No se enjuaga'] },
     ],
-    resultado: { src: 'biotina-espejo.jpg', alt: 'Mujer mirándose el pelo frente al espejo', k: 'Cuánto rinde', items: [['1 frasco', 'Unos 2 meses de uso diario.'], ['2 frascos', 'Unos 4 meses, con envío gratis.']] },
+    resultado: { src: 'que-biotina-rinde.jpg', alt: 'Dos frascos de Biotina Pura en spray', k: 'Cuánto rinde', items: [['1 frasco', 'Unos 2 meses de uso diario.'], ['2 frascos', 'Unos 4 meses, con envío gratis.']] },
   }),
   COMO_SE_USA: P.comoSeUsa({
     sub: 'Una rutina simple, todos los días.',
