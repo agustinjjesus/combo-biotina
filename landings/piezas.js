@@ -40,12 +40,19 @@ function cantidades(opciones) {
 }
 
 const prueba = items => ' <!-- PROOF STRIP -->\n <div class="proof-strip">\n' +
-  items.map(([num, txt]) => ` <div style="text-align:center"><div class="proof-num">${num}</div><div class="proof-label">${txt}</div></div>\n`).join('') + ' </div>\n\n';
+  items.map(([num, txt]) => ` <div class="proof-item"><div class="proof-num">${num}</div><div class="proof-label">${txt}</div></div>\n`).join('') + ' </div>\n\n';
 
-// Bloque de confianza debajo de la franja negra: en el Dúo es "Sé de las primeras"; en los otros, "Probalo sin riesgo".
+// Bloque de confianza (08/11/2026, rediseño): tag + título + texto propio de cada producto, tres tarjetas iguales en las tres páginas
+// (pago seguro con los logos, 10 días para devolver, seguimiento del envío) y el botón. {{LOGOS_PAGO}} lo completa generar.js.
+// En el Dúo el texto aclara que todavía no hay opiniones; en Biotina y Combo es "Probalo sin riesgo".
+const IC = d => `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const tarjeta = (icono, titulo, texto, extra = '') => ` <div class="confianza-card">\n <div class="confianza-icon">${IC(icono)}</div>\n <h3>${titulo}</h3>\n <p>${texto}</p>\n${extra} </div>\n`;
 const primeras = ({ comentario, tag, titulo, texto, boton, cant }) =>
-  ` <!-- ${comentario} -->\n <div class="primeras-section">\n <span class="primeras-tag">${tag}</span>\n <h2>${titulo}</h2>\n <p>${texto}</p>\n` +
-  ' <div class="primeras-garantia">\n <strong>Probalo sin riesgo</strong>\n <span>Si no te convence, tenés 10 días desde que lo recibís para devolverlo y te devolvemos la plata.</span>\n </div>\n' +
+  ` <!-- ${comentario} -->\n <div class="primeras-section">\n <span class="primeras-tag">${tag}</span>\n <h2>${titulo}</h2>\n <p>${texto}</p>\n <div class="confianza-grid">\n` +
+  tarjeta('<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>', 'Pagás seguro', 'Con Mercado Pago: tarjeta en 3 cuotas sin interés, débito o efectivo en Pago Fácil y Rapipago. También podés pagar por transferencia.', '{{LOGOS_PAGO}}') +
+  tarjeta('<polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>', '10 días para devolverlo', 'Si no te convence, tenés 10 días desde que lo recibís para devolverlo y te devolvemos la plata.') +
+  tarjeta('<rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>', 'Seguís tu pedido', 'Despachamos por Correo Argentino y te pasamos el número de seguimiento por WhatsApp.') +
+  ' </div>\n' +
   ` <a href="#" onclick="selectQty(document.querySelector('.qty-option.popular'), ${cant}); irAPagar(); return false;" class="primeras-btn">${boton}</a>\n </div>\n\n`;
 
 // Pedidos que ya salieron: provincias y, cuando haya, fotos reales de paquetes (landings/envios-reales.js).

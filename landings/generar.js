@@ -14,11 +14,14 @@ const P = require('./piezas');
 const RAIZ = path.join(__dirname, '..');
 const plantilla = fs.readFileSync(path.join(__dirname, 'plantilla.html'), 'utf8');
 const envios = require('./envios-reales');
+// Logos de pago (Visa, Mastercard, Mercado Pago, Amex): van dentro de la tarjeta "Pagás seguro" del bloque de confianza.
+const logosPago = fs.readFileSync(path.join(__dirname, 'logos-pago.html'), 'utf8');
 
 for (const nombre of ['duo', 'biotina', 'combo']) {
   const datos = Object.assign({}, require('./productos/' + nombre));
   // Lo que va igual en las tres páginas
   datos.ENVIOS_REALES = P.enviosReales(envios, datos.P);
+  datos.PRIMERAS = datos.PRIMERAS.split('{{LOGOS_PAGO}}').join(logosPago);
   // Envío de 1 unidad: los $7.000 YA VAN SUMADOS en el precio (1 frasco $22.000 = $15.000 + $7.000), no se cobran aparte: se dice "incluido"
   // (08/11/2026: antes decía "$7.000" y parecía un cargo extra). El Combo, desde el 31/10/2026, va gratis a sucursal.
   if (!('ENVIO_X1' in datos)) datos.ENVIO_X1 = 'Incluido';
