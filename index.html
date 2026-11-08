@@ -314,27 +314,21 @@
  .guide-section h2 { font-family: 'Outfit', sans-serif; font-size: 1.9rem; font-weight: 700; text-align: center; margin-bottom: 8px; color: #33201d; letter-spacing: -0.01em; }
  .guide-sub { text-align: center; font-size: 0.95rem; font-weight: 400; color: #6e4e48; margin-bottom: 40px; }
  .guide-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; max-width: 1100px; margin: 0 auto; align-items: stretch; }
- .guide-card { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; background: #ffffff; border-radius: 22px; padding: 24px 22px 26px; box-shadow: 0 18px 34px -24px rgba(51, 32, 29, 0.5); transition: transform 0.2s, box-shadow 0.2s; }
+ .guide-card { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; background: #ffffff; border-radius: 22px; padding: 34px 18px 30px; box-shadow: 0 18px 34px -24px rgba(51, 32, 29, 0.5); transition: transform 0.2s, box-shadow 0.2s; }
  .guide-card:hover { transform: translateY(-3px); box-shadow: 0 24px 38px -22px rgba(51, 32, 29, 0.55); }
- .guide-pic { width: 100%; height: 196px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: 18px; background: radial-gradient(closest-side at 50% 62%, #f8eae5 0%, rgba(248, 234, 229, 0) 100%); }
- .guide-pic img { display: block; width: auto; max-width: 100%; filter: drop-shadow(0 14px 14px rgba(51, 32, 29, 0.25)); }
- .guide-pic--spray img { height: 184px; }
- .guide-pic--duo img { height: 172px; }
- .guide-pic--combo img { height: 150px; }
- .guide-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #a03a4b; margin-bottom: 8px; }
- .guide-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; color: #33201d; }
+ .guide-tag { display: inline-block; font-size: 0.64rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #a03a4b; background: #fbe9e6; padding: 6px 12px; border-radius: 999px; margin-bottom: 16px; }
+ .guide-card h3 { font-size: 1.35rem; font-weight: 700; margin-bottom: 10px; color: #33201d; line-height: 1.2; }
  .guide-card p { font-size: 0.9rem; font-weight: 400; color: #6e4e48; line-height: 1.55; margin-bottom: 22px; flex: 1; }
  .guide-link { display: inline-block; background: transparent; border: 2px solid #a03a4b; color: #a03a4b; padding: 11px 24px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; text-decoration: none; transition: background 0.2s, color 0.2s; }
  .guide-link:hover { background: #a03a4b; color: #ffffff; }
  .guide-card--highlight { background: #a03a4b; box-shadow: 0 26px 42px -22px rgba(160, 58, 75, 0.95); }
  .guide-card--highlight:hover { box-shadow: 0 30px 46px -22px rgba(160, 58, 75, 1); }
- .guide-card--highlight .guide-pic { background: radial-gradient(closest-side at 50% 62%, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 100%); }
- .guide-card--highlight .guide-tag { color: #f8d6dc; }
+ .guide-card--highlight .guide-tag { color: #ffffff; background: rgba(255, 255, 255, 0.18); }
  .guide-card--highlight h3 { color: #ffffff; }
  .guide-card--highlight p { color: #fbe6ea; }
  .guide-card--highlight .guide-link { background: #ffffff; border-color: #ffffff; color: #a03a4b; }
  .guide-card--highlight .guide-link:hover { background: #fbe6ea; border-color: #fbe6ea; }
- .guide-regalo { position: absolute; top: 14px; right: 14px; background: #ffffff; color: #a03a4b; font-size: 0.7rem; font-weight: 700; padding: 5px 12px; border-radius: 999px; }
+ .guide-regalo { display: inline-block; background: #ffffff; color: #a03a4b; font-size: 0.72rem; font-weight: 700; padding: 5px 14px; border-radius: 999px; margin-bottom: 14px; }
  @media (min-width: 901px) { .guide-card--highlight { transform: translateY(-8px); } .guide-card--highlight:hover { transform: translateY(-11px); } }
  @media (max-width: 900px) { .guide-section { padding: 44px 6vw 48px; } .guide-section h2 { font-size: 1.7rem; } .guide-grid { grid-template-columns: 1fr; max-width: 440px; } }
  .product-card-price { font-size: 0.78rem; color: var(--gray); margin-bottom: 14px; }
@@ -513,7 +507,6 @@
  <p class="guide-sub">Si no sabés por dónde arrancar, esto te ayuda a decidir.</p>
  <div class="guide-grid">
  <div class="guide-card">
- <div class="guide-pic guide-pic--spray"><img src="guide-biotina.webp?v=1" width="106" height="340" loading="lazy" alt="Biotina Pura en spray" /></div>
  <span class="guide-tag">Recién notás la caída</span>
  <h3>Biotina Pura</h3>
  <p>Empezá con el spray de uso diario, directo en la raíz. Ideal si es tu primer tratamiento.</p>
@@ -521,14 +514,12 @@
  </div>
  <div class="guide-card guide-card--highlight">
  <span class="guide-regalo">Ampolla de regalo</span>
- <div class="guide-pic guide-pic--combo"><img src="guide-combo.webp?v=1" width="388" height="340" loading="lazy" alt="Combo Biotina: shampoo, acondicionador, spray y ampolla" /></div>
  <span class="guide-tag">Querés la rutina completa</span>
  <h3>Combo Biotina</h3>
  <p>Shampoo + acondicionador + ampolla + spray. El tratamiento más completo: suma el cuidado en el lavado.</p>
  <a href="combo-biotina.html" class="guide-link">Ver Combo Biotina →</a>
  </div>
  <div class="guide-card">
- <div class="guide-pic guide-pic--duo"><img src="guide-duo.webp?v=1" width="239" height="340" loading="lazy" alt="Dúo shampoo y acondicionador con biotina" /></div>
  <span class="guide-tag">Buscás mantenimiento diario</span>
  <h3>Dúo Shampoo + Acondicionador</h3>
  <p>Limpieza e hidratación de uso diario con biotina activa, para cuidar el cabello en el día a día.</p>
