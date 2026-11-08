@@ -48,14 +48,17 @@ const primeras = ({ comentario, tag, titulo, texto, boton, cant }) =>
   ' <div class="primeras-garantia">\n <strong>Probalo sin riesgo</strong>\n <span>Si no te convence, tenés 10 días desde que lo recibís para devolverlo y te devolvemos la plata.</span>\n </div>\n' +
   ` <a href="#" onclick="selectQty(document.querySelector('.qty-option.popular'), ${cant}); irAPagar(); return false;" class="primeras-btn">${boton}</a>\n </div>\n\n`;
 
-// Pedidos que ya salieron: provincias reales y, cuando haya, fotos reales de paquetes (landings/envios-reales.js).
-const enviosReales = ({ provincias, fotos }, p) =>
-  ' <!-- PEDIDOS QUE YA SALIERON (23/10): datos y fotos reales, nada inventado -->\n <div class="envios-reales">\n' +
-  ' <span class="primeras-tag">Envíos reales</span>\n <h2>Pedidos que ya salieron</h2>\n' +
-  ' <p>Enviamos por Correo Argentino a todo el país, con número de seguimiento. Ya llegaron pedidos a:</p>\n' +
-  ` <div class="envios-reales-provincias">${provincias.map(x => `<span>${x}</span>`).join('')}</div>\n` +
-  (fotos.length ? ` <div class="envios-reales-fotos">${fotos.map(f => `<img src="${p}${f.src}" alt="${f.alt}" loading="lazy" width="720" height="900">`).join('')}</div>\n` : '') +
-  ' </div>\n\n';
+// Pedidos que ya salieron: provincias y, cuando haya, fotos reales de paquetes (landings/envios-reales.js).
+// 08/11/2026: las provincias pasan como cinta de izquierda a derecha; el segundo grupo es copia para que el lazo no se corte.
+const enviosReales = ({ provincias, fotos }, p) => {
+  const grupo = (oculto) => ` <div class="envios-reales-grupo"${oculto ? ' aria-hidden="true"' : ''}>${provincias.map(x => `<span>${x}</span>`).join('')}</div>\n`;
+  return ' <!-- PEDIDOS QUE YA SALIERON (23/10): datos y fotos reales, nada inventado -->\n <div class="envios-reales">\n' +
+    ' <div class="envios-reales-txt">\n <span class="primeras-tag">Envíos reales</span>\n <h2>Pedidos que ya salieron</h2>\n' +
+    ' <p>Enviamos por Correo Argentino a todo el país, con número de seguimiento. Ya despachamos pedidos a todas las provincias:</p>\n </div>\n' +
+    ' <div class="envios-reales-cinta" role="img" aria-label="Enviamos a todas las provincias: ' + provincias.join(', ') + '">\n <div class="envios-reales-pista">\n' + grupo(false) + grupo(true) + ' </div>\n </div>\n' +
+    (fotos.length ? ` <div class="envios-reales-fotos">${fotos.map(f => `<img src="${p}${f.src}" alt="${f.alt}" loading="lazy" width="720" height="900">`).join('')}</div>\n` : '') +
+    ' </div>\n\n';
+};
 
 // tarjetas: [{ ml, titulo, texto, tag, destacada, regalo }]
 const incluye = ({ titulo, sub, tarjetas, una }) =>

@@ -18,9 +18,10 @@ module.exports = {
   ANUNCIO_2: ' SIN FORMOL NI SULFATOS\n',
   NAV_LINKS: P.navLinks(p, 'duo'),
   WA_URL: "https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20el%20D%C3%BAo%20Shampoo%20%2B%20Acondicionador%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F",
-  // Video sin voz armado con los clips de Flow (hacer-video-duo-web.py, 23/10): la voz de ElevenLabs no tiene licencia comercial.
-  HERO_MEDIA: ' <div class="hero-img hero-video">\n' +
-    ' <video id="heroVideo" src="../duo-video.mp4?v=1" poster="../duo-producto.jpg" autoplay muted loop playsinline preload="auto" aria-label="Video del Dúo Shampoo + Acondicionador sin sulfatos"></video>\n' +
+  // 08/11/2026: él: "hace lo mismo con los otros productos" (el video de arriba andaba lento). Imagen cuadrada con los
+  // frascos recortados y el precio, hecha con hacer-hero-biotina-08-11.js duo. Antes (23/10): video duo-video.mp4.
+  HERO_MEDIA: ' <div class="hero-img cuadrado">\n' +
+    ' <img src="../duo-hero.jpg?v=1" width="1080" height="1080" fetchpriority="high" alt="Dúo shampoo + acondicionador con biotina, sin sulfatos: 2 dúos, 2 litros, $36.000 con envío gratis a todo el país y 3 cuotas sin interés" />\n' +
     ' </div>\n',
   BADGE: P.badge('Nuevo · Precio de lanzamiento · Envío a todo el país'),
   H1: ' <h1>Dúo Shampoo + Acondicionador con Biotina, sin sulfatos</h1>\n',
