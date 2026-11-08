@@ -1185,6 +1185,9 @@
  @media (max-width: 768px) { .hero-img.hero-video { aspect-ratio: auto; height: 44vh; } }
  /* Biotina desde el 04/11: video cuadrado (1080x1080), se muestra entero en celular y compu. Tres clases para ganarle a las de arriba. */
  .hero-img.hero-video.cuadrado { aspect-ratio: 1 / 1; height: auto; max-height: none; }
+ /* Biotina desde el 08/11: imagen cuadrada en lugar del video, entera y sin bandas en celular y compu. */
+ .hero-img.cuadrado { aspect-ratio: 1 / 1; }
+ .hero-img.cuadrado img { padding: 0; object-fit: cover; }
  .btn-sonido { position: absolute; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.62); color: #fff; border: 0; border-radius: 20px; padding: 8px 13px; font: 600 0.82rem 'Outfit', sans-serif; cursor: pointer; }
  .btn-sonido svg { width: 16px; height: 16px; }
  .includes-grid--single { grid-template-columns: 1fr; max-width: 460px; }
@@ -1287,8 +1290,8 @@
 
  <!-- HERO -->
  <div class="hero">
- <div class="hero-img hero-video cuadrado">
- <video id="heroVideo" src="biotina-pura-precio.mp4?v=1" poster="biotina-pura-precio-poster.jpg?v=1" autoplay muted loop playsinline preload="auto" aria-label="Biotina Pura: 2 frascos, 1 litro, $30.000 con envío gratis a todo el país"></video>
+ <div class="hero-img cuadrado">
+ <img src="biotina-pura-hero.jpg?v=1" width="1080" height="1080" fetchpriority="high" alt="Biotina Pura en spray de 500 ml: 2 frascos, 1 litro, $30.000 con envío gratis a todo el país y 3 cuotas sin interés" />
  </div>
 
  <div class="hero-right">

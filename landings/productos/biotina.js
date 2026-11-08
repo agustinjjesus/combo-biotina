@@ -21,11 +21,10 @@ module.exports = {
   ANUNCIO_2: ' SIN FORMOL NI SULFATOS\n',
   NAV_LINKS: P.navLinks(p, 'biotina'),
   WA_URL: 'https://wa.me/5491124838177?text=Hola!%20Me%20interesa%20la%20Biotina%20Pura%20%F0%9F%8C%BF%20%C2%BFMe%20pod%C3%A9s%20dar%20m%C3%A1s%20info%3F',
-  // 04/11/2026: el video de arriba es el de los anuncios nuevos (pantalla dividida: "En otros lados $40.000 el
-  // litro / acá $30.000"), en versión CUADRADA y sin sonido, para que quien entra desde el anuncio vea lo mismo.
-  // Antes: el video "No se la recomiendo a cualquiera" (biotina-pura-video.mp4) con botón de sonido.
-  HERO_MEDIA: ' <div class="hero-img hero-video cuadrado">\n' +
-    ' <video id="heroVideo" src="biotina-pura-precio.mp4?v=1" poster="biotina-pura-precio-poster.jpg?v=1" autoplay muted loop playsinline preload="auto" aria-label="Biotina Pura: 2 frascos, 1 litro, $30.000 con envío gratis a todo el país"></video>\n' +
+  // 08/11/2026: él: "anda lento el video... prefiero la imagen". Arriba va una imagen cuadrada (frasco real + precio,
+  // mismo estilo que los anuncios web), hecha con hacer-hero-biotina-08-11.js. Antes (04/11): el video biotina-pura-precio.mp4.
+  HERO_MEDIA: ' <div class="hero-img cuadrado">\n' +
+    ' <img src="biotina-pura-hero.jpg?v=1" width="1080" height="1080" fetchpriority="high" alt="Biotina Pura en spray de 500 ml: 2 frascos, 1 litro, $30.000 con envío gratis a todo el país y 3 cuotas sin interés" />\n' +
     ' </div>\n',
   BADGE: P.badge('En stock · Envío a todo el país'),
   H1: ' <h1>Biotina Pura® en spray, directo a la raíz</h1>\n',
