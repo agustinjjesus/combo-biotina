@@ -36,7 +36,7 @@ module.exports = {
     ['Sin formol ni sulfatos.', ' Apto uso diario.'],
   ]),
   CANTIDADES: P.cantidades([
-    { cant: '1 frasco', sub: '500 ml · rinde 2 meses', envio: 'Envío $7.000 · gratis llevando 2', precio: 22000, primeraLinea: 'envío incluido' },
+    { cant: '1 frasco', sub: '500 ml · rinde 2 meses', envio: 'Envío incluido · gratis llevando 2', precio: 22000, primeraLinea: 'envío incluido' },
     { cant: '2 frascos', sub: '1 litro · rinde 4 meses', envio: 'Envío gratis incluido', viejo: 44000, descuento: 32, precio: 30000, cadaUno: '$15.000 cada frasco' },
     { cant: '3 frascos', sub: '1,5 litros · rinde 6 meses', envio: 'Envío gratis incluido', viejo: 66000, descuento: 41, precio: 39000, cadaUno: '$13.000 cada frasco' },
   ]),

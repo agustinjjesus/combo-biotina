@@ -19,7 +19,7 @@ module.exports = {
   URL: 'https://productoscapilarespg.com/combo-biotina.html',
   IMAGEN_OG: 'https://productoscapilarespg.com/combo-productos-v2.jpg',
   VC_NOMBRE: "content_name: 'Combo Biotina'",
-  VC_VALOR: "currency: 'ARS', value: 33000 }",
+  VC_VALOR: "currency: 'ARS', value: 61000 }",
   TRACK_PAGE: "JSON.stringify({ page: 'combo' })",
   ANUNCIO_1: ' AMPOLLA PLEX DE REGALO\n',
   ANUNCIO_2: ' SIN FORMOL NI SULFATOS\n',
@@ -38,8 +38,8 @@ module.exports = {
   ]),
   CANTIDADES: P.cantidades([
     { cant: '1 combo', sub: 'Rinde 1 mes', envio: 'Envío gratis a sucursal', extra: REGALO, precio: 33000, primeraLinea: 'envío gratis a sucursal' },
-    { cant: '2 combos', sub: 'Rinde 2 meses', envio: 'Envío gratis a domicilio', extra: REGALO, viejo: 80000, descuento: 24, precio: 61000, cadaUno: '$30.500 cada combo' },
-    { cant: '3 combos', sub: 'Rinde 3 meses', envio: 'Envío gratis a domicilio', extra: REGALO, viejo: 120000, descuento: 36, precio: 77000, cadaUno: '$25.667 cada combo' },
+    { cant: '2 combos', sub: 'Rinde 2 meses', envio: 'Envío gratis a domicilio', extra: REGALO, viejo: 66000, descuento: 8, precio: 61000, cadaUno: '$30.500 cada combo' },
+    { cant: '3 combos', sub: 'Rinde 3 meses', envio: 'Envío gratis a domicilio', extra: REGALO, viejo: 99000, descuento: 22, precio: 77000, cadaUno: '$25.667 cada combo' },
   ]),
   BOTON: 'COMPRAR AHORA · $61.000 — ENVÍO GRATIS',
   PRUEBA: P.prueba([

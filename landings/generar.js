@@ -19,9 +19,10 @@ for (const nombre of ['duo', 'biotina', 'combo']) {
   const datos = Object.assign({}, require('./productos/' + nombre));
   // Lo que va igual en las tres páginas
   datos.ENVIOS_REALES = P.enviosReales(envios, datos.P);
-  // Envío de 1 unidad: $7.000, salvo el Combo, que desde el 31/10/2026 va gratis a sucursal.
-  if (!('ENVIO_X1' in datos)) datos.ENVIO_X1 = '$ 7.000';
-  if (!('ENVIO_X1_NOTA' in datos)) datos.ENVIO_X1_NOTA = 'Envío $7.000 — gratis llevando 2 o más';
+  // Envío de 1 unidad: los $7.000 YA VAN SUMADOS en el precio (1 frasco $22.000 = $15.000 + $7.000), no se cobran aparte: se dice "incluido"
+  // (08/11/2026: antes decía "$7.000" y parecía un cargo extra). El Combo, desde el 31/10/2026, va gratis a sucursal.
+  if (!('ENVIO_X1' in datos)) datos.ENVIO_X1 = 'Incluido';
+  if (!('ENVIO_X1_NOTA' in datos)) datos.ENVIO_X1_NOTA = 'Envío incluido en el precio — gratis llevando 2 o más';
   const html = plantilla.replace(/\{\{([A-Z0-9_]+)\}\}/g, (marca, clave) => {
     if (!(clave in datos)) throw new Error(`${nombre}: falta ${clave}`);
     return datos[clave];

@@ -1352,7 +1352,7 @@
  <div class="qty-info">
  <strong>Lleva 1</strong>
  <span>500 ml · rinde 2 meses</span>
- <span class="qty-shipping-free"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Envío $7.000 · gratis llevando 2</span>
+ <span class="qty-shipping-free"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> Envío incluido · gratis llevando 2</span>
  </div>
  </div>
  <div class="qty-price">
@@ -1673,7 +1673,7 @@
  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
  <span class="envio-region">Con 1 frasco</span>
  </div>
- <span class="envio-time">$ 7.000</span>
+ <span class="envio-time">Incluido</span>
  </div>
  <div class="envio-row envio-row--free">
  <div class="envio-row-info">
@@ -1732,7 +1732,7 @@
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Cuánto cuesta el envío? <span class="faq-arrow">+</span></button>
- <div class="faq-a">Enviamos por Correo Argentino a todo el país, a domicilio o a sucursal. Con 1 frasco el envío cuesta $7.000 y llevando 2 o más es gratis. En el botón de compra ves el total, con el envío incluido.</div>
+ <div class="faq-a">Enviamos por Correo Argentino a todo el país, a domicilio o a sucursal. Con 1 frasco el envío ya está incluido en el precio y llevando 2 o más es gratis. En el botón de compra ves el total final.</div>
  </div>
  <div class="faq-item">
  <button class="faq-q" onclick="toggleFaq(this)">¿Cuánto tarda en llegar mi pedido? <span class="faq-arrow">+</span></button>
@@ -1938,7 +1938,7 @@
  <p style="margin-bottom:14px"><strong>3. Precios y pagos</strong><br>
  Los precios están expresados en pesos argentinos (ARS). El pago se realiza a través de MercadoPago, que acepta tarjetas de crédito, débito, efectivo y dinero en cuenta, o por transferencia bancaria. Los precios pueden modificarse sin previo aviso.</p>
  <p style="margin-bottom:14px"><strong>4. Envíos</strong><br>
- Los envíos se realizan por Correo Argentino a todo el país. El costo de envío se informa al momento de la compra. Los plazos de entrega son estimativos y pueden variar según la provincia. No nos hacemos responsables por demoras atribuibles al servicio postal.</p>
+ Los envíos se realizan por Correo Argentino a todo el país. El precio final que ves en el botón de compra ya incluye el envío. Los plazos de entrega son estimativos y pueden variar según la provincia. No nos hacemos responsables por demoras atribuibles al servicio postal.</p>
  <p style="margin-bottom:14px"><strong>5. Cambios y devoluciones</strong><br>
  Si el producto llega dañado o con defectos de fabricación, lo reemplazamos sin costo: escribinos por WhatsApp con una foto dentro de los 10 días de recibido. Además, tenés 10 días corridos desde que recibís el pedido para arrepentirte de la compra (Ley 24.240 de Defensa del Consumidor): nos avisás por WhatsApp, nos devolvés el producto y te reintegramos el dinero por el mismo medio de pago.</p>
  <p style="margin-bottom:14px"><strong>6. Garantía de satisfacción</strong><br>
@@ -2059,9 +2059,9 @@
  const envioPrecio = document.getElementById('envioPrecio');
  const envioTachado = document.getElementById('envioTachado');
  const envioNota = document.getElementById('envioNota');
- if (envioPrecio) envioPrecio.textContent = qty === 1 ? '$ 7.000' : 'GRATIS';
+ if (envioPrecio) envioPrecio.textContent = qty === 1 ? 'Incluido' : 'GRATIS';
  if (envioTachado) envioTachado.style.display = qty === 1 ? 'none' : '';
- if (envioNota) envioNota.textContent = qty === 1 ? 'Envío $7.000 — gratis llevando 2 o más' : 'Envío gratis a todo el país';
+ if (envioNota) envioNota.textContent = qty === 1 ? 'Envío incluido en el precio — gratis llevando 2 o más' : 'Envío gratis a todo el país';
           actualizarCuotas();
  }
 

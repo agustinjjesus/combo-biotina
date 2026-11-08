@@ -12,7 +12,7 @@ module.exports = {
   URL: "https://productoscapilarespg.com/shampoo-crema/",
   IMAGEN_OG: "https://productoscapilarespg.com/duo-producto.jpg",
   VC_NOMBRE: "content_name: 'Dúo Shampoo + Acondicionador'",
-  VC_VALOR: "currency: 'ARS', value: 20000 }",
+  VC_VALOR: "currency: 'ARS', value: 36000 }",
   TRACK_PAGE: "JSON.stringify({ page: 'duo' })",
   ANUNCIO_1: ' 500 ML CADA UNO\n',
   ANUNCIO_2: ' SIN FORMOL NI SULFATOS\n',
@@ -45,7 +45,7 @@ module.exports = {
   ]
 ]),
   CANTIDADES: P.cantidades([
-    { cant: '1 dúo', sub: '1 litro · rinde 1 mes', envio: 'Envío $7.000 · gratis llevando 2', precio: 27000, primeraLinea: 'envío incluido' },
+    { cant: '1 dúo', sub: '1 litro · rinde 1 mes', envio: 'Envío incluido · gratis llevando 2', precio: 27000, primeraLinea: 'envío incluido' },
     { cant: '2 dúos', sub: '2 litros · rinde 2 meses', envio: 'Envío gratis incluido', viejo: 54000, descuento: 33, precio: 36000, cadaUno: '$18.000 cada dúo' },
     { cant: '3 dúos', sub: '3 litros · rinde 3 meses', envio: 'Envío gratis incluido', viejo: 81000, descuento: 42, precio: 47000, cadaUno: '$15.667 cada dúo' },
   ]),
