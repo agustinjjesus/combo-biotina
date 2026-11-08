@@ -214,23 +214,34 @@
  }
  .drawer-ig svg { width: 17px; height: 17px; stroke: var(--gray); }
 
- .hub-hero { text-align: center; padding: 72px 6vw 32px; max-width: 760px; margin: 0 auto; }
+ /* 08/11/2026: el título de arriba se sentía "apagado" (blanco y gris con dorado). Ahora lleva el rosa del resto del sitio, el botón de color y los productos al lado. */
+ .hub-hero { background: radial-gradient(120% 120% at 85% 0%, #f4e4de 0%, #ecd5ce 55%, #e6c9c1 100%); padding: 56px 6vw 52px; }
+ .hub-hero-inner { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 36px; align-items: center; }
  .hub-hero-eyebrow {
- font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
- color: var(--gray); margin-bottom: 18px;
+ font-size: 0.74rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+ color: #a03a4b; margin-bottom: 18px;
  }
  .hub-hero h1 {
- font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; line-height: 1.18; margin-bottom: 20px;
- letter-spacing: -0.01em;
+ font-size: clamp(2.1rem, 4.6vw, 3.4rem); font-weight: 700; line-height: 1.14; margin-bottom: 20px;
+ letter-spacing: -0.015em; color: #33201d;
  }
- .hub-hero h1 .accent { color: var(--gold); }
- .hub-hero p { color: var(--gray); font-size: 1rem; max-width: 520px; margin: 0 auto 32px; }
+ .hub-hero h1 { text-wrap: balance; }
+ .hub-hero h1 .accent { color: #a03a4b; white-space: nowrap; }
+ .hub-hero p { color: #6e4e48; font-size: 1.04rem; font-weight: 400; max-width: 520px; margin: 0 0 30px; }
  .btn-hero {
- display: inline-block; background: var(--dark); color: white;
- padding: 15px 34px; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
- transition: opacity 0.2s;
+ display: inline-block; background: #a03a4b; color: white;
+ padding: 16px 36px; border-radius: 12px; font-size: 0.95rem; font-weight: 600;
+ box-shadow: 0 10px 22px -10px rgba(160, 58, 75, 0.7);
+ transition: background 0.2s, transform 0.2s;
  }
- .btn-hero:hover { opacity: 0.85; }
+ .btn-hero:hover { background: #8a2f3f; transform: translateY(-1px); }
+ .hub-hero-img img { width: 100%; max-width: 520px; height: auto; margin: 0 auto; filter: drop-shadow(0 24px 26px rgba(51, 32, 29, 0.28)); }
+ @media (max-width: 860px) {
+ .hub-hero { padding: 40px 6vw 40px; }
+ .hub-hero-inner { grid-template-columns: 1fr; gap: 26px; text-align: center; }
+ .hub-hero p { margin: 0 auto 26px; }
+ .hub-hero-img img { max-width: 360px; }
+ }
 
  /* ─── PEDIDOS QUE YA SALIERON (08/11/2026): las 24 provincias pasan de izquierda a derecha, igual que en las páginas de producto ─── */
  .envios-reales { background: var(--white); padding: 8px 0 56px; text-align: center; overflow: hidden; }
@@ -435,10 +446,15 @@
  </div>
 
  <div class="hub-hero">
+ <div class="hub-hero-inner">
+ <div class="hub-hero-txt">
  <div class="hub-hero-eyebrow">Cuidado capilar con Biotina · Envío gratis llevando 2 o más</div>
  <h1>La caída de cabello<br />no se disimula: <span class="accent">se frena</span>.</h1>
  <p>Fórmulas con Biotina activa, sin formol ni sulfatos, pensadas para fortalecer el cabello desde la raíz. Elegí el tratamiento que mejor se adapte a tu rutina.</p>
  <a href="#productos" class="btn-hero">Ver los tratamientos</a>
+ </div>
+ <div class="hub-hero-img"><img src="hero-inicio.webp?v=1" width="960" height="840" fetchpriority="high" alt="Shampoo, acondicionador, spray de Biotina Pura y ampolla Plex de Productos Capilares PG" /></div>
+ </div>
  </div>
 
  <div class="product-grid" id="productos">
