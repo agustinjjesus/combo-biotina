@@ -1653,7 +1653,10 @@
 
 {{JS_MP}}
  const MP_AUTO_CONFIRM_ENABLED = true;
- const CLOUD_FN_CREAR_PREFERENCIA = 'https://us-central1-biotina-pg.cloudfunctions.net/crearPreferencia';
+ // Cobro integrado (09/11/2026): worker-pago.js crea el pago en Mercado Pago con los datos de la clienta (nombre, WhatsApp,
+ // email, producto y una referencia propia), en vez de mandarla al link fijo, que llega sin ningún dato y fue rechazado como
+ // "pago sospechoso". Si el Worker no responde en 4 s o falla, se usa el link fijo de siempre: nunca se queda sin poder pagar.
+ const PAGO_ENDPOINT = 'https://biotina-pago.productopg.workers.dev/';
 {{JS_PRECIOS}} let selectedQty = 2; // arranca en 2 dúos, la oferta principal (18/10)
 
  // ─── CARRITO PROGRESIVO ─────────────────────────────────────────────────
@@ -1988,18 +1991,25 @@
  return null;
  }
  const controller = new AbortController();
- const timeoutId = setTimeout(() => controller.abort(), 2000);
+ const timeoutId = setTimeout(() => controller.abort(), 4000);
  try {
- const resp = await fetch(CLOUD_FN_CREAR_PREFERENCIA, {
+ const resp = await fetch(PAGO_ENDPOINT, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ pedidoId: docId, titulo: datos.producto, precio: PRECIOS_NUM[selectedQty] }),
+ body: JSON.stringify({
+ pedidoId: docId,
+ titulo: precios[selectedQty].label.replace(/\s*—.*$/, ''),
+ precio: PRECIOS_NUM[selectedQty],
+ nombre: datos.nombre, apellido: datos.apellido, telefono: datos.telefono, email: datos.email || '',
+ event_source_url: location.href,
+ }),
  signal: controller.signal,
  });
  clearTimeout(timeoutId);
  const data = await resp.json();
- return (resp.ok && data.initPoint) ? data.initPoint : null;
+ return (resp.ok && typeof data.initPoint === 'string' && data.initPoint.startsWith('https://www.mercadopago.com')) ? data.initPoint : null;
  } catch (e) {
+ clearTimeout(timeoutId);
  console.warn('Pago dinámico no disponible, uso link fijo:', e);
  return null;
  }
@@ -2039,7 +2049,10 @@
  irAlSiguientePaso();
  });
  } else {
- irAlSiguientePaso();
+ // Firebase apagado (07/10): el pedido se identifica con un id propio y el Worker arma el cobro.
+ crearPagoDinamico('W' + nowTs.toString(36) + Math.random().toString(36).slice(2, 7)).then((url) => {
+ if (url) { window.location.href = url; } else { irAlSiguientePaso(); }
+ });
  }
  }
 
